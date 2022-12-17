@@ -81,6 +81,18 @@ export const tokens = (mode) => ({
 					700: "#99997a",
 					800: "#666652",
 					900: "#333329"
+				},
+				blueOrigin: {
+					100: "#d0e3f0",
+					200: "#a0c8e1",
+					300: "#71acd3",
+					400: "#4191c4",
+					500: "#1275b5",
+					550: "#1373b4",
+					600: "#0e5e91",
+					700: "#0b466d",
+					800: "#072f48",
+					900: "#041724"
 				}
 		  }
 		: {
@@ -160,6 +172,17 @@ export const tokens = (mode) => ({
 					700: "#ffffe0",
 					800: "#ffffeb",
 					900: "#fffff5"
+				},
+				blueOrigin: {
+					100: "#041724",
+					200: "#072f48",
+					300: "#0b466d",
+					400: "#0e5e91",
+					500: "#1275b5",
+					600: "#4191c4",
+					700: "#71acd3",
+					800: "#a0c8e1",
+					900: "#d0e3f0"
 				}
 		  })
 });
@@ -185,7 +208,7 @@ export const themeSettings = (mode) => {
 							light: colors.grey[100]
 						},
 						background: {
-							default: colors.pink[500]
+							default: "#fcfcfc"
 						}
 				  }
 				: {

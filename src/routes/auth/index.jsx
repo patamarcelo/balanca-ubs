@@ -14,6 +14,9 @@ import './index.css'
 
 import PasswordReset from './password-reset'
 
+import background from "../../utils/assets/img/background.png";
+
+
 
 // import {
 // 	createNotification,
@@ -87,6 +90,8 @@ const Auth = () => {
 			sx={{
 				height: "100%",
 				width: "100%",
+				backgroundImage: `url(${background})`,
+				opacity: "0.9"
 			}}
 			display="flex"
 			alignItems="center"
@@ -94,7 +99,7 @@ const Auth = () => {
 		>
 			<Box
 				sx={{
-					backgroundColor: colors.pink[700],
+					backgroundColor: 'rgba(18,117,181,0.9)',
 					margin: "20px 20px",
 					padding: "50px 20px",
 					width: isNonMobile ? "80%" : "100%",
@@ -121,7 +126,7 @@ const Auth = () => {
 						}}
 						className="title-app"
 					>
-						Pitaya Pay
+						Diamante - UBS
 					</Typography>
 				</Box>
 				<Formik
