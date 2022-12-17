@@ -4,6 +4,7 @@ import { tokens } from "../../theme";
 import TempDrawer from '../../components/drawer'
 import { useState } from 'react'
 import Header from '../../components/global/Header'
+import HomePage from '../../pages/Home'
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -38,17 +39,14 @@ const AuthApp = () => {
 			/>
 
 			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems="center"
 				width="100%"
+				height="100vh"
 				sx={{
-					height: "100vh",
+					padding: '10px',
+					height: "100vh"
 				}}
 			>
-				<Typography variant="h6" color={colors.blueAccent[800]}>
-					LOGADO
-				</Typography>
+				<HomePage />
 			</Box>
 		</Box>
 	);
