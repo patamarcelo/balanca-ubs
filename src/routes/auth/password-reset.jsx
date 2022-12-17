@@ -43,7 +43,6 @@ const PassswordReset = () => {
 		<Box
 			displa="flex"
 			justifyContent="center"
-			alignItens="center"
 			sx={{
 				marginTop: "20px",
 				cursor: "pointer"

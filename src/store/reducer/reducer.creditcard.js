@@ -1,20 +1,16 @@
-const today =
-	new Date().getFullYear() +
-	"-" +
-	("0" + (new Date().getMonth() + 1)).slice(-2) +
-	"-" +
-	("0" + new Date().getDate()).slice(-2);
+// const today =
+// 	new Date().getFullYear() +
+// 	"-" +
+// 	("0" + (new Date().getMonth() + 1)).slice(-2) +
+// 	"-" +
+// 	("0" + new Date().getDate()).slice(-2);
 
 const currentYear = new Date().getFullYear().toString().slice(0, 2);
-export const INITIAL_STATE = {
-	customer: "",
-	billingType: "CREDIT_CARD",
-	dueDate: today,
-	payOptions: {},
-	creditCard: {},
-	creditCardHolderInfo: {},
-	userCreated: {},
-	realizedOperation: {}
+
+export const TRUCK_INITIAL_STATE = {
+	truck: {},
+	carregando: false,
+	descarregando: false
 };
 
 export const crediCardReducer = (state, action) => {

@@ -63,7 +63,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
             backgroundColor: colors.blueOrigin[800],
             padding: '0px 10px 0px 20px',
             borderRadius: '8px',
-            boxShadow: `${colors.blueOrigin[900]} 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.5) -1px -1px 1px 1px inset;`
+            boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
             }}
             >
                 <div>icone 1 </div>
