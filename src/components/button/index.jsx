@@ -1,8 +1,7 @@
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const CustomButton = (props) => {
-	const { title, color, ml } = props;
+	const { title, color, ml, handleOpenModal } = props;
 	return (
 		<Button
 			variant="contained"
@@ -11,6 +10,7 @@ const CustomButton = (props) => {
 				marginLeft: `${ml}px`
 			}}
 			startIcon={props.children}
+			onClick={handleOpenModal}
 		>
 			{title}
 		</Button>
