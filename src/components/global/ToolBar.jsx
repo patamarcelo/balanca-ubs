@@ -30,7 +30,7 @@ import { useState } from "react";
 
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
-const ButtonAppBar = () => {
+const ButtonAppBar = ({toggleDrawer}) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isAdmin = useSelector(selectIsAdminUser);
@@ -61,6 +61,8 @@ const ButtonAppBar = () => {
 		}, 1000);
 	};
 
+	
+
 	return (
 		<AppBar
 			position="fixed"
@@ -74,7 +76,7 @@ const ButtonAppBar = () => {
 					display="flex"
 					justifyContent="center"
 					alignItems="center"
-					onClick={handlerHomeNav}
+					onClick={toggleDrawer}
 					sx={{
 						cursor: "pointer",
 						width: "30px",
