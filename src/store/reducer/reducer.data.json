@@ -1,0 +1,40 @@
+[
+    {
+        "customer": "cus_0T1mdomVMi39",
+        "billingType": "CREDIT_CARD",
+        "dueDate": "2017-03-15",
+        "value": 100,
+        "description": "Pedido 056984",
+        "externalReference": "056984",
+        "creditCard": {
+            "holderName": "marcelo h almeida",
+            "number": "5162306219378829",
+            "expiryMonth": "05",
+            "expiryYear": "2021",
+            "ccv": "318"
+        },
+        "creditCardHolderInfo": {
+            "name": "Marcelo Henrique Almeida",
+            "email": "marcelo.almeida@gmail.com",
+            "cpfCnpj": "24971563792",
+            "postalCode": "89223-005",
+            "addressNumber": "277",
+            "addressComplement": null,
+            "phone": "4738010919",
+            "mobilePhone": "47998781877"
+        }
+    },
+    {
+        "payOptions": [
+            {
+                "vista": {
+                    "value": "valor total"
+                },
+                "parcelamento": {
+                    "installmentCount": "numero de parcelas",
+                    "totalValue": "valor total da compra"
+                }
+            }
+        ]
+    }
+]
