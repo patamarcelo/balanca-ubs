@@ -29,6 +29,7 @@ import {
 import { useState } from "react";
 
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
+import MenuIcon from '@mui/icons-material/Menu';
 
 const ButtonAppBar = ({toggleDrawer}) => {
 	const theme = useTheme();
@@ -84,64 +85,11 @@ const ButtonAppBar = ({toggleDrawer}) => {
 						marginRight: "20px"
 					}}
 				>
-					<Diamond
+					<MenuIcon
 						sx={{
-							fontSize: "60px"
+							fontSize: "30px"
 						}}
 					/>
-				</Box>
-				{/* {
-					isAdmin &&
-				<IconButton
-				size="large"
-				edge="start"
-				color="success"
-				aria-label="menu"
-				sx={{ mr: 2 }}
-				onClick={() => {
-					handlerAdminNav();
-				}}
-				>
-					<BarChartIcon sx={{fontSize: '30px'}}/>
-				</IconButton>
-				} */}
-				<IconButton
-					size="large"
-					edge="start"
-					color="success"
-					aria-label="menu"
-					sx={{ mr: 2 }}
-					onClick={() => {
-						handlerRefreshPage();
-					}}
-				>
-					{loadingPage ? (
-						<CachedIcon
-							sx={{
-								fontSize: "30px",
-								animation: "spin 1.7s linear infinite",
-								"@keyframes spin": {
-									"0%": {
-										transform: "rotate(360deg)"
-									},
-									"100%": {
-										transform: "rotate(0deg)"
-									}
-								}
-							}}
-						/>
-					) : (
-						<CachedIcon sx={{ fontSize: "30px" }} />
-					)}
-				</IconButton>
-				<Box
-				sx={{
-				margin: 'auto 0',
-				flexGrow: 1,
-				textAlign: 'right'
-				}}
-				>
-					<Typography variant="h3">UBS</Typography>
 				</Box>
 				<Typography variant="h6" component="div" sx={{ flexGrow: 1 }} />
 				{user?.displayName ? user.displayName : "Usuário"}

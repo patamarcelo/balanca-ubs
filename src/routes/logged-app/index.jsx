@@ -1,9 +1,9 @@
 import "./logged-app.css";
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Toolbar from "../../components/global/ToolBar";
 import TempDrawer from '../../components/drawer'
 import { useState } from 'react'
+import Header from '../../components/global/Header'
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -23,9 +23,14 @@ const AuthApp = () => {
 
 
 	return (
-		<div className="logged-app">
-            <Toolbar 
+		<Box className="logged-app"
+		sx={{
+			backgroundColor: colors.blueOrigin[900]
+		}}
+		>
+			<Header 
 			toggleDrawer={toggleDrawer}
+			isdrawerOpen={isdrawerOpen}
 			/>
 			<TempDrawer 
 			isdrawerOpen={isdrawerOpen}
@@ -39,14 +44,13 @@ const AuthApp = () => {
 				width="100%"
 				sx={{
 					height: "100vh",
-                    backgroundColor: colors.blueOrigin[500]
 				}}
 			>
 				<Typography variant="h6" color={colors.blueAccent[800]}>
 					LOGADO
 				</Typography>
 			</Box>
-		</div>
+		</Box>
 	);
 };
 export default AuthApp;
