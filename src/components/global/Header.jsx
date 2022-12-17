@@ -3,6 +3,7 @@ import { tokens } from "../../theme";
 import MenuIcon from '@mui/icons-material/Menu';
 import PowerSettingsNewOutlinedIcon from "@mui/icons-material/PowerSettingsNewOutlined";
 import IconButton from "@mui/material/IconButton";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 
 
@@ -15,6 +16,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
     const dispatch = useDispatch();
+	const isNonMobile = useMediaQuery("(min-width: 800px)");
 
 
     const handlerLogout = () => {
@@ -30,6 +32,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 			alignItems="center"
 			mt="20px"
 			width="100%"
+			mb="40px"
 			sx={{ 
                 padding: '0px 10px 0px 10px' 
             }}
@@ -48,7 +51,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 				>
 					<MenuIcon
 						sx={{
-							fontSize: "30px"
+							fontSize: "40px"
 						}}
 					/>
 				</Box>
@@ -70,7 +73,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 					<PowerSettingsNewOutlinedIcon
 						style={{
 							color: colors.redAccent[500],
-							fontSize: "30px"
+							fontSize: isNonMobile ? "30px" : "20px"
 						}}
 					/>
 				</IconButton>

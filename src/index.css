@@ -6,14 +6,13 @@ body,
 #root,
 .app,
 .content {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   font-family: 'times new roman', sans-serif;
 }
 
 .app {
   display: flex;
-  position: relative;
 }
 
 
