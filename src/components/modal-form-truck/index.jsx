@@ -11,7 +11,12 @@ import Chip from "@mui/material/Chip";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 
+import { addTruckMove } from "../../utils/firebase/firebase.datatable";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
+
 export default function FormDialog(props) {
+	const user = useSelector(selectCurrentUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -28,7 +33,46 @@ export default function FormDialog(props) {
 
 	const handleSaveData = async () => {
 		console.log(truckValues);
-		handleCloseModal();
+		const {
+			cultura,
+			data,
+			impureza,
+			liquido,
+			mercadoria,
+			motorista,
+			origem,
+			pesoBruto,
+			placa,
+			projeto,
+			saida,
+			tara,
+			tipo,
+			umidade
+		} = truckValues;
+		try {
+			const newTrans = await addTruckMove(
+				user.email,
+				data,
+				pesoBruto,
+				tara,
+				liquido,
+				cultura,
+				placa,
+				umidade,
+				mercadoria,
+				origem,
+				impureza,
+				projeto,
+				motorista,
+				saida,
+				tipo
+			);
+			if (newTrans) {
+				handleCloseModal();
+			}
+		} catch (error) {
+			console.log("erro ao salvar a transação");
+		}
 	};
 
 	return (
@@ -39,6 +83,9 @@ export default function FormDialog(props) {
 				sx={{
 					"& .MuiPaper-root": {
 						minWidth: "60vw !important"
+					},
+					"& .MuiChip-root": {
+						borderRadius: 1
 					}
 				}}
 			>
@@ -48,6 +95,7 @@ export default function FormDialog(props) {
 						color={dataModal.color}
 						sx={{
 							fontWeight: "bold",
+							fontSize: "14px",
 							color: "white",
 							"& .MuiChip-label": {
 								textTransform: "uppercase"

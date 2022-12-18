@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
 import { TRUCK, TRUCK_OBS } from "../../store/reducer/reducer.initials";
 import { borderRadius } from "@mui/system";
+import { hanlderHelperText } from '../../utils/formHelper'
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -15,6 +16,8 @@ const ModalFormFields = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const [value, setValue] = useState(new Date());
+	
+
 
 	useEffect(() => {
 		setTruckValues({ ...truckValues, data: new Date() });
@@ -44,6 +47,11 @@ const ModalFormFields = (props) => {
 					},
 					"& .red-value": {
 						color: "red !important"
+					},
+					"& .MuiFormHelperText-contained": {
+						color: colors.blueOrigin[500],
+						fontStyle: 'italic',
+						fontWeight: 'bold'
 					}
 				}}
 			>
@@ -80,6 +88,7 @@ const ModalFormFields = (props) => {
 									: truckValues[input.name]
 							}
 							name={input.name}
+							helperText={hanlderHelperText(input.type, truckValues[input.name])}
 							InputProps={{
 								readOnly: input.disabled,
 								className:

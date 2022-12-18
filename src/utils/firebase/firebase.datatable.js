@@ -6,6 +6,67 @@ import { TABLES_FIREBASE } from "./firebase.typestables";
 // import { query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 // import { collection, addDoc, Timestamp } from "firebase/firestore";
 
+export const addTruckMove = async (
+	user,
+	entrada,
+	pesoBruto,
+	tara,
+	liquido,
+	cultura,
+	placa,
+	umidade,
+	mercadoria,
+	origem,
+	impureza,
+	projeto,
+	motorista,
+	saida,
+	tipo
+) => {
+	const createdAt = new Date();
+	let newTransaction;
+	try {
+		newTransaction = await addDoc(
+			collection(db, TABLES_FIREBASE.truckmove),
+			{
+				createdAt,
+				user,
+				entrada,
+				pesoBruto,
+				tara,
+				liquido,
+				cultura,
+				placa,
+				umidade,
+				mercadoria,
+				origem,
+				impureza,
+				projeto,
+				motorista,
+				saida,
+				tipo
+			}
+		);
+	} catch (error) {
+		console.log("Error ao registrar a transação: ", error);
+	}
+	return newTransaction;
+};
+
+export const getTruckMoves = async () => {
+	const q = await query(
+		collection(db, TABLES_FIREBASE.truckmove),
+		orderBy("createdAt", "desc")
+	);
+	const querySnapshot = await getDocs(q);
+	return querySnapshot.docs.map((docSnapshot) => {
+		return {
+			...docSnapshot.data(),
+			id: docSnapshot.data().id
+		};
+	});
+};
+
 // TRANSACTIONS DB POST
 export const addTransaction = async (
 	sellerName,

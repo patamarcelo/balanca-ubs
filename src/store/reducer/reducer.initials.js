@@ -1,8 +1,24 @@
+export const TRUCK_INITIAL_STATE = {
+	data: "",
+	pesoBruto: "",
+	tara: "",
+	liquido: "",
+	placa: "",
+	cultura: "",
+	umidade: "",
+	mercadoria: "",
+	origem: "",
+	impureza: "",
+	projeto: "",
+	motorista: "",
+	saida: ""
+};
+
 // TRUCK INPUT AND FORM
 export const TRUCK = [
 	{
 		label: "Peso Bruto",
-		name: "peso-bruto",
+		name: "pesoBruto",
 		placeholder: "Peso Bruto",
 		// required: true,
 		type: "number"

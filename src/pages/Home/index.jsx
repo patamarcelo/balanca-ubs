@@ -7,6 +7,9 @@ import HomeTable from "../../components/home-table";
 import { useState, useEffect } from "react";
 
 import FormDialog from "../../components/modal-form-truck";
+
+import {TRUCK_INITIAL_STATE} from '../../store/reducer/reducer.initials'
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -28,7 +31,7 @@ const HomePage = () => {
 		text: ""
 	});
 
-	const [truckValues, setTruckValues] = useState({});
+	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
 	const handleOpenModal = (obj) => {
 		setDataModal({
@@ -36,16 +39,17 @@ const HomePage = () => {
 			text: obj.text,
 			color: obj.color
 		});
+		setTruckValues({ ...truckValues, tipo: obj.title.toLowerCase() });
 		setIsOpenModal(true);
 	};
 	const handleCloseModal = (e) => {
+		setTruckValues(TRUCK_INITIAL_STATE);
 		setIsOpenModal(false);
-		setTruckValues({});
 	};
 	const handleCloseModalEsc = (event) => {
 		if (event.type === "keydown" && event.key === "Escape") {
 			setIsOpenModal(false);
-			setTruckValues({});
+			setTruckValues(TRUCK_INITIAL_STATE);
 		}
 	};
 
@@ -127,9 +131,6 @@ const HomePage = () => {
 				</CustomButton>
 			</Box>
 			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems="center"
 				width="100%"
 				height="70%"
 				sx={{
