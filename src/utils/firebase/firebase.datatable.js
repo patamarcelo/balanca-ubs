@@ -20,13 +20,37 @@ export const listenerTruckTable = async () => {
 	return unsub;
 };
 
-export const handleDeleteTruck = async (id) => {
-	if (window.confirm(`Deletar o Item: ${id}`)) {
+export const handleUpdateTruck = async (e, id, data) => {
+	e.preventDefault();
+	const saida = new Date();
+	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
+	let updatedDoc;
+	const updatedData = { ...data, saida: saida };
+	try {
+		updatedDoc = await updateDoc(taskDocRef, {
+			...updatedData
+		});
+		console.log("updatedDoc: ", updatedDoc);
+	} catch (err) {
+		alert(err);
+	}
+	return updatedDoc;
+};
+
+export const handleDeleteTruck = async (id, data) => {
+	const placaFormat =
+		data?.placa?.toUpperCase().slice(0, 3) +
+		"-" +
+		data?.placa?.toUpperCase().slice(-4);
+	const motorista = data?.motorista;
+	if (window.confirm(`Deletar a carga: ${placaFormat} - ${motorista} ??`)) {
 		const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 		try {
 			console.log("deletando id: ", id);
 			await deleteDoc(taskDocRef);
-			console.log(`Deletado o ID: ${id} com sucesso`);
+			console.log(
+				`Deletado o ID: ${placaFormat} - ${motorista} com sucesso`
+			);
 		} catch (err) {
 			alert(err);
 		}
@@ -126,6 +150,7 @@ export const addTransaction = async (
 	} catch (error) {
 		console.log("Error ao registrar a transação: ", error);
 	}
+	console.log(newTransaction);
 	return newTransaction;
 };
 

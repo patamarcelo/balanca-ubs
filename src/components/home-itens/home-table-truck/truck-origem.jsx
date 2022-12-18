@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
-const CulturaTruck = (props) => {
+const OrigemTruck = (props) => {
 	const { data } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -15,14 +15,14 @@ const CulturaTruck = (props) => {
 		>
 			<>
 				<Typography variant="h6" color={colors.primary[300]} sx={{fontStyle: 'italic'}}>
-					Cultura
+					Origem
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
-					{data.cultura}
+					{data.origem}
 				</Typography>
 			</>
 		</Box>
 	);
 };
 
-export default CulturaTruck;
+export default OrigemTruck;

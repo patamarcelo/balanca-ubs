@@ -179,7 +179,7 @@ const Auth = () => {
 									},
                                     "& .MuiFilledInput-input": {
                                         // boxShadow: "0 0 0 100px black inset !important"
-                                        boxShadow: `0 0 0 100px ${colors.pink[900]} inset !important`,
+                                        boxShadow: `0 0 0 100px ${colors.blueOrigin[800]} inset !important`,
                                     },
 									"& .MuiFormLabel-root.Mui-focused": {
 										color: 'white !important'

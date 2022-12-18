@@ -23,7 +23,7 @@ const DateTruck = (props) => {
 			justifyContent="space-around"
 			alignItems="center"
 		>
-			<Typography variant="h5" color={colors.primary[100]}>
+			<Typography variant="h6" color={colors.primary[100]}>
 				{formatDate}
 			</Typography>
 			<Typography variant="h6" color={colors.primary[100]}>

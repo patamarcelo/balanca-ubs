@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 
 import FormDialog from "../../components/home-itens/modal-form-truck";
 
-import {TRUCK_INITIAL_STATE} from '../../store/trucks/reducer.initials'
+import { TRUCK_INITIAL_STATE } from "../../store/trucks/reducer.initials";
 
 const dataModalText = {
 	carregando: {
@@ -32,20 +32,28 @@ const HomePage = () => {
 		text: ""
 	});
 
-	const [saved, handlerSave] = useState(0)
-
-
+	const [saved, handlerSave] = useState(0);
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
-	const handleOpenModal = (obj) => {
-		setDataModal({
-			title: obj.title,
-			text: obj.text,
-			color: obj.color
-		});
-		setTruckValues({ ...truckValues, tipo: obj.title.toLowerCase() });
-		setIsOpenModal(true);
+	const handleOpenModal = async (obj, data) => {
+		if (obj.title === "Editar Carga") {
+			await setTruckValues(data);
+			setDataModal({
+				title: obj.title,
+				text: obj.text,
+				color: obj.color
+			});
+			setIsOpenModal(true);
+		} else {
+			setDataModal({
+				title: obj.title,
+				text: obj.text,
+				color: obj.color
+			});
+			setTruckValues({ ...truckValues, tipo: obj.title.toLowerCase() });
+			setIsOpenModal(true);
+		}
 	};
 	const handleCloseModal = (e) => {
 		setTruckValues(TRUCK_INITIAL_STATE);
@@ -144,13 +152,25 @@ const HomePage = () => {
 					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
 					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
-					overflow: 'auto',
-					overflowX: 'hidden',
-					position: 'relative',
-					border: `0.1px solid ${colors.primary[100]}`,
+					overflow: "auto",
+					overflowX: "hidden",
+					position: "relative",
+					border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
-				<HomeTable saved={saved}/>
+				<HomeTable
+					saved={saved}
+					handlerSave={handlerSave}
+					isOpenModal={isOpenModal}
+					handleCloseModal={handleCloseModal}
+					dataModal={dataModal}
+					handleCloseModalEsc={handleCloseModalEsc}
+					handleChangeTruck={handleChangeTruck}
+					handleBlurTruck={handleBlurTruck}
+					truckValues={truckValues}
+					setTruckValues={setTruckValues}
+					handleOpenModal={handleOpenModal}
+				/>
 			</Box>
 		</Box>
 	);

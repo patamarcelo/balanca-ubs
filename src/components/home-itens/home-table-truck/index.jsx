@@ -10,19 +10,63 @@ import DateTruck from "./truck-date";
 import PlateTruck from "./truck-plate";
 import QuantityTruck from "./truck-quantity";
 import CulturaTruck from "./truck-cultura";
+import OrigemTruck from "./truck-origem";
+
+import FormDialog from "../../../components/home-itens/modal-form-truck";
+
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
 import { useSelector } from "react-redux";
 import { selectTruckLoads } from "../../../store/trucks/trucks.selector";
+
+const editarModal = {
+	title: "Editar Carga",
+	color: "warning",
+	text: "formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
+};
 
 const HomeTableTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
 	const table = useSelector(selectTruckLoads);
+	const {
+		saved,
+		handlerSave,
+		isOpenModal,
+		handleCloseModal,
+		dataModal,
+		handleCloseModalEsc,
+		handleChangeTruck,
+		handleBlurTruck,
+		truckValues,
+		setTruckValues,
+		handleOpenModal
+	} = props;
+
+	const handlerDelete = (dataId, data) => {
+		try {
+			handleDeleteTruck(dataId, data);
+			handlerSave(saved + 1);
+		} catch (error) {
+			console.log("Erro ao Deletar a Carga: ", data.id);
+		}
+	};
 
 	return (
 		<>
+			<FormDialog
+				isOpenModal={isOpenModal}
+				handleCloseModal={handleCloseModal}
+				dataModal={dataModal}
+				handleCloseModalEsc={handleCloseModalEsc}
+				handleChangeTruck={handleChangeTruck}
+				handleBlurTruck={handleBlurTruck}
+				truckValues={truckValues}
+				setTruckValues={setTruckValues}
+				handlerSave={handlerSave}
+				saved={saved}
+			/>
 			{table.map((data, i) => {
 				return (
 					<Box
@@ -71,9 +115,13 @@ const HomeTableTruck = (props) => {
 							<PlateTruck data={data} />
 							<QuantityTruck data={data} />
 							{data.cultura && <CulturaTruck data={data} />}
+							{data.origem && <OrigemTruck data={data} />}
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
-							<IconButton aria-label="edit">
+							<IconButton
+								aria-label="edit"
+								onClick={() => handleOpenModal(editarModal, data)}
+							>
 								<FontAwesomeIcon
 									icon={faPenToSquare}
 									color={colors.yellow[600]}
@@ -82,7 +130,7 @@ const HomeTableTruck = (props) => {
 							</IconButton>
 							<IconButton
 								aria-label="delete"
-								onClick={() => handleDeleteTruck(data.id)}
+								onClick={() => handlerDelete(data.id, data)}
 							>
 								<FontAwesomeIcon
 									icon={faTrashCan}

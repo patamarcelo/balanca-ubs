@@ -6,10 +6,7 @@ const PlateTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	
-
-	
-
+	const placaFormat = data?.placa?.toUpperCase().slice(0, 3) + "-" +  data?.placa?.toUpperCase().slice(-4)
 	return (
 		<Box
 			display="flex"
@@ -17,10 +14,10 @@ const PlateTruck = (props) => {
 			justifyContent="space-around"
 			alignItems="center"
 		>
-			<Typography variant="h5" color={colors.primary[100]}>
-				{data?.placa?.toUpperCase().split(" ", 3) + "-" }
+			<Typography variant="h6" color={colors.primary[100]}>
+				{placaFormat}
 			</Typography>
-			<Typography variant="h5" color={colors.primary[100]}>
+			<Typography variant="h6" color={colors.primary[100]}>
 				{data.motorista}
 			</Typography>
 

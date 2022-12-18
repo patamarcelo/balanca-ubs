@@ -1,17 +1,15 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ModalFormFields from "../modal-form-fields";
 import Chip from "@mui/material/Chip";
 import { tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 
-import { addTruckMove } from "../../../utils/firebase/firebase.datatable";
+import { addTruckMove, handleUpdateTruck } from "../../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 
@@ -34,7 +32,6 @@ export default function FormDialog(props) {
 	} = props;
 
 	const handleSaveData = async () => {
-		console.log(truckValues);
 		const {
 			cultura,
 			data,
@@ -71,10 +68,26 @@ export default function FormDialog(props) {
 			);
 			if (newTrans) {
 				handleCloseModal();
-				handlerSave(saved + 1)
+				handlerSave(saved + 1);
 			}
 		} catch (error) {
 			console.log("erro ao salvar a transação");
+		}
+	};
+
+	const handleEditCarga = async (event) => {
+		console.log(truckValues);
+		try {
+			const newTrans = await handleUpdateTruck(
+				event,
+				truckValues.id,
+				truckValues
+			);
+			console.log('NewTrans: ',newTrans)
+			handleCloseModal();
+			handlerSave(saved + 1);
+		} catch (error) {
+			console.log("erro ao editar a transação", error);
 		}
 	};
 
@@ -128,15 +141,28 @@ export default function FormDialog(props) {
 					<Button color="warning" onClick={handleCloseModal}>
 						Cancelar
 					</Button>
-					<Button
-						onClick={handleSaveData}
-						sx={{
-							backgroundColor: colors.greenAccent[600],
-							color: "white"
-						}}
-					>
-						Salvar
-					</Button>
+
+					{dataModal.title === "Editar Carga" ? (
+						<Button
+							onClick={handleEditCarga}
+							sx={{
+								backgroundColor: colors.yellow[600],
+								color: "white"
+							}}
+						>
+							Salvar
+						</Button>
+					) : (
+						<Button
+							onClick={handleSaveData}
+							sx={{
+								backgroundColor: colors.greenAccent[600],
+								color: "white"
+							}}
+						>
+							Salvar
+						</Button>
+					)}
 				</DialogActions>
 			</Dialog>
 		</div>

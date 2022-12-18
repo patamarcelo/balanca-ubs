@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewOutlinedIcon from "@mui/icons-material/PowerSettingsNewOutlined";
@@ -104,6 +104,9 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						/>
 					</IconButton>
 				)}
+				<Typography variant="h6" color={colors.primary[100]}>
+					Marcelo
+				</Typography>
 				<IconButton onClick={() => console.log("user")}>
 					<FontAwesomeIcon
 						icon={faUser}
