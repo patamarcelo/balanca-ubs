@@ -10,12 +10,12 @@ import FormDialog from "../../components/modal-form-truck";
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
-		color: 'success',
+		color: "success",
 		text: "formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
 	},
 	descarregando: {
 		title: "Descarregando",
-		color: 'error',
+		color: "error",
 		text: "formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
 	}
 };
@@ -28,7 +28,7 @@ const HomePage = () => {
 		text: ""
 	});
 
-	const [truckValues, setTruckValues] = useState({})
+	const [truckValues, setTruckValues] = useState({});
 
 	const handleOpenModal = (obj) => {
 		setDataModal({
@@ -40,35 +40,54 @@ const HomePage = () => {
 	};
 	const handleCloseModal = (e) => {
 		setIsOpenModal(false);
-		setTruckValues({})
+		setTruckValues({});
 	};
 	const handleCloseModalEsc = (event) => {
 		if (event.type === "keydown" && event.key === "Escape") {
 			setIsOpenModal(false);
-			setTruckValues({})
+			setTruckValues({});
 		}
 	};
 
-
-	const handleChangeTruck = e => {
-		if(typeof e.$L === 'string') {
-			console.log(typeof e.$d)
-			const newDate = new Date(e.$d)
+	const handleChangeTruck = (e) => {
+		if (typeof e.$L === "string") {
+			console.log(typeof e.$d);
+			const newDate = new Date(e.$d);
 			setTruckValues({ ...truckValues, data: newDate });
 		} else {
 			setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
 		}
 	};
 
-	useEffect(() => {
-		setTruckValues({ ...truckValues, data: new Date() });
-	},[])
+	const handleBlurTruck = (e) => {
+		const pesoBruto = truckValues["peso-bruto"];
+		const tara = truckValues["tara"];
+		if (["peso-bruto", "tara"].includes(e.target.name)) {
+			console.log(e.target.name, e.target.value);
+			if (pesoBruto > 0 && tara > 0) {
+				const liquido = pesoBruto - tara;
+				if (liquido < 0) {
+					setTruckValues({
+						...truckValues,
+						liquido: "Valor Negativo, verificar"
+					});
+					console.log("valor negativo");
+				} else {
+					setTruckValues({ ...truckValues, liquido: liquido });
+				}
+			} else {
+				setTruckValues({ ...truckValues, liquido: "" });
+			}
+		}
+	};
+
+	// console.log(truckValues)
 
 	return (
 		<Box
 			display="flex"
 			flexDirection="column"
-			gap="30px"
+			gap="20px"
 			sx={{
 				width: "100%",
 				height: "100%"
@@ -81,7 +100,9 @@ const HomePage = () => {
 				dataModal={dataModal}
 				handleCloseModalEsc={handleCloseModalEsc}
 				handleChangeTruck={handleChangeTruck}
+				handleBlurTruck={handleBlurTruck}
 				truckValues={truckValues}
+				setTruckValues={setTruckValues}
 			/>
 			<Box>
 				<CustomButton

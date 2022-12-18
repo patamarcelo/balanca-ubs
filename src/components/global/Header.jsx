@@ -51,7 +51,7 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 				>
 					<MenuIcon
 						sx={{
-							fontSize: "40px"
+							fontSize: "32px"
 						}}
 					/>
 				</Box>
@@ -66,9 +66,30 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
             boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
             }}
             >
-                <div>icone 1 </div>
-                <div>icone 2 </div>
-                <div>icone 3 </div>
+                <IconButton onClick={handlerLogout}>
+					<PowerSettingsNewOutlinedIcon
+						style={{
+							color: colors.redAccent[100],
+							fontSize: isNonMobile ? "30px" : "20px"
+						}}
+					/>
+				</IconButton>
+                <IconButton onClick={handlerLogout}>
+					<PowerSettingsNewOutlinedIcon
+						style={{
+							color: colors.redAccent[200],
+							fontSize: isNonMobile ? "30px" : "20px"
+						}}
+					/>
+				</IconButton>
+                <IconButton onClick={handlerLogout}>
+					<PowerSettingsNewOutlinedIcon
+						style={{
+							color: colors.redAccent[300],
+							fontSize: isNonMobile ? "30px" : "20px"
+						}}
+					/>
+				</IconButton>
                 <IconButton onClick={handlerLogout}>
 					<PowerSettingsNewOutlinedIcon
 						style={{

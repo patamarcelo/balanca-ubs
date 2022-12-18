@@ -1,7 +1,7 @@
 // TRUCK INPUT AND FORM
 export const TRUCK = [
 	{
-		label: "Bruto",
+		label: "Peso Bruto",
 		name: "peso-bruto",
 		placeholder: "Peso Bruto",
 		// required: true,
@@ -15,7 +15,7 @@ export const TRUCK = [
 		type: "text"
 	},
 	{
-		label: "Tara",
+		label: "Tara Veículo",
 		name: "tara",
 		placeholder: "Tara Veículo",
 		// required: true,
@@ -29,12 +29,12 @@ export const TRUCK = [
 		type: "text"
 	},
 	{
-		label: "Liquido",
+		label: "Peso Liquido",
 		name: "liquido",
 		placeholder: "Peso Liquido",
 		// required: true,
-		type: "number",
-		disabled: true,
+		type: "text",
+		disabled: true
 	}
 ];
 export const TRUCK_OBS = [

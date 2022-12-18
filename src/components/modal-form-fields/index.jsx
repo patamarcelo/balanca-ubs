@@ -9,12 +9,16 @@ import { useState, useEffect } from "react";
 import { TRUCK, TRUCK_OBS } from "../../store/reducer/reducer.initials";
 import { borderRadius } from "@mui/system";
 
-
 const ModalFormFields = (props) => {
-	const { handleChangeTruck, truckValues} = props
+	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
+		props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const [value, setValue] = useState(new Date());
+
+	useEffect(() => {
+		setTruckValues({ ...truckValues, data: new Date() });
+	}, []);
 
 	return (
 		<form>
@@ -24,14 +28,23 @@ const ModalFormFields = (props) => {
 				gridTemplateColumns="repeat(2, minmax(0, 1fr))"
 				sx={{
 					width: "100%",
-                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        color: `${colors.blueOrigin[100]} !important`,
-                        borderColor: `${colors.blueOrigin[500]} !important`,
-                        fontWeight: "bold"
-                    },
-                    "& .MuiInputLabel-outlined" : {
-                        color: `${colors.blueOrigin[100]} !important`,
-                    }
+					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+						color: `${colors.blueOrigin[100]} !important`,
+						borderColor: `${colors.blueOrigin[500]} !important`,
+						fontWeight: "bold"
+					},
+					"& .MuiInputLabel-outlined": {
+						color: `${colors.blueOrigin[100]} !important`
+					},
+					"& .MuiInputBase-formControl": {
+						backgroundColor: `${colors.brown[600]} !important`
+					},
+					"& .MuiInputBase-formControl.Mui-focused": {
+						backgroundColor: `${colors.brown[400]} !important`
+					},
+					"& .red-value": {
+						color: "red !important"
+					}
 				}}
 			>
 				<LocalizationProvider
@@ -44,7 +57,7 @@ const ModalFormFields = (props) => {
 					<DatePicker
 						label="Data"
 						onChange={(e) => handleChangeTruck(e)}
-						value={truckValues['data']}
+						value={truckValues["data"]}
 						renderInput={(params) => <TextField {...params} />}
 					/>
 				</LocalizationProvider>
@@ -55,12 +68,26 @@ const ModalFormFields = (props) => {
 							variant="outlined"
 							id={input.name}
 							type={input.type}
-							label={input.label}
-							// onBlur={formik.handleBlur}
+							label={input.disabled && truckValues[input.name] ? "" : input.label}
+							onBlur={handleBlurTruck}
 							onChange={(e) => handleChangeTruck(e)}
-							value={truckValues[input.name]}
+							value={
+								input.name === "liquido" &&
+								truckValues[input.name] > 0
+									? truckValues[input.name].toLocaleString(
+											"pt-BR"
+									  ) + " Kg"
+									: truckValues[input.name]
+							}
 							name={input.name}
-							disabled={input.disabled}
+							InputProps={{
+								readOnly: input.disabled,
+								className:
+									truckValues[input.name] ===
+									"Valor Negativo, verificar"
+										? "red-value"
+										: "no-value"
+							}}
 							inputProps={{
 								// maxLength: 13,
 								step: "1000"
@@ -74,11 +101,14 @@ const ModalFormFields = (props) => {
 					);
 				})}
 			</Box>
-			<Typography variant="h4" color={colors.blueOrigin[400]} mt="20px"
-            sx={{
-                fontStyle: 'italic'
-            }}
-            >
+			<Typography
+				variant="h4"
+				color={colors.blueOrigin[400]}
+				mt="20px"
+				sx={{
+					fontStyle: "italic"
+				}}
+			>
 				Observações
 			</Typography>
 			<Box
@@ -96,14 +126,20 @@ const ModalFormFields = (props) => {
 				gridTemplateColumns="repeat(2, minmax(0, 1fr))"
 				sx={{
 					width: "100%",
-                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        color: `${colors.blueOrigin[100]} !important`,
-                        borderColor: `${colors.blueOrigin[500]} !important`,
-                        fontWeight: "bold"
-                    },
-                    "& .MuiInputLabel-outlined" : {
-                        color: `${colors.blueOrigin[100]} !important`,
-                    }
+					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+						color: `${colors.blueOrigin[100]} !important`,
+						borderColor: `${colors.blueOrigin[500]} !important`,
+						fontWeight: "bold"
+					},
+					"& .MuiInputLabel-outlined": {
+						color: `${colors.blueOrigin[100]} !important`
+					},
+					"& .MuiInputBase-formControl": {
+						backgroundColor: `${colors.brown[600]} !important`
+					},
+					"& .MuiInputBase-formControl.Mui-focused": {
+						backgroundColor: `${colors.brown[400]} !important`
+					}
 				}}
 			>
 				{TRUCK_OBS.map((input, index) => {
