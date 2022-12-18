@@ -2,9 +2,36 @@ import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { query, orderBy, getDocs } from "firebase/firestore";
 import { TABLES_FIREBASE } from "./firebase.typestables";
+import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 
 // import { query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 // import { collection, addDoc, Timestamp } from "firebase/firestore";
+
+export const listenerTruckTable = async () => {
+	const unsub = onSnapshot(
+		doc(db, "cities", "tipo"),
+		{
+			includeMetadataChanges: true
+		},
+		(doc) => {
+			console.log(doc);
+		}
+	);
+	return unsub;
+};
+
+export const handleDeleteTruck = async (id) => {
+	if (window.confirm(`Deletar o Item: ${id}`)) {
+		const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
+		try {
+			console.log("deletando id: ", id);
+			await deleteDoc(taskDocRef);
+			console.log(`Deletado o ID: ${id} com sucesso`);
+		} catch (err) {
+			alert(err);
+		}
+	}
+};
 
 export const addTruckMove = async (
 	user,
@@ -56,13 +83,14 @@ export const addTruckMove = async (
 export const getTruckMoves = async () => {
 	const q = await query(
 		collection(db, TABLES_FIREBASE.truckmove),
-		orderBy("createdAt", "desc")
+		orderBy("createdAt")
 	);
 	const querySnapshot = await getDocs(q);
 	return querySnapshot.docs.map((docSnapshot) => {
+		console.log(docSnapshot.id);
 		return {
 			...docSnapshot.data(),
-			id: docSnapshot.data().id
+			id: docSnapshot.id
 		};
 	});
 };

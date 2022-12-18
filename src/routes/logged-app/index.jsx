@@ -5,6 +5,10 @@ import TempDrawer from '../../components/drawer'
 import { useState } from 'react'
 import Header from '../../components/global/Header'
 import HomePage from '../../pages/Home'
+import ReportPage from '../../pages/Report'
+
+
+import { Routes, Route } from "react-router-dom";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -46,7 +50,10 @@ const AuthApp = () => {
 					height: "100vh"
 				}}
 			>
-				<HomePage />
+				<Routes>
+						<Route path="/" element={<HomePage />} />
+						<Route path="/report" element={<ReportPage />} />
+				</Routes>
 			</Box>
 		</Box>
 	);

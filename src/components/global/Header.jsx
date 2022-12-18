@@ -1,25 +1,45 @@
 import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewOutlinedIcon from "@mui/icons-material/PowerSettingsNewOutlined";
 import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
-
 
 import { signOutUser } from "../../utils/firebase/firebase";
 import { useDispatch } from "react-redux";
 import { logOffUser } from "../../store/user/user.action";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faHouse,
+	faUser,
+	faChartSimple
+} from "@fortawesome/free-solid-svg-icons";
+import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 
-const Header = ({toggleDrawer, isdrawerOpen}) => {
+import { useNavigate } from "react-router-dom";
+
+import { useLocation } from "react-router-dom";
+
+const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-    const dispatch = useDispatch();
+	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
 
+	const location = useLocation();
 
-    const handlerLogout = () => {
+	const navigate = useNavigate();
+
+	const handlerNavHome = () => {
+		navigate("/");
+	};
+
+	const handlerReportNav = () => {
+		navigate("/report");
+	};
+
+	const handlerLogout = () => {
 		dispatch(logOffUser());
 		signOutUser();
 		console.log("log out");
@@ -33,72 +53,72 @@ const Header = ({toggleDrawer, isdrawerOpen}) => {
 			mt="20px"
 			width="100%"
 			mb="40px"
-			sx={{ 
-                padding: '0px 10px 0px 10px' 
-            }}
+			sx={{
+				padding: "0px 10px 0px 10px"
+			}}
 		>
 			<Box
-					display="flex"
-					justifyContent="center"
-					alignItems="center"
-					onClick={toggleDrawer}
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				onClick={toggleDrawer}
+				sx={{
+					cursor: "pointer",
+					width: "30px",
+					height: "30px",
+					marginRight: "20px"
+				}}
+			>
+				<MenuIcon
 					sx={{
-						cursor: "pointer",
-						width: "30px",
-						height: "30px",
-						marginRight: "20px",
+						fontSize: "32px"
 					}}
-				>
-					<MenuIcon
-						sx={{
-							fontSize: "32px"
-						}}
-					/>
-				</Box>
+				/>
+			</Box>
 			<Box
-            display="flex"
-            justifyContent="space-around"
-            alignItems="center"
-            sx={{
-            backgroundColor: colors.blueOrigin[800],
-            padding: '0px 10px 0px 20px',
-            borderRadius: '8px',
-            boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-            }}
-            >
-                <IconButton onClick={handlerLogout}>
-					<PowerSettingsNewOutlinedIcon
-						style={{
-							color: colors.redAccent[100],
-							fontSize: isNonMobile ? "30px" : "20px"
-						}}
+				display="flex"
+				justifyContent="space-around"
+				alignItems="center"
+				sx={{
+					backgroundColor: colors.blueOrigin[800],
+					padding: "0px 10px 0px 20px",
+					borderRadius: "8px",
+					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+				}}
+			>
+				{location.pathname.length > 1 && (
+					<IconButton onClick={handlerNavHome}>
+						<FontAwesomeIcon
+							icon={faHouse}
+							color={colors.yellow[500]}
+							size={isNonMobile ? "sm" : "xs"}
+						/>
+					</IconButton>
+				)}
+				{!location.pathname.includes("report") && (
+					<IconButton onClick={handlerReportNav}>
+						<FontAwesomeIcon
+							icon={faChartSimple}
+							color={colors.greenAccent[500]}
+							size={isNonMobile ? "sm" : "xs"}
+						/>
+					</IconButton>
+				)}
+				<IconButton onClick={() => console.log("user")}>
+					<FontAwesomeIcon
+						icon={faUser}
+						color={colors.blueOrigin[500]}
+						size={isNonMobile ? "sm" : "xs"}
 					/>
 				</IconButton>
-                <IconButton onClick={handlerLogout}>
-					<PowerSettingsNewOutlinedIcon
-						style={{
-							color: colors.redAccent[200],
-							fontSize: isNonMobile ? "30px" : "20px"
-						}}
+				<IconButton onClick={handlerLogout}>
+					<FontAwesomeIcon
+						icon={faPowerOff}
+						color={colors.redAccent[500]}
+						size={isNonMobile ? "sm" : "xs"}
 					/>
 				</IconButton>
-                <IconButton onClick={handlerLogout}>
-					<PowerSettingsNewOutlinedIcon
-						style={{
-							color: colors.redAccent[300],
-							fontSize: isNonMobile ? "30px" : "20px"
-						}}
-					/>
-				</IconButton>
-                <IconButton onClick={handlerLogout}>
-					<PowerSettingsNewOutlinedIcon
-						style={{
-							color: colors.redAccent[500],
-							fontSize: isNonMobile ? "30px" : "20px"
-						}}
-					/>
-				</IconButton>
-            </Box>
+			</Box>
 		</Box>
 	);
 };

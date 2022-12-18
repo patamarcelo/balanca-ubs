@@ -1,14 +1,14 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "dayjs/locale/pt-br";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
-import { TRUCK, TRUCK_OBS } from "../../store/reducer/reducer.initials";
+import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
 import { borderRadius } from "@mui/system";
-import { hanlderHelperText } from '../../utils/formHelper'
+import { hanlderHelperText } from '../../../utils/formHelper'
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =

@@ -12,7 +12,24 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse } from "@fortawesome/free-solid-svg-icons"
+import { faChartSimple } from "@fortawesome/free-solid-svg-icons"
+
+import { useNavigate } from "react-router-dom";
+
+const NAVIGATION = [
+	{title: 'Home', icon: faHouse, to: '/'},
+	{title: 'Report', icon: faChartSimple , to: '/report'},
+]
+
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
+	const navigate = useNavigate();
+
+	const handlerNvaigate = (to) => {
+		navigate(to)
+	}
+
 	const list = (anchor) => (
 		<Box
 			sx={{
@@ -28,29 +45,28 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 		>
 			<Box
 				sx={{
-					width: "100%"
+					width: "100%",
 				}}
 			>
 				<List>
-					{["Inbox", "Starred", "Send email", "Drafts"].map(
-						(text, index) => (
-							<ListItem key={text} disablePadding>
-								<ListItemButton>
+					{NAVIGATION.map(
+						(data, index) => (
+							<ListItem key={index} disablePadding
+							onClick={() => handlerNvaigate(data.to)}
+							>
+								<ListItemButton
+								>
 									<ListItemIcon>
-										{index % 2 === 0 ? (
-											<InboxIcon />
-										) : (
-											<MailIcon />
-										)}
+										<FontAwesomeIcon icon={data.icon} />
 									</ListItemIcon>
-									<ListItemText primary={text} />
+									<ListItemText primary={data.title} />
 								</ListItemButton>
 							</ListItem>
 						)
 					)}
 				</List>
 				<Divider />
-				<List>
+				{/* <List>
 					{["All mail", "Trash", "Spam"].map((text, index) => (
 						<ListItem key={text} disablePadding>
 							<ListItemButton>
@@ -65,7 +81,7 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 							</ListItemButton>
 						</ListItem>
 					))}
-				</List>
+				</List> */}
 			</Box>
 			<Box
 				display="flex"

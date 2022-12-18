@@ -3,12 +3,12 @@ import { tokens } from "../../theme";
 import CustomButton from "../../components/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
-import HomeTable from "../../components/home-table";
+import HomeTable from "../../components/home-itens/home-table";
 import { useState, useEffect } from "react";
 
-import FormDialog from "../../components/modal-form-truck";
+import FormDialog from "../../components/home-itens/modal-form-truck";
 
-import {TRUCK_INITIAL_STATE} from '../../store/reducer/reducer.initials'
+import {TRUCK_INITIAL_STATE} from '../../store/trucks/reducer.initials'
 
 const dataModalText = {
 	carregando: {
@@ -26,10 +26,15 @@ const HomePage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [isOpenModal, setIsOpenModal] = useState(false);
+
 	const [dataModal, setDataModal] = useState({
 		title: "",
 		text: ""
 	});
+
+	const [saved, handlerSave] = useState(0)
+
+
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
@@ -64,9 +69,9 @@ const HomePage = () => {
 	};
 
 	const handleBlurTruck = (e) => {
-		const pesoBruto = truckValues["peso-bruto"];
+		const pesoBruto = truckValues["pesoBruto"];
 		const tara = truckValues["tara"];
-		if (["peso-bruto", "tara"].includes(e.target.name)) {
+		if (["pesoBruto", "tara"].includes(e.target.name)) {
 			console.log(e.target.name, e.target.value);
 			if (pesoBruto > 0 && tara > 0) {
 				const liquido = pesoBruto - tara;
@@ -107,6 +112,8 @@ const HomePage = () => {
 				handleBlurTruck={handleBlurTruck}
 				truckValues={truckValues}
 				setTruckValues={setTruckValues}
+				handlerSave={handlerSave}
+				saved={saved}
 			/>
 			<Box>
 				<CustomButton
@@ -132,14 +139,18 @@ const HomePage = () => {
 			</Box>
 			<Box
 				width="100%"
-				height="70%"
+				height="80%"
 				sx={{
-					backgroundColor: colors.blueOrigin[800],
+					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
-					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
+					overflow: 'auto',
+					overflowX: 'hidden',
+					position: 'relative',
+					border: `0.1px solid ${colors.primary[100]}`,
 				}}
 			>
-				<HomeTable />
+				<HomeTable saved={saved}/>
 			</Box>
 		</Box>
 	);

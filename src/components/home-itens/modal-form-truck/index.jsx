@@ -8,12 +8,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ModalFormFields from "../modal-form-fields";
 import Chip from "@mui/material/Chip";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 
-import { addTruckMove } from "../../utils/firebase/firebase.datatable";
+import { addTruckMove } from "../../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../store/user/user.selector";
+import { selectCurrentUser } from "../../../store/user/user.selector";
 
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
@@ -28,7 +28,9 @@ export default function FormDialog(props) {
 		handleChangeTruck,
 		truckValues,
 		handleBlurTruck,
-		setTruckValues
+		setTruckValues,
+		saved,
+		handlerSave
 	} = props;
 
 	const handleSaveData = async () => {
@@ -69,6 +71,7 @@ export default function FormDialog(props) {
 			);
 			if (newTrans) {
 				handleCloseModal();
+				handlerSave(saved + 1)
 			}
 		} catch (error) {
 			console.log("erro ao salvar a transação");
