@@ -1,5 +1,10 @@
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
+export const selectTruckLoadsOnWork = (state) => {
+	const dataLoad = state.truckLoads.truckLoads;
+	return dataLoad.filter((data) => data.pesoBruto === "" || data.tara === "");
+};
+
 const formatDate = (entrada) => {
 	if (entrada) {
 		const newDate = new Date(
@@ -34,14 +39,18 @@ export const selectTruckLoadsFormatData = (state) => {
 
 export const selectTrucksCarregando = (state) => {
 	const dataLoad = state.truckLoads.truckLoads.filter(
-		(data) => data.tipo === "carregando"
+		(data) =>
+			data.tipo === "carregando" &&
+			(data.pesoBruto === "" || data.tara === "")
 	);
 	return Object.keys(dataLoad).length;
 };
 
 export const selectTrucksDescarregando = (state) => {
 	const dataLoad = state.truckLoads.truckLoads.filter(
-		(data) => data.tipo === "descarregando"
+		(data) =>
+			data.tipo === "descarregando" &&
+			(data.pesoBruto === "" || data.tara === "")
 	);
 	return Object.keys(dataLoad).length;
 };

@@ -17,7 +17,10 @@ import FormDialog from "../../../components/home-itens/modal-form-truck";
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
 import { useSelector } from "react-redux";
-import { selectTruckLoads } from "../../../store/trucks/trucks.selector";
+import {
+	selectTruckLoads,
+	selectTruckLoadsOnWork
+} from "../../../store/trucks/trucks.selector";
 
 const editarModal = {
 	title: "Editar Carga",
@@ -29,7 +32,7 @@ const HomeTableTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const table = useSelector(selectTruckLoads);
+	const table = useSelector(selectTruckLoadsOnWork);
 	const {
 		saved,
 		handlerSave,
@@ -120,7 +123,9 @@ const HomeTableTruck = (props) => {
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton
 								aria-label="edit"
-								onClick={() => handleOpenModal(editarModal, data)}
+								onClick={() =>
+									handleOpenModal(editarModal, data)
+								}
 							>
 								<FontAwesomeIcon
 									icon={faPenToSquare}
