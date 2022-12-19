@@ -13,24 +13,7 @@ const PrintPage = () => {
 
 	const { data } = state;
 	console.log("Data from Print Page: ", data);
-	return (
-		<Box
-			display="flex"
-			justifyContent="center"
-			flexDirection="column"
-			alignItems="center"
-			sx={{
-				width: "100%",
-				height: "100%"
-			}}
-		>
-			{/* <Typography variant="text" color={colors.blueAccent[700]}>
-				Página de Impressão
-			</Typography> */}
-
-			<PrintLayout />
-		</Box>
-	);
+	return <PrintLayout data={data} />;
 };
 
 export default PrintPage;

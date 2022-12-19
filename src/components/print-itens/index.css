@@ -9,8 +9,6 @@
     }
 
     #printablediv {
-        position: absolute;
-        display: flex;
         justify-content: center;
         align-items: start;
         box-shadow: none !important;

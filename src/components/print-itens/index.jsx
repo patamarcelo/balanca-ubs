@@ -2,9 +2,11 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import './index.css'
+import "./index.css";
 
-const PrintLayout = () => {
+import PageData from "./page-data";
+
+const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -13,40 +15,65 @@ const PrintLayout = () => {
 		window.print();
 	};
 	return (
-		<>
-			<Box
-			sx={{ 
-				cursor: "pointer",
-				marginBottom: '10px'
-			}}
+		<Box
+			width="100%"
+			height="1000px"
 			display="flex"
-			width="70%"
-			justifyContent="end"
+			flexDirection="column"
+			justifyContent="center"
+			p="40px"
+			sx={{
+				margin: "0 auto !important",
+				" body": {
+					backgroundCOlor: "white !important"
+				}
+			}}
+		>
+			<Box
+				sx={{
+					cursor: "pointer",
+					marginBottom: "10px"
+				}}
+				display="flex"
+				width="70%"
+				justifyContent="end"
 			>
 				<FontAwesomeIcon
 					onClick={print}
-					color={colors.grey[200]}
+					color={colors.grey[900]}
 					icon={faPrint}
 					size="xl"
 				/>
 			</Box>
 			<Box
 				display="flex"
-				justifyContent="center"
-				alignItems="center"
-				id="printablediv"
+				flexDirection="column"
+				justifyContent="start"
+				alignItems="start"
+				// id="printablediv"
 				sx={{
 					width: "70%",
-					height: "70%",
-					backgroundColor: "whitesmoke",
+					height: "100%",
+					// backgroundColor: "whitesmoke",
+					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
 				}}
 			>
-				<Typography variant="h3" color={colors.primary[900]}>
-					teste pagina
-				</Typography>
+				<PageData data={data} />
+				<Box
+					sx={{
+						backgroundColor: colors.primary[900],
+						width: "92%",
+						height: "1px",
+						margin: "0 auto",
+						marginTop: "40px"
+					}}
+				>
+					m
+				</Box>
+				<PageData data={data} />
 			</Box>
-		</>
+		</Box>
 	);
 };
 
