@@ -6,6 +6,7 @@ import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ReportTable = (props) => {
 	const theme = useTheme();
@@ -13,11 +14,10 @@ const ReportTable = (props) => {
 	const navigate = useNavigate();
 
 	const handlerNavigatePrint = (data) => {
-		navigate("/print",{state : { data: data }});
+		navigate("/print", { state: { data: data } });
 	};
 
-	const { dataTable } = props;
-
+	const { dataTable, isLoading } = props;
 
 	const formatPlate = (placa) => {
 		return (
@@ -187,6 +187,31 @@ const ReportTable = (props) => {
 			)
 		}
 	];
+
+	if (isLoading) {
+		return (
+			<Box
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				width="100%"
+				height="100%"
+				sx={{
+					backgroundColor: colors.blueOrigin[700],
+					borderRadius: "8px",
+					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+				}}
+			>
+				<Typography
+					variant="h2"
+					color={colors.yellow[700]}
+					sx={{ fontWeight: "bold" }}
+				>
+					<CircularProgress sx={{ color: colors.primary[100] }} />
+				</Typography>
+			</Box>
+		);
+	}
 	return (
 		<Box
 			sx={{

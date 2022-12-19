@@ -40,7 +40,7 @@ const HomePage = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoadingHome, setIsLoading] = useState(true);
 
 	const totalCarregando = useSelector(selectTrucksCarregando);
 	const totalDescarregando = useSelector(selectTrucksDescarregando);
@@ -58,18 +58,14 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const getData = async () => {
+			console.log("pegando os dados da Home");
 			setIsLoading(true);
 			const data = await getTruckMoves();
 			console.log("from d: ", data);
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};
-		if (table.length === 0) {
-			console.log("pegando os dados da Home");
-			getData();
-			setIsLoading(false);
-		}
-		setIsLoading(false);
+		getData();
 	}, []);
 
 	const handleOpenModal = async (obj, data) => {
@@ -206,6 +202,7 @@ const HomePage = () => {
 					truckValues={truckValues}
 					setTruckValues={setTruckValues}
 					handleOpenModal={handleOpenModal}
+					isLoadingHome={isLoadingHome}
 				/>
 			</Box>
 		</Box>

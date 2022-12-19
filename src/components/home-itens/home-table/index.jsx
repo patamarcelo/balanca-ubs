@@ -21,7 +21,8 @@ const HomeTable = (props) => {
 		handleBlurTruck,
 		truckValues,
 		setTruckValues,
-		handleOpenModal
+		handleOpenModal,
+		isLoadingHome
 	} = props;
 
 	const theme = useTheme();
@@ -37,7 +38,6 @@ const HomeTable = (props) => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
 			console.log("pegando os dados da outra pagina");
-			console.log("data, kk: ", data);
 			setTable(data);
 			if (data.length === 0) {
 				setShowAd(true);
@@ -52,7 +52,7 @@ const HomeTable = (props) => {
 	// 	listenerTruckTable()
 	// },)
 
-	if (isLoading) {
+	if (isLoading || isLoadingHome) {
 		return (
 			<Box
 				display="flex"

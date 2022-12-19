@@ -6,6 +6,10 @@ import {
 } from "../../store/trucks/trucks.selector";
 import { useSelector } from "react-redux";
 import ReportTable from "../../components/report-itens/report-table";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
+import { setTruckLoads } from "../../store/trucks/trucks.actions";
 
 const ReportPage = () => {
 	const theme = useTheme();
@@ -13,14 +17,32 @@ const ReportPage = () => {
 	const dataTable = useSelector(selectTruckLoads);
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
 
-	console.log("formatData : ", dataTableForm);
+	const dispatch = useDispatch();
+	const [isLoading, setIsLoading] = useState(false);
 
-	console.log("Datatable from report: ", dataTable);
+	console.log("dataTable: ", dataTable.lenght);
+	useEffect(() => {
+		const getData = async () => {
+			console.log(
+				"pegando os dados do report",
+				dataTable.lenght,
+				dataTable
+			);
+			setIsLoading(true);
+			const data = await getTruckMoves();
+			console.log("from d: ", data);
+			dispatch(setTruckLoads(data));
+			setIsLoading(false);
+		};
+		if (dataTable.lenght === undefined) {
+			getData();
+		}
+	}, []);
 
 	return (
 		<Box
 			width="100%"
-			height="80%"
+			height="92%"
 			sx={{
 				padding: ""
 			}}
@@ -28,7 +50,7 @@ const ReportPage = () => {
 			<Typography variant="h3" color={colors.blueAccent[600]} p="2px">
 				Relatório
 			</Typography>
-			<ReportTable dataTable={dataTableForm} />
+			<ReportTable dataTable={dataTableForm} isLoading={isLoading} />
 		</Box>
 	);
 };

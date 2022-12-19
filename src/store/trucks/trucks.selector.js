@@ -27,7 +27,6 @@ export const selectTruckLoadsFormatData = (state) => {
 	const fd = dataLoad.map((data) => {
 		const formatData = formatDate(data.entrada);
 		const formatDataSaida = formatDate(data.saida);
-		console.log(formatData);
 		return {
 			...data,
 			entrada: formatData,
