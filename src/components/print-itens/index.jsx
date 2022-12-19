@@ -21,7 +21,8 @@ const PrintLayout = ({ data }) => {
 			display="flex"
 			flexDirection="column"
 			justifyContent="center"
-			p="40px"
+			p="5px 40px 40px 40px"
+			mt="-50px"
 			sx={{
 				margin: "0 auto !important",
 				" body": {
@@ -31,11 +32,10 @@ const PrintLayout = ({ data }) => {
 		>
 			<Box
 				sx={{
-					cursor: "pointer",
 					marginBottom: "10px"
 				}}
 				display="flex"
-				width="70%"
+				width="90%"
 				justifyContent="end"
 			>
 				<FontAwesomeIcon
@@ -43,6 +43,7 @@ const PrintLayout = ({ data }) => {
 					color={colors.grey[900]}
 					icon={faPrint}
 					size="xl"
+					style={{ cursor: "pointer" }}
 				/>
 			</Box>
 			<Box
