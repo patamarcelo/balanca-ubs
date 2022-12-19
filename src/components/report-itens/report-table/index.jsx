@@ -18,22 +18,6 @@ const ReportTable = (props) => {
 
 	const { dataTable } = props;
 
-	const formatDate = (entrada) => {
-		if (entrada) {
-			const newDate = new Date(
-				entrada.seconds * 1000 + entrada.nanoseconds / 1000000
-			);
-
-			const date = newDate.toISOString().split("T")[0];
-			const atTime = newDate.toLocaleTimeString().slice(0, 5);
-			const [year, month, day] = date.split("-");
-			const formatDate = [day, month, year].join("/");
-			const dateF = `${formatDate} - ${atTime}`;
-			return dateF.toLocaleString('pt-BR');
-		}
-
-		return "-";
-	};
 
 	const formatPlate = (placa) => {
 		return (
@@ -89,7 +73,7 @@ const ReportTable = (props) => {
 			align: "center",
 			renderCell: (params) => (
 				<Typography color={colors.greenAccent[400]}>
-					{formatDate(params.row.entrada)}
+					{params.row.entrada}
 				</Typography>
 			)
 		},
@@ -141,7 +125,7 @@ const ReportTable = (props) => {
 			align: "center",
 			renderCell: (params) => (
 				<Typography color={colors.blueOrigin[400]}>
-					{formatDate(params.row.saida)}
+					{params.row.saida}
 				</Typography>
 			)
 		},

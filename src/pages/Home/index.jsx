@@ -14,16 +14,24 @@ import { useDispatch } from "react-redux";
 import { setTruckLoads } from "../../store/trucks/trucks.actions";
 import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
 
+import { useSelector } from "react-redux";
+import {
+	selectTrucksCarregando,
+	selectTrucksDescarregando
+} from "../../store/trucks/trucks.selector";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
 		color: "success",
-		text: "formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
+		text:
+			"formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
 	},
 	descarregando: {
 		title: "Descarregando",
 		color: "error",
-		text: "formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
+		text:
+			"formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
 	}
 };
 
@@ -36,6 +44,9 @@ const HomePage = () => {
 	const [table, setTable] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
+	const totalCarregando = useSelector(selectTrucksCarregando);
+	const totalDescarregando = useSelector(selectTrucksDescarregando);
+
 	const [dataModal, setDataModal] = useState({
 		title: "",
 		text: ""
@@ -45,7 +56,6 @@ const HomePage = () => {
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
-	
 	useEffect(() => {
 		const getData = async () => {
 			setIsLoading(true);
@@ -79,18 +89,18 @@ const HomePage = () => {
 			setIsOpenModal(true);
 		}
 	};
-	const handleCloseModal = (e) => {
+	const handleCloseModal = e => {
 		setTruckValues(TRUCK_INITIAL_STATE);
 		setIsOpenModal(false);
 	};
-	const handleCloseModalEsc = (event) => {
+	const handleCloseModalEsc = event => {
 		if (event.type === "keydown" && event.key === "Escape") {
 			setIsOpenModal(false);
 			setTruckValues(TRUCK_INITIAL_STATE);
 		}
 	};
 
-	const handleChangeTruck = (e) => {
+	const handleChangeTruck = e => {
 		if (typeof e.$L === "string") {
 			console.log(typeof e.$d);
 			const newDate = new Date(e.$d);
@@ -100,7 +110,7 @@ const HomePage = () => {
 		}
 	};
 
-	const handleBlurTruck = (e) => {
+	const handleBlurTruck = e => {
 		const pesoBruto = truckValues["pesoBruto"];
 		const tara = truckValues["tara"];
 		if (["pesoBruto", "tara"].includes(e.target.name)) {
@@ -149,22 +159,20 @@ const HomePage = () => {
 			/>
 			<Box>
 				<CustomButton
-					title="Carregando"
+					title={`Carregando: ${totalCarregando}`}
 					color={colors.greenAccent[600]}
 					handleOpenModal={() =>
-						handleOpenModal(dataModalText.carregando)
-					}
+						handleOpenModal(dataModalText.carregando)}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
 
 				<CustomButton
-					title="Descarregando"
+					title={`Descarregando: ${totalDescarregando}`}
 					color={colors.redAccent[600]}
 					ml={20}
 					handleOpenModal={() =>
-						handleOpenModal(dataModalText.descarregando)
-					}
+						handleOpenModal(dataModalText.descarregando)}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
