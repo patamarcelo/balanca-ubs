@@ -56,19 +56,20 @@ const HomePage = () => {
 
 	const table = useSelector(selectTruckLoadsOnWork);
 
-	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
-			dispatch(setTruckLoads(data));
-			setIsLoading(false);
-		};
-		if (table.length === 0) {
-			console.log("pegando os dados da Home");
-			return () => getData();
-		}
-		setIsLoading(false);
-	}, []);
+	// useEffect(() => {
+	// 		const getData = async () => {
+	// 		setIsLoading(true);
+	// 		const data = await getTruckMoves();
+	// 		console.log("from d: ", data);
+	// 		dispatch(setTruckLoads(data));
+	// 		setIsLoading(false);
+	// 	};
+	// 	if (table.length === 0) {
+	// 		console.log("pegando os dados da Home");
+	// 		getData();
+	// 	}
+	// 	setIsLoading(false);
+	// }, []);
 
 	const handleOpenModal = async (obj, data) => {
 		if (obj.title === "Editar Carga") {

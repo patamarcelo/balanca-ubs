@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import HomeTableTruck from "../home-table-truck";
 const HomeTable = (props) => {
-	const { 
+	const {
 		saved,
 		handlerSave,
 		isOpenModal,
@@ -22,7 +22,7 @@ const HomeTable = (props) => {
 		truckValues,
 		setTruckValues,
 		handleOpenModal
-	 } = props;
+	} = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -35,7 +35,7 @@ const HomeTable = (props) => {
 		const getData = async () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			console.log("pegando os dados");
+			console.log("pegando os dados da outra pagina");
 			setIsLoading(false);
 			setTable(data);
 			dispatch(setTruckLoads(data));
