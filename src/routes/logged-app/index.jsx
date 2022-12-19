@@ -1,11 +1,12 @@
 import "./logged-app.css";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import TempDrawer from '../../components/drawer'
 import { useState } from 'react'
 import Header from '../../components/global/Header'
 import HomePage from '../../pages/Home'
 import ReportPage from '../../pages/Report'
+import PrintPage from '../../pages/Print'
 
 
 import { Routes, Route } from "react-router-dom";
@@ -53,6 +54,7 @@ const AuthApp = () => {
 				<Routes>
 						<Route path="/" element={<HomePage />} />
 						<Route path="/report" element={<ReportPage />} />
+						<Route path="/print" element={<PrintPage />} />
 				</Routes>
 			</Box>
 		</Box>

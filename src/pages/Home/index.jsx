@@ -10,6 +10,10 @@ import FormDialog from "../../components/home-itens/modal-form-truck";
 
 import { TRUCK_INITIAL_STATE } from "../../store/trucks/reducer.initials";
 
+import { useDispatch } from "react-redux";
+import { setTruckLoads } from "../../store/trucks/trucks.actions";
+import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -22,10 +26,15 @@ const dataModalText = {
 		text: "formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
 	}
 };
+
 const HomePage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [isOpenModal, setIsOpenModal] = useState(false);
+
+	const dispatch = useDispatch();
+	const [table, setTable] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [dataModal, setDataModal] = useState({
 		title: "",
@@ -35,6 +44,21 @@ const HomePage = () => {
 	const [saved, handlerSave] = useState(0);
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
+
+	
+	useEffect(() => {
+		const getData = async () => {
+			setIsLoading(true);
+			const data = await getTruckMoves();
+			setIsLoading(false);
+			setTable(data);
+			dispatch(setTruckLoads(data));
+		};
+		if (table.length === 0) {
+			console.log("pegando os dados");
+			return () => getData();
+		}
+	}, []);
 
 	const handleOpenModal = async (obj, data) => {
 		if (obj.title === "Editar Carga") {

@@ -35,20 +35,6 @@ const HomeTable = (props) => {
 		const getData = async () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			setIsLoading(false);
-			setTable(data);
-			dispatch(setTruckLoads(data));
-		};
-		if (table.length === 0) {
-			console.log("pegando os dados");
-			return () => getData();
-		}
-	}, []);
-
-	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
 			console.log("pegando os dados");
 			setIsLoading(false);
 			setTable(data);

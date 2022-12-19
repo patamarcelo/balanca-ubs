@@ -7,19 +7,6 @@ import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 // import { query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 // import { collection, addDoc, Timestamp } from "firebase/firestore";
 
-export const listenerTruckTable = async () => {
-	const unsub = onSnapshot(
-		doc(db, "cities", "tipo"),
-		{
-			includeMetadataChanges: true
-		},
-		(doc) => {
-			console.log(doc);
-		}
-	);
-	return unsub;
-};
-
 export const handleUpdateTruck = async (e, id, data) => {
 	e.preventDefault();
 	const saida = new Date();
@@ -111,7 +98,6 @@ export const getTruckMoves = async () => {
 	);
 	const querySnapshot = await getDocs(q);
 	return querySnapshot.docs.map((docSnapshot) => {
-		console.log(docSnapshot.id);
 		return {
 			...docSnapshot.data(),
 			id: docSnapshot.id
