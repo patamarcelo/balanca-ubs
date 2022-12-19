@@ -1,24 +1,28 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-// import { faPrint } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../../utils/assets/img/logo.jpg";
-
-import { Divider } from "@mui/material";
 
 const PageData = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
+	const formatPlate = (placa) => {
+		return (
+			placa?.toUpperCase().slice(0, 3) +
+			"-" +
+			placa?.toUpperCase().slice(-4)
+		);
+	};
+
 	const dictData = [
 		{ label: "Data", value: data.entrada },
 		{ label: "Cultura", value: data.cultura },
-		{ label: "Placa", value: data.placa }
+		{ label: "Placa", value: formatPlate(data.placa) }
 	];
 	const dictDataR = [
-		{ label: "Bruto", value: data.pesoBruto },
-		{ label: "Tara", value: data.tara },
-		{ label: "Líquido", value: data.liquido }
+		{ label: "Peso Bruto", value: data.pesoBruto },
+		{ label: "Tara Veículo", value: data.tara },
+		{ label: "Peso Líquido", value: data.liquido }
 	];
 
 	return (
