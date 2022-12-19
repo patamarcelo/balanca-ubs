@@ -21,6 +21,7 @@ const PrintLayout = ({ data }) => {
 			display="flex"
 			flexDirection="column"
 			justifyContent="center"
+			alignItems="center"
 			p="5px 40px 40px 40px"
 			mt="-50px"
 			sx={{
@@ -36,7 +37,7 @@ const PrintLayout = ({ data }) => {
 				}}
 				display="flex"
 				width="90%"
-				justifyContent="end"
+				justifyContent="center"
 			>
 				<FontAwesomeIcon
 					onClick={print}
