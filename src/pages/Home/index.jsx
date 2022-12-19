@@ -59,8 +59,8 @@ const HomePage = () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
 			setTable(data);
-			setIsLoading(false);
 			dispatch(setTruckLoads(data));
+			setIsLoading(false);
 		};
 		if (table.length === 0) {
 			console.log("pegando os dados");
