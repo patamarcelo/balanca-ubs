@@ -1,0 +1,19 @@
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printablediv,
+    #printablediv * {
+        visibility: visible;
+    }
+
+    #printablediv {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        box-shadow: none !important;
+        background-color: transparent !important
+    }
+}
