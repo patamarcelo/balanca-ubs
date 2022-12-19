@@ -24,14 +24,12 @@ const dataModalText = {
 	carregando: {
 		title: "Carregando",
 		color: "success",
-		text:
-			"formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
+		text: "formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
 	},
 	descarregando: {
 		title: "Descarregando",
 		color: "error",
-		text:
-			"formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
+		text: "formulário do descarregamento formulário do descarregamento formulário do descarregamento formulário do descarregamento"
 	}
 };
 
@@ -68,6 +66,7 @@ const HomePage = () => {
 			console.log("pegando os dados");
 			return () => getData();
 		}
+		setIsLoading(false);
 	}, []);
 
 	const handleOpenModal = async (obj, data) => {
@@ -89,18 +88,18 @@ const HomePage = () => {
 			setIsOpenModal(true);
 		}
 	};
-	const handleCloseModal = e => {
+	const handleCloseModal = (e) => {
 		setTruckValues(TRUCK_INITIAL_STATE);
 		setIsOpenModal(false);
 	};
-	const handleCloseModalEsc = event => {
+	const handleCloseModalEsc = (event) => {
 		if (event.type === "keydown" && event.key === "Escape") {
 			setIsOpenModal(false);
 			setTruckValues(TRUCK_INITIAL_STATE);
 		}
 	};
 
-	const handleChangeTruck = e => {
+	const handleChangeTruck = (e) => {
 		if (typeof e.$L === "string") {
 			console.log(typeof e.$d);
 			const newDate = new Date(e.$d);
@@ -110,7 +109,7 @@ const HomePage = () => {
 		}
 	};
 
-	const handleBlurTruck = e => {
+	const handleBlurTruck = (e) => {
 		const pesoBruto = truckValues["pesoBruto"];
 		const tara = truckValues["tara"];
 		if (["pesoBruto", "tara"].includes(e.target.name)) {
@@ -162,7 +161,8 @@ const HomePage = () => {
 					title={`Carregando: ${totalCarregando}`}
 					color={colors.greenAccent[600]}
 					handleOpenModal={() =>
-						handleOpenModal(dataModalText.carregando)}
+						handleOpenModal(dataModalText.carregando)
+					}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
@@ -172,7 +172,8 @@ const HomePage = () => {
 					color={colors.redAccent[600]}
 					ml={20}
 					handleOpenModal={() =>
-						handleOpenModal(dataModalText.descarregando)}
+						handleOpenModal(dataModalText.descarregando)
+					}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
