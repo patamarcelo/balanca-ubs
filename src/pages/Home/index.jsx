@@ -58,15 +58,14 @@ const HomePage = () => {
 		const getData = async () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			setIsLoading(false);
 			setTable(data);
+			setIsLoading(false);
 			dispatch(setTruckLoads(data));
 		};
 		if (table.length === 0) {
 			console.log("pegando os dados");
 			return () => getData();
 		}
-		setIsLoading(false);
 	}, []);
 
 	const handleOpenModal = async (obj, data) => {
