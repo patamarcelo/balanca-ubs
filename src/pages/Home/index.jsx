@@ -17,7 +17,8 @@ import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
 import {
 	selectTrucksCarregando,
-	selectTrucksDescarregando
+	selectTrucksDescarregando,
+	selectTruckLoadsOnWork
 } from "../../store/trucks/trucks.selector";
 
 const dataModalText = {
@@ -39,7 +40,6 @@ const HomePage = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const [table, setTable] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const totalCarregando = useSelector(selectTrucksCarregando);
@@ -54,11 +54,12 @@ const HomePage = () => {
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
+	const table = useSelector(selectTruckLoadsOnWork);
+
 	useEffect(() => {
 		const getData = async () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			setTable(data);
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};
@@ -66,6 +67,7 @@ const HomePage = () => {
 			console.log("pegando os dados da Home");
 			return () => getData();
 		}
+		setIsLoading(false);
 	}, []);
 
 	const handleOpenModal = async (obj, data) => {
