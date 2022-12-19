@@ -63,7 +63,7 @@ const HomePage = () => {
 			setIsLoading(false);
 		};
 		if (table.length === 0) {
-			console.log("pegando os dados");
+			console.log("pegando os dados da Home");
 			return () => getData();
 		}
 	}, []);
