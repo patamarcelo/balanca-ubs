@@ -40,7 +40,7 @@ const HomePage = () => {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const totalCarregando = useSelector(selectTrucksCarregando);
 	const totalDescarregando = useSelector(selectTrucksDescarregando);
@@ -56,20 +56,17 @@ const HomePage = () => {
 
 	const table = useSelector(selectTruckLoadsOnWork);
 
-	// useEffect(() => {
-	// 		const getData = async () => {
-	// 		setIsLoading(true);
-	// 		const data = await getTruckMoves();
-	// 		console.log("from d: ", data);
-	// 		dispatch(setTruckLoads(data));
-	// 		setIsLoading(false);
-	// 	};
-	// 	if (table.length === 0) {
-	// 		console.log("pegando os dados da Home");
-	// 		getData();
-	// 	}
-	// 	setIsLoading(false);
-	// }, []);
+	useEffect(() => {
+		const getData = async () => {
+			const data = await getTruckMoves();
+			console.log("from d: ", data);
+			dispatch(setTruckLoads(data));
+		};
+		if (table.length === 0) {
+			console.log("pegando os dados da Home");
+			getData();
+		}
+	}, []);
 
 	const handleOpenModal = async (obj, data) => {
 		if (obj.title === "Editar Carga") {

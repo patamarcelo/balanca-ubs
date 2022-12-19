@@ -27,7 +27,8 @@ const HomeTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [table, setTable] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
+	const [showAd, setShowAd] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -36,9 +37,13 @@ const HomeTable = (props) => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
 			console.log("pegando os dados da outra pagina");
-			setIsLoading(false);
+			console.log("data, kk: ", data);
 			setTable(data);
+			if (data.length === 0) {
+				setShowAd(true);
+			}
 			dispatch(setTruckLoads(data));
+			setIsLoading(false);
 		};
 		return () => getData();
 	}, [saved]);
@@ -72,7 +77,7 @@ const HomeTable = (props) => {
 		);
 	}
 
-	if (table.length === 0) {
+	if (table.length === 0 && showAd) {
 		return (
 			<Box
 				display="flex"
