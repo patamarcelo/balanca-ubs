@@ -1,10 +1,18 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Logo from "../../utils/assets/img/logo.jpg";
+import { useSelector } from "react-redux";
+import {
+	selectCurrentUser,
+	selectIBalancaUser
+} from "../../store/user/user.selector";
 
 const PageData = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const user = useSelector(selectCurrentUser);
+	const isBalanca = useSelector(selectIBalancaUser);
+	console.log("is Balanca: ", isBalanca);
 
 	const formatPlate = (placa) => {
 		return (
@@ -187,7 +195,7 @@ const PageData = ({ data }) => {
 							color={colors.grey[800]}
 							fontWeight="bold"
 						>
-							{data.user}
+							{user?.displayName}
 						</Typography>
 					</Box>
 				</Box>

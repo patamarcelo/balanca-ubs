@@ -1,11 +1,12 @@
 import { USER_ACTIONS_TYPES } from "./user.types";
-import { setIsAdminUserReducer } from "./user.action";
+import { setIsAdminUserReducer, setIsBalancaUserReducer } from "./user.action";
 
 export const INITIAL_STATE = {
 	currentUser: null,
 	isAuth: false,
 	isAdmin: false,
-	asaasToken: '$' + process.env.REACT_APP_ASAAS_TOKEN + '=='
+	isBalanca: false,
+	asaasToken: "$" + process.env.REACT_APP_ASAAS_TOKEN + "=="
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
@@ -15,10 +16,12 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 	switch (type) {
 		case USER_ACTIONS_TYPES.SET_CURRENT_USER:
 			const isAdminUser = setIsAdminUserReducer(payload);
+			const isBalanca = setIsBalancaUserReducer(payload);
 			return {
 				...state,
 				currentUser: payload,
-				isAdmin: isAdminUser
+				isAdmin: isAdminUser,
+				isBalanca: isBalanca
 			};
 		case USER_ACTIONS_TYPES.SET_AUTH_USER:
 			return {

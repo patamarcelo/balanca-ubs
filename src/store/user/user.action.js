@@ -18,6 +18,23 @@ export const setIsAdminUser = (user) => {
 	);
 	return createAction(USER_ACTIONS_TYPES.SET_ADMIN_USER, boolean);
 };
+export const setIsBalancaUser = (user) => {
+	let boolean = false;
+	const isAdmin = user.user.reloadUserInfo.customAttributes;
+	if (isAdmin) {
+		const isAdminBool = JSON.parse(isAdmin);
+		if (isAdminBool.isBalanca) {
+			boolean = true;
+		} else {
+			boolean = false;
+		}
+	}
+	console.log(
+		process.env.NODE_ENV !== "production" ? `Admin User? ${boolean}` : ""
+	);
+	return createAction(USER_ACTIONS_TYPES.SET_BALANCA_USER, boolean);
+};
+
 export const setIsAdminUserReducer = (user) => {
 	let boolean = false;
 	if (user?.reloadUserInfo) {
@@ -25,6 +42,21 @@ export const setIsAdminUserReducer = (user) => {
 		if (isAdmin) {
 			const isAdminBool = JSON.parse(isAdmin);
 			if (isAdminBool.admin) {
+				boolean = true;
+			} else {
+				boolean = false;
+			}
+		}
+	}
+	return boolean;
+};
+export const setIsBalancaUserReducer = (user) => {
+	let boolean = false;
+	if (user?.reloadUserInfo) {
+		const isAdmin = user.reloadUserInfo.customAttributes;
+		if (isAdmin) {
+			const isAdminBool = JSON.parse(isAdmin);
+			if (isAdminBool.isBalanca) {
 				boolean = true;
 			} else {
 				boolean = false;

@@ -21,11 +21,15 @@ import { useNavigate } from "react-router-dom";
 
 import { useLocation } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
+
 const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
+	const user = useSelector(selectCurrentUser);
 
 	const location = useLocation();
 
@@ -105,7 +109,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					</IconButton>
 				)}
 				<Typography variant="h6" color={colors.primary[100]}>
-					Marcelo
+					{user.displayName}
 				</Typography>
 				<IconButton onClick={() => console.log("user")}>
 					<FontAwesomeIcon
