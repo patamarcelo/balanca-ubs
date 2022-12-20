@@ -3,11 +3,16 @@ import { tokens } from "../../../theme";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
-import { faPrint } from "@fortawesome/free-solid-svg-icons";
+import { faPrint, faTrashCan, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import { useSelector } from "react-redux";
+import { selectIsAdminUser } from '../../../store/user/user.selector'
+
+import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
 const ReportTable = (props) => {
 	const theme = useTheme();
@@ -18,9 +23,20 @@ const ReportTable = (props) => {
 		navigate("/print", { state: { data: data } });
 	};
 
-	const { dataTable, isLoading } = props;
+	const { dataTable, isLoading, handlerSave, saved } = props;
 
-	const dataTableRev = [...dataTable].reverse()
+	const dataTableRev = [...dataTable].reverse();
+
+	const isAdmin = useSelector(selectIsAdminUser)
+
+	const handlerDelete = (dataId, data) => {
+		try {
+			handleDeleteTruck(dataId, data);
+			handlerSave(saved + 1);
+		} catch (error) {
+			console.log("Erro ao Deletar a Carga: ", data.id);
+		}
+	};
 
 	const formatPlate = (placa) => {
 		return (
@@ -187,6 +203,21 @@ const ReportTable = (props) => {
 			flex: 0,
 			headerAlign: "center",
 			align: "center",
+			renderHeader: (params) => (
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center"
+					}}
+				>
+					<FontAwesomeIcon
+						color={colors.greenAccent[500]}
+						icon={faBookmark}
+						size="sm"
+					/>
+				</Box>
+			),
 			renderCell: (params) => (
 				<>
 					<Typography
@@ -207,6 +238,20 @@ const ReportTable = (props) => {
 							size="sm"
 							style={{ marginLeft: "10px" }}
 						/>
+					)}
+					{isAdmin && (
+						<Typography
+							color={colors.greenAccent[400]}
+							sx={{ cursor: "pointer" }}
+							onClick={() => handlerDelete(params.row.id, params.row)}
+						>
+							<FontAwesomeIcon
+								color={colors.redAccent[500]}
+								icon={faTrashCan}
+								size="sm"
+								style={{ marginLeft: "10px" }}
+							/>
+						</Typography>
 					)}
 				</>
 			)

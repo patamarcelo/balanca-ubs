@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import {
 	selectTruckLoads,
@@ -19,6 +19,7 @@ const ReportPage = () => {
 
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
+	const [saved, handlerSave] = useState(0);
 
 	useEffect(() => {
 		const getData = async () => {
@@ -32,6 +33,16 @@ const ReportPage = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		const getData = async () => {
+			setIsLoading(true);
+			const data = await getTruckMoves();
+			dispatch(setTruckLoads(data));
+			setIsLoading(false);
+		};
+		getData();
+	}, [saved, dispatch]);
+
 	return (
 		<Box
 			width="100%"
@@ -40,10 +51,12 @@ const ReportPage = () => {
 				padding: ""
 			}}
 		>
-			{/* <Typography variant="h3" color={colors.blueAccent[600]} p="2px">
-				Relatório
-			</Typography> */}
-			<ReportTable dataTable={dataTableForm} isLoading={isLoading} />
+			<ReportTable
+				handlerSave={handlerSave}
+				dataTable={dataTableForm}
+				isLoading={isLoading}
+				saved={saved}
+			/>
 		</Box>
 	);
 };
