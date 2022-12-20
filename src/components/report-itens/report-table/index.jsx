@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -18,6 +19,8 @@ const ReportTable = (props) => {
 	};
 
 	const { dataTable, isLoading } = props;
+
+	const dataTableRev = [...dataTable].reverse()
 
 	const formatPlate = (placa) => {
 		return (
@@ -167,23 +170,45 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "liquido",
+			headerName: "Líquido",
+			flex: 1,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.greenAccent[400]}>
+					{formatWeight(params.row.liquido)}
+				</Typography>
+			)
+		},
+		{
 			field: "act",
 			headerName: "Imp.",
 			flex: 0,
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography
-					color={colors.greenAccent[400]}
-					sx={{ cursor: "pointer" }}
-					onClick={() => handlerNavigatePrint(params.row)}
-				>
-					<FontAwesomeIcon
-						color={colors.grey[200]}
-						icon={faPrint}
-						size="sm"
-					/>
-				</Typography>
+				<>
+					<Typography
+						color={colors.greenAccent[400]}
+						sx={{ cursor: "pointer" }}
+						onClick={() => handlerNavigatePrint(params.row)}
+					>
+						<FontAwesomeIcon
+							color={colors.grey[200]}
+							icon={faPrint}
+							size="sm"
+						/>
+					</Typography>
+					{params.row.liquido > 0 && (
+						<FontAwesomeIcon
+							color={colors.greenAccent[500]}
+							icon={faCircleCheck}
+							size="sm"
+							style={{ marginLeft: "10px" }}
+						/>
+					)}
+				</>
 			)
 		}
 	];
@@ -250,7 +275,7 @@ const ReportTable = (props) => {
 				}}
 			>
 				<DataGrid
-					rows={dataTable}
+					rows={dataTableRev}
 					columns={columns}
 					components={{ Toolbar: GridToolbar }}
 				/>

@@ -98,7 +98,6 @@ const HomePage = () => {
 
 	const handleChangeTruck = (e) => {
 		if (typeof e.$L === "string") {
-			console.log(typeof e.$d);
 			const newDate = new Date(e.$d);
 			setTruckValues({ ...truckValues, data: newDate });
 		} else {
@@ -110,7 +109,6 @@ const HomePage = () => {
 		const pesoBruto = truckValues["pesoBruto"];
 		const tara = truckValues["tara"];
 		if (["pesoBruto", "tara"].includes(e.target.name)) {
-			console.log(e.target.name, e.target.value);
 			if (pesoBruto > 0 && tara > 0) {
 				const liquido = pesoBruto - tara;
 				if (liquido < 0) {

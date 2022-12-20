@@ -8,6 +8,9 @@ import { useDispatch } from "react-redux";
 import { setTruckLoads } from "../../../store/trucks/trucks.actions";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { useSelector } from "react-redux";
+import { selectTruckLoadsOnWork } from "../../../store/trucks/trucks.selector";
+
 import HomeTableTruck from "../home-table-truck";
 const HomeTable = (props) => {
 	const {
@@ -27,9 +30,10 @@ const HomeTable = (props) => {
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const [table, setTable] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showAd, setShowAd] = useState(false);
+
+	const tableHome = useSelector(selectTruckLoadsOnWork);
 
 	const dispatch = useDispatch();
 
@@ -38,19 +42,17 @@ const HomeTable = (props) => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
 			console.log("pegando os dados da outra pagina");
-			setTable(data);
-			if (data.length === 0) {
-				setShowAd(true);
-			}
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};
 		return () => getData();
 	}, [saved]);
 
-	// useEffect(() => {
-	// 	listenerTruckTable()
-	// },)
+	useEffect(() => {
+		if (tableHome.length === 0) {
+			setShowAd(true);
+		}
+	}, [tableHome]);
 
 	if (isLoading || isLoadingHome) {
 		return (
@@ -77,7 +79,7 @@ const HomeTable = (props) => {
 		);
 	}
 
-	if (table.length === 0 && showAd) {
+	if (tableHome.length === 0 && showAd) {
 		return (
 			<Box
 				display="flex"

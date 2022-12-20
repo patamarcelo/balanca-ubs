@@ -20,7 +20,6 @@ const ReportPage = () => {
 	const dispatch = useDispatch();
 	const [isLoading, setIsLoading] = useState(false);
 
-	console.log("dataTable: ", dataTable.lenght);
 	useEffect(() => {
 		const getData = async () => {
 			setIsLoading(true);
