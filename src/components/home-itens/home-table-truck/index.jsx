@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 import DateTruck from "./truck-date";
 import PlateTruck from "./truck-plate";
 import QuantityTruck from "./truck-quantity";
+import QuantityTruckHold from "./truck-quantity-hold";
 import CulturaTruck from "./truck-cultura";
 import OrigemTruck from "./truck-origem";
 
@@ -119,6 +120,7 @@ const HomeTableTruck = (props) => {
 							<DateTruck entrada={data.entrada} />
 							<PlateTruck data={data} />
 							<QuantityTruck data={data} />
+							<QuantityTruckHold data={data} />
 							{data.cultura && <CulturaTruck data={data} />}
 							{data.origem && <OrigemTruck data={data} />}
 						</Box>
@@ -132,7 +134,11 @@ const HomeTableTruck = (props) => {
 							>
 								<FontAwesomeIcon
 									icon={faPenToSquare}
-									color={!isBalanca ? colors.grey[600] : colors.yellow[600]}
+									color={
+										!isBalanca
+											? colors.grey[600]
+											: colors.yellow[600]
+									}
 									size="1x"
 								/>
 							</IconButton>
@@ -143,7 +149,11 @@ const HomeTableTruck = (props) => {
 							>
 								<FontAwesomeIcon
 									icon={faTrashCan}
-									color={!isBalanca ? colors.grey[600] : colors.redAccent[600]}
+									color={
+										!isBalanca
+											? colors.grey[600]
+											: colors.redAccent[600]
+									}
 									size="1x"
 								/>
 							</IconButton>

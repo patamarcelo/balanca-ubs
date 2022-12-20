@@ -213,18 +213,18 @@ const ModalFormFields = (props) => {
 					}
 				}}
 			>
-			<TextField
-				id="outlined-multiline-static"
-				onChange={handleChangeTruck}
-				value={truckValues['observacoes']}
-				placeholder='Digite as Observações do Veículo'
-				name="observacoes"
-				label="Oservações"
-				multiline
-				rows={4}
-				variant="outlined"
+				<TextField
+					id="outlined-multiline-static"
+					onChange={handleChangeTruck}
+					value={truckValues["observacoes"]}
+					placeholder="Digite as Observações do Veículo"
+					name="observacoes"
+					label="Oservações"
+					multiline
+					rows={4}
+					variant="outlined"
 				/>
-				</Box>
+			</Box>
 		</form>
 	);
 };
