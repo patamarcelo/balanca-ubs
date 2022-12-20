@@ -9,7 +9,10 @@ import Chip from "@mui/material/Chip";
 import { tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 
-import { addTruckMove, handleUpdateTruck } from "../../../utils/firebase/firebase.datatable";
+import {
+	addTruckMove,
+	handleUpdateTruck
+} from "../../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 
@@ -17,6 +20,8 @@ export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
+	const isNumber = (n) => /^-?[\d.]+(?:e-?\d+)?$/.test(n);
 
 	const {
 		handleCloseModal,
@@ -83,7 +88,7 @@ export default function FormDialog(props) {
 				truckValues.id,
 				truckValues
 			);
-			console.log('NewTrans: ',newTrans)
+			console.log("NewTrans: ", newTrans);
 			handleCloseModal();
 			handlerSave(saved + 1);
 		} catch (error) {
@@ -138,19 +143,30 @@ export default function FormDialog(props) {
 						paddingTop: "20px"
 					}}
 				>
-					<Button color="warning" onClick={handleCloseModal}>
+					<Button
+						color="warning"
+						onClick={handleCloseModal}
+						sx={{
+							backgroundColor: colors.yellow[700],
+							color: "white"
+						}}
+					>
 						Cancelar
 					</Button>
 
 					{dataModal.title === "Editar Carga" ? (
 						<Button
 							onClick={handleEditCarga}
+							disabled={
+								truckValues.liquido < 1 ||
+								!isNumber(truckValues.liquido)
+							}
 							sx={{
-								backgroundColor: colors.yellow[600],
+								backgroundColor: colors.greenAccent[600],
 								color: "white"
 							}}
 						>
-							Salvar
+							Registrar Saída
 						</Button>
 					) : (
 						<Button
@@ -160,7 +176,7 @@ export default function FormDialog(props) {
 								color: "white"
 							}}
 						>
-							Salvar
+							Registrar Entrada
 						</Button>
 					)}
 				</DialogActions>
