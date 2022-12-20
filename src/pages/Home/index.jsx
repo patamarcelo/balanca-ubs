@@ -58,10 +58,8 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const getData = async () => {
-			console.log("pegando os dados da Home");
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			console.log("from d: ", data);
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};

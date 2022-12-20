@@ -12,7 +12,6 @@ const PageData = ({ data }) => {
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
 	const isBalanca = useSelector(selectIBalancaUser);
-	console.log("is Balanca: ", isBalanca);
 
 	const formatPlate = (placa) => {
 		return (

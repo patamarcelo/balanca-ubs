@@ -10,7 +10,6 @@ const PrintPage = () => {
 
 	const { data } = state;
 
-	console.log("Data from Print Page: ", data);
 	return <PrintLayout data={data} />;
 };
 

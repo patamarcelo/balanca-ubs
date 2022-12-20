@@ -23,14 +23,8 @@ const ReportPage = () => {
 	console.log("dataTable: ", dataTable.lenght);
 	useEffect(() => {
 		const getData = async () => {
-			console.log(
-				"pegando os dados do report",
-				dataTable.lenght,
-				dataTable
-			);
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			console.log("from d: ", data);
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};
