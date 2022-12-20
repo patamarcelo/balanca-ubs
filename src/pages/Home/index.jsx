@@ -18,8 +18,10 @@ import { useSelector } from "react-redux";
 import {
 	selectTrucksCarregando,
 	selectTrucksDescarregando,
-	selectTruckLoadsOnWork
+	selectTruckLoadsOnWork,
 } from "../../store/trucks/trucks.selector";
+
+import { selectIBalancaUser } from '../../store/user/user.selector'
 
 const dataModalText = {
 	carregando: {
@@ -44,6 +46,7 @@ const HomePage = () => {
 
 	const totalCarregando = useSelector(selectTrucksCarregando);
 	const totalDescarregando = useSelector(selectTrucksDescarregando);
+	const isBalanca = useSelector(selectIBalancaUser);
 
 	const [dataModal, setDataModal] = useState({
 		title: "",
@@ -154,6 +157,7 @@ const HomePage = () => {
 			/>
 			<Box>
 				<CustomButton
+					isBalanca={!isBalanca}
 					title={`Carregando: ${totalCarregando}`}
 					color={colors.greenAccent[600]}
 					handleOpenModal={() =>
@@ -164,6 +168,7 @@ const HomePage = () => {
 				</CustomButton>
 
 				<CustomButton
+					isBalanca={!isBalanca}
 					title={`Descarregando: ${totalDescarregando}`}
 					color={colors.redAccent[600]}
 					ml={20}

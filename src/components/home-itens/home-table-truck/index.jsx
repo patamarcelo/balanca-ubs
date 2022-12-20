@@ -22,6 +22,7 @@ import {
 	selectTruckLoadsOnWork
 } from "../../../store/trucks/trucks.selector";
 
+import { selectIBalancaUser } from "../../../store/user/user.selector";
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -31,6 +32,7 @@ const editarModal = {
 const HomeTableTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const isBalanca = useSelector(selectIBalancaUser);
 
 	const table = useSelector(selectTruckLoadsOnWork);
 	const {
@@ -122,6 +124,7 @@ const HomeTableTruck = (props) => {
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton
+								disabled={!isBalanca}
 								aria-label="edit"
 								onClick={() =>
 									handleOpenModal(editarModal, data)
@@ -129,17 +132,18 @@ const HomeTableTruck = (props) => {
 							>
 								<FontAwesomeIcon
 									icon={faPenToSquare}
-									color={colors.yellow[600]}
+									color={!isBalanca ? colors.grey[600] : colors.yellow[600]}
 									size="1x"
 								/>
 							</IconButton>
 							<IconButton
+								disabled={!isBalanca}
 								aria-label="delete"
 								onClick={() => handlerDelete(data.id, data)}
 							>
 								<FontAwesomeIcon
 									icon={faTrashCan}
-									color={colors.redAccent[600]}
+									color={!isBalanca ? colors.grey[600] : colors.redAccent[600]}
 									size="1x"
 								/>
 							</IconButton>
