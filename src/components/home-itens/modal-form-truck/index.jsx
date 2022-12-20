@@ -51,7 +51,8 @@ export default function FormDialog(props) {
 			saida,
 			tara,
 			tipo,
-			umidade
+			umidade,
+			observacoes
 		} = truckValues;
 		try {
 			const newTrans = await addTruckMove(
@@ -69,7 +70,8 @@ export default function FormDialog(props) {
 				projeto,
 				motorista,
 				saida,
-				tipo
+				tipo,
+				observacoes
 			);
 			if (newTrans) {
 				handleCloseModal();
@@ -86,7 +88,8 @@ export default function FormDialog(props) {
 			const newTrans = await handleUpdateTruck(
 				event,
 				truckValues.id,
-				truckValues
+				truckValues,
+				user.email
 			);
 			console.log("NewTrans: ", newTrans);
 			handleCloseModal();

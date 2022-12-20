@@ -10,10 +10,6 @@ const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const print = (e) => {
-		console.log("imprimindo", e);
-		window.print();
-	};
 	return (
 		<Box
 			width="100%"
@@ -32,22 +28,6 @@ const PrintLayout = ({ data }) => {
 			}}
 		>
 			<Box
-				sx={{
-					marginBottom: "10px"
-				}}
-				display="flex"
-				width="90%"
-				justifyContent="center"
-			>
-				<FontAwesomeIcon
-					onClick={print}
-					color={colors.grey[900]}
-					icon={faPrint}
-					size="xl"
-					style={{ cursor: "pointer" }}
-				/>
-			</Box>
-			<Box
 				display="flex"
 				flexDirection="column"
 				justifyContent="start"
@@ -55,7 +35,9 @@ const PrintLayout = ({ data }) => {
 				id="printablediv"
 				sx={{
 					width: "70%",
-					height: "100%",
+					minHeight: "1020px",
+					marginBottom: "60px",
+					marginTop: '50px',
 					// backgroundColor: "whitesmoke",
 					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
@@ -67,9 +49,8 @@ const PrintLayout = ({ data }) => {
 					sx={{
 						backgroundColor: colors.primary[900],
 						width: "92%",
-						height: "1px",
-						margin: "0 auto",
-						marginTop: "40px"
+						height: "0.1px",
+						margin: "0 auto"
 					}}
 				>
 					m

@@ -180,6 +180,49 @@ const ModalFormFields = (props) => {
 					);
 				})}
 			</Box>
+			<Box
+				sx={{
+					width: "100%",
+					backgroundColor: colors.grey[800],
+					borderRadius: "8px",
+					height: "2px",
+					margin: "0px 2px 20px 2px"
+				}}
+			/>
+			<Box
+				display="grid"
+				gap="10px"
+				gridTemplateColumns="repeat(1, minmax(0, 1fr))"
+				sx={{
+					width: "100%",
+					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+						color: `${colors.blueOrigin[100]} !important`,
+						borderColor: `${colors.blueOrigin[500]} !important`,
+						fontWeight: "bold"
+					},
+					"& .MuiInputLabel-outlined": {
+						color: `${colors.blueOrigin[100]} !important`
+					},
+					"& .MuiInputBase-formControl": {
+						backgroundColor: `${colors.brown[600]} !important`
+					},
+					"& .MuiInputBase-formControl.Mui-focused": {
+						backgroundColor: `${colors.brown[400]} !important`
+					}
+				}}
+			>
+			<TextField
+				id="outlined-multiline-static"
+				onChange={handleChangeTruck}
+				value={truckValues['observacoes']}
+				placeholder='Digite as Observações do Veículo'
+				name="observacoes"
+				label="Oservações"
+				multiline
+				rows={4}
+				variant="outlined"
+				/>
+				</Box>
 		</form>
 	);
 };

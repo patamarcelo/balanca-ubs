@@ -13,6 +13,7 @@ const PageData = ({ data }) => {
 	const user = useSelector(selectCurrentUser);
 	const isBalanca = useSelector(selectIBalancaUser);
 
+	console.log("obs: ", data.observacoes);
 	const formatPlate = (placa) => {
 		return (
 			placa?.toUpperCase().slice(0, 3) +
@@ -229,6 +230,31 @@ const PageData = ({ data }) => {
 							{data.motorista}
 						</Typography>
 					</Box>
+				</Box>
+			</Box>
+			<Box display="flex" flexDirection="column" width="100%" mt="20px">
+				<Typography
+					variant="h6"
+					color={colors.grey[800]}
+					fontWeight="bold"
+					style={{textDecoration: 'underline'}}
+
+				>
+					Observações:
+				</Typography>
+				<Box
+					display="flex"
+					justifyContent="start"
+					alignItems="start"
+					sx={{
+						border: "1px dotted black",
+						minHeight: "50px",
+						padding: "5px"
+					}}
+				>
+					<Typography variant="h6" color={colors.grey[800]}>
+						{data.observacoes}
+					</Typography>
 				</Box>
 			</Box>
 		</Box>

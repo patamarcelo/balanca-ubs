@@ -97,6 +97,7 @@ const HomePage = () => {
 	};
 
 	const handleChangeTruck = (e) => {
+		console.log(e.target.name, e.target.value)
 		if (typeof e.$L === "string") {
 			const newDate = new Date(e.$d);
 			setTruckValues({ ...truckValues, data: newDate });

@@ -59,7 +59,8 @@ export const addTruckMove = async (
 	projeto,
 	motorista,
 	saida,
-	tipo
+	tipo,
+	observacoes
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
@@ -82,7 +83,8 @@ export const addTruckMove = async (
 				projeto,
 				motorista,
 				saida,
-				tipo
+				tipo,
+				observacoes
 			}
 		);
 	} catch (error) {
