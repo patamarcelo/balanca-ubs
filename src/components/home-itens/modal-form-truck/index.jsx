@@ -88,8 +88,7 @@ export default function FormDialog(props) {
 			const newTrans = await handleUpdateTruck(
 				event,
 				truckValues.id,
-				truckValues,
-				user.email
+				{...truckValues, userSaida: user.email}
 			);
 			console.log("NewTrans: ", newTrans);
 			handleCloseModal();

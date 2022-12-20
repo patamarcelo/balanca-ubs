@@ -41,7 +41,6 @@ const HomeTable = (props) => {
 		const getData = async () => {
 			setIsLoading(true);
 			const data = await getTruckMoves();
-			console.log("pegando os dados da outra pagina");
 			dispatch(setTruckLoads(data));
 			setIsLoading(false);
 		};

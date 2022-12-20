@@ -17,7 +17,6 @@ export const handleUpdateTruck = async (e, id, data) => {
 		updatedDoc = await updateDoc(taskDocRef, {
 			...updatedData
 		});
-		console.log("updatedDoc: ", updatedDoc);
 	} catch (err) {
 		alert(err);
 	}

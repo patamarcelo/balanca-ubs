@@ -11,7 +11,8 @@ export const TRUCK_INITIAL_STATE = {
 	impureza: "",
 	projeto: "",
 	motorista: "",
-	saida: ""
+	saida: "",
+	observacoes: ''
 };
 
 // TRUCK INPUT AND FORM

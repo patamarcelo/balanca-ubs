@@ -137,6 +137,7 @@ const ModalFormFields = (props) => {
 			<Box
 				display="grid"
 				gap="10px"
+				mb="8px"
 				gridTemplateColumns="repeat(2, minmax(0, 1fr))"
 				sx={{
 					width: "100%",
@@ -193,6 +194,7 @@ const ModalFormFields = (props) => {
 				display="grid"
 				gap="10px"
 				gridTemplateColumns="repeat(1, minmax(0, 1fr))"
+				// mt="15px"
 				sx={{
 					width: "100%",
 					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
