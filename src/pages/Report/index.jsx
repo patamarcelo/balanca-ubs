@@ -47,9 +47,9 @@ const ReportPage = () => {
 				padding: ""
 			}}
 		>
-			<Typography variant="h3" color={colors.blueAccent[600]} p="2px">
+			{/* <Typography variant="h3" color={colors.blueAccent[600]} p="2px">
 				Relatório
-			</Typography>
+			</Typography> */}
 			<ReportTable dataTable={dataTableForm} isLoading={isLoading} />
 		</Box>
 	);

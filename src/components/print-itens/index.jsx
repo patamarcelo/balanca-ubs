@@ -27,7 +27,7 @@ const PrintLayout = ({ data }) => {
 			sx={{
 				margin: "0 auto !important",
 				" body": {
-					backgroundCOlor: "white !important"
+					// backgroundCOlor: "white !important"
 				}
 			}}
 		>
@@ -52,13 +52,14 @@ const PrintLayout = ({ data }) => {
 				flexDirection="column"
 				justifyContent="start"
 				alignItems="start"
-				// id="printablediv"
+				id="printablediv"
 				sx={{
 					width: "70%",
 					height: "100%",
 					// backgroundColor: "whitesmoke",
 					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+					// boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px"
 				}}
 			>
 				<PageData data={data} />

@@ -32,8 +32,8 @@ const ReportTable = (props) => {
 	};
 	const columns = [
 		{
-			field: "count",
-			headerName: ".",
+			field: "tipo",
+			headerName: "",
 			flex: 0.1,
 			renderHeader: (params) => (
 				<Box
