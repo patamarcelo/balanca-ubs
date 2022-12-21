@@ -4,14 +4,14 @@ import Logo from "../../utils/assets/img/logo.jpg";
 import { useSelector } from "react-redux";
 import {
 	selectCurrentUser,
-	selectIBalancaUser
 } from "../../store/user/user.selector";
+import  PageDataClass  from './page-data-class'
 
 const PageData = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
-	const isBalanca = useSelector(selectIBalancaUser);
+
 
 	console.log("obs: ", data.observacoes);
 	const formatPlate = (placa) => {
@@ -62,7 +62,8 @@ const PageData = ({ data }) => {
 								color={colors.primary[700]}
 								fontWeight="bold"
 								sx={{
-									padding: "10px 0"
+									padding: "3px 0",
+									marginBottom: i === 1 ? '15px' : ''
 								}}
 							>
 								{data}
@@ -89,7 +90,10 @@ const PageData = ({ data }) => {
 								display="flex"
 								width="100%"
 								key={i}
-								sx={{ borderBottom: i === 2 ? '' :  "1px dotted black" }}
+								sx={{
+									borderBottom:
+										i === 2 ? "" : "1px dotted black"
+								}}
 							>
 								<Box width="30%">
 									<Typography
@@ -100,11 +104,22 @@ const PageData = ({ data }) => {
 										{data.label}:
 									</Typography>
 								</Box>
-								<Box width="50%">
+								<Box
+									width="50%"
+									display="flex"
+									justifyContent="center"
+									sx={{
+										// backgroundColor: "red",
+										marginRight: "30%"
+									}}
+								>
 									<Typography
 										variant="h6"
 										color={colors.primary[700]}
-										fontWeight="bold"
+										// fontWeight="bold"
+										style={{
+											textTransform: data.label === 'Cultura' ? 'capitalize' : ''
+										}}
 									>
 										{data.value}
 									</Typography>
@@ -120,7 +135,10 @@ const PageData = ({ data }) => {
 								display="flex"
 								width="100%"
 								key={i}
-								sx={{ borderBottom: i === 2 ? '' :  "1px dotted black" }}
+								sx={{
+									borderBottom:
+										i === 2 ? "" : "1px dotted black"
+								}}
 							>
 								<Box
 									width="50%"
@@ -137,16 +155,18 @@ const PageData = ({ data }) => {
 								</Box>
 								<Box
 									width="50%"
-									sx={
-										{
-											// backgroundColor: "red"
-										}
-									}
+									display="flex"
+									justifyContent="end"
+									sx={{
+										// backgroundColor: "red",
+										marginRight: "30%"
+									}}
 								>
 									<Typography
 										variant="h6"
 										color={colors.primary[700]}
-										fontWeight="bold"
+										// fontWeight="bold"
+										style={{ textAlign: "right" }}
 									>
 										{Number(data?.value)?.toLocaleString(
 											"pt-BR"
@@ -159,7 +179,7 @@ const PageData = ({ data }) => {
 				</Box>
 			</Box>
 			<Box
-				mt="80px"
+				mt="50px"
 				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
@@ -227,7 +247,7 @@ const PageData = ({ data }) => {
 							color={colors.grey[800]}
 							fontWeight="bold"
 						>
-							{data.motorista}
+							{data.motorista ? data.motorista : "Motorista"}
 						</Typography>
 					</Box>
 				</Box>
@@ -237,10 +257,11 @@ const PageData = ({ data }) => {
 					variant="h6"
 					color={colors.grey[800]}
 					fontWeight="bold"
-					style={{ textDecoration: "underline" }}
+					style={{ textDecoration: "underline" , marginBottom: '10px'}}
 				>
 					Observações:
 				</Typography>
+				<PageDataClass data={data} />
 				<Box
 					display="flex"
 					justifyContent="start"
@@ -248,10 +269,12 @@ const PageData = ({ data }) => {
 					sx={{
 						border: "1px dotted black",
 						minHeight: "70px",
-						padding: "5px",
+						padding: "10px",
 						marginBottom: "20px",
+						marginTop: "20px",
 						whiteSpace: "normal",
-						overflow: "hidden"
+						overflow: "hidden",
+						wordBreak: 'break-word'
 					}}
 				>
 					<Typography variant="h6" color={colors.grey[800]}>
@@ -259,6 +282,7 @@ const PageData = ({ data }) => {
 					</Typography>
 				</Box>
 			</Box>
+			
 		</Box>
 	);
 };
