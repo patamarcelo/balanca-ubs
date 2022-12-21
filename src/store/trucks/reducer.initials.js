@@ -12,7 +12,8 @@ export const TRUCK_INITIAL_STATE = {
 	projeto: "",
 	motorista: "",
 	saida: "",
-	observacoes: ''
+	observacoes: "",
+	destino: ""
 };
 
 // TRUCK INPUT AND FORM
@@ -94,6 +95,13 @@ export const TRUCK_OBS = [
 		label: "Motorista",
 		name: "motorista",
 		placeholder: "Motorista",
+		// required: true,
+		type: "text"
+	},
+	{
+		label: "Destino",
+		name: "destino",
+		placeholder: "Destino",
 		// required: true,
 		type: "text"
 	}
