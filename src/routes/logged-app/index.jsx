@@ -51,7 +51,7 @@ const AuthApp = () => {
 					padding: "10px",
 					height: "100vh",
 					backgroundColor:
-						location.pathname === "/print" ? "white !important" : ""
+						location.pathname === "/print" ? "rgb(237, 234, 222) !important" : ""
 				}}
 			>
 				<Routes>

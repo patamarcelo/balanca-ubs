@@ -9,9 +9,12 @@
     }
 
     #printablediv {
-        justify-content: center;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
         width: 100%;
-        align-items: start;
+        align-items: center;
         box-shadow: none !important;
         background-color: transparent !important
     }

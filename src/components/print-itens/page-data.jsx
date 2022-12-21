@@ -89,7 +89,7 @@ const PageData = ({ data }) => {
 								display="flex"
 								width="100%"
 								key={i}
-								sx={{ borderBottom: "1px dotted black" }}
+								sx={{ borderBottom: i === 2 ? '' :  "1px dotted black" }}
 							>
 								<Box width="30%">
 									<Typography
@@ -120,7 +120,7 @@ const PageData = ({ data }) => {
 								display="flex"
 								width="100%"
 								key={i}
-								sx={{ borderBottom: "1px dotted black" }}
+								sx={{ borderBottom: i === 2 ? '' :  "1px dotted black" }}
 							>
 								<Box
 									width="50%"
@@ -237,8 +237,7 @@ const PageData = ({ data }) => {
 					variant="h6"
 					color={colors.grey[800]}
 					fontWeight="bold"
-					style={{textDecoration: 'underline'}}
-
+					style={{ textDecoration: "underline" }}
 				>
 					Observações:
 				</Typography>
@@ -248,8 +247,11 @@ const PageData = ({ data }) => {
 					alignItems="start"
 					sx={{
 						border: "1px dotted black",
-						minHeight: "50px",
-						padding: "5px"
+						minHeight: "70px",
+						padding: "5px",
+						marginBottom: "20px",
+						whiteSpace: "normal",
+						overflow: "hidden"
 					}}
 				>
 					<Typography variant="h6" color={colors.grey[800]}>
