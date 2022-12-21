@@ -34,7 +34,7 @@ const PrintLayout = ({ data }) => {
 				alignItems="center"
 				id="printablediv"
 				sx={{
-					width: isNonMobile ? "90%" : "100%",
+					width: isNonMobile ? "80%" : "100%",
 					// marginBottom: "60px",
 					marginTop: "50px",
 					// backgroundColor: "whitesmoke",

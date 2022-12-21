@@ -1,13 +1,13 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Grid from "@mui/material/Grid";
-// import useMediaQuery from "@mui/material/useMediaQuery";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const PageDataClass = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	// const isNonMobile = useMediaQuery("(min-width: 100px)");
+	const isNonMobile = useMediaQuery("(min-width: 1090px)");
 
 	const dictData = [
 		{ label: "Umidade", value: data.umidade },
@@ -58,7 +58,9 @@ const PageDataClass = ({ data }) => {
 									justifyContent="end"
 									sx={{
 										// backgroundColor: "red",
-										marginRight: "30%"
+										marginRight: isNonMobile ? "10%" : '',
+										marginLeft: isNonMobile ? '7px' : '',
+										whiteSpace: 'nowrap'
 									}}
 								>
 									<Typography

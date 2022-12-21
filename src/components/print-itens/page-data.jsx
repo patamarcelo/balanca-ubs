@@ -118,7 +118,8 @@ const PageData = ({ data }) => {
 										color={colors.primary[700]}
 										// fontWeight="bold"
 										style={{
-											textTransform: data.label === 'Cultura' ? 'capitalize' : ''
+											textTransform: data.label === 'Cultura' ? 'capitalize' : '',
+											whiteSpace: 'nowrap'
 										}}
 									>
 										{data.value}
@@ -149,6 +150,7 @@ const PageData = ({ data }) => {
 										color={colors.primary[700]}
 										fontWeight="bold"
 										ml="10px"
+										style={{whiteSpace: 'nowrap'}}
 									>
 										{data.label}:
 									</Typography>
