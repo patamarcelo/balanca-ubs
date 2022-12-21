@@ -5,10 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./index.css";
 
 import PageData from "./page-data";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 
 	return (
 		<Box
@@ -32,7 +34,7 @@ const PrintLayout = ({ data }) => {
 				alignItems="center"
 				id="printablediv"
 				sx={{
-					width: "70%",
+					width: isNonMobile ? "90%" : "100%",
 					// marginBottom: "60px",
 					marginTop: "50px",
 					// backgroundColor: "whitesmoke",
