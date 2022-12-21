@@ -35,25 +35,27 @@ const HomeTable = (props) => {
 
 	const tableHome = useSelector(selectTruckLoadsOnWork);
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
-	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
-			dispatch(setTruckLoads(data));
-			setIsLoading(false);
-		};
-		return () => getData();
-	}, [saved]);
+	// useEffect(() => {
+	// 	const getData = async () => {
+	// 		setIsLoading(true);
+	// 		const data = await getTruckMoves();
+	// 		dispatch(setTruckLoads(data));
+	// 		setIsLoading(false);
+	// 	};
+	// 	return () => getData();
+	// }, [saved]);
 
 	useEffect(() => {
 		if (tableHome.length === 0) {
-			setShowAd(true);
+			setTimeout(() => {
+				setShowAd(true);
+			}, 1000);
 		}
 	}, [tableHome]);
 
-	if (isLoading || isLoadingHome) {
+	if (isLoadingHome) {
 		return (
 			<Box
 				display="flex"

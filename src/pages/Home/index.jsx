@@ -18,10 +18,14 @@ import { useSelector } from "react-redux";
 import {
 	selectTrucksCarregando,
 	selectTrucksDescarregando,
-	selectTruckLoadsOnWork,
+	selectTruckLoadsOnWork
 } from "../../store/trucks/trucks.selector";
 
-import { selectIBalancaUser } from '../../store/user/user.selector'
+import { selectIBalancaUser } from "../../store/user/user.selector";
+
+import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
+import { db } from "../../utils/firebase/firebase";
+import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
 const dataModalText = {
 	carregando: {
@@ -59,14 +63,32 @@ const HomePage = () => {
 
 	const table = useSelector(selectTruckLoadsOnWork);
 
+	// useEffect(() => {
+	// 	const getData = async () => {
+	// 		setIsLoading(true);
+	// 		const data = await getTruckMoves();
+	// 		dispatch(setTruckLoads(data));
+	// 		setIsLoading(false);
+	// 	};
+	// 	getData();
+	// }, []);
+
 	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
-			dispatch(setTruckLoads(data));
+		const collRef = collection(db, TABLES_FIREBASE.truckmove);
+		const q = query(collRef, orderBy("createdAt"));
+		onSnapshot(q, (snapshot) => {
+			dispatch(
+				setTruckLoads(
+					snapshot.docs.map((doc) => ({
+						...doc.data(),
+						id: doc.id
+					}))
+				)
+			);
+		});
+		setTimeout(() => {
 			setIsLoading(false);
-		};
-		getData();
+		}, 1000);
 	}, []);
 
 	const handleOpenModal = async (obj, data) => {
@@ -100,12 +122,7 @@ const HomePage = () => {
 	};
 
 	const handleChangeTruck = (e) => {
-		if (typeof e.$L === "string") {
-			const newDate = new Date(e.$d);
-			setTruckValues({ ...truckValues, data: newDate });
-		} else {
-			setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
-		}
+		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
 	};
 
 	const handleBlurTruck = (e) => {
