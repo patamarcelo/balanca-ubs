@@ -10,7 +10,6 @@ const PageData = ({ data }) => {
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
 
-	console.log("obs: ", data.observacoes);
 	const formatPlate = (placa) => {
 		return (
 			placa?.toUpperCase().slice(0, 3) +
@@ -247,6 +246,9 @@ const PageData = ({ data }) => {
 							variant="h6"
 							color={colors.grey[800]}
 							fontWeight="bold"
+							sx={{
+								textTransform: 'capitalize'
+							}}
 						>
 							{data.motorista ? data.motorista : "Motorista"}
 						</Typography>
@@ -282,7 +284,7 @@ const PageData = ({ data }) => {
 					}}
 				>
 					<Typography variant="h6" color={colors.grey[800]}>
-						{data.observacoes}
+						{data?.observacoes}
 					</Typography>
 				</Box>
 			</Box>

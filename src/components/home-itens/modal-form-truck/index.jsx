@@ -20,10 +20,29 @@ import {
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 
+import { useNavigate } from "react-router-dom";
+
+import { selectTruckLoadsFormatData } from "../../../store/trucks/trucks.selector";
+
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const dataTableForm = useSelector(selectTruckLoadsFormatData);
+
+	const filterTableForm = (id, dataTableForm, bruto, liquido, tara) => {
+		const newArr = dataTableForm.filter((data) => data.id === id);
+		const newArrAded = {
+			...newArr[0],
+			pesoBruto: bruto,
+			liquido: liquido,
+			tara: tara
+		};
+		return newArrAded;
+	};
+
+	const navigate = useNavigate();
+
 	const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
 	const isNumber = (n) => /^-?[\d.]+(?:e-?\d+)?$/.test(n);
@@ -93,17 +112,30 @@ export default function FormDialog(props) {
 		}
 	};
 
+	const handlerNavigatePrint = (data) => {
+		navigate("/print", { state: { data: data } });
+	};
+
 	const handleEditCarga = async (event) => {
 		setIsLoadingSubmit(true);
 		try {
-			const newTrans = await handleUpdateTruck(event, truckValues.id, {
+			const newTransData = {
 				...truckValues,
 				userSaida: user.email
-			});
-			console.log("NewTrans: ", newTrans);
+			};
+			await handleUpdateTruck(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();
 			handlerSave(saved + 1);
+			handlerNavigatePrint(
+				filterTableForm(
+					truckValues.id,
+					dataTableForm,
+					truckValues.pesoBruto,
+					truckValues.liquido,
+					truckValues.tara
+				)
+			);
 		} catch (error) {
 			console.log("erro ao editar a transação", error);
 		} finally {

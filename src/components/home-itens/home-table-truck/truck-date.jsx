@@ -26,7 +26,7 @@ const DateTruck = (props) => {
 			<Typography variant="h6" color={colors.primary[100]}>
 				{formatDate}
 			</Typography>
-			<Typography variant="h6" color={colors.primary[100]}>
+			<Typography variant="h6" color={colors.greenAccent[300]}>
 				{atTime}
 			</Typography>
 		</Box>

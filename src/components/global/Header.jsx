@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faHouse,
 	faUser,
-	faChartSimple, 
+	faChartSimple,
 	faPrint
 } from "@fortawesome/free-solid-svg-icons";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
@@ -91,12 +91,12 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 				alignItems="center"
 				sx={{
 					backgroundColor: colors.blueOrigin[800],
-					padding: "0px 10px 0px 20px",
+					padding: "0px 5px",
 					borderRadius: "8px",
 					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
 				}}
 			>
-				{location.pathname.includes('print') && (
+				{location.pathname.includes("print") && (
 					<IconButton onClick={print}>
 						<FontAwesomeIcon
 							icon={faPrint}

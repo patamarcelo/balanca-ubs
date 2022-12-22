@@ -12,6 +12,7 @@ import QuantityTruck from "./truck-quantity";
 import QuantityTruckHold from "./truck-quantity-hold";
 import CulturaTruck from "./truck-cultura";
 import OrigemTruck from "./truck-origem";
+import DestinoTruck from "./truck-destino";
 
 import FormDialog from "../../../components/home-itens/modal-form-truck";
 
@@ -126,6 +127,7 @@ const HomeTableTruck = (props) => {
 							<QuantityTruckHold data={data} />
 							{data.cultura && <CulturaTruck data={data} />}
 							{data.origem && <OrigemTruck data={data} />}
+							{data.destino && <DestinoTruck data={data} />}
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton

@@ -122,7 +122,7 @@ const HomePage = () => {
 	};
 
 	const handleChangeTruck = (e) => {
-		console.log(e.target.name, e.target.value)
+		console.log(e.target.name, e.target.value);
 		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
 	};
 

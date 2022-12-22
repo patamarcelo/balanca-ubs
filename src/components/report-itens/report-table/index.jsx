@@ -131,6 +131,13 @@ const ReportTable = (props) => {
 			flex: 1
 		},
 		{
+			field: "destino",
+			headerName: "Destino",
+			headerAlign: "center",
+			align: "center",
+			flex: 1
+		},
+		{
 			field: "mercadoria",
 			headerName: "Mercadoria",
 			headerAlign: "center",
@@ -140,6 +147,13 @@ const ReportTable = (props) => {
 		{
 			field: "projeto",
 			headerName: "Projeto",
+			headerAlign: "center",
+			align: "center",
+			flex: 1
+		},
+		{
+			field: "cultura",
+			headerName: "Cultura",
 			headerAlign: "center",
 			align: "center",
 			flex: 1
