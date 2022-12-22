@@ -43,7 +43,7 @@ const PrintLayout = ({ data }) => {
 				justifyContent="center"
 				alignItems="center"
 				sx={{
-					width: isNonMobile ? "65%" : "100%",
+					width: isNonMobile ? "75%" : "100%",
 					// marginBottom: "60px",
 					marginTop: "50px",
 					// backgroundColor: "whitesmoke",
