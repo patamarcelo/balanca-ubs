@@ -30,6 +30,7 @@ const PrintLayout = ({ data }) => {
 			justifyContent="center"
 			alignItems="center"
 			p="5px 40px 40px 40px"
+			id="printablediv"
 			sx={{
 				margin: "0 auto !important",
 				" body": {
@@ -43,7 +44,7 @@ const PrintLayout = ({ data }) => {
 				justifyContent="center"
 				alignItems="center"
 				sx={{
-					width: isNonMobile ? "75%" : "100%",
+					width: isNonMobile ? "90%" : "100%",
 					// marginBottom: "60px",
 					marginTop: "50px",
 					// backgroundColor: "whitesmoke",
