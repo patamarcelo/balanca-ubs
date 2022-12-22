@@ -2,16 +2,13 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Logo from "../../utils/assets/img/logo.jpg";
 import { useSelector } from "react-redux";
-import {
-	selectCurrentUser,
-} from "../../store/user/user.selector";
-import  PageDataClass  from './page-data-class'
+import { selectCurrentUser } from "../../store/user/user.selector";
+import PageDataClassFlex from "./page-data-class-flex";
 
 const PageData = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
-
 
 	console.log("obs: ", data.observacoes);
 	const formatPlate = (placa) => {
@@ -35,11 +32,10 @@ const PageData = ({ data }) => {
 
 	return (
 		<Box
-			width="100%"
 			height="100%"
-			id="printablediv"
 			sx={{
-				padding: "20px 50px"
+				padding: "20px 50px",
+				width: "100% !important"
 			}}
 		>
 			<Box
@@ -63,7 +59,7 @@ const PageData = ({ data }) => {
 								fontWeight="bold"
 								sx={{
 									padding: "3px 0",
-									marginBottom: i === 1 ? '15px' : ''
+									marginBottom: i === 1 ? "15px" : ""
 								}}
 							>
 								{data}
@@ -118,8 +114,11 @@ const PageData = ({ data }) => {
 										color={colors.primary[700]}
 										// fontWeight="bold"
 										style={{
-											textTransform: data.label === 'Cultura' ? 'capitalize' : '',
-											whiteSpace: 'nowrap'
+											textTransform:
+												data.label === "Cultura"
+													? "capitalize"
+													: "",
+											whiteSpace: "nowrap"
 										}}
 									>
 										{data.value}
@@ -150,7 +149,7 @@ const PageData = ({ data }) => {
 										color={colors.primary[700]}
 										fontWeight="bold"
 										ml="10px"
-										style={{whiteSpace: 'nowrap'}}
+										style={{ whiteSpace: "nowrap" }}
 									>
 										{data.label}:
 									</Typography>
@@ -259,11 +258,14 @@ const PageData = ({ data }) => {
 					variant="h6"
 					color={colors.grey[800]}
 					fontWeight="bold"
-					style={{ textDecoration: "underline" , marginBottom: '10px'}}
+					style={{
+						textDecoration: "underline",
+						marginBottom: "10px"
+					}}
 				>
 					Observações:
 				</Typography>
-				<PageDataClass data={data} />
+				<PageDataClassFlex data={data} />
 				<Box
 					display="flex"
 					justifyContent="start"
@@ -276,7 +278,7 @@ const PageData = ({ data }) => {
 						marginTop: "20px",
 						whiteSpace: "normal",
 						overflow: "hidden",
-						wordBreak: 'break-word'
+						wordBreak: "break-word"
 					}}
 				>
 					<Typography variant="h6" color={colors.grey[800]}>
@@ -284,7 +286,6 @@ const PageData = ({ data }) => {
 					</Typography>
 				</Box>
 			</Box>
-			
 		</Box>
 	);
 };

@@ -42,9 +42,8 @@ const PrintLayout = ({ data }) => {
 				// flexDirection="column"
 				justifyContent="center"
 				alignItems="center"
-				id="printablediv"
 				sx={{
-					width: isNonMobile ? "80%" : "100%",
+					width: isNonMobile ? "65%" : "100%",
 					// marginBottom: "60px",
 					marginTop: "50px",
 					// backgroundColor: "whitesmoke",
