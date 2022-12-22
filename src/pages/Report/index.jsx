@@ -11,6 +11,10 @@ import { useDispatch } from "react-redux";
 import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
 import { setTruckLoads } from "../../store/trucks/trucks.actions";
 
+import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
+import { db } from "../../utils/firebase/firebase";
+import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
+
 const ReportPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -18,30 +22,26 @@ const ReportPage = () => {
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
 
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [saved, handlerSave] = useState(0);
 
 	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
-			dispatch(setTruckLoads(data));
+		const collRef = collection(db, TABLES_FIREBASE.truckmove);
+		const q = query(collRef, orderBy("createdAt"));
+		onSnapshot(q, (snapshot) => {
+			dispatch(
+				setTruckLoads(
+					snapshot.docs.map((doc) => ({
+						...doc.data(),
+						id: doc.id
+					}))
+				)
+			);
+		});
+		setTimeout(() => {
 			setIsLoading(false);
-		};
-		if (dataTable.lenght === undefined) {
-			getData();
-		}
+		}, 800);
 	}, []);
-
-	useEffect(() => {
-		const getData = async () => {
-			setIsLoading(true);
-			const data = await getTruckMoves();
-			dispatch(setTruckLoads(data));
-			setIsLoading(false);
-		};
-		getData();
-	}, [saved, dispatch]);
 
 	return (
 		<Box

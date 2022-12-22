@@ -9,6 +9,10 @@ import Chip from "@mui/material/Chip";
 import { tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 import {
 	addTruckMove,
 	handleUpdateTruck
@@ -20,6 +24,7 @@ export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
 	const isNumber = (n) => /^-?[\d.]+(?:e-?\d+)?$/.test(n);
 
@@ -55,6 +60,7 @@ export default function FormDialog(props) {
 			observacoes,
 			destino
 		} = truckValues;
+		setIsLoadingSubmit(true);
 		try {
 			const newTrans = await addTruckMove(
 				user.email,
@@ -75,27 +81,33 @@ export default function FormDialog(props) {
 				observacoes,
 				destino
 			);
+			toast.success("Carga registrada com sucesso!!");
 			if (newTrans) {
 				handleCloseModal();
 				handlerSave(saved + 1);
 			}
 		} catch (error) {
 			console.log("erro ao salvar a transação");
+		} finally {
+			setIsLoadingSubmit(false);
 		}
 	};
 
 	const handleEditCarga = async (event) => {
-		console.log(truckValues);
+		setIsLoadingSubmit(true);
 		try {
 			const newTrans = await handleUpdateTruck(event, truckValues.id, {
 				...truckValues,
 				userSaida: user.email
 			});
 			console.log("NewTrans: ", newTrans);
+			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();
 			handlerSave(saved + 1);
 		} catch (error) {
 			console.log("erro ao editar a transação", error);
+		} finally {
+			setIsLoadingSubmit(false);
 		}
 	};
 
@@ -110,6 +122,9 @@ export default function FormDialog(props) {
 					},
 					"& .MuiChip-root": {
 						borderRadius: 1
+					},
+					"& .MuiDialogTitle-root , .MuiDialogActions-spacing": {
+						backgroundColor: colors.modal[700]
 					}
 				}}
 			>
@@ -117,6 +132,7 @@ export default function FormDialog(props) {
 					<Chip
 						label={dataModal.title}
 						color={dataModal.color}
+						size="small"
 						sx={{
 							fontWeight: "bold",
 							fontSize: "14px",
@@ -147,6 +163,7 @@ export default function FormDialog(props) {
 					}}
 				>
 					<Button
+						size="small"
 						color="warning"
 						onClick={handleCloseModal}
 						sx={{
@@ -158,7 +175,9 @@ export default function FormDialog(props) {
 					</Button>
 
 					{dataModal.title === "Editar Carga" ? (
-						<Button
+						<LoadingButton
+							size="small"
+							loading={isLoadingSubmit}
 							onClick={handleEditCarga}
 							disabled={
 								truckValues.liquido < 1 ||
@@ -170,17 +189,26 @@ export default function FormDialog(props) {
 							}}
 						>
 							Registrar Saída
-						</Button>
+						</LoadingButton>
 					) : (
-						<Button
+						<LoadingButton
+							size="small"
 							onClick={handleSaveData}
+							loading={isLoadingSubmit}
+							variant="outlined"
 							sx={{
 								backgroundColor: colors.greenAccent[600],
 								color: "white"
 							}}
+							disabled={
+								(dataModal.title === "Descarregando" &&
+									truckValues.pesoBruto < 1) ||
+								(dataModal.title === "Carregando" &&
+									truckValues.tara < 1)
+							}
 						>
 							Registrar Entrada
-						</Button>
+						</LoadingButton>
 					)}
 				</DialogActions>
 			</Dialog>

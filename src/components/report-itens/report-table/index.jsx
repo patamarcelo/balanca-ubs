@@ -49,6 +49,8 @@ const ReportTable = (props) => {
 	const formatWeight = (peso) => {
 		return Number(peso).toLocaleString("pt-BR") + " Kg";
 	};
+
+	console.log(isLoading)
 	const columns = [
 		{
 			field: "tipo",
