@@ -26,14 +26,15 @@ const PageDataClass = ({ data }) => {
 				padding: "4px"
 			}}
 		>
-			<Grid container spacing={0}>
+			<Grid container >
 				{dictData.map((data, i) => {
 					return (
-						<Grid item xs={i=== 0 || i === 3 ? 2 : 5} key={i}>
+						<Grid item xs={i === 0 || i === 3 ? 2 : 5} key={i}>
 							<Box
 								display="flex"
 								justifyContent="start"
 								itemsAlign="center"
+								flex="0"
 								sx={{
 									borderBottom:
 										i > 2 ? "" : "1px dotted black",
@@ -56,11 +57,14 @@ const PageDataClass = ({ data }) => {
 									width="50%"
 									display="flex"
 									justifyContent="end"
+									flex="1"
 									sx={{
 										// backgroundColor: "red",
-										marginRight: isNonMobile ? "10%" : '',
-										marginLeft: isNonMobile ? '7px' : '',
-										whiteSpace: 'nowrap'
+										marginRight: isNonMobile
+											? "10%"
+											: "7px",
+										marginLeft: isNonMobile ? "7px" : "",
+										whiteSpace: "nowrap"
 									}}
 								>
 									<Typography
