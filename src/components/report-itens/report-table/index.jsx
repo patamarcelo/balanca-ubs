@@ -3,14 +3,19 @@ import { tokens } from "../../../theme";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
-import { faPrint, faTrashCan, faBookmark } from "@fortawesome/free-solid-svg-icons";
+import {
+	faPrint,
+	faTrashCan,
+	faBookmark
+} from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import toast from "react-hot-toast";
 
 import { useSelector } from "react-redux";
-import { selectIsAdminUser } from '../../../store/user/user.selector'
+import { selectIsAdminUser } from "../../../store/user/user.selector";
 
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
@@ -27,12 +32,13 @@ const ReportTable = (props) => {
 
 	const dataTableRev = [...dataTable].reverse();
 
-	const isAdmin = useSelector(selectIsAdminUser)
+	const isAdmin = useSelector(selectIsAdminUser);
 
 	const handlerDelete = (dataId, data) => {
 		try {
 			handleDeleteTruck(dataId, data);
 			handlerSave(saved + 1);
+			toast.success("Carga deletada com sucesso!!");
 		} catch (error) {
 			console.log("Erro ao Deletar a Carga: ", data.id);
 		}
@@ -50,7 +56,7 @@ const ReportTable = (props) => {
 		return Number(peso).toLocaleString("pt-BR") + " Kg";
 	};
 
-	console.log(isLoading)
+	console.log(isLoading);
 	const columns = [
 		{
 			field: "tipo",
@@ -245,7 +251,9 @@ const ReportTable = (props) => {
 						<Typography
 							color={colors.greenAccent[400]}
 							sx={{ cursor: "pointer" }}
-							onClick={() => handlerDelete(params.row.id, params.row)}
+							onClick={() =>
+								handlerDelete(params.row.id, params.row)
+							}
 						>
 							<FontAwesomeIcon
 								color={colors.redAccent[500]}

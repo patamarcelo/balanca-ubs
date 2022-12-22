@@ -24,6 +24,8 @@ import {
 } from "../../../store/trucks/trucks.selector";
 
 import { selectIBalancaUser } from "../../../store/user/user.selector";
+
+import toast from "react-hot-toast";
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -54,6 +56,7 @@ const HomeTableTruck = (props) => {
 		try {
 			handleDeleteTruck(dataId, data);
 			handlerSave(saved + 1);
+			toast.success("Carga deletada com sucesso!!");
 		} catch (error) {
 			console.log("Erro ao Deletar a Carga: ", data.id);
 		}
