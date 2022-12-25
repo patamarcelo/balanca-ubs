@@ -44,14 +44,16 @@ const AuthApp = () => {
 
 			<Box
 				width="100%"
-				height="100vh"
+				height="100%"
 				display="flex"
 				justifyContent="center"
 				sx={{
 					padding: "10px",
-					height: "100vh",
+					height: "100%",
 					backgroundColor:
-						location.pathname === "/print" ? "rgb(237, 234, 222) !important" : ""
+						location.pathname === "/print"
+							? "rgb(237, 234, 222) !important"
+							: ""
 				}}
 			>
 				<Routes>
