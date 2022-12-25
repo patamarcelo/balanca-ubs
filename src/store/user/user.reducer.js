@@ -1,12 +1,16 @@
 import { USER_ACTIONS_TYPES } from "./user.types";
-import { setIsAdminUserReducer, setIsBalancaUserReducer } from "./user.action";
+import {
+	setIsAdminUserReducer,
+	setIsBalancaUserReducer,
+	setUnidadeOpUser
+} from "./user.action";
 
 export const INITIAL_STATE = {
 	currentUser: null,
 	isAuth: false,
 	isAdmin: false,
 	isBalanca: false,
-	asaasToken: "$" + process.env.REACT_APP_ASAAS_TOKEN + "=="
+	unidadeOp: ""
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
@@ -17,11 +21,13 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 		case USER_ACTIONS_TYPES.SET_CURRENT_USER:
 			const isAdminUser = setIsAdminUserReducer(payload);
 			const isBalanca = setIsBalancaUserReducer(payload);
+			const unidadeOp = setUnidadeOpUser(payload);
 			return {
 				...state,
 				currentUser: payload,
 				isAdmin: isAdminUser,
-				isBalanca: isBalanca
+				isBalanca: isBalanca,
+				unidadeOp: unidadeOp
 			};
 		case USER_ACTIONS_TYPES.SET_AUTH_USER:
 			return {
