@@ -18,7 +18,10 @@ import {
 	handleUpdateTruck
 } from "../../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../store/user/user.selector";
+import {
+	selectCurrentUser,
+	selectUnidadeOpUser
+} from "../../../store/user/user.selector";
 
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +29,7 @@ import { selectTruckLoadsFormatData } from "../../../store/trucks/trucks.selecto
 
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
+	const unidadeOp = useSelector(selectUnidadeOpUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
@@ -98,7 +102,8 @@ export default function FormDialog(props) {
 				saida,
 				tipo,
 				observacoes,
-				destino
+				destino,
+				unidadeOp
 			);
 			toast.success("Carga registrada com sucesso!!");
 			if (newTrans) {
