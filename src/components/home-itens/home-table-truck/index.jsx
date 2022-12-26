@@ -38,7 +38,6 @@ const HomeTableTruck = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const isBalanca = useSelector(selectIBalancaUser);
 
-	const table = useSelector(selectTruckLoadsOnWork);
 	const {
 		saved,
 		handlerSave,
@@ -50,8 +49,11 @@ const HomeTableTruck = (props) => {
 		handleBlurTruck,
 		truckValues,
 		setTruckValues,
-		handleOpenModal
+		handleOpenModal,
+		selectedUnitOp
 	} = props;
+
+	const table = useSelector(selectTruckLoadsOnWork(selectedUnitOp));
 
 	const handlerDelete = (dataId, data) => {
 		try {

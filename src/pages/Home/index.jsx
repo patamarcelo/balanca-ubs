@@ -12,7 +12,7 @@ import { TRUCK_INITIAL_STATE } from "../../store/trucks/reducer.initials";
 
 import { useDispatch } from "react-redux";
 import { setTruckLoads } from "../../store/trucks/trucks.actions";
-import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
+// import { getTruckMoves } from "../../utils/firebase/firebase.datatable";
 
 import { useSelector } from "react-redux";
 import {
@@ -21,11 +21,16 @@ import {
 	selectTruckLoadsOnWork
 } from "../../store/trucks/trucks.selector";
 
-import { selectIBalancaUser } from "../../store/user/user.selector";
+import {
+	selectIBalancaUser,
+	selectUnidadeOpUser
+} from "../../store/user/user.selector";
 
 import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
 import { db } from "../../utils/firebase/firebase";
 import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
+
+import { UNITS_OP } from "../../store/trucks/trucks.types";
 
 const dataModalText = {
 	carregando: {
@@ -48,9 +53,8 @@ const HomePage = () => {
 	const dispatch = useDispatch();
 	const [isLoadingHome, setIsLoading] = useState(true);
 
-	const totalCarregando = useSelector(selectTrucksCarregando);
-	const totalDescarregando = useSelector(selectTrucksDescarregando);
 	const isBalanca = useSelector(selectIBalancaUser);
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const [dataModal, setDataModal] = useState({
 		title: "",
@@ -61,7 +65,14 @@ const HomePage = () => {
 
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
-	const table = useSelector(selectTruckLoadsOnWork);
+	const [selectedUnitOp, setSelectedUnitOp] = useState(unidadeOpUser);
+
+	const totalCarregando = useSelector(selectTrucksCarregando(selectedUnitOp));
+	const totalDescarregando = useSelector(
+		selectTrucksDescarregando(selectedUnitOp)
+	);
+
+	// const table = useSelector(selectTruckLoadsOnWork);
 
 	// useEffect(() => {
 	// 	const getData = async () => {
@@ -147,6 +158,10 @@ const HomePage = () => {
 		}
 	};
 
+	const handleFilteredUnidadeOp = (data) => {
+		setSelectedUnitOp(data);
+	};
+
 	// console.log(truckValues)
 
 	return (
@@ -197,6 +212,39 @@ const HomePage = () => {
 				</CustomButton>
 			</Box>
 			<Box
+				display="flex"
+				justifyContent="start"
+				gap="20px"
+				// sx={{
+				// 	border: "1px solid white"
+				// }}
+			>
+				{UNITS_OP.map((data, i) => {
+					return (
+						<Box
+							key={i}
+							sx={{
+								backgroundColor:
+									selectedUnitOp === data
+										? colors.blueOrigin[700]
+										: "#22343F",
+								color:
+									selectedUnitOp === data
+										? "white"
+										: "#667279",
+								padding: "10px",
+								cursor: "pointer",
+								textTransform: "capitalize",
+								borderRadius: "4px"
+							}}
+							onClick={() => handleFilteredUnidadeOp(data)}
+						>
+							{data}
+						</Box>
+					);
+				})}
+			</Box>
+			<Box
 				width="100%"
 				height="80%"
 				sx={{
@@ -210,6 +258,7 @@ const HomePage = () => {
 				}}
 			>
 				<HomeTable
+					selectedUnitOp={selectedUnitOp}
 					saved={saved}
 					handlerSave={handlerSave}
 					isOpenModal={isOpenModal}

@@ -61,7 +61,8 @@ const ReportTable = (props) => {
 		{
 			field: "tipo",
 			headerName: "",
-			flex: 0.1,
+			// flex: 0.1,
+			width: 10,
 			renderHeader: (params) => (
 				<Box
 					sx={{
@@ -95,9 +96,10 @@ const ReportTable = (props) => {
 		{
 			field: "entrada",
 			headerName: "Entrada",
-			flex: 1,
+			// flex: 1,
 			headerAlign: "center",
 			align: "center",
+			width: 130,
 			renderCell: (params) => (
 				<Typography color={colors.greenAccent[400]}>
 					{params.row.entrada}
@@ -107,7 +109,8 @@ const ReportTable = (props) => {
 		{
 			field: "placa",
 			headerName: "Placa",
-			flex: 0.6,
+			// flex: 0.6,
+			width: 80,
 			cellClassName: "name-placa",
 			headerAlign: "center",
 			align: "center",
@@ -121,47 +124,54 @@ const ReportTable = (props) => {
 			// type: "number",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 120
 		},
 		{
 			field: "origem",
 			headerName: "Origem",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 120
 		},
 		{
 			field: "destino",
 			headerName: "Destino",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 100
 		},
 		{
 			field: "mercadoria",
 			headerName: "Mercadoria",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 100
 		},
 		{
 			field: "projeto",
 			headerName: "Projeto",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 100
 		},
 		{
 			field: "cultura",
 			headerName: "Cultura",
 			headerAlign: "center",
 			align: "center",
-			flex: 1
+			// flex: 1
+			width: 100
 		},
 		{
 			field: "saida",
 			headerName: "Saída",
-			flex: 1,
+			// flex: 1,
+			width: 130,
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
@@ -186,7 +196,8 @@ const ReportTable = (props) => {
 		{
 			field: "pesoBruto",
 			headerName: "Bruto",
-			flex: 1,
+			// flex: 1,
+			width: 120,
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
@@ -198,7 +209,8 @@ const ReportTable = (props) => {
 		{
 			field: "tara",
 			headerName: "Tara",
-			flex: 1,
+			// flex: 1,
+			width: 120,
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
@@ -210,7 +222,8 @@ const ReportTable = (props) => {
 		{
 			field: "liquido",
 			headerName: "Líquido",
-			flex: 1,
+			// flex: 1,
+			width: 120,
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
@@ -309,7 +322,7 @@ const ReportTable = (props) => {
 	return (
 		<Box
 			sx={{
-				width: "100%",
+				// minWidth: "100%",
 				minHeight: "100%",
 				height: "100%",
 				whiteSpace: "nowrap"

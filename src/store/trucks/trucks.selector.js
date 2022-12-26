@@ -1,8 +1,12 @@
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
-export const selectTruckLoadsOnWork = (state) => {
+export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
+	console.log(unidadeOp);
 	const dataLoad = state.truckLoads.truckLoads;
-	return dataLoad.filter((data) => data.pesoBruto === "" || data.tara === "");
+	const unidadeOpFiltered = unidadeOp ? unidadeOp : "ubs";
+	return dataLoad
+		.filter((data) => data.pesoBruto === "" || data.tara === "")
+		.filter((data) => data.unidadeOp === unidadeOpFiltered);
 };
 
 const formatDate = (entrada) => {
@@ -36,20 +40,22 @@ export const selectTruckLoadsFormatData = (state) => {
 	return fd;
 };
 
-export const selectTrucksCarregando = (state) => {
+export const selectTrucksCarregando = (unidadeOp) => (state) => {
 	const dataLoad = state.truckLoads.truckLoads.filter(
 		(data) =>
 			data.tipo === "carregando" &&
-			(data.pesoBruto === "" || data.tara === "")
+			(data.pesoBruto === "" || data.tara === "") &&
+			data.unidadeOp === unidadeOp
 	);
 	return Object.keys(dataLoad).length;
 };
 
-export const selectTrucksDescarregando = (state) => {
+export const selectTrucksDescarregando = (unidadeOp) => (state) => {
 	const dataLoad = state.truckLoads.truckLoads.filter(
 		(data) =>
 			data.tipo === "descarregando" &&
-			(data.pesoBruto === "" || data.tara === "")
+			(data.pesoBruto === "" || data.tara === "") &&
+			data.unidadeOp === unidadeOp
 	);
 	return Object.keys(dataLoad).length;
 };

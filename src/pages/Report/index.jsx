@@ -45,7 +45,7 @@ const ReportPage = () => {
 
 	return (
 		<Box
-			width="100%"
+			minWidth="100%"
 			height="92%"
 			sx={{
 				padding: ""

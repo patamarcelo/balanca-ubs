@@ -25,7 +25,8 @@ const HomeTable = (props) => {
 		truckValues,
 		setTruckValues,
 		handleOpenModal,
-		isLoadingHome
+		isLoadingHome,
+		selectedUnitOp
 	} = props;
 
 	const theme = useTheme();
@@ -33,7 +34,7 @@ const HomeTable = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [showAd, setShowAd] = useState(false);
 
-	const tableHome = useSelector(selectTruckLoadsOnWork);
+	const tableHome = useSelector(selectTruckLoadsOnWork(selectedUnitOp));
 
 	// const dispatch = useDispatch();
 
@@ -85,9 +86,11 @@ const HomeTable = (props) => {
 			<Box
 				display="flex"
 				justifyContent="center"
+				flexDirection="column"
 				alignItems="center"
 				width="100%"
 				height="100%"
+				gap="20px"
 				sx={{
 					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
@@ -97,7 +100,14 @@ const HomeTable = (props) => {
 				<Typography
 					variant="h2"
 					color={colors.yellow[700]}
-					sx={{ fontWeight: "bold" }}
+					sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+				>
+					{selectedUnitOp}
+				</Typography>
+				<Typography
+					variant="h2"
+					color={colors.yellow[700]}
+					sx={{ fontWeight: "bold", textTransform: "capitalize" }}
 				>
 					SEM VEÍCULOS NO PÁTIO
 				</Typography>
@@ -117,6 +127,7 @@ const HomeTable = (props) => {
 			}}
 		>
 			<HomeTableTruck
+				selectedUnitOp={selectedUnitOp}
 				saved={saved}
 				handlerSave={handlerSave}
 				isOpenModal={isOpenModal}
