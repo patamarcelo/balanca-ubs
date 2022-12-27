@@ -77,7 +77,6 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);
-		console.log("value unit", value);
 		setFormatUnidade(value[0].description);
 	}, [selectedUnitOp]);
 
@@ -111,6 +110,13 @@ const HomePage = () => {
 		}, 1000);
 	}, []);
 
+	useEffect(() => {
+		setIsLoading(true);
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 250);
+	}, [selectedUnitOp]);
+
 	const handleOpenModal = async (obj, data) => {
 		if (obj.title === "Editar Carga") {
 			await setTruckValues(data);
@@ -142,7 +148,6 @@ const HomePage = () => {
 	};
 
 	const handleChangeTruck = (e) => {
-		console.log(e.target.name, e.target.value);
 		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
 	};
 

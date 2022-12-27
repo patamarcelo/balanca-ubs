@@ -6,6 +6,6 @@ export const TRUCKS_ACTIONS_TYPES = {
 
 export const UNITS_OP = [
 	{ title: "ubs", description: "UBS" },
-	{ title: "diamante", description: "Diamante" },
-	{ title: "ouroVerde", description: "Ouro Verde" }
+	{ title: "diamante", description: "Diamante" }
+	// { title: "ouroVerde", description: "Ouro Verde" }
 ];

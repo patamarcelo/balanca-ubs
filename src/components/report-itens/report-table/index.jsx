@@ -56,13 +56,12 @@ const ReportTable = (props) => {
 		return Number(peso).toLocaleString("pt-BR") + " Kg";
 	};
 
-	console.log(isLoading);
 	const columns = [
 		{
 			field: "tipo",
 			headerName: "",
 			// flex: 0.1,
-			width: 10,
+			width: 55,
 			renderHeader: (params) => (
 				<Box
 					sx={{
@@ -75,22 +74,56 @@ const ReportTable = (props) => {
 				</Box>
 			),
 			renderCell: (params) => (
-				<Typography color={colors.greenAccent[400]}>
+				<Box
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+					sx={{
+						width: "100%"
+					}}
+				>
 					{params.row.tipo === "carregando" ? (
-						<FontAwesomeIcon
-							color={colors.greenAccent[600]}
-							icon={faTruckMoving}
-							size="xs"
-							className="fa-flip-horizontal"
-						/>
+						<>
+							<FontAwesomeIcon
+								color={colors.greenAccent[600]}
+								icon={faTruckMoving}
+								size="xs"
+								className="fa-flip-horizontal"
+							/>
+
+							<Typography
+								color={colors.greenAccent[400]}
+								sx={{ cursor: "pointer" }}
+								onClick={() => handlerNavigatePrint(params.row)}
+							>
+								<FontAwesomeIcon
+									color={colors.grey[200]}
+									icon={faPrint}
+									size="sm"
+								/>
+							</Typography>
+						</>
 					) : (
-						<FontAwesomeIcon
-							color={colors.redAccent[600]}
-							icon={faTruckMoving}
-							size="xs"
-						/>
+						<>
+							<FontAwesomeIcon
+								color={colors.redAccent[600]}
+								icon={faTruckMoving}
+								size="xs"
+							/>
+							<Typography
+								color={colors.greenAccent[400]}
+								sx={{ cursor: "pointer" }}
+								onClick={() => handlerNavigatePrint(params.row)}
+							>
+								<FontAwesomeIcon
+									color={colors.grey[200]}
+									icon={faPrint}
+									size="sm"
+								/>
+							</Typography>
+						</>
 					)}
-				</Typography>
+				</Box>
 			)
 		},
 		{
@@ -263,17 +296,6 @@ const ReportTable = (props) => {
 			),
 			renderCell: (params) => (
 				<>
-					<Typography
-						color={colors.greenAccent[400]}
-						sx={{ cursor: "pointer" }}
-						onClick={() => handlerNavigatePrint(params.row)}
-					>
-						<FontAwesomeIcon
-							color={colors.grey[200]}
-							icon={faPrint}
-							size="sm"
-						/>
-					</Typography>
 					{params.row.liquido > 0 && (
 						<FontAwesomeIcon
 							color={colors.greenAccent[500]}

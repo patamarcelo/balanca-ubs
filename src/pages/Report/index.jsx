@@ -33,7 +33,10 @@ const ReportPage = () => {
 				setTruckLoads(
 					snapshot.docs.map((doc) => ({
 						...doc.data(),
-						id: doc.id
+						id: doc.id,
+						unidadeOp: doc.data().unidadeOp
+							? doc.data().unidadeOp
+							: "ubs"
 					}))
 				)
 			);

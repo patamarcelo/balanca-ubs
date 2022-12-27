@@ -1,7 +1,6 @@
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
 export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
-	console.log(unidadeOp);
 	const dataLoad = state.truckLoads.truckLoads;
 	const unidadeOpFiltered = unidadeOp ? unidadeOp : "ubs";
 	return dataLoad

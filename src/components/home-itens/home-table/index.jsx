@@ -82,7 +82,7 @@ const HomeTable = (props) => {
 		);
 	}
 
-	if (tableHome.length === 0 && showAd) {
+	if (tableHome.length === 0 && showAd && !isLoadingHome) {
 		return (
 			<Box
 				display="flex"
@@ -116,33 +116,35 @@ const HomeTable = (props) => {
 		);
 	}
 
-	return (
-		<Box
-			width="100%"
-			display="flex"
-			alignItems="center"
-			flexDirection="column"
-			gap="15px"
-			sx={{
-				padding: "15px 0"
-			}}
-		>
-			<HomeTableTruck
-				selectedUnitOp={selectedUnitOp}
-				saved={saved}
-				handlerSave={handlerSave}
-				isOpenModal={isOpenModal}
-				handleCloseModal={handleCloseModal}
-				dataModal={dataModal}
-				handleCloseModalEsc={handleCloseModalEsc}
-				handleChangeTruck={handleChangeTruck}
-				handleBlurTruck={handleBlurTruck}
-				truckValues={truckValues}
-				setTruckValues={setTruckValues}
-				handleOpenModal={handleOpenModal}
-			/>
-		</Box>
-	);
+	if (!isLoadingHome) {
+		return (
+			<Box
+				width="100%"
+				display="flex"
+				alignItems="center"
+				flexDirection="column"
+				gap="15px"
+				sx={{
+					padding: "15px 0"
+				}}
+			>
+				<HomeTableTruck
+					selectedUnitOp={selectedUnitOp}
+					saved={saved}
+					handlerSave={handlerSave}
+					isOpenModal={isOpenModal}
+					handleCloseModal={handleCloseModal}
+					dataModal={dataModal}
+					handleCloseModalEsc={handleCloseModalEsc}
+					handleChangeTruck={handleChangeTruck}
+					handleBlurTruck={handleBlurTruck}
+					truckValues={truckValues}
+					setTruckValues={setTruckValues}
+					handleOpenModal={handleOpenModal}
+				/>
+			</Box>
+		);
+	}
 };
 
 export default HomeTable;
