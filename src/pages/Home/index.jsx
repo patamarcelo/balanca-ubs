@@ -31,6 +31,7 @@ import { db } from "../../utils/firebase/firebase";
 import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
 import { UNITS_OP } from "../../store/trucks/trucks.types";
+import "./indexTabs.css";
 
 const dataModalText = {
 	carregando: {
@@ -214,10 +215,12 @@ const HomePage = () => {
 			<Box
 				display="flex"
 				justifyContent="start"
-				gap="20px"
-				// sx={{
-				// 	border: "1px solid white"
-				// }}
+				className="tabs"
+				sx={{
+					// border: "1px solid white",
+					marginBottom: "-22px",
+					marginLeft: "15px"
+				}}
 			>
 				{UNITS_OP.map((data, i) => {
 					return (
@@ -225,11 +228,11 @@ const HomePage = () => {
 							key={i}
 							sx={{
 								backgroundColor:
-									selectedUnitOp === data
+									selectedUnitOp === data.title
 										? colors.blueOrigin[700]
 										: "#22343F",
 								color:
-									selectedUnitOp === data
+									selectedUnitOp === data.title
 										? "white"
 										: "#667279",
 								padding: "10px",
@@ -237,9 +240,9 @@ const HomePage = () => {
 								textTransform: "capitalize",
 								borderRadius: "4px"
 							}}
-							onClick={() => handleFilteredUnidadeOp(data)}
+							onClick={() => handleFilteredUnidadeOp(data.title)}
 						>
-							{data}
+							{data.description}
 						</Box>
 					);
 				})}
