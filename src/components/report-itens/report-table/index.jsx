@@ -180,6 +180,14 @@ const ReportTable = (props) => {
 				</Typography>
 			)
 		},
+		{
+			field: "unidadeOp",
+			headerName: "Unidade",
+			// flex: 1,
+			width: 130,
+			headerAlign: "center",
+			align: "center"
+		},
 
 		// {
 		// 	field: "type",

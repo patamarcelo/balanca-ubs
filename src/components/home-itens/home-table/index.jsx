@@ -26,7 +26,8 @@ const HomeTable = (props) => {
 		setTruckValues,
 		handleOpenModal,
 		isLoadingHome,
-		selectedUnitOp
+		selectedUnitOp,
+		formatUnidade
 	} = props;
 
 	const theme = useTheme();
@@ -102,7 +103,7 @@ const HomeTable = (props) => {
 					color={colors.yellow[700]}
 					sx={{ fontWeight: "bold", textTransform: "capitalize" }}
 				>
-					{selectedUnitOp}
+					{formatUnidade}
 				</Typography>
 				<Typography
 					variant="h2"

@@ -73,6 +73,14 @@ const HomePage = () => {
 		selectTrucksDescarregando(selectedUnitOp)
 	);
 
+	const [formatUnidade, setFormatUnidade] = useState("");
+
+	useEffect(() => {
+		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);
+		console.log("value unit", value);
+		setFormatUnidade(value[0].description);
+	}, [selectedUnitOp]);
+
 	// const table = useSelector(selectTruckLoadsOnWork);
 
 	// useEffect(() => {
@@ -261,6 +269,7 @@ const HomePage = () => {
 				}}
 			>
 				<HomeTable
+					formatUnidade={formatUnidade}
 					selectedUnitOp={selectedUnitOp}
 					saved={saved}
 					handlerSave={handlerSave}

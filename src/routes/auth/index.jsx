@@ -1,5 +1,5 @@
 import { Box, TextField, Typography, useTheme } from "@mui/material";
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 import { Formik, getIn } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -10,26 +10,22 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsAuthUser, setUser } from "../../store/user/user.action";
 
-import './index.css'
+import "./index.css";
 
-import PasswordReset from './password-reset'
+import PasswordReset from "./password-reset";
 
 import background from "../../utils/assets/img/background.png";
-
-
 
 // import {
 // 	createNotification,
 // 	TYPES_NOTIFICATION
 // } from "../../utils/notifications/notififications.utils";
 
+import toast from "react-hot-toast";
 
-import toast from 'react-hot-toast';
+import { useState } from "react";
 
-import { useState } from 'react'
-
-import './index.css'
-
+import "./index.css";
 
 const initialValues = {
 	username: "",
@@ -46,37 +42,34 @@ const Auth = () => {
 	const colors = tokens(theme.palette.mode);
 	const navitgate = useNavigate();
 	const dispatch = useDispatch();
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(false);
 
-	const notifySuccess = () => toast.success('Login efetuado com sucesso!!');
+	const notifySuccess = () => toast.success("Login efetuado com sucesso!!");
 	const notifyError = (error) => {
-		console.log(error)
-		toast.error(`Erro: ${error}` );
-	}
-
+		console.log(error);
+		toast.error(`Erro: ${error}`);
+	};
 
 	const isNonMobile = useMediaQuery("(min-width: 700px)");
 
-	const handleFormSubmit = async values => {
-		setIsLoading(true)
+	const handleFormSubmit = async (values) => {
+		setIsLoading(true);
 		try {
 			const email = values.username;
 			const password = values.password;
 			const user = await authUser(email, password);
-			
 
 			if (user) {
 				dispatch(setIsAuthUser(true));
 				dispatch(setUser(user.user));
-				notifySuccess()
+				notifySuccess();
 				navitgate("/");
 			}
 		} catch (e) {
 			console.log("Error adding user: ", e);
-			notifyError(e)
-		}
-		finally {
-			setIsLoading(false)
+			notifyError(e);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -99,14 +92,14 @@ const Auth = () => {
 		>
 			<Box
 				sx={{
-					backgroundColor: 'rgba(18,117,181,0.9)',
+					backgroundColor: "rgba(18,117,181,0.9)",
 					margin: "20px 20px",
 					padding: "50px 20px",
 					width: isNonMobile ? "80%" : "100%",
 					maxWidth: isNonMobile ? "50%" : "100%",
 					minHeight: "40vh",
 					borderRadius: " 8px",
-					boxShadow: 'inset 0 0 7px black'
+					boxShadow: "inset 0 0 7px black"
 				}}
 			>
 				<Box
@@ -126,13 +119,15 @@ const Auth = () => {
 						}}
 						className="title-app"
 					>
-						Diamante - UBS
+						Diamante
 					</Typography>
 				</Box>
 				<Formik
 					// onSubmit={handleFormSubmit}
 					onSubmit={async (values, actions) => {
-						console.log(process.env.NODE_ENV !== "production" ? actions : '');
+						console.log(
+							process.env.NODE_ENV !== "production" ? actions : ""
+						);
 						await handleFormSubmit(values);
 						actions.setSubmitting(false);
 						// actions.resetForm({
@@ -155,7 +150,7 @@ const Auth = () => {
 						handleReset,
 						setFieldValue,
 						isValid
-					}) =>
+					}) => (
 						<form onSubmit={handleSubmit}>
 							<Box
 								display="grid"
@@ -177,12 +172,12 @@ const Auth = () => {
 										// boxShadow: `initial`,
 										// boxShadow: `none !important`,
 									},
-                                    "& .MuiFilledInput-input": {
-                                        // boxShadow: "0 0 0 100px black inset !important"
-                                        boxShadow: `0 0 0 100px ${colors.blueOrigin[800]} inset !important`,
-                                    },
+									"& .MuiFilledInput-input": {
+										// boxShadow: "0 0 0 100px black inset !important"
+										boxShadow: `0 0 0 100px ${colors.blueOrigin[800]} inset !important`
+									},
 									"& .MuiFormLabel-root.Mui-focused": {
-										color: 'white !important'
+										color: "white !important"
 									},
 									margin: " 0 auto"
 								}}
@@ -195,16 +190,30 @@ const Auth = () => {
 											variant="filled"
 											type={value.type}
 											label={value.label}
-											onBlur={e => {
-												handleBlur(e)
-												if(e.target.name === 'username'){
-													setFieldValue('username', e.target.value.toLowerCase().trim())
+											onBlur={(e) => {
+												handleBlur(e);
+												if (
+													e.target.name === "username"
+												) {
+													setFieldValue(
+														"username",
+														e.target.value
+															.toLowerCase()
+															.trim()
+													);
 												}
 											}}
-											onChange={e => {
-												handleChange(e)
-												if(e.target.name === 'username'){
-													setFieldValue('username', e.target.value.toLowerCase().trim())
+											onChange={(e) => {
+												handleChange(e);
+												if (
+													e.target.name === "username"
+												) {
+													setFieldValue(
+														"username",
+														e.target.value
+															.toLowerCase()
+															.trim()
+													);
 												}
 											}}
 											value={values.name}
@@ -231,10 +240,11 @@ const Auth = () => {
 									}}
 								>
 									<LoadingButton
-									loading={isLoading ? true : false}
+										loading={isLoading ? true : false}
 										type="submit"
 										sx={{
-											backgroundColor: colors.greenAccent[600],
+											backgroundColor:
+												colors.greenAccent[600],
 											width: "100%",
 											borderRadius: "60px"
 										}}
@@ -244,10 +254,11 @@ const Auth = () => {
 									>
 										Entrar
 									</LoadingButton>
-								<PasswordReset />
+									<PasswordReset />
 								</Box>
 							</Box>
-						</form>}
+						</form>
+					)}
 				</Formik>
 			</Box>
 		</Box>

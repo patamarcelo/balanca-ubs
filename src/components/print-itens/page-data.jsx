@@ -48,25 +48,28 @@ const PageData = ({ data }) => {
 				<img src={Logo} alt="logo" />
 			</Box>
 
-			{["TICKET DE REQUISIÇÃO", " LAGOA DA CONFUSÃO-TO/UBS SEMENTE "].map(
-				(data, i) => {
-					return (
-						<Box key={i}>
-							<Typography
-								variant="h6"
-								color={colors.primary[700]}
-								fontWeight="bold"
-								sx={{
-									padding: "3px 0",
-									marginBottom: i === 1 ? "15px" : ""
-								}}
-							>
-								{data}
-							</Typography>
-						</Box>
-					);
-				}
-			)}
+			{[
+				"TICKET DE REQUISIÇÃO",
+				`LAGOA DA CONFUSÃO-TO / ${
+					data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
+				}`
+			].map((data, i) => {
+				return (
+					<Box key={i}>
+						<Typography
+							variant="h6"
+							color={colors.primary[700]}
+							fontWeight="bold"
+							sx={{
+								padding: "3px 0",
+								marginBottom: i === 1 ? "15px" : ""
+							}}
+						>
+							{data}
+						</Typography>
+					</Box>
+				);
+			})}
 			<Box
 				width="100%"
 				display="flex"
@@ -247,7 +250,7 @@ const PageData = ({ data }) => {
 							color={colors.grey[800]}
 							fontWeight="bold"
 							sx={{
-								textTransform: 'capitalize'
+								textTransform: "capitalize"
 							}}
 						>
 							{data.motorista ? data.motorista : "Motorista"}
