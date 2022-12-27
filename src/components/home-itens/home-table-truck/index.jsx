@@ -24,7 +24,10 @@ import {
 	selectTruckLoadsOnWork
 } from "../../../store/trucks/trucks.selector";
 
-import { selectIBalancaUser } from "../../../store/user/user.selector";
+import {
+	selectIBalancaUser,
+	selectUnidadeOpUser
+} from "../../../store/user/user.selector";
 
 import toast from "react-hot-toast";
 const editarModal = {
@@ -37,6 +40,7 @@ const HomeTableTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isBalanca = useSelector(selectIBalancaUser);
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const {
 		saved,
@@ -80,6 +84,8 @@ const HomeTableTruck = (props) => {
 				saved={saved}
 			/>
 			{table.map((data, i) => {
+				const unidadeOpTable = data.unidadeOp ? data.unidadeOp : "ubs";
+				const disableInput = unidadeOpUser === unidadeOpTable;
 				return (
 					<Box
 						key={i}
@@ -133,7 +139,7 @@ const HomeTableTruck = (props) => {
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton
-								disabled={!isBalanca}
+								disabled={!isBalanca || !disableInput}
 								aria-label="edit"
 								onClick={() =>
 									handleOpenModal(editarModal, data)
@@ -142,7 +148,7 @@ const HomeTableTruck = (props) => {
 								<FontAwesomeIcon
 									icon={faPenToSquare}
 									color={
-										!isBalanca
+										!isBalanca || !disableInput
 											? colors.grey[600]
 											: colors.yellow[600]
 									}
@@ -150,14 +156,14 @@ const HomeTableTruck = (props) => {
 								/>
 							</IconButton>
 							<IconButton
-								disabled={!isBalanca}
+								disabled={!isBalanca || !disableInput}
 								aria-label="delete"
 								onClick={() => handlerDelete(data.id, data)}
 							>
 								<FontAwesomeIcon
 									icon={faTrashCan}
 									color={
-										!isBalanca
+										!isBalanca || !disableInput
 											? colors.grey[600]
 											: colors.redAccent[600]
 									}
