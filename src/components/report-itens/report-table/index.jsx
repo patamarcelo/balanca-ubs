@@ -383,6 +383,9 @@ const ReportTable = (props) => {
 					},
 					"& .MuiDataGrid-toolbarContainer .MuiButton-text": {
 						color: `${colors.grey[100]} !important`
+					},
+					"& .MuiDataGrid-row.Mui-selected": {
+						backgroundColor: `${colors.yellow[900]} !important`
 					}
 				}}
 			>
