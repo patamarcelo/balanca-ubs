@@ -128,7 +128,7 @@ const HomeTableTruck = (props) => {
 							flexDirection={!isNonMobile ? "column" : "row"}
 							alignSelf="stretch"
 							alignItems="center"
-							justifyContent="space-evenly"
+							justifyContent="space-between"
 							sx={{
 								// backgroundColor: 'red',
 								flex: 0.8,
