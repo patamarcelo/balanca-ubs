@@ -29,9 +29,9 @@ import {
 import { useState } from "react";
 
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 
-const ButtonAppBar = ({toggleDrawer}) => {
+const ButtonAppBar = ({ toggleDrawer }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isAdmin = useSelector(selectIsAdminUser);
@@ -61,8 +61,6 @@ const ButtonAppBar = ({toggleDrawer}) => {
 			window.location.reload(true);
 		}, 1000);
 	};
-
-	
 
 	return (
 		<AppBar

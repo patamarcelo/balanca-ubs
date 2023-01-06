@@ -23,7 +23,10 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../store/user/user.selector";
+import {
+	selectCurrentUser,
+	selectUnidadeOpUser
+} from "../../store/user/user.selector";
 
 const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const theme = useTheme();
@@ -31,6 +34,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
 	const user = useSelector(selectCurrentUser);
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const location = useLocation();
 
@@ -69,8 +73,9 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 		>
 			<Box
 				display="flex"
+				flexDirection="column"
 				justifyContent="center"
-				alignItems="center"
+				alignItems={unidadeOpUser.length > 4 ? "start" : "center"}
 				onClick={toggleDrawer}
 				sx={{
 					cursor: "pointer",
@@ -84,6 +89,18 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						fontSize: "32px"
 					}}
 				/>
+				<Typography
+					variant="h6"
+					color={colors.grey[300]}
+					style={{
+						textTransform:
+							unidadeOpUser.length > 4
+								? "capitalize"
+								: "uppercase"
+					}}
+				>
+					{unidadeOpUser}
+				</Typography>
 			</Box>
 			<Box
 				display="flex"
@@ -124,7 +141,16 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					</IconButton>
 				)}
 				<Typography variant="h6" color={colors.primary[100]}>
-					{user.displayName}
+					<Box
+						display="flex"
+						flexDirection="column"
+						justifyContent="center"
+						alignItems="center"
+						mt="2px"
+						mb="2px"
+					>
+						<p style={{ margin: 0 }}>{user.displayName}</p>
+					</Box>
 				</Typography>
 				<IconButton onClick={() => console.log("user")}>
 					<FontAwesomeIcon
