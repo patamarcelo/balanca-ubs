@@ -266,11 +266,10 @@ const HomePage = () => {
 				sx={{
 					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
-					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
+					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
-					overflowX: "hidden",
-					position: "relative",
-					border: `0.1px solid ${colors.primary[100]}`
+					position: "relative"
+					// border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
 				<HomeTable

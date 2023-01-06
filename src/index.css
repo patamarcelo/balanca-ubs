@@ -9,6 +9,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: 'times new roman', sans-serif;
+  position: fixed;
 }
 
 .app {
@@ -23,12 +24,13 @@ body,
 
 /*Track*/
 ::-webkit-scrollbar-track{
+  height: 90%;
   background: #e0e0e0;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb{
-  background: #bbb
+  background: #072f48;
 }
 
 /*Handle on Hover*/

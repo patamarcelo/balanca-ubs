@@ -30,6 +30,9 @@ import {
 } from "../../../store/user/user.selector";
 
 import toast from "react-hot-toast";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -41,6 +44,8 @@ const HomeTableTruck = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const isBalanca = useSelector(selectIBalancaUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+
+	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const {
 		saved,
@@ -120,6 +125,7 @@ const HomeTableTruck = (props) => {
 						</Box>
 						<Box
 							display="flex"
+							flexDirection={!isNonMobile ? "column" : "row"}
 							alignSelf="stretch"
 							alignItems="center"
 							justifyContent="space-evenly"
