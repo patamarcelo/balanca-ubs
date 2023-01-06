@@ -100,7 +100,7 @@ const HomeTableTruck = (props) => {
 						gap="10px"
 						width="100%"
 						sx={{
-							width: "98%",
+							width: isNonMobile ? "98%" : "95%",
 							backgroundColor: colors.blueOrigin[800],
 							// border: `0.1px solid ${colors.primary[100]}`,
 							borderRadius: "5px",
