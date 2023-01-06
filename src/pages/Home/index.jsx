@@ -32,6 +32,7 @@ import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
 import { UNITS_OP } from "../../store/trucks/trucks.types";
 import "./indexTabs.css";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const dataModalText = {
 	carregando: {
@@ -50,6 +51,7 @@ const HomePage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [isOpenModal, setIsOpenModal] = useState(false);
+	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const dispatch = useDispatch();
 	const [isLoadingHome, setIsLoading] = useState(true);
@@ -262,13 +264,13 @@ const HomePage = () => {
 			</Box>
 			<Box
 				width="100%"
-				height="80%"
 				sx={{
 					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
-					position: "relative"
+					position: "relative",
+					height: isNonMobile ? "80%" : "70%"
 					// border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
