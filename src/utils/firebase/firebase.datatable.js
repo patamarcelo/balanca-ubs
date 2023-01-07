@@ -65,6 +65,9 @@ export const addTruckMove = async (
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
+	if (liquido) {
+		saida = entrada;
+	}
 	try {
 		newTransaction = await addDoc(
 			collection(db, TABLES_FIREBASE.truckmove),
