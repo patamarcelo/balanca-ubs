@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import CustomButton from "../../components/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,8 +17,7 @@ import { setTruckLoads } from "../../store/trucks/trucks.actions";
 import { useSelector } from "react-redux";
 import {
 	selectTrucksCarregando,
-	selectTrucksDescarregando,
-	selectTruckLoadsOnWork
+	selectTrucksDescarregando
 } from "../../store/trucks/trucks.selector";
 
 import {
@@ -52,6 +51,7 @@ const HomePage = () => {
 	const colors = tokens(theme.palette.mode);
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+	const isCellPhone = useMediaQuery("(min-width: 500px)");
 
 	const dispatch = useDispatch();
 	const [isLoadingHome, setIsLoading] = useState(true);
@@ -203,7 +203,10 @@ const HomePage = () => {
 				handlerSave={handlerSave}
 				saved={saved}
 			/>
-			<Box>
+			<Box
+				display="flex"
+				justifyContent={!isCellPhone && "space-between"}
+			>
 				<CustomButton
 					isBalanca={!isBalanca}
 					title={`Carregando: ${totalCarregando}`}
@@ -253,7 +256,10 @@ const HomePage = () => {
 								padding: "10px",
 								cursor: "pointer",
 								textTransform: "capitalize",
-								borderRadius: "4px"
+								borderRadius: "4px",
+								boxShadow:
+									selectedUnitOp === data.title &&
+									`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
 							}}
 							onClick={() => handleFilteredUnidadeOp(data.title)}
 						>
@@ -264,32 +270,44 @@ const HomePage = () => {
 			</Box>
 			<Box
 				width="100%"
+				p={1}
 				sx={{
 					backgroundColor: colors.blueOrigin[700],
 					borderRadius: "8px",
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
 					position: "relative",
-					height: isNonMobile ? "80%" : "70%"
-					// border: `0.1px solid ${colors.primary[100]}`
+					height: isNonMobile ? "80%" : "68%"
 				}}
 			>
-				<HomeTable
-					formatUnidade={formatUnidade}
-					selectedUnitOp={selectedUnitOp}
-					saved={saved}
-					handlerSave={handlerSave}
-					isOpenModal={isOpenModal}
-					handleCloseModal={handleCloseModal}
-					dataModal={dataModal}
-					handleCloseModalEsc={handleCloseModalEsc}
-					handleChangeTruck={handleChangeTruck}
-					handleBlurTruck={handleBlurTruck}
-					truckValues={truckValues}
-					setTruckValues={setTruckValues}
-					handleOpenModal={handleOpenModal}
-					isLoadingHome={isLoadingHome}
-				/>
+				<Box
+					width="100%"
+					sx={{
+						backgroundColor: colors.blueOrigin[700],
+						borderRadius: "8px",
+						overflow: "auto",
+						position: "relative",
+						height: "100%"
+						// border: `0.1px solid ${colors.primary[100]}`
+					}}
+				>
+					<HomeTable
+						formatUnidade={formatUnidade}
+						selectedUnitOp={selectedUnitOp}
+						saved={saved}
+						handlerSave={handlerSave}
+						isOpenModal={isOpenModal}
+						handleCloseModal={handleCloseModal}
+						dataModal={dataModal}
+						handleCloseModalEsc={handleCloseModalEsc}
+						handleChangeTruck={handleChangeTruck}
+						handleBlurTruck={handleBlurTruck}
+						truckValues={truckValues}
+						setTruckValues={setTruckValues}
+						handleOpenModal={handleOpenModal}
+						isLoadingHome={isLoadingHome}
+					/>
+				</Box>
 			</Box>
 		</Box>
 	);
