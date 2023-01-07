@@ -91,9 +91,7 @@ const HomeTable = (props) => {
 				height="100%"
 				gap="20px"
 				sx={{
-					backgroundColor: colors.blueOrigin[700],
-					borderRadius: "8px",
-					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+					backgroundColor: colors.blueOrigin[700]
 				}}
 			>
 				<Typography

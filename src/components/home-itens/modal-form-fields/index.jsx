@@ -10,15 +10,39 @@ import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
 import { borderRadius } from "@mui/system";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
+import { useSelector } from "react-redux";
+import { selectUnidadeOpUser } from "../../../store/user/user.selector";
+
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
 		props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const [value, setValue] = useState(new Date());
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	useEffect(() => {
-		setTruckValues({ ...truckValues, data: new Date() });
+		if (
+			truckValues.tipo === "carregando" &&
+			truckValues.origem.length === 0
+		) {
+			setTruckValues({
+				...truckValues,
+				origem: unidadeOpUser?.toUpperCase(),
+				data: new Date()
+			});
+		} else if (
+			truckValues.tipo === "descarregando" &&
+			truckValues.destino.length === 0
+		) {
+			setTruckValues({
+				...truckValues,
+				destino: unidadeOpUser?.toUpperCase(),
+				data: new Date()
+			});
+		} else {
+			setTruckValues({ ...truckValues, data: new Date() });
+		}
 	}, []);
 
 	return (
