@@ -17,7 +17,8 @@ import { setTruckLoads } from "../../store/trucks/trucks.actions";
 import { useSelector } from "react-redux";
 import {
 	selectTrucksCarregando,
-	selectTrucksDescarregando
+	selectTrucksDescarregando,
+	selectTruOnWork
 } from "../../store/trucks/trucks.selector";
 
 import {
@@ -58,6 +59,8 @@ const HomePage = () => {
 
 	const isBalanca = useSelector(selectIBalancaUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+
+	const truckWorks = useSelector(selectTruOnWork);
 
 	const [dataModal, setDataModal] = useState({
 		title: "",
@@ -180,6 +183,10 @@ const HomePage = () => {
 
 	// console.log(truckValues)
 
+	const filteredTruckOnWork = (unidadeOp) => {
+		return truckWorks.filter((data) => data.unidadeOp === unidadeOp).length;
+	};
+
 	return (
 		<Box
 			display="flex"
@@ -263,7 +270,8 @@ const HomePage = () => {
 							}}
 							onClick={() => handleFilteredUnidadeOp(data.title)}
 						>
-							{data.description}
+							{data.description} &nbsp;&nbsp;
+							{filteredTruckOnWork(data.title)}
 						</Box>
 					);
 				})}

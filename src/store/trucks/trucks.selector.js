@@ -8,6 +8,11 @@ export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 		.filter((data) => data.unidadeOp === unidadeOpFiltered);
 };
 
+export const selectTruOnWork = (state) => {
+	const dataLoad = state.truckLoads.truckLoads;
+	return dataLoad.filter((data) => data.pesoBruto === "" || data.tara === "");
+};
+
 const formatDate = (entrada) => {
 	if (entrada) {
 		const newDate = new Date(
