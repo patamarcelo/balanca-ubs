@@ -13,27 +13,27 @@ import MailIcon from "@mui/icons-material/Mail";
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons"
-import { faChartSimple } from "@fortawesome/free-solid-svg-icons"
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
-	{title: 'Home', icon: faHouse, to: '/'},
-	{title: 'Report', icon: faChartSimple , to: '/report'},
-]
+	{ title: "Início", icon: faHouse, to: "/" },
+	{ title: "Relatório", icon: faChartSimple, to: "/report" }
+];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	const navigate = useNavigate();
 
 	const handlerNvaigate = (to) => {
-		navigate(to)
-	}
+		navigate(to);
+	};
 
 	const list = (anchor) => (
 		<Box
 			sx={{
-				width: 250,
+				width: 250
 			}}
 			display="flex"
 			flexDirection="column"
@@ -45,25 +45,24 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 		>
 			<Box
 				sx={{
-					width: "100%",
+					width: "100%"
 				}}
 			>
 				<List>
-					{NAVIGATION.map(
-						(data, index) => (
-							<ListItem key={index} disablePadding
+					{NAVIGATION.map((data, index) => (
+						<ListItem
+							key={index}
+							disablePadding
 							onClick={() => handlerNvaigate(data.to)}
-							>
-								<ListItemButton
-								>
-									<ListItemIcon>
-										<FontAwesomeIcon icon={data.icon} />
-									</ListItemIcon>
-									<ListItemText primary={data.title} />
-								</ListItemButton>
-							</ListItem>
-						)
-					)}
+						>
+							<ListItemButton>
+								<ListItemIcon>
+									<FontAwesomeIcon icon={data.icon} />
+								</ListItemIcon>
+								<ListItemText primary={data.title} />
+							</ListItemButton>
+						</ListItem>
+					))}
 				</List>
 				<Divider />
 				{/* <List>
