@@ -277,7 +277,7 @@ const HomePage = () => {
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
 					position: "relative",
-					height: isNonMobile ? "80%" : "78%"
+					height: isNonMobile ? "80%" : "75%"
 				}}
 			>
 				<Box
