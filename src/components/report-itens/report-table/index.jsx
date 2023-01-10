@@ -61,7 +61,7 @@ const ReportTable = (props) => {
 			field: "tipo",
 			headerName: "",
 			// flex: 0.1,
-			width: 55,
+			width: 80,
 			renderHeader: (params) => (
 				<Box
 					sx={{
@@ -76,8 +76,9 @@ const ReportTable = (props) => {
 			renderCell: (params) => (
 				<Box
 					display="flex"
-					justifyContent="space-between"
+					justifyContent="start"
 					alignItems="center"
+					gap="10px"
 					sx={{
 						width: "100%"
 					}}
@@ -102,6 +103,16 @@ const ReportTable = (props) => {
 									size="sm"
 								/>
 							</Typography>
+
+							<FontAwesomeIcon
+								color={
+									params.row.liquido
+										? colors.greenAccent[500]
+										: colors.yellow[550]
+								}
+								icon={faCircleCheck}
+								size="sm"
+							/>
 						</>
 					) : (
 						<>
@@ -121,6 +132,16 @@ const ReportTable = (props) => {
 									size="sm"
 								/>
 							</Typography>
+
+							<FontAwesomeIcon
+								color={
+									params.row.liquido
+										? colors.greenAccent[500]
+										: colors.yellow[550]
+								}
+								icon={faCircleCheck}
+								size="sm"
+							/>
 						</>
 					)}
 				</Box>
@@ -296,9 +317,16 @@ const ReportTable = (props) => {
 			),
 			renderCell: (params) => (
 				<>
-					{params.row.liquido > 0 && (
+					{params.row.liquido > 0 ? (
 						<FontAwesomeIcon
 							color={colors.greenAccent[500]}
+							icon={faCircleCheck}
+							size="sm"
+							style={{ marginLeft: "10px" }}
+						/>
+					) : (
+						<FontAwesomeIcon
+							color={colors.yellow[550]}
 							icon={faCircleCheck}
 							size="sm"
 							style={{ marginLeft: "10px" }}

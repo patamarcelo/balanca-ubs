@@ -34,6 +34,8 @@ import { UNITS_OP } from "../../store/trucks/trucks.types";
 import "./indexTabs.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+// import toast from "react-hot-toast";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -85,6 +87,23 @@ const HomePage = () => {
 		setFormatUnidade(value[0].description);
 	}, [selectedUnitOp]);
 
+	// toast.success(
+	// 	<Typography variant="h6" color={colors.grey[500]} fontWeight="bold">
+	// 		Movimentação de Carga!!
+	// 	</Typography>,
+	// 	{
+	// 		position: "top-center",
+	// 		duration: 3500,
+	// 		icon: (
+	// 			<FontAwesomeIcon
+	// 				icon={faTruckMoving}
+	// 				color={colors.blueOrigin[500]}
+	// 				size="lg"
+	// 			/>
+	// 		)
+	// 	}
+	// );
+
 	// const table = useSelector(selectTruckLoadsOnWork);
 
 	// useEffect(() => {
@@ -113,7 +132,7 @@ const HomePage = () => {
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 1000);
-	}, []);
+	}, [dispatch]);
 
 	useEffect(() => {
 		setIsLoading(true);
