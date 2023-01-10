@@ -53,7 +53,10 @@ const AuthApp = () => {
 					backgroundColor:
 						location.pathname === "/print"
 							? "rgb(237, 234, 222) !important"
-							: ""
+							: "",
+					"@media (orientation: landscape)": {
+						transform: "scale(0.7)"
+					}
 				}}
 			>
 				<Routes>

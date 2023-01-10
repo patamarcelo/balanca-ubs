@@ -68,7 +68,10 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 			width="100%"
 			mb={isNonMobile ? "40px" : "10px"}
 			sx={{
-				padding: "0px 10px 0px 10px"
+				padding: "0px 10px 0px 10px",
+				"@media (orientation: landscape)": {
+					display: "none"
+				}
 			}}
 		>
 			<Box
