@@ -28,15 +28,16 @@ const PrintLayout = ({ data }) => {
 		<Box
 			width="100%"
 			display="flex"
-			flexDirection="column"
+			// flexDirection="column"
 			justifyContent="center"
-			alignItems="center"
-			p="5px 40px 40px 40px"
+			alignItems="start"
+			p="5px 30px 30px 30px"
 			id="printablediv"
 			sx={{
 				margin: "0 auto !important",
 				transform: !isNonMobileLand && "scale(0.6)",
-				top: "10px",
+				marginTop: "-5px",
+				padding: !isNonMobileLand && "0px",
 				" body": {
 					// backgroundCOlor: "white !important"
 				}
@@ -44,17 +45,14 @@ const PrintLayout = ({ data }) => {
 		>
 			<Box
 				display="flex"
-				// flexDirection="column"
 				justifyContent="center"
 				alignItems="center"
 				sx={{
 					width: isNonMobile ? "90%" : "100%",
-					// marginBottom: "60px",
-					marginTop: !isNonMobileLand ? "-280px" : "50px",
-					// backgroundColor: "whitesmoke",
+
+					marginTop: !isNonMobileLand ? "-265px" : "0px",
 					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
-					// boxShadow: "rgba(255, 255, 255, 0.35) 0px 5px 15px"
 				}}
 			>
 				{isLoading ? (
