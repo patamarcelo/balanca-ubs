@@ -11,6 +11,7 @@ import PrintPage from "../../pages/Print";
 import { useLocation } from "react-router-dom";
 
 import { Routes, Route } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -18,6 +19,7 @@ const AuthApp = () => {
 	const location = useLocation();
 
 	const [isdrawerOpen, setIsdrawerOpen] = useState(false);
+	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const toggleDrawer = (event) => {
 		if (
@@ -53,10 +55,7 @@ const AuthApp = () => {
 					backgroundColor:
 						location.pathname === "/print"
 							? "rgb(237, 234, 222) !important"
-							: "",
-					"@media (orientation: landscape)": {
-						transform: "scale(0.7)"
-					}
+							: ""
 				}}
 			>
 				<Routes>

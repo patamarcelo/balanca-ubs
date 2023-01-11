@@ -33,6 +33,8 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
+	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
+
 	const user = useSelector(selectCurrentUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
@@ -68,10 +70,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 			width="100%"
 			mb={isNonMobile ? "40px" : "10px"}
 			sx={{
-				padding: "0px 10px 0px 10px",
-				"@media (orientation: landscape)": {
-					display: "none"
-				}
+				padding: "0px 10px 0px 10px"
 			}}
 		>
 			<Box

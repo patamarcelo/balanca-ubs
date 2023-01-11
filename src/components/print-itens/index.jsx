@@ -14,6 +14,8 @@ const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
+	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
+
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
@@ -33,6 +35,8 @@ const PrintLayout = ({ data }) => {
 			id="printablediv"
 			sx={{
 				margin: "0 auto !important",
+				transform: !isNonMobileLand && "scale(0.6)",
+				top: "10px",
 				" body": {
 					// backgroundCOlor: "white !important"
 				}
@@ -46,7 +50,7 @@ const PrintLayout = ({ data }) => {
 				sx={{
 					width: isNonMobile ? "90%" : "100%",
 					// marginBottom: "60px",
-					marginTop: "50px",
+					marginTop: !isNonMobileLand ? "-280px" : "50px",
 					// backgroundColor: "whitesmoke",
 					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
