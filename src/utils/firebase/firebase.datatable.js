@@ -7,6 +7,8 @@ import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 // import { query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 // import { collection, addDoc, Timestamp } from "firebase/firestore";
 
+import toast from "react-hot-toast";
+
 export const handleUpdateTruck = async (e, id, data) => {
 	e.preventDefault();
 	const saida = new Date();
@@ -37,9 +39,22 @@ export const handleDeleteTruck = async (id, data) => {
 			console.log(
 				`Deletado o ID: ${placaFormat} - ${motorista} com sucesso`
 			);
+			toast.success("Carga deletada com sucesso!!");
+			return;
 		} catch (err) {
 			alert(err);
 		}
+		return;
+	} else {
+		toast("Operação Cancelada", {
+			position: "top-center",
+			icon: "⚠️",
+			style: {
+				border: "1px solid black",
+				fontWeight: "bold",
+				backgroundColor: "whitesmoke"
+			}
+		});
 	}
 };
 

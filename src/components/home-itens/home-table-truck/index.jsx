@@ -68,7 +68,6 @@ const HomeTableTruck = (props) => {
 		try {
 			handleDeleteTruck(dataId, data);
 			handlerSave(saved + 1);
-			toast.success("Carga deletada com sucesso!!");
 		} catch (error) {
 			console.log("Erro ao Deletar a Carga: ", data.id);
 		}
@@ -145,34 +144,45 @@ const HomeTableTruck = (props) => {
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton
-								disabled={!isBalanca || !disableInput}
+								// disabled={!isBalanca || !disableInput}
 								aria-label="edit"
-								onClick={() =>
-									handleOpenModal(editarModal, data)
-								}
+								onClick={() => {
+									if (!isBalanca) {
+										toast.error(`Usuário Sem Permissão`, {
+											position: "top-center"
+										});
+										return;
+									}
+									handleOpenModal(editarModal, data);
+								}}
 							>
 								<FontAwesomeIcon
 									icon={faPenToSquare}
-									color={
-										!isBalanca || !disableInput
-											? colors.grey[600]
-											: colors.yellow[600]
-									}
+									color={colors.yellow[600]}
 									size="1x"
 								/>
 							</IconButton>
 							<IconButton
-								disabled={!isBalanca || !disableInput}
+								// disabled={!isBalanca || !disableInput}
 								aria-label="delete"
-								onClick={() => handlerDelete(data.id, data)}
+								onClick={() => {
+									if (!isBalanca) {
+										toast.error(`Usuário Sem Permissão`, {
+											position: "top-center"
+										});
+										return;
+									}
+									handlerDelete(data.id, data);
+								}}
 							>
 								<FontAwesomeIcon
 									icon={faTrashCan}
-									color={
-										!isBalanca || !disableInput
-											? colors.grey[600]
-											: colors.redAccent[600]
-									}
+									color={colors.redAccent[600]}
+									// color={
+									// 	!isBalanca || !disableInput
+									// 		? colors.grey[600]
+									// 		: colors.redAccent[600]
+									// }
 									size="1x"
 								/>
 							</IconButton>
