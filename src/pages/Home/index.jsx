@@ -34,7 +34,7 @@ import { UNITS_OP } from "../../store/trucks/trucks.types";
 import "./indexTabs.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const dataModalText = {
 	carregando: {
@@ -234,24 +234,36 @@ const HomePage = () => {
 				justifyContent={!isCellPhone && "space-between"}
 			>
 				<CustomButton
-					isBalanca={!isBalanca}
+					// isBalanca={!isBalanca}
 					title={`Carregando: ${totalCarregando}`}
 					color={colors.greenAccent[600]}
-					handleOpenModal={() =>
-						handleOpenModal(dataModalText.carregando)
-					}
+					handleOpenModal={() => {
+						if (!isBalanca) {
+							toast.error(`Usuário Sem Permissão`, {
+								position: "top-center"
+							});
+							return;
+						}
+						handleOpenModal(dataModalText.carregando);
+					}}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
 
 				<CustomButton
-					isBalanca={!isBalanca}
+					// isBalanca={!isBalanca}
 					title={`Descarregando: ${totalDescarregando}`}
 					color={colors.redAccent[600]}
 					ml={20}
-					handleOpenModal={() =>
-						handleOpenModal(dataModalText.descarregando)
-					}
+					handleOpenModal={() => {
+						if (!isBalanca) {
+							toast.error(`Usuário Sem Permissão`, {
+								position: "top-center"
+							});
+							return;
+						}
+						handleOpenModal(dataModalText.descarregando);
+					}}
 				>
 					<FontAwesomeIcon icon={faTruckMoving} />
 				</CustomButton>
