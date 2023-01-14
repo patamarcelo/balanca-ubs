@@ -26,6 +26,8 @@ body,
 ::-webkit-scrollbar-track{
   height: 90%;
   background: #e0e0e0;
+  background: #1373b4;
+
 }
 
 /* Handle */
