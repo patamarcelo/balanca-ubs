@@ -283,7 +283,7 @@ const HomePage = () => {
 						<Box
 							key={i}
 							sx={{
-								marginLeft: i > 0 && "-5px",
+								marginLeft: i > 0 && "-2px !important",
 								zIndex: selectedUnitOp === data.title && 1,
 								backgroundColor:
 									selectedUnitOp === data.title
