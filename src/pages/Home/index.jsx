@@ -283,6 +283,8 @@ const HomePage = () => {
 						<Box
 							key={i}
 							sx={{
+								marginLeft: i > 0 && "-5px",
+								zIndex: selectedUnitOp === data.title && 1,
 								backgroundColor:
 									selectedUnitOp === data.title
 										? colors.blueOrigin[700]
@@ -316,7 +318,8 @@ const HomePage = () => {
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
 					position: "relative",
-					height: isNonMobile ? "80%" : "75%"
+					height: isNonMobile ? "85%" : "75%",
+					zIndex: 2
 				}}
 			>
 				<Box

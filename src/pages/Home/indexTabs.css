@@ -3,6 +3,7 @@
     cursor: pointer;
     margin: 0;
     padding: 5px 25px 5px 15px;
-    -webkit-clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0);
-    clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0);
+    
+    /* -webkit-clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0); */
+    /* clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0); */
 }
