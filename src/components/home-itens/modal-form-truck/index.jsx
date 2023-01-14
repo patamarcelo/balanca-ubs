@@ -27,6 +27,8 @@ import { useNavigate } from "react-router-dom";
 
 import { selectTruckLoadsFormatData } from "../../../store/trucks/trucks.selector";
 
+import formatDate from "../../../utils/format-suport/data-format";
+
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
 	const unidadeOp = useSelector(selectUnidadeOpUser);
@@ -34,13 +36,12 @@ export default function FormDialog(props) {
 	const colors = tokens(theme.palette.mode);
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
 
-	const filterTableForm = (id, dataTableForm, bruto, liquido, tara) => {
-		const newArr = dataTableForm.filter((data) => data.id === id);
+	const filterTableForm = (obj) => {
+		const newArr = dataTableForm.filter((data) => data.id === obj.id);
 		const newArrAded = {
 			...newArr[0],
-			pesoBruto: bruto,
-			liquido: liquido,
-			tara: tara
+			...obj,
+			entrada: formatDate(obj.entrada)
 		};
 		return newArrAded;
 	};
@@ -133,13 +134,9 @@ export default function FormDialog(props) {
 			handleCloseModal();
 			handlerSave(saved + 1);
 			handlerNavigatePrint(
-				filterTableForm(
-					truckValues.id,
-					dataTableForm,
-					truckValues.pesoBruto,
-					truckValues.liquido,
-					truckValues.tara
-				)
+				filterTableForm({
+					...truckValues
+				})
 			);
 		} catch (error) {
 			console.log("erro ao editar a transação", error);
