@@ -400,7 +400,8 @@ const ReportTable = (props) => {
 					},
 					"& .MuiDataGrid-columnHeaders": {
 						backgroundColor: colors.blueOrigin[700],
-						borderBottom: "none"
+						borderBottom: "none",
+						height: "90%"
 					},
 					"& .MuiDataGrid-virtualScroller": {
 						backgroundColor: colors.primary[400]
