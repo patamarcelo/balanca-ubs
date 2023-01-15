@@ -238,7 +238,9 @@ export default function FormDialog(props) {
 								(dataModal.title === "Descarregando" &&
 									truckValues.pesoBruto < 1) ||
 								(dataModal.title === "Carregando" &&
-									truckValues.tara < 1)
+									truckValues.tara < 1) ||
+								truckValues.liquido ===
+									"Valor Negativo, verificar"
 							}
 						>
 							Registrar Entrada

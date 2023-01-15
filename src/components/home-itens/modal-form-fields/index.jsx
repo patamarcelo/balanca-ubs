@@ -67,8 +67,12 @@ const ModalFormFields = (props) => {
 					"& .MuiInputBase-formControl.Mui-focused": {
 						backgroundColor: `${colors.brown[400]} !important`
 					},
-					"& .red-value": {
-						color: "red !important"
+					// "& .red-value": {
+					// 	border: "1px red solid !important",
+					// 	WebkitTextFillColor: "red"
+					// },
+					"& .red-value input": {
+						WebkitTextFillColor: "red !important"
 					},
 					"& .MuiFormHelperText-contained": {
 						color: colors.blueOrigin[500],
@@ -88,6 +92,7 @@ const ModalFormFields = (props) => {
 						label="Data"
 						onChange={(e) => handleChangeTruck(e)}
 						value={truckValues["data"]}
+						disabled={true}
 						renderInput={(params) => <TextField {...params} />}
 					/>
 				</LocalizationProvider>
@@ -135,6 +140,7 @@ const ModalFormFields = (props) => {
 							sx={{
 								width: "100%"
 							}}
+							disabled={input.disabled}
 						/>
 					);
 				})}
