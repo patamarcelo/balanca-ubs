@@ -49,7 +49,7 @@ const PrintLayout = ({ data }) => {
 				alignItems="center"
 				sx={{
 					width: isNonMobile ? "90%" : "100%",
-
+					maxWidth: "925px",
 					marginTop: !isNonMobileLand ? "-265px" : "0px",
 					backgroundColor: "white",
 					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
