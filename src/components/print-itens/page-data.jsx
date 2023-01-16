@@ -200,17 +200,11 @@ const PageData = ({ data }) => {
 					}}
 				>
 					<Box
-						sx={{
-							backgroundColor: colors.primary[900],
-							width: "100%",
-							height: "1px"
-						}}
-					/>
-					<Box
 						display="flex"
 						justifyContent="center"
 						sx={{
-							width: "100%"
+							width: "100%",
+							borderTop: "1px solid black"
 						}}
 					>
 						<Typography
@@ -232,17 +226,11 @@ const PageData = ({ data }) => {
 					}}
 				>
 					<Box
-						sx={{
-							backgroundColor: colors.primary[900],
-							width: "100%",
-							height: "1px"
-						}}
-					/>
-					<Box
 						display="flex"
 						justifyContent="center"
 						sx={{
-							width: "100%"
+							width: "100%",
+							borderTop: "1px solid black"
 						}}
 					>
 						<Typography
