@@ -25,52 +25,101 @@ const PrintLayout = ({ data }) => {
 	}, []);
 
 	return (
-		<Box
-			width="100%"
-			display="flex"
-			// flexDirection="column"
-			justifyContent="center"
-			alignItems="start"
-			p="5px 30px 30px 30px"
-			id="printablediv"
-			sx={{
-				margin: "0 auto !important",
-				transform: !isNonMobileLand && "scale(0.6)",
-				marginTop: "-5px",
-				padding: !isNonMobileLand && "0px",
-				" body": {
-					// backgroundCOlor: "white !important"
-				}
-			}}
-		>
+		<div className="print-container">
 			<Box
+				width="100%"
 				display="flex"
+				// flexDirection="column"
 				justifyContent="center"
-				alignItems="center"
+				alignItems="start"
+				p="5px 30px 30px 30px"
+				id="printablediv"
 				sx={{
-					width: isNonMobile ? "90%" : "100%",
-					maxWidth: "925px",
-					marginTop: !isNonMobileLand ? "-265px" : "0px",
-					backgroundColor: "white",
-					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+					margin: "0 auto !important",
+					transform: !isNonMobileLand && "scale(0.6)",
+					marginTop: "-5px",
+					padding: !isNonMobileLand && "0px",
+					" body": {
+						// backgroundCOlor: "white !important"
+					}
 				}}
 			>
-				{isLoading ? (
-					<Box
-						width="100%"
-						height="60vh"
-						id="printablediv"
-						sx={{
-							padding: "20px 50px"
-						}}
-					>
-						<LoaderPage isLoading={isLoading} />
-					</Box>
-				) : (
-					<PageData data={data} />
-				)}
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					sx={{
+						width: isNonMobile ? "90%" : "100%",
+						maxWidth: "925px",
+						marginTop: !isNonMobileLand ? "-265px" : "0px",
+						backgroundColor: "white",
+						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+					}}
+				>
+					{isLoading ? (
+						<Box
+							width="100%"
+							height="60vh"
+							id="printablediv"
+							sx={{
+								padding: "20px 50px"
+							}}
+						>
+							<LoaderPage isLoading={isLoading} />
+						</Box>
+					) : (
+						<PageData data={data} />
+					)}
+				</Box>
 			</Box>
-		</Box>
+			<Box
+				width="100%"
+				display="flex"
+				// flexDirection="column"
+				justifyContent="center"
+				alignItems="start"
+				p="5px 30px 30px 30px"
+				id="printablediv2"
+				sx={{
+					margin: "0 auto !important",
+					transform: !isNonMobileLand && "scale(0.6)",
+					marginTop: "-5px",
+					padding: !isNonMobileLand && "0px",
+					display: "none",
+					" body": {
+						// backgroundCOlor: "white !important"
+					}
+				}}
+			>
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					sx={{
+						width: isNonMobile ? "90%" : "100%",
+						maxWidth: "925px",
+						marginTop: !isNonMobileLand ? "-265px" : "0px",
+						backgroundColor: "white",
+						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+					}}
+				>
+					{isLoading ? (
+						<Box
+							width="100%"
+							height="60vh"
+							id="printablediv"
+							sx={{
+								padding: "20px 50px"
+							}}
+						>
+							<LoaderPage isLoading={isLoading} />
+						</Box>
+					) : (
+						<PageData data={data} />
+					)}
+				</Box>
+			</Box>
+		</div>
 	);
 };
 
