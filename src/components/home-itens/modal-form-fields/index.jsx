@@ -5,13 +5,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "dayjs/locale/pt-br";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
 import { borderRadius } from "@mui/system";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
 import { useSelector } from "react-redux";
 import { selectUnidadeOpUser } from "../../../store/user/user.selector";
+import classes from "./modal-form.module.css";
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -42,6 +43,22 @@ const ModalFormFields = (props) => {
 			});
 		} else {
 			setTruckValues({ ...truckValues, data: new Date() });
+		}
+	}, []);
+
+	useLayoutEffect(() => {
+		if (truckValues["pesoBruto"] > 0) {
+			TRUCK[0].disabled = true;
+		} else {
+			TRUCK[0].disabled = false;
+		}
+	}, []);
+
+	useLayoutEffect(() => {
+		if (truckValues["tara"] > 0) {
+			TRUCK[2].disabled = true;
+		} else {
+			TRUCK[2].disabled = false;
 		}
 	}, []);
 
@@ -133,7 +150,8 @@ const ModalFormFields = (props) => {
 							}}
 							inputProps={{
 								// maxLength: 13,
-								step: "1000"
+								step: "0",
+								min: "0"
 							}}
 							// value={formik.values[input.name]}
 							placeholder={input.placeholder}
@@ -141,6 +159,8 @@ const ModalFormFields = (props) => {
 								width: "100%"
 							}}
 							disabled={input.disabled}
+							className={classes.input}
+							onWheel={(e) => e.target.blur()}
 						/>
 					);
 				})}
