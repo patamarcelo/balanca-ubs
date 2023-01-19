@@ -23,7 +23,7 @@ export const TRUCK = [
 		name: "pesoBruto",
 		placeholder: "Peso Bruto",
 		// required: true,
-		type: "number"
+		type: "tel"
 	},
 	{
 		label: "Cultura",
@@ -37,7 +37,7 @@ export const TRUCK = [
 		name: "tara",
 		placeholder: "Tara Veículo",
 		// required: true,
-		type: "number"
+		type: "tel"
 	},
 	{
 		label: "Placa",
