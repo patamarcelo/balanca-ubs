@@ -29,12 +29,16 @@ import { selectTruckLoadsFormatData } from "../../../store/trucks/trucks.selecto
 
 import formatDate from "../../../utils/format-suport/data-format";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
 	const unidadeOp = useSelector(selectUnidadeOpUser);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
+
+	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const filterTableForm = (obj) => {
 		const newArr = dataTableForm.filter((data) => data.id === obj.id);
@@ -152,7 +156,9 @@ export default function FormDialog(props) {
 				onClose={handleCloseModalEsc}
 				sx={{
 					"& .MuiPaper-root": {
-						minWidth: "60vw !important"
+						minWidth: isNonMobile
+							? "60vw !important"
+							: "90vw !important"
 					},
 					"& .MuiChip-root": {
 						borderRadius: 1
