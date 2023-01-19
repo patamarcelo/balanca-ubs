@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { selectUnidadeOpUser } from "../../../store/user/user.selector";
 import classes from "./modal-form.module.css";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
 		props;
@@ -21,6 +23,7 @@ const ModalFormFields = (props) => {
 	const colors = tokens(theme.palette.mode);
 	// const [value, setValue] = useState(new Date());
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	useEffect(() => {
 		if (
@@ -67,7 +70,9 @@ const ModalFormFields = (props) => {
 			<Box
 				display="grid"
 				gap="10px"
-				gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+				gridTemplateColumns={`repeat(${
+					!isNonMobile ? "1" : "2"
+				}, minmax(0, 1fr))`}
 				sx={{
 					width: "100%",
 					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -188,7 +193,9 @@ const ModalFormFields = (props) => {
 				display="grid"
 				gap="10px"
 				mb="8px"
-				gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+				gridTemplateColumns={`repeat(${
+					!isNonMobile ? "1" : "2"
+				}, minmax(0, 1fr))`}
 				sx={{
 					width: "100%",
 					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
