@@ -12,9 +12,13 @@ const PageDataClassFlex = ({ data }) => {
 	const dictData = [
 		{
 			label: "Umidade",
-			value: data.umidade,
+			value: data.umidade
+				? parseFloat(data.umidade).toFixed(2)
+				: data.umidade,
 			label2: "Impureza",
-			value2: data.impureza,
+			value2: data.impureza
+				? parseFloat(data.impureza).toFixed(2)
+				: data.impureza,
 			size: "25%"
 		},
 		{
@@ -32,6 +36,8 @@ const PageDataClassFlex = ({ data }) => {
 			size: "35%"
 		}
 	];
+
+	console.log(dictData[0].value);
 
 	return (
 		<Box

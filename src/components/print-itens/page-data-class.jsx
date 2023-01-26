@@ -26,7 +26,7 @@ const PageDataClass = ({ data }) => {
 				padding: "4px"
 			}}
 		>
-			<Grid container >
+			<Grid container>
 				{dictData.map((data, i) => {
 					return (
 						<Grid item xs={i === 0 || i === 3 ? 2 : 5} key={i}>
