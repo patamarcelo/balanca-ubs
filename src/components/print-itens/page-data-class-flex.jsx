@@ -37,8 +37,6 @@ const PageDataClassFlex = ({ data }) => {
 		}
 	];
 
-	console.log(dictData[0].value);
-
 	return (
 		<Box
 			display="flex"
