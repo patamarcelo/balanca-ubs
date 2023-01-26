@@ -295,8 +295,38 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "umidade",
+			headerName: "Umidade",
+			// flex: 1,
+			width: 70,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.umidade
+						? parseFloat(params.row.umidade).toFixed(2) + " %"
+						: " - "}
+				</Typography>
+			)
+		},
+		{
+			field: "impureza",
+			headerName: "Impureza",
+			// flex: 1,
+			width: 70,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.impureza
+						? parseFloat(params.row.impureza).toFixed(2) + " %"
+						: " - "}
+				</Typography>
+			)
+		},
+		{
 			field: "act",
-			headerName: "Imp.",
+			headerName: "Situação",
 			flex: 0,
 			headerAlign: "center",
 			align: "center",
