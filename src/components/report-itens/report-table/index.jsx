@@ -19,6 +19,8 @@ import { selectIsAdminUser } from "../../../store/user/user.selector";
 
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
+import EditModal from "../report-modal-table";
+
 const ReportTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -386,6 +388,8 @@ const ReportTable = (props) => {
 				whiteSpace: "nowrap"
 			}}
 		>
+			<EditModal />
+
 			<Box
 				height="100%"
 				sx={{
