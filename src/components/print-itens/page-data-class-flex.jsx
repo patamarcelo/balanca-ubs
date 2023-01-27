@@ -13,11 +13,11 @@ const PageDataClassFlex = ({ data }) => {
 		{
 			label: "Umidade",
 			value: data.umidade
-				? parseFloat(data.umidade).toFixed(2)
+				? parseFloat(data.umidade).toFixed(2).replace(".", ",")
 				: data.umidade,
 			label2: "Impureza",
 			value2: data.impureza
-				? parseFloat(data.impureza).toFixed(2)
+				? parseFloat(data.impureza).toFixed(2).replace(".", ",")
 				: data.impureza,
 			size: "25%"
 		},
