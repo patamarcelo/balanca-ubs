@@ -325,6 +325,68 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "parcela",
+			headerName: "Parcela",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.parcela ? params.row.parcela : " - "}
+				</Typography>
+			)
+		},
+		{
+			field: "nfEntrada",
+			headerName: "NF Entrada",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.nfEntrada ? params.row.nfEntrada : " - "}
+				</Typography>
+			)
+		},
+		{
+			field: "op",
+			headerName: "OP",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.op ? params.row.op : " - "}
+				</Typography>
+			)
+		},
+		{
+			field: "relatorioColheita",
+			headerName: "Relatório Colh.",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.relatorioColheita
+						? params.row.relatorioColheita
+						: " - "}
+				</Typography>
+			)
+		},
+		{
+			field: "ticket",
+			headerName: "Ticket",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.ticket ? params.row.ticket : " - "}
+				</Typography>
+			)
+		},
+		{
 			field: "act",
 			headerName: "Situação",
 			flex: 0,
