@@ -86,7 +86,12 @@ export default function FormDialog(props) {
 			tipo,
 			umidade,
 			observacoes,
-			destino
+			destino,
+			parcela,
+			nfEntrada,
+			op,
+			relatorioColheita,
+			ticket
 		} = truckValues;
 		setIsLoadingSubmit(true);
 		try {
@@ -108,7 +113,12 @@ export default function FormDialog(props) {
 				tipo,
 				observacoes,
 				destino,
-				unidadeOp
+				unidadeOp,
+				parcela,
+				nfEntrada,
+				op,
+				relatorioColheita,
+				ticket
 			);
 			toast.success("Carga registrada com sucesso!!");
 			if (newTrans) {

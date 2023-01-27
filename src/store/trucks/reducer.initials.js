@@ -13,7 +13,12 @@ export const TRUCK_INITIAL_STATE = {
 	motorista: "",
 	saida: "",
 	observacoes: "",
-	destino: ""
+	destino: "",
+	parcela: "",
+	nfEntrada: "",
+	op: "",
+	relatorioColheita: "",
+	ticket: ""
 };
 
 // TRUCK INPUT AND FORM
@@ -26,9 +31,9 @@ export const TRUCK = [
 		type: "tel"
 	},
 	{
-		label: "Cultura",
-		name: "cultura",
-		placeholder: "Cultura",
+		label: "Placa",
+		name: "placa",
+		placeholder: "Placa",
 		// required: true,
 		type: "text"
 	},
@@ -40,9 +45,9 @@ export const TRUCK = [
 		type: "tel"
 	},
 	{
-		label: "Placa",
-		name: "placa",
-		placeholder: "Placa",
+		label: "Motorista",
+		name: "motorista",
+		placeholder: "Motorista",
 		// required: true,
 		type: "text"
 	},
@@ -85,16 +90,9 @@ export const TRUCK_OBS = [
 		type: "number"
 	},
 	{
-		label: "Projeto",
-		name: "projeto",
-		placeholder: "Projeto",
-		// required: true,
-		type: "text"
-	},
-	{
-		label: "Motorista",
-		name: "motorista",
-		placeholder: "Motorista",
+		label: "Cultura",
+		name: "cultura",
+		placeholder: "Cultura",
 		// required: true,
 		type: "text"
 	},
@@ -103,6 +101,45 @@ export const TRUCK_OBS = [
 		name: "destino",
 		placeholder: "Destino",
 		// required: true,
+		type: "text"
+	}
+];
+
+export const TRUCK_SHEETS = [
+	{
+		label: "Parcela",
+		name: "parcela",
+		placeholder: "Parcela",
+		type: "text"
+	},
+	{
+		label: "NF Entrada",
+		name: "nfEntrada",
+		placeholder: "NF Entrada",
+		type: "text"
+	},
+	{
+		label: "OP",
+		name: "op",
+		placeholder: "OP",
+		type: "text"
+	},
+	{
+		label: "Relatorio Colheita",
+		name: "relatorioColheita",
+		placeholder: "Relatorio Colheita",
+		type: "text"
+	},
+	{
+		label: "Ticket",
+		name: "ticket",
+		placeholder: "Ticket",
+		type: "tel"
+	},
+	{
+		label: "Projeto",
+		name: "projeto",
+		placeholder: "Projeto",
 		type: "text"
 	}
 ];
