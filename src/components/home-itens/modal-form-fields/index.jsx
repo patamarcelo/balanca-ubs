@@ -53,9 +53,9 @@ const ModalFormFields = (props) => {
 
 	useLayoutEffect(() => {
 		if (truckValues["pesoBruto"] > 0) {
-			TRUCK[0].disabled = true;
+			TRUCK[3].disabled = true;
 		} else {
-			TRUCK[0].disabled = false;
+			TRUCK[3].disabled = false;
 		}
 	}, []);
 
