@@ -91,7 +91,12 @@ export const addTruckMove = async (
 	tipo,
 	observacoes,
 	destino,
-	unidadeOp
+	unidadeOp,
+	parcela,
+	nfEntrada,
+	op,
+	relatorioColheita,
+	ticket
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
@@ -120,7 +125,12 @@ export const addTruckMove = async (
 				tipo,
 				observacoes,
 				destino,
-				unidadeOp
+				unidadeOp,
+				parcela,
+				nfEntrada,
+				op,
+				relatorioColheita,
+				ticket
 			}
 		);
 	} catch (error) {

@@ -10,7 +10,7 @@ import DateTruck from "./truck-date";
 import PlateTruck from "./truck-plate";
 import QuantityTruck from "./truck-quantity";
 import QuantityTruckHold from "./truck-quantity-hold";
-import CulturaTruck from "./truck-cultura";
+import MercadoriaTruck from "./truck-mercadoria";
 import OrigemTruck from "./truck-origem";
 import DestinoTruck from "./truck-destino";
 
@@ -138,7 +138,7 @@ const HomeTableTruck = (props) => {
 							<PlateTruck data={data} />
 							<QuantityTruck data={data} />
 							<QuantityTruckHold data={data} />
-							{data.cultura && <CulturaTruck data={data} />}
+							{data.mercadoria && <MercadoriaTruck data={data} />}
 							{data.origem && <OrigemTruck data={data} />}
 							{data.destino && <DestinoTruck data={data} />}
 						</Box>

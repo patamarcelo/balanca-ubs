@@ -16,6 +16,8 @@ import classes from "./modal-form.module.css";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import SheetFields from "./sheet-form-fields";
+
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
 		props;
@@ -238,6 +240,13 @@ const ModalFormFields = (props) => {
 					);
 				})}
 			</Box>
+
+			{truckValues.tipo !== "carregando" && (
+				<SheetFields
+					handleChangeTruck={handleChangeTruck}
+					truckValues={truckValues}
+				/>
+			)}
 			<Box
 				sx={{
 					width: "100%",

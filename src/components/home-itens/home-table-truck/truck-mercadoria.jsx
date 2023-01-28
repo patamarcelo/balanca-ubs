@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const CulturaTruck = (props) => {
+const MercadoriaTruck = (props) => {
 	const { data } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -24,14 +24,14 @@ const CulturaTruck = (props) => {
 					color={colors.primary[300]}
 					sx={{ fontStyle: "italic" }}
 				>
-					Cultura
+					Produto
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
-					{data.cultura}
+					{data.mercadoria}
 				</Typography>
 			</>
 		</Box>
 	);
 };
 
-export default CulturaTruck;
+export default MercadoriaTruck;
