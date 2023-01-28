@@ -24,75 +24,42 @@ export const TRUCK_INITIAL_STATE = {
 // TRUCK INPUT AND FORM
 export const TRUCK = [
 	{
-		label: "Peso Bruto",
-		name: "pesoBruto",
-		placeholder: "Peso Bruto",
-		// required: true,
-		type: "tel"
-	},
-	{
 		label: "Placa",
 		name: "placa",
 		placeholder: "Placa",
-		// required: true,
+		type: "text"
+	},
+	{
+		label: "Motorista",
+		name: "motorista",
+		placeholder: "Motorista",
 		type: "text"
 	},
 	{
 		label: "Tara Veículo",
 		name: "tara",
 		placeholder: "Tara Veículo",
-		// required: true,
 		type: "tel"
 	},
 	{
-		label: "Motorista",
-		name: "motorista",
-		placeholder: "Motorista",
-		// required: true,
-		type: "text"
+		label: "Peso Bruto",
+		name: "pesoBruto",
+		placeholder: "Peso Bruto",
+		type: "tel"
 	},
 	{
 		label: "Peso Liquido",
 		name: "liquido",
 		placeholder: "Peso Liquido",
-		// required: true,
 		type: "text",
 		disabled: true
 	}
 ];
 export const TRUCK_OBS = [
 	{
-		label: "Umidade",
-		name: "umidade",
-		placeholder: "Umidade",
-		// required: true,
-		type: "number"
-	},
-	{
-		label: "Mercadoria",
-		name: "mercadoria",
-		placeholder: "mercadoria",
-		// required: true,
-		type: "text"
-	},
-	{
 		label: "Origem",
 		name: "origem",
 		placeholder: "Origem",
-		// required: true,
-		type: "text"
-	},
-	{
-		label: "Impureza",
-		name: "impureza",
-		placeholder: "Impureza",
-		// required: true,
-		type: "number"
-	},
-	{
-		label: "Cultura",
-		name: "cultura",
-		placeholder: "Cultura",
 		// required: true,
 		type: "text"
 	},
@@ -102,16 +69,37 @@ export const TRUCK_OBS = [
 		placeholder: "Destino",
 		// required: true,
 		type: "text"
+	},
+	{
+		label: "Mercadoria",
+		name: "mercadoria",
+		placeholder: "mercadoria",
+		// required: true,
+		type: "text"
+	},
+	{
+		label: "Projeto",
+		name: "projeto",
+		placeholder: "Projeto",
+		type: "text"
+	},
+	{
+		label: "Umidade",
+		name: "umidade",
+		placeholder: "Umidade",
+		// required: true,
+		type: "number"
+	},
+	{
+		label: "Impureza",
+		name: "impureza",
+		placeholder: "Impureza",
+		// required: true,
+		type: "number"
 	}
 ];
 
 export const TRUCK_SHEETS = [
-	{
-		label: "Parcela",
-		name: "parcela",
-		placeholder: "Parcela",
-		type: "text"
-	},
 	{
 		label: "NF Entrada",
 		name: "nfEntrada",
@@ -119,9 +107,15 @@ export const TRUCK_SHEETS = [
 		type: "text"
 	},
 	{
-		label: "OP",
-		name: "op",
-		placeholder: "OP",
+		label: "Parcela",
+		name: "parcela",
+		placeholder: "Parcela",
+		type: "text"
+	},
+	{
+		label: "Cultura",
+		name: "cultura",
+		placeholder: "Cultura",
 		type: "text"
 	},
 	{
@@ -131,15 +125,15 @@ export const TRUCK_SHEETS = [
 		type: "text"
 	},
 	{
+		label: "OP",
+		name: "op",
+		placeholder: "OP",
+		type: "text"
+	},
+	{
 		label: "Ticket",
 		name: "ticket",
 		placeholder: "Ticket",
 		type: "tel"
-	},
-	{
-		label: "Projeto",
-		name: "projeto",
-		placeholder: "Projeto",
-		type: "text"
 	}
 ];
