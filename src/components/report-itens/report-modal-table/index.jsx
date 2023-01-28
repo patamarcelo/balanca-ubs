@@ -55,30 +55,18 @@ const EditModal = () => {
 	};
 
 	return (
-		<Box
-			display="flex"
-			flexDirection="column"
-			gap="20px"
-			sx={{
-				width: "100%",
-				height: "100%",
-				border: colors.blueAccent[800]
-				// border: "1px solid white"
-			}}
-		>
-			<FormDialog
-				isOpenModal={isOpenModal}
-				handleCloseModal={handleCloseModal}
-				dataModal={dataModal}
-				handleCloseModalEsc={handleCloseModalEsc}
-				handleChangeTruck={handleChangeTruck}
-				handleBlurTruck={handleBlurTruck}
-				truckValues={truckValues}
-				setTruckValues={setTruckValues}
-				handlerSave={handlerSave}
-				saved={saved}
-			/>
-		</Box>
+		<FormDialog
+			isOpenModal={isOpenModal}
+			handleCloseModal={handleCloseModal}
+			dataModal={dataModal}
+			handleCloseModalEsc={handleCloseModalEsc}
+			handleChangeTruck={handleChangeTruck}
+			handleBlurTruck={handleBlurTruck}
+			truckValues={truckValues}
+			setTruckValues={setTruckValues}
+			handlerSave={handlerSave}
+			saved={saved}
+		/>
 	);
 };
 
