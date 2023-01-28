@@ -2,54 +2,64 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import FormDialog from "../../../components/home-itens/modal-form-truck";
 
-import { useState } from "react";
-import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
+import { useState, useEffect } from "react";
 
-const EditModal = () => {
+const EditModal = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const [isOpenModal, setIsOpenModal] = useState(false);
-	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
+	const {
+		dataTruck,
+		setDataTruck,
+		isOpenModal,
+		setIsOpenModal,
+		TRUCK_INITIAL_STATE
+	} = props;
+
 	const [saved, handlerSave] = useState(0);
 
 	const [dataModal, setDataModal] = useState({
-		title: "",
-		text: ""
+		title: "Editar Carga - Full",
+		text: "",
+		color: "warning"
 	});
 
+	useEffect(() => {
+		console.log("TruckValuesUP: ", dataTruck);
+	}, [dataTruck]);
+
 	const handleCloseModal = (e) => {
-		setTruckValues(TRUCK_INITIAL_STATE);
+		setDataTruck(TRUCK_INITIAL_STATE);
 		setIsOpenModal(false);
 	};
 	const handleCloseModalEsc = (event) => {
 		if (event.type === "keydown" && event.key === "Escape") {
 			setIsOpenModal(false);
-			setTruckValues(TRUCK_INITIAL_STATE);
+			setDataTruck(TRUCK_INITIAL_STATE);
 		}
 	};
 
 	const handleChangeTruck = (e) => {
-		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
+		setDataTruck({ ...dataTruck, [e.target.name]: e.target.value });
 	};
 
 	const handleBlurTruck = (e) => {
-		const pesoBruto = truckValues["pesoBruto"];
-		const tara = truckValues["tara"];
+		const pesoBruto = dataTruck["pesoBruto"];
+		const tara = dataTruck["tara"];
 		if (["pesoBruto", "tara"].includes(e.target.name)) {
 			if (pesoBruto > 0 && tara > 0) {
 				const liquido = pesoBruto - tara;
 				if (liquido < 0) {
-					setTruckValues({
-						...truckValues,
+					setDataTruck({
+						...dataTruck,
 						liquido: "Valor Negativo, verificar"
 					});
 					console.log("valor negativo");
 				} else {
-					setTruckValues({ ...truckValues, liquido: liquido });
+					setDataTruck({ ...dataTruck, liquido: liquido });
 				}
 			} else {
-				setTruckValues({ ...truckValues, liquido: "" });
+				setDataTruck({ ...dataTruck, liquido: "" });
 			}
 		}
 	};
@@ -62,8 +72,8 @@ const EditModal = () => {
 			handleCloseModalEsc={handleCloseModalEsc}
 			handleChangeTruck={handleChangeTruck}
 			handleBlurTruck={handleBlurTruck}
-			truckValues={truckValues}
-			setTruckValues={setTruckValues}
+			truckValues={dataTruck}
+			setTruckValues={setDataTruck}
 			handlerSave={handlerSave}
 			saved={saved}
 		/>

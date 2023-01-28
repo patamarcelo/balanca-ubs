@@ -1,13 +1,9 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "dayjs/locale/pt-br";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
-import { borderRadius } from "@mui/system";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
 import { useSelector } from "react-redux";
@@ -17,6 +13,8 @@ import classes from "./modal-form.module.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import SheetFields from "./sheet-form-fields";
+
+import formatDate from "../../../utils/format-suport/data-format";
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -28,6 +26,25 @@ const ModalFormFields = (props) => {
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	useEffect(() => {
+		if (truckValues.liquido > 0) {
+			console.log("Editando a carga REPORT");
+			setTruckValues({
+				...truckValues
+			});
+			return;
+		}
+		if (truckValues.pesoBruto > 0 || truckValues.tara > 0) {
+			console.log("editando a carga");
+			console.log(truckValues);
+			setTruckValues({
+				...truckValues,
+				data: new Date(
+					truckValues.entrada.seconds * 1000 +
+						truckValues.entrada.nanoseconds / 1000000
+				)
+			});
+			return;
+		}
 		if (
 			truckValues.tipo === "carregando" &&
 			truckValues.origem.length === 0
@@ -53,9 +70,9 @@ const ModalFormFields = (props) => {
 
 	useLayoutEffect(() => {
 		if (truckValues["pesoBruto"] > 0) {
-			TRUCK[0].disabled = true;
+			TRUCK[3].disabled = true;
 		} else {
-			TRUCK[0].disabled = false;
+			TRUCK[3].disabled = false;
 		}
 	}, []);
 
@@ -105,21 +122,25 @@ const ModalFormFields = (props) => {
 					}
 				}}
 			>
-				<LocalizationProvider
-					dateAdapter={AdapterDayjs}
-					adapterLocale={"pt-br"}
+				<TextField
+					key="data"
+					variant="outlined"
+					id="data"
+					type="text"
+					label="Data"
+					name="data"
+					disabled={true}
+					value={
+						truckValues.liquido > 0
+							? truckValues.entrada.nanoseconds
+								? formatDate(truckValues.entrada)
+								: truckValues.entrada
+							: truckValues["data"]?.toLocaleString("pt-BR")
+					}
 					sx={{
 						width: "100%"
 					}}
-				>
-					<DatePicker
-						label="Data"
-						onChange={(e) => handleChangeTruck(e)}
-						value={truckValues["data"]}
-						disabled={true}
-						renderInput={(params) => <TextField {...params} />}
-					/>
-				</LocalizationProvider>
+				/>
 				{TRUCK.map((input, index) => {
 					return (
 						<TextField
@@ -160,7 +181,6 @@ const ModalFormFields = (props) => {
 								step: "0",
 								min: "0"
 							}}
-							// value={formik.values[input.name]}
 							placeholder={input.placeholder}
 							sx={{
 								width: "100%"
