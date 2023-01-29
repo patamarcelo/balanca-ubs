@@ -198,7 +198,7 @@ const ModalFormFields = (props) => {
 					fontStyle: "italic"
 				}}
 			>
-				Observações
+				Dados Produto
 			</Typography>
 			<Box
 				sx={{
@@ -259,13 +259,20 @@ const ModalFormFields = (props) => {
 					);
 				})}
 			</Box>
-
-			{truckValues.tipo !== "carregando" && (
-				<SheetFields
-					handleChangeTruck={handleChangeTruck}
-					truckValues={truckValues}
-				/>
-			)}
+			<SheetFields
+				handleChangeTruck={handleChangeTruck}
+				truckValues={truckValues}
+			/>
+			<Typography
+				variant="h4"
+				color={colors.blueOrigin[400]}
+				mt="20px"
+				sx={{
+					fontStyle: "italic"
+				}}
+			>
+				Observações
+			</Typography>
 			<Box
 				sx={{
 					width: "100%",
