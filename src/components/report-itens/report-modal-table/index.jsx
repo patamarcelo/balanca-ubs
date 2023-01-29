@@ -24,10 +24,6 @@ const EditModal = (props) => {
 		color: "warning"
 	});
 
-	useEffect(() => {
-		console.log("TruckValuesUP: ", dataTruck);
-	}, [dataTruck]);
-
 	const handleCloseModal = (e) => {
 		setDataTruck(TRUCK_INITIAL_STATE);
 		setIsOpenModal(false);

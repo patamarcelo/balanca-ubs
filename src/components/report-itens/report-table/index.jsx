@@ -20,12 +20,16 @@ import {
 	selectIBalancaUser
 } from "../../../store/user/user.selector";
 
+import { selectTruckOnID } from "../../../store/trucks/trucks.selector";
+
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
 import EditModal from "../report-modal-table";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
+
+import { newDateArr } from "../../../utils/format-suport/data-format";
 
 const ReportTable = (props) => {
 	const theme = useTheme();
@@ -44,6 +48,9 @@ const ReportTable = (props) => {
 	const isBalanca = useSelector(selectIBalancaUser);
 	const [dataTruck, setDataTruck] = useState([TRUCK_INITIAL_STATE]);
 	const [isOpenModal, setIsOpenModal] = useState(false);
+	const [filterId, setFilterId] = useState(null);
+
+	const truckLoadId = useSelector(selectTruckOnID(filterId));
 
 	const handlerDelete = (dataId, data) => {
 		try {
@@ -69,9 +76,13 @@ const ReportTable = (props) => {
 
 	const handlerEditTruck = (id, data) => {
 		console.log("ID: " + id);
-		console.log("Data: " + data);
+		setFilterId(id);
 		setIsOpenModal(true);
+		// const entrada = newDateArr(data.entrada);
+		// const saida = newDateArr(data.saida);
+		// const newObj = { ...data, entrada: entrada, saida: saida };
 		setDataTruck(data);
+		console.log("reportIndex: ", truckLoadId);
 	};
 
 	useEffect(() => {

@@ -26,6 +26,10 @@ const ModalFormFields = (props) => {
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	useEffect(() => {
+		console.log("insdeModalForm: ", truckValues);
+	}, []);
+
+	useEffect(() => {
 		if (truckValues.liquido > 0) {
 			console.log("Editando a carga REPORT");
 			setTruckValues({

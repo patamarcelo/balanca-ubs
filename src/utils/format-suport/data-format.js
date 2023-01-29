@@ -15,4 +15,20 @@ const formatDate = (entrada) => {
 	return "-";
 };
 
+export const newDateArr = (dataFor) => {
+	console.log("Data a ser formatada: ", dataFor);
+	const str = dataFor;
+
+	const [dateComponents, timeComponents] = str.split("-");
+	console.log(dateComponents); // 👉️ "06/26/2022"
+	console.log(timeComponents); // 👉️ "04:35:12"
+
+	const [day, month, year] = dateComponents.split("/");
+	const [hours, minutes] = timeComponents.split(":");
+
+	const date = new Date(+year, month - 1, +day, +hours, +minutes);
+	console.log("funcDate: ", date); // 👉️ Sun Jun 26 2022 04:35:12
+	return date;
+};
+
 export default formatDate;

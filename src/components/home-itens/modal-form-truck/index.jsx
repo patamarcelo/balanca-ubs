@@ -10,12 +10,13 @@ import { tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 import {
 	addTruckMove,
-	handleUpdateTruck
+	handleUpdateTruck,
+	handleUpdateClassic
 } from "../../../utils/firebase/firebase.datatable";
 import { useSelector } from "react-redux";
 import {
@@ -68,6 +69,10 @@ export default function FormDialog(props) {
 		saved,
 		handlerSave
 	} = props;
+
+	useEffect(() => {
+		console.log(truckValues);
+	}, [truckValues]);
 
 	const handleSaveData = async () => {
 		const {
@@ -137,6 +142,7 @@ export default function FormDialog(props) {
 	};
 
 	const handleEditCarga = async (event) => {
+		event.preventDefault();
 		setIsLoadingSubmit(true);
 		try {
 			const newTransData = {
@@ -144,6 +150,29 @@ export default function FormDialog(props) {
 				userSaida: user.email
 			};
 			await handleUpdateTruck(event, truckValues.id, newTransData);
+			toast.success("Carga alterada com sucesso!!");
+			handleCloseModal();
+			handlerSave(saved + 1);
+			handlerNavigatePrint(
+				filterTableForm({
+					...truckValues
+				})
+			);
+		} catch (error) {
+			console.log("erro ao editar a transação", error);
+		} finally {
+			setIsLoadingSubmit(false);
+		}
+	};
+
+	const handleEditCargaFull = async (event) => {
+		event.preventDefault();
+		setIsLoadingSubmit(true);
+		try {
+			const newTransData = {
+				...truckValues
+			};
+			await handleUpdateClassic(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();
 			handlerSave(saved + 1);
@@ -224,7 +253,7 @@ export default function FormDialog(props) {
 						Cancelar
 					</Button>
 
-					{dataModal.title === "Editar Carga" ? (
+					{dataModal.title === "Editar Carga" && (
 						<LoadingButton
 							size="small"
 							loading={isLoadingSubmit}
@@ -240,7 +269,9 @@ export default function FormDialog(props) {
 						>
 							Registrar Saída
 						</LoadingButton>
-					) : (
+					)}
+					{(dataModal.title === "Carregando" ||
+						dataModal.title === "Descarregando") && (
 						<LoadingButton
 							size="small"
 							onClick={handleSaveData}
@@ -260,6 +291,19 @@ export default function FormDialog(props) {
 							}
 						>
 							Registrar Entrada
+						</LoadingButton>
+					)}
+					{dataModal.title === "Editar Carga - Full" && (
+						<LoadingButton
+							size="small"
+							loading={isLoadingSubmit}
+							onClick={handleEditCargaFull}
+							sx={{
+								backgroundColor: colors.greenAccent[600],
+								color: "white"
+							}}
+						>
+							Editar Carga
 						</LoadingButton>
 					)}
 				</DialogActions>

@@ -9,11 +9,15 @@ import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 
 import toast from "react-hot-toast";
 
+import { newDateArr } from "../../utils/format-suport/data-format";
+
 export const handleUpdateClassic = async (e, id, data) => {
 	e.preventDefault();
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 	let updatedDoc;
-	const updatedData = { ...data };
+	const entrada = newDateArr(data.entrada);
+	const saida = newDateArr(data.saida);
+	const updatedData = { ...data, entrada: entrada, saida: saida };
 	try {
 		updatedDoc = await updateDoc(taskDocRef, {
 			...updatedData
