@@ -70,10 +70,6 @@ export default function FormDialog(props) {
 		handlerSave
 	} = props;
 
-	useEffect(() => {
-		console.log(truckValues);
-	}, [truckValues]);
-
 	const handleSaveData = async () => {
 		const {
 			cultura,
@@ -176,11 +172,6 @@ export default function FormDialog(props) {
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();
 			handlerSave(saved + 1);
-			handlerNavigatePrint(
-				filterTableForm({
-					...truckValues
-				})
-			);
 		} catch (error) {
 			console.log("erro ao editar a transação", error);
 		} finally {

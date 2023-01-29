@@ -26,12 +26,7 @@ const ModalFormFields = (props) => {
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	useEffect(() => {
-		console.log("insdeModalForm: ", truckValues);
-	}, []);
-
-	useEffect(() => {
 		if (truckValues.liquido > 0) {
-			console.log("Editando a carga REPORT");
 			setTruckValues({
 				...truckValues
 			});
@@ -39,7 +34,6 @@ const ModalFormFields = (props) => {
 		}
 		if (truckValues.pesoBruto > 0 || truckValues.tara > 0) {
 			console.log("editando a carga");
-			console.log(truckValues);
 			setTruckValues({
 				...truckValues,
 				data: new Date(
@@ -255,7 +249,8 @@ const ModalFormFields = (props) => {
 							placeholder={input.placeholder}
 							inputProps={{
 								// maxLength: 13,
-								step: "0.10"
+								step: "0.10",
+								min: "0"
 							}}
 							sx={{
 								width: "100%"

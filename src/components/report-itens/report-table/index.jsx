@@ -75,14 +75,9 @@ const ReportTable = (props) => {
 	};
 
 	const handlerEditTruck = (id, data) => {
-		console.log("ID: " + id);
 		setFilterId(id);
 		setIsOpenModal(true);
-		// const entrada = newDateArr(data.entrada);
-		// const saida = newDateArr(data.saida);
-		// const newObj = { ...data, entrada: entrada, saida: saida };
 		setDataTruck(data);
-		console.log("reportIndex: ", truckLoadId);
 	};
 
 	useEffect(() => {

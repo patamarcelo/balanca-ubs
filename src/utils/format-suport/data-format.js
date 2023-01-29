@@ -3,7 +3,6 @@ const formatDate = (entrada) => {
 		const newDate = new Date(
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
 		);
-
 		const date = newDate.toISOString().split("T")[0];
 		const atTime = newDate.toLocaleTimeString().slice(0, 5);
 		const [year, month, day] = date.split("-");
@@ -16,7 +15,6 @@ const formatDate = (entrada) => {
 };
 
 export const newDateArr = (dataFor) => {
-	console.log("Data a ser formatada: ", dataFor);
 	const str = dataFor;
 
 	const [dateComponents, timeComponents] = str.split("-");
