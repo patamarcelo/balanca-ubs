@@ -63,3 +63,10 @@ export const selectTrucksDescarregando = (unidadeOp) => (state) => {
 	);
 	return Object.keys(dataLoad).length;
 };
+
+export const selectTruckOnID = (id) => (state) => {
+	const newId = state.truckLoads.truckLoads.filter(
+		(data) => data.id === id
+	)[0];
+	return newId;
+};

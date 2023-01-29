@@ -1,13 +1,9 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import TextField from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "dayjs/locale/pt-br";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
-import { borderRadius } from "@mui/system";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
 import { useSelector } from "react-redux";
@@ -17,6 +13,8 @@ import classes from "./modal-form.module.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import SheetFields from "./sheet-form-fields";
+
+import formatDate from "../../../utils/format-suport/data-format";
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -28,6 +26,23 @@ const ModalFormFields = (props) => {
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	useEffect(() => {
+		if (truckValues.liquido > 0) {
+			setTruckValues({
+				...truckValues
+			});
+			return;
+		}
+		if (truckValues.pesoBruto > 0 || truckValues.tara > 0) {
+			console.log("editando a carga");
+			setTruckValues({
+				...truckValues,
+				data: new Date(
+					truckValues.entrada.seconds * 1000 +
+						truckValues.entrada.nanoseconds / 1000000
+				)
+			});
+			return;
+		}
 		if (
 			truckValues.tipo === "carregando" &&
 			truckValues.origem.length === 0
@@ -105,21 +120,25 @@ const ModalFormFields = (props) => {
 					}
 				}}
 			>
-				<LocalizationProvider
-					dateAdapter={AdapterDayjs}
-					adapterLocale={"pt-br"}
+				<TextField
+					key="data"
+					variant="outlined"
+					id="data"
+					type="text"
+					label="Data"
+					name="data"
+					disabled={true}
+					value={
+						truckValues.liquido > 0
+							? truckValues.entrada.nanoseconds
+								? formatDate(truckValues.entrada)
+								: truckValues.entrada
+							: truckValues["data"]?.toLocaleString("pt-BR")
+					}
 					sx={{
 						width: "100%"
 					}}
-				>
-					<DatePicker
-						label="Data"
-						onChange={(e) => handleChangeTruck(e)}
-						value={truckValues["data"]}
-						disabled={true}
-						renderInput={(params) => <TextField {...params} />}
-					/>
-				</LocalizationProvider>
+				/>
 				{TRUCK.map((input, index) => {
 					return (
 						<TextField
@@ -160,7 +179,6 @@ const ModalFormFields = (props) => {
 								step: "0",
 								min: "0"
 							}}
-							// value={formik.values[input.name]}
 							placeholder={input.placeholder}
 							sx={{
 								width: "100%"
@@ -180,7 +198,7 @@ const ModalFormFields = (props) => {
 					fontStyle: "italic"
 				}}
 			>
-				Observações
+				Dados Produto
 			</Typography>
 			<Box
 				sx={{
@@ -231,7 +249,8 @@ const ModalFormFields = (props) => {
 							placeholder={input.placeholder}
 							inputProps={{
 								// maxLength: 13,
-								step: "0.10"
+								step: "0.10",
+								min: "0"
 							}}
 							sx={{
 								width: "100%"
@@ -240,13 +259,20 @@ const ModalFormFields = (props) => {
 					);
 				})}
 			</Box>
-
-			{truckValues.tipo !== "carregando" && (
-				<SheetFields
-					handleChangeTruck={handleChangeTruck}
-					truckValues={truckValues}
-				/>
-			)}
+			<SheetFields
+				handleChangeTruck={handleChangeTruck}
+				truckValues={truckValues}
+			/>
+			<Typography
+				variant="h4"
+				color={colors.blueOrigin[400]}
+				mt="20px"
+				sx={{
+					fontStyle: "italic"
+				}}
+			>
+				Observações
+			</Typography>
 			<Box
 				sx={{
 					width: "100%",

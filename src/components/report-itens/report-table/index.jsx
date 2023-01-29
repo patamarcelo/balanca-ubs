@@ -15,9 +15,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import toast from "react-hot-toast";
 
 import { useSelector } from "react-redux";
-import { selectIsAdminUser } from "../../../store/user/user.selector";
+import {
+	selectIsAdminUser,
+	selectIBalancaUser
+} from "../../../store/user/user.selector";
+
+import { selectTruckOnID } from "../../../store/trucks/trucks.selector";
 
 import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
+
+import EditModal from "../report-modal-table";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect } from "react";
+import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
+
+import { newDateArr } from "../../../utils/format-suport/data-format";
 
 const ReportTable = (props) => {
 	const theme = useTheme();
@@ -33,6 +45,12 @@ const ReportTable = (props) => {
 	const dataTableRev = [...dataTable].reverse();
 
 	const isAdmin = useSelector(selectIsAdminUser);
+	const isBalanca = useSelector(selectIBalancaUser);
+	const [dataTruck, setDataTruck] = useState([TRUCK_INITIAL_STATE]);
+	const [isOpenModal, setIsOpenModal] = useState(false);
+	const [filterId, setFilterId] = useState(null);
+
+	const truckLoadId = useSelector(selectTruckOnID(filterId));
 
 	const handlerDelete = (dataId, data) => {
 		try {
@@ -55,6 +73,18 @@ const ReportTable = (props) => {
 	const formatWeight = (peso) => {
 		return Number(peso).toLocaleString("pt-BR") + " Kg";
 	};
+
+	const handlerEditTruck = (id, data) => {
+		setFilterId(id);
+		setIsOpenModal(true);
+		setDataTruck(data);
+	};
+
+	useEffect(() => {
+		if (!isOpenModal) {
+			setDataTruck([]);
+		}
+	}, [isOpenModal]);
 
 	const columns = [
 		{
@@ -409,6 +439,22 @@ const ReportTable = (props) => {
 			),
 			renderCell: (params) => (
 				<>
+					{isBalanca && params.row.liquido > 0 && (
+						<Typography
+							color={colors.greenAccent[400]}
+							sx={{ cursor: "pointer" }}
+							onClick={() =>
+								handlerEditTruck(params.row.id, params.row)
+							}
+						>
+							<FontAwesomeIcon
+								icon={faPenToSquare}
+								color={colors.yellow[600]}
+								size="sm"
+								style={{ marginLeft: "10px" }}
+							/>
+						</Typography>
+					)}
 					{params.row.liquido > 0 ? (
 						<FontAwesomeIcon
 							color={colors.greenAccent[500]}
@@ -478,6 +524,14 @@ const ReportTable = (props) => {
 				whiteSpace: "nowrap"
 			}}
 		>
+			<EditModal
+				dataTruck={dataTruck}
+				isOpenModal={isOpenModal}
+				setIsOpenModal={setIsOpenModal}
+				TRUCK_INITIAL_STATE={TRUCK_INITIAL_STATE}
+				setDataTruck={setDataTruck}
+			/>
+
 			<Box
 				height="100%"
 				sx={{

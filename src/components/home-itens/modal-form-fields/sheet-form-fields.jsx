@@ -35,7 +35,7 @@ const SheetFields = (props) => {
 			<Box
 				display="grid"
 				gap="10px"
-				mb="8px"
+				mb={2}
 				gridTemplateColumns={`repeat(${
 					!isNonMobile ? "1" : "2"
 				}, minmax(0, 1fr))`}
@@ -81,15 +81,6 @@ const SheetFields = (props) => {
 					);
 				})}
 			</Box>
-			<Box
-				sx={{
-					width: "100%",
-					backgroundColor: colors.grey[800],
-					borderRadius: "8px",
-					height: "2px",
-					margin: "0px 2px 20px 2px"
-				}}
-			/>
 		</>
 	);
 };
