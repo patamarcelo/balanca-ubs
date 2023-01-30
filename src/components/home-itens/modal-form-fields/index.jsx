@@ -27,26 +27,28 @@ const ModalFormFields = (props) => {
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {
+			console.log("Edit FUll");
 			setTruckValues({
 				...truckValues
 			});
 			return;
 		}
-		if (truckValues.pesoBruto > 0 || truckValues.tara > 0) {
-			console.log("editando a carga");
-			setTruckValues({
-				...truckValues,
-				data: new Date(
-					truckValues.entrada.seconds * 1000 +
-						truckValues.entrada.nanoseconds / 1000000
-				)
-			});
-			return;
-		}
+		// if (truckValues.pesoBruto > 0 || truckValues.tara > 0) {
+		// 	console.log("editando a carga");
+		// 	setTruckValues({
+		// 		...truckValues,
+		// 		data: new Date(
+		// 			truckValues.entrada.seconds * 1000 +
+		// 				truckValues.entrada.nanoseconds / 1000000
+		// 		)
+		// 	});
+		// 	return;
+		// }
 		if (
 			truckValues.tipo === "carregando" &&
 			truckValues.origem.length === 0
 		) {
+			console.log("Open Modal Carregando");
 			setTruckValues({
 				...truckValues,
 				origem: unidadeOpUser?.toUpperCase(),
@@ -56,13 +58,21 @@ const ModalFormFields = (props) => {
 			truckValues.tipo === "descarregando" &&
 			truckValues.destino.length === 0
 		) {
+			console.log("Open Modal DESCARREGANDO");
 			setTruckValues({
 				...truckValues,
 				destino: unidadeOpUser?.toUpperCase(),
 				data: new Date()
 			});
 		} else {
-			setTruckValues({ ...truckValues, data: new Date() });
+			console.log("Open Modal Última Opção");
+			setTruckValues({
+				...truckValues,
+				data: new Date(
+					truckValues.entrada.seconds * 1000 +
+						truckValues.entrada.nanoseconds / 1000000
+				)
+			});
 		}
 	}, []);
 
