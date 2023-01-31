@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import TextField from "@mui/material/TextField";
 import "dayjs/locale/pt-br";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
@@ -24,6 +24,16 @@ const ModalFormFields = (props) => {
 	// const [value, setValue] = useState(new Date());
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+	const [isFirstRenderCarregando, setIsFirstRenderCarregando] =
+		useState(true);
+
+	useEffect(() => {
+		if (truckValues.pesoBruto.length === 0) {
+			setIsFirstRenderCarregando(true);
+		} else {
+			setIsFirstRenderCarregando(false);
+		}
+	}, [truckValues]);
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {
@@ -69,8 +79,8 @@ const ModalFormFields = (props) => {
 			setTruckValues({
 				...truckValues,
 				data: new Date(
-					truckValues.entrada.seconds * 1000 +
-						truckValues.entrada.nanoseconds / 1000000
+					truckValues?.entrada?.seconds * 1000 +
+						truckValues?.entrada?.nanoseconds / 1000000
 				)
 			});
 		}
