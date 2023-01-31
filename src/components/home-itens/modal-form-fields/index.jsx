@@ -24,16 +24,6 @@ const ModalFormFields = (props) => {
 	// const [value, setValue] = useState(new Date());
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
-	const [isFirstRenderCarregando, setIsFirstRenderCarregando] =
-		useState(true);
-
-	useEffect(() => {
-		if (truckValues.pesoBruto.length === 0) {
-			setIsFirstRenderCarregando(true);
-		} else {
-			setIsFirstRenderCarregando(false);
-		}
-	}, [truckValues]);
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {
