@@ -140,7 +140,7 @@ const ModalFormFields = (props) => {
 					disabled={true}
 					value={
 						truckValues.liquido > 0
-							? truckValues.entrada.nanoseconds
+							? truckValues.entrada?.nanoseconds
 								? formatDate(truckValues.entrada)
 								: truckValues.entrada
 							: truckValues["data"]?.toLocaleString("pt-BR")
