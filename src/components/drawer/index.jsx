@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 const NAVIGATION = [
 	{ title: "Início", icon: faHouse, to: "/" },
 	{ title: "Relatório", icon: faChartSimple, to: "/report" },
-	{ title: "Semente Envio", icon: faPaperPlane, to: "/sendseed" }
+	{ title: "Envio Semente", icon: faPaperPlane, to: "/sendseed" }
 ];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {

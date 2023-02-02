@@ -1,5 +1,11 @@
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
+export const selectTruckSendSeed = (state) => {
+	const dataLoad = state.truckLoads.truckLoads;
+	return dataLoad.filter((data) =>
+		data.mercadoria.toLowerCase().includes("plantio")
+	);
+};
 export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 	const dataLoad = state.truckLoads.truckLoads;
 	const unidadeOpFiltered = unidadeOp ? unidadeOp : "ubs";
