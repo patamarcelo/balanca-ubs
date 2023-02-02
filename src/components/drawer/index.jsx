@@ -15,12 +15,14 @@ import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
 	{ title: "Início", icon: faHouse, to: "/" },
-	{ title: "Relatório", icon: faChartSimple, to: "/report" }
+	{ title: "Relatório", icon: faChartSimple, to: "/report" },
+	{ title: "Semente Envio", icon: faPaperPlane, to: "/sendseed" }
 ];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {

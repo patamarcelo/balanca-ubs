@@ -7,6 +7,7 @@ import Header from "../../components/global/Header";
 import HomePage from "../../pages/Home";
 import ReportPage from "../../pages/Report";
 import PrintPage from "../../pages/Print";
+import SendSeed from "../../pages/SendSeed";
 
 import { useLocation } from "react-router-dom";
 
@@ -62,6 +63,7 @@ const AuthApp = () => {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/report" element={<ReportPage />} />
 					<Route path="/print" element={<PrintPage />} />
+					<Route path="/sendseed" element={<SendSeed />} />
 				</Routes>
 			</Box>
 		</Box>
