@@ -19,10 +19,20 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+import { selectUnidadeOpUser } from "../../store/user/user.selector";
+
+import { useEffect, useState } from "react";
+
 const NAVIGATION = [
-	{ title: "Início", icon: faHouse, to: "/" },
-	{ title: "Relatório", icon: faChartSimple, to: "/report" },
-	{ title: "Envio Semente", icon: faPaperPlane, to: "/sendseed" }
+	{ title: "Início", icon: faHouse, to: "/", unidade: "all" },
+	{ title: "Relatório", icon: faChartSimple, to: "/report", unidade: "all" },
+	{
+		title: "Envio Semente",
+		icon: faPaperPlane,
+		to: "/sendseed",
+		unidade: "ubs"
+	}
 ];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
@@ -31,6 +41,18 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	const handlerNvaigate = (to) => {
 		navigate(to);
 	};
+
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const [filteredArr, setFilteredArr] = useState([]);
+
+	console.log("Unidade OP User: ", unidadeOpUser);
+
+	useEffect(() => {
+		const newArr = NAVIGATION.filter(
+			(data) => data.unidade === unidadeOpUser || data.unidade === "all"
+		);
+		setFilteredArr(newArr);
+	}, []);
 
 	const list = (anchor) => (
 		<Box
@@ -51,7 +73,7 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 				}}
 			>
 				<List>
-					{NAVIGATION.map((data, index) => (
+					{filteredArr.map((data, index) => (
 						<ListItem
 							key={index}
 							disablePadding

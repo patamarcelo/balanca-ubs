@@ -14,6 +14,9 @@ import { useLocation } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import { useSelector } from "react-redux";
+import { selectUnidadeOpUser } from "../../store/user/user.selector";
+
 const AuthApp = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -21,6 +24,8 @@ const AuthApp = () => {
 
 	const [isdrawerOpen, setIsdrawerOpen] = useState(false);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const toggleDrawer = (event) => {
 		if (
@@ -63,7 +68,9 @@ const AuthApp = () => {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/report" element={<ReportPage />} />
 					<Route path="/print" element={<PrintPage />} />
-					<Route path="/sendseed" element={<SendSeed />} />
+					{unidadeOpUser === "ubs" && (
+						<Route path="/sendseed" element={<SendSeed />} />
+					)}
 				</Routes>
 			</Box>
 		</Box>

@@ -1,0 +1,23 @@
+table {
+    width: 100%;
+}
+
+table thead {
+    background-color: black;
+    color: whitesmoke;
+}
+
+
+.data-format {
+    text-align: center;
+}
+
+.solicitacao-pendente {
+    background-color: rgb(168, 42, 42, 0.6);
+    /* color: red */
+}
+
+.solicitacao-atendida {
+    background-color: rgb(87, 230, 55,0.6);
+    /* color: green */
+}
