@@ -145,9 +145,9 @@ const RetrieveData = () => {
 				"& .MuiOutlinedInput-notchedOutline ": {
 					borderColor: "gray !important"
 				},
-				"& .MuiInputLabel-root": {
+				"& .MuiInputLabel-outlined": {
 					// color: "white !important"
-					color: colors.primary[100]
+					color: `whitesmoke !important`
 				}
 			}}
 		>
