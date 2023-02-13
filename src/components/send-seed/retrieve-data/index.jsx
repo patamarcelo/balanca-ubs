@@ -141,7 +141,14 @@ const RetrieveData = () => {
 			sx={{
 				backgroundColor: colors.blueOrigin[700],
 				margin: "0 10px 10px 0px ",
-				borderRadius: "8px"
+				borderRadius: "8px",
+				"& .MuiOutlinedInput-notchedOutline ": {
+					borderColor: "gray !important"
+				},
+				"& .MuiInputLabel-root": {
+					// color: "white !important"
+					color: colors.primary[100]
+				}
 			}}
 		>
 			{isdone && (
