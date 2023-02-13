@@ -275,6 +275,14 @@ const PageData = ({ data }) => {
 					}}
 				>
 					<Typography variant="h6" color={colors.grey[800]}>
+						{data?.relatorioColheita && <b>Relatório Colheita: </b>}
+						{data?.relatorioColheita && data?.relatorioColheita}
+						{data?.relatorioColheita && <br />}
+
+						{data?.parcela && <b>Parcela: </b>}
+						{data?.parcela && data?.parcela}
+						{data?.parcela && <br />}
+
 						{data?.observacoes}
 					</Typography>
 				</Box>
