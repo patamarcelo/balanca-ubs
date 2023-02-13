@@ -2,11 +2,43 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import classes from "./retrieve-data.css";
+import NoDataShow from "./no-data";
 
 const DefensivoTable = (props) => {
 	const { data } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
+	if (data.length === 0) {
+		return (
+			<Box
+				display="flex"
+				flexDirection="column"
+				justifyContent="center"
+				alignItems="center"
+				width="100%"
+				sx={{
+					marginTop: "10px"
+				}}
+			>
+				<Box width="100%" sx={{ textAlign: "center" }}>
+					<Typography
+						variant="h2"
+						// color={colors.primary[100]}
+						color="whitesmoke"
+						style={{
+							marginBottom: "5px",
+							backgroundColor: colors.blueAccent[800],
+							width: "100%"
+						}}
+					>
+						Semente
+					</Typography>
+					<NoDataShow />
+				</Box>
+			</Box>
+		);
+	}
 
 	return (
 		<Box

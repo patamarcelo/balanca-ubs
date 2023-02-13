@@ -11,7 +11,6 @@ const SendSeed = () => {
 
 	const sendSeedData = useSelector(selectTruckSendSeed);
 
-	console.table("SendSeedData: ", sendSeedData);
 	return (
 		<Box width="100%" height="98%">
 			<Typography variant="h6" color={colors.primary[300]}>

@@ -45,8 +45,6 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const [filteredArr, setFilteredArr] = useState([]);
 
-	console.log("Unidade OP User: ", unidadeOpUser);
-
 	useEffect(() => {
 		const newArr = NAVIGATION.filter(
 			(data) => data.unidade === unidadeOpUser || data.unidade === "all"
