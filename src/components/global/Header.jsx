@@ -14,7 +14,8 @@ import {
 	faHouse,
 	faUser,
 	faChartSimple,
-	faPrint
+	faPrint,
+	faPaperPlane
 } from "@fortawesome/free-solid-svg-icons";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 
@@ -48,6 +49,10 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	const handlerReportNav = () => {
 		navigate("/report");
+	};
+
+	const handlerSentSeed = () => {
+		navigate("/sendseed");
 	};
 
 	const handlerLogout = () => {
@@ -124,6 +129,16 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						/>
 					</IconButton>
 				)}
+				{!location.pathname.includes("sendseed") &&
+					unidadeOpUser === "ubs" && (
+						<IconButton onClick={handlerSentSeed}>
+							<FontAwesomeIcon
+								icon={faPaperPlane}
+								color={colors.blueAccent[500]}
+								size={isNonMobile ? "sm" : "xs"}
+							/>
+						</IconButton>
+					)}
 				{location.pathname.length > 1 && (
 					<IconButton onClick={handlerNavHome}>
 						<FontAwesomeIcon

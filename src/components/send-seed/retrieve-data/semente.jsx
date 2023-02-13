@@ -29,7 +29,7 @@ const SementeTable = (props) => {
 						color="whitesmoke"
 						style={{
 							marginBottom: "5px",
-							backgroundColor: colors.blueAccent[800],
+							backgroundColor: colors.blueOrigin[800],
 							width: "100%"
 						}}
 					>
@@ -59,7 +59,7 @@ const SementeTable = (props) => {
 					color="whitesmoke"
 					style={{
 						marginBottom: "5px",
-						backgroundColor: colors.blueAccent[800],
+						backgroundColor: colors.blueOrigin[800],
 						width: "100%"
 					}}
 				>

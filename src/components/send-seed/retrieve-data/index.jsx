@@ -101,7 +101,7 @@ const RetrieveData = () => {
 			height="100%"
 			p={3}
 			sx={{
-				backgroundColor: colors.blueAccent[700],
+				backgroundColor: colors.blueOrigin[700],
 				margin: "0 10px 10px 0px ",
 				borderRadius: "8px"
 			}}
