@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ptBR from "dayjs/locale/pt-br";
 
 const RetrieveData = () => {
 	const theme = useTheme();
@@ -24,8 +25,9 @@ const RetrieveData = () => {
 	const url1 = `${url}${ssid}${query1}&${query2}&${query3}`;
 
 	const [dataArr, setDataArr] = useState([]);
+	const [filteredArr, setFilteredArr] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [isdone, setIsDone] = useState(false);
+	const [isdone, setIsDone] = useState(true);
 
 	const [value, setValue] = useState("");
 
@@ -36,12 +38,20 @@ const RetrieveData = () => {
 			month: "2-digit",
 			day: "2-digit"
 		});
+		const filteredData = dataArr.filter((data) => {
+			return (
+				data["Situação"] === "Pendente" ||
+				data["Data Envio"].split(" ")[0] >= formDate
+			);
+		});
+		setFilteredArr(filteredData);
+		console.log(formDate);
 		setValue(formDate);
 	};
 
-	useEffect(() => {
-		console.log("New Data: ", value.toLocaleString("pt-BR"));
-	}, [value]);
+	// useEffect(() => {
+	// 	console.log("New Data: ", value.toLocaleString("pt-BR"));
+	// }, [value]);
 
 	useEffect(() => {
 		const diaNovo = new Date();
@@ -86,7 +96,8 @@ const RetrieveData = () => {
 							data["Data Envio"].split(" ")[0] >= hoje
 						);
 					});
-					setDataArr(filteredData);
+					setFilteredArr(filteredData);
+					setDataArr(newDict);
 				});
 		} catch (err) {
 			console.log("Erro ao pegar os dados ");
@@ -134,13 +145,21 @@ const RetrieveData = () => {
 			}}
 		>
 			{isdone && (
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<LocalizationProvider
+					dateAdapter={AdapterDayjs}
+					adapterLocale={ptBR}
+				>
 					<DesktopDatePicker
 						label="Data de Início"
 						inputFormat="DD/MM/YYYY"
 						value={value}
 						onChange={handleChange}
-						renderInput={(params) => <TextField {...params} />}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								placeholder="Data de início"
+							/>
+						)}
 					/>
 				</LocalizationProvider>
 			)}
@@ -154,14 +173,14 @@ const RetrieveData = () => {
 				}}
 			>
 				<SementeTable
-					data={dataArr.filter(
+					data={filteredArr.filter(
 						(data) =>
 							data["Solicitação"].toLowerCase() === "semente"
 					)}
 				/>
 
 				<DefensivoTable
-					data={dataArr.filter(
+					data={filteredArr.filter(
 						(data) =>
 							data["Solicitação"].toLowerCase() !== "semente"
 					)}
