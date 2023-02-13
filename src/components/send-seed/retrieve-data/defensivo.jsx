@@ -32,7 +32,7 @@ const DefensivoTable = (props) => {
 							width: "100%"
 						}}
 					>
-						Semente
+						ST
 					</Typography>
 					<NoDataShow />
 				</Box>
@@ -76,27 +76,29 @@ const DefensivoTable = (props) => {
 						<th>Situação</th>
 					</tr>
 				</thead>
-				{data.map((data, i) => {
-					const fontColor =
-						data["Situação"] === "Pendente"
-							? "solicitacao-pendente"
-							: "solicitacao-atendida";
-					return (
-						<tr key={i} className={fontColor}>
-							<th className="data-format">
-								{data["Data Solicitação"]}
-							</th>
-							<th>{data.Destino}</th>
-							<th>{data.Projeto}</th>
-							<th>{data["Nº Solicitação"]}</th>
-							<th className="data-format">
-								{data["Data Envio"]}
-							</th>
-							<th>{data.OBS}</th>
-							<th>{data["Situação"]}</th>
-						</tr>
-					);
-				})}
+				<tbody>
+					{data.map((data, i) => {
+						const fontColor =
+							data["Situação"] === "Pendente"
+								? "solicitacao-pendente"
+								: "solicitacao-atendida";
+						return (
+							<tr key={i} className={fontColor}>
+								<th className="data-format">
+									{data["Data Solicitação"]}
+								</th>
+								<th>{data.Destino}</th>
+								<th>{data.Projeto}</th>
+								<th>{data["Nº Solicitação"]}</th>
+								<th className="data-format">
+									{data["Data Envio"]}
+								</th>
+								<th>{data.OBS}</th>
+								<th>{data["Situação"]}</th>
+							</tr>
+						);
+					})}
+				</tbody>
 			</table>
 		</Box>
 	);

@@ -7,6 +7,10 @@ import SementeTable from "./semente";
 import DefensivoTable from "./defensivo";
 
 import CircularProgress from "@mui/material/CircularProgress";
+import TextField from "@mui/material/TextField";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const RetrieveData = () => {
 	const theme = useTheme();
@@ -21,6 +25,29 @@ const RetrieveData = () => {
 
 	const [dataArr, setDataArr] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isdone, setIsDone] = useState(false);
+
+	const [value, setValue] = useState("");
+
+	const handleChange = (newValue) => {
+		const date = new Date(newValue);
+		const formDate = date?.toLocaleDateString("pt-BR", {
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit"
+		});
+		setValue(formDate);
+	};
+
+	useEffect(() => {
+		console.log("New Data: ", value.toLocaleString("pt-BR"));
+	}, [value]);
+
+	useEffect(() => {
+		const diaNovo = new Date();
+		const hoje = diaNovo.toLocaleString("pt-BR").split(" ")[0];
+		setValue(hoje);
+	}, []);
 
 	const getData = async () => {
 		try {
@@ -56,7 +83,7 @@ const RetrieveData = () => {
 
 						return (
 							data["Situação"] === "Pendente" ||
-							data["Data Envio"].split(" ")[0] === hoje
+							data["Data Envio"].split(" ")[0] >= hoje
 						);
 					});
 					setDataArr(filteredData);
@@ -106,6 +133,17 @@ const RetrieveData = () => {
 				borderRadius: "8px"
 			}}
 		>
+			{isdone && (
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					<DesktopDatePicker
+						label="Data de Início"
+						inputFormat="DD/MM/YYYY"
+						value={value}
+						onChange={handleChange}
+						renderInput={(params) => <TextField {...params} />}
+					/>
+				</LocalizationProvider>
+			)}
 			<Box
 				display="flex"
 				flexDirection="column"

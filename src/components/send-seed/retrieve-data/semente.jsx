@@ -79,38 +79,40 @@ const SementeTable = (props) => {
 						<th>Situação</th>
 					</tr>
 				</thead>
-				{data.map((data, i) => {
-					const fontColor =
-						data["Situação"] === "Pendente"
-							? "solicitacao-pendente"
-							: "solicitacao-atendida";
-					return (
-						<tr key={i} className={fontColor}>
-							<th className="data-format">
-								{data["Data Solicitação"]}
-							</th>
+				<tbody>
+					{data.map((data, i) => {
+						const fontColor =
+							data["Situação"] === "Pendente"
+								? "solicitacao-pendente"
+								: "solicitacao-atendida";
+						return (
+							<tr key={i} className={fontColor}>
+								<th className="data-format">
+									{data["Data Solicitação"]}
+								</th>
 
-							<th>{data.Produto}</th>
+								<th>{data.Produto}</th>
 
-							<th>{data.Destino}</th>
+								<th>{data.Destino}</th>
 
-							<th>{data.Peso.toLocaleString("pt-BR")} Kg</th>
+								<th>{data.Peso.toLocaleString("pt-BR")} Kg</th>
 
-							<th>
-								{data.Quantidade}{" "}
-								{data.Quantidade > 1 ? "Bags" : "Bag"}
-							</th>
+								<th>
+									{data.Quantidade}{" "}
+									{data.Quantidade > 1 ? "Bags" : "Bag"}
+								</th>
 
-							<th className="data-format">
-								{data["Data Envio"]}
-							</th>
+								<th className="data-format">
+									{data["Data Envio"]}
+								</th>
 
-							<th>{data.OBS}</th>
+								<th>{data.OBS}</th>
 
-							<th>{data["Situação"]}</th>
-						</tr>
-					);
-				})}
+								<th>{data["Situação"]}</th>
+							</tr>
+						);
+					})}
+				</tbody>
 			</table>
 		</Box>
 	);
