@@ -4,7 +4,12 @@ import { tokens } from "../../../theme";
 import classes from "./retrieve-data.css";
 
 import NoDataShow from "./no-data";
+import Chip from "@mui/material/Chip";
 
+const DICT_COLOR = {
+	"Semente Arroz 424": "rgb(255, 208, 80)",
+	"Semente Arroz 704": "rgb(171,202,221)"
+};
 const SementeTable = (props) => {
 	const { data } = props;
 	const theme = useTheme();
@@ -70,8 +75,8 @@ const SementeTable = (props) => {
 				<thead>
 					<tr>
 						<th>Data Solicitação</th>
-						<th>Produto</th>
 						<th>Fazenda</th>
+						<th>Produto</th>
 						<th>Peso</th>
 						<th>Bags</th>
 						<th>Data Envio</th>
@@ -90,10 +95,21 @@ const SementeTable = (props) => {
 								<th className="data-format">
 									{data["Data Solicitação"]}
 								</th>
-
-								<th>{data.Produto}</th>
-
 								<th>{data.Destino}</th>
+
+								<th>
+									<Chip
+										label={data.Produto}
+										style={{
+											backgroundColor:
+												DICT_COLOR[data.Produto],
+											width: "90%",
+											color: "black",
+											height: "28px",
+											margin: "1px 0"
+										}}
+									/>
+								</th>
 
 								<th>{data.Peso.toLocaleString("pt-BR")} Kg</th>
 
