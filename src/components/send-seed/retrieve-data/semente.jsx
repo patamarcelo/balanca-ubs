@@ -125,8 +125,10 @@ const SementeTable = (props) => {
 												DICT_COLOR[data.Produto],
 											width: "90%",
 											color: "black",
-											height: "28px",
-											margin: "1px 0"
+											maxHeight: "17px",
+											margin: "2px auto",
+											display: "inline-block",
+											textAlign: "center"
 										}}
 									/>
 								</th>
