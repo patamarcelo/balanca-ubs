@@ -68,7 +68,7 @@ const DefensivoTable = (props) => {
 				<thead>
 					<tr>
 						<th>Data Solicitação</th>
-						<th>Fazenda</th>
+						<th>Destino</th>
 						<th>Projeto</th>
 						<th>ST</th>
 						<th>Data Envio</th>
