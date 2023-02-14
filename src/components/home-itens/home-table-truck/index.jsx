@@ -26,7 +26,8 @@ import {
 
 import {
 	selectIBalancaUser,
-	selectUnidadeOpUser
+	selectUnidadeOpUser,
+	selectIsAdminUser
 } from "../../../store/user/user.selector";
 
 import toast from "react-hot-toast";
@@ -43,6 +44,7 @@ const HomeTableTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isBalanca = useSelector(selectIBalancaUser);
+	const isAdminUser = useSelector(selectIsAdminUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
@@ -166,7 +168,7 @@ const HomeTableTruck = (props) => {
 								// disabled={!isBalanca || !disableInput}
 								aria-label="delete"
 								onClick={() => {
-									if (!isBalanca) {
+									if (!isBalanca || !isAdminUser) {
 										toast.error(`Usuário Sem Permissão`, {
 											position: "top-center"
 										});
