@@ -87,20 +87,23 @@ const SementeTable = (props) => {
 				</thead>
 				<tbody>
 					{data.map((data, i) => {
-						var sendData = data["Data Envio"]
-							.split("(")[1]
-							.split(")")[0];
-						const mapData = sendData
-							.split(",")
-							.map((data) => Number(data));
-						let fDate = new Date(...mapData);
-						const ffDate = fDate.toLocaleDateString("pt-BR", {
-							year: "numeric",
-							month: "2-digit",
-							day: "2-digit"
-						});
-
-						const envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+						if (data["Data Envio"].length > 4) {
+							var sendData = data["Data Envio"]
+								.split("(")[1]
+								.split(")")[0];
+							const mapData = sendData
+								.split(",")
+								.map((data) => Number(data));
+							let fDate = new Date(...mapData);
+							const ffDate = fDate.toLocaleDateString("pt-BR", {
+								year: "numeric",
+								month: "2-digit",
+								day: "2-digit"
+							});
+							var envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+						} else {
+							envDateFormat = " - ";
+						}
 
 						const fontColor =
 							data["Situação"] === "Pendente"
