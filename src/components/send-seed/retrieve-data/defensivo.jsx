@@ -78,6 +78,23 @@ const DefensivoTable = (props) => {
 				</thead>
 				<tbody>
 					{data.map((data, i) => {
+						if (data["Data Envio"].length > 4) {
+							var sendData = data["Data Envio"]
+								.split("(")[1]
+								.split(")")[0];
+							const mapData = sendData
+								.split(",")
+								.map((data) => Number(data));
+							let fDate = new Date(...mapData);
+							const ffDate = fDate.toLocaleDateString("pt-BR", {
+								year: "numeric",
+								month: "2-digit",
+								day: "2-digit"
+							});
+							var envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+						} else {
+							envDateFormat = " - ";
+						}
 						const fontColor =
 							data["Situação"] === "Pendente"
 								? "solicitacao-pendente"
@@ -90,9 +107,7 @@ const DefensivoTable = (props) => {
 								<th>{data.Destino}</th>
 								<th>{data.Projeto}</th>
 								<th>{data["Nº Solicitação"]}</th>
-								<th className="data-format">
-									{data["Data Envio"]}
-								</th>
+								<th className="data-format">{envDateFormat}</th>
 								<th>{data.OBS}</th>
 								<th>{data["Situação"]}</th>
 							</tr>

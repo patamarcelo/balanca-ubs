@@ -39,10 +39,19 @@ const RetrieveData = () => {
 			day: "2-digit"
 		});
 		const filteredData = dataArr.filter((data) => {
-			return (
-				data["Situação"] === "Pendente" ||
-				data["Data Envio"].split(" ")[0] >= formDate
-			);
+			if (data["Data Envio"].length > 4) {
+				var sendData = data["Data Envio"].split("(")[1].split(")")[0];
+				const mapData = sendData.split(",").map((data) => Number(data));
+				let fDate = new Date(...mapData);
+				var ffDate = fDate.toLocaleDateString("pt-BR", {
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit"
+				});
+			} else {
+				ffDate = "01/01/2222";
+			}
+			return data["Situação"] === "Pendente" || ffDate >= formDate;
 		});
 		setFilteredArr(filteredData);
 		console.log(formDate);
@@ -90,10 +99,24 @@ const RetrieveData = () => {
 						const hoje = diaNovo
 							.toLocaleString("PT-br")
 							.split(" ")[0];
-
+						if (data["Data Envio"].length > 4) {
+							var sendData = data["Data Envio"]
+								.split("(")[1]
+								.split(")")[0];
+							const mapData = sendData
+								.split(",")
+								.map((data) => Number(data));
+							let fDate = new Date(...mapData);
+							var ffDate = fDate.toLocaleDateString("pt-BR", {
+								year: "numeric",
+								month: "2-digit",
+								day: "2-digit"
+							});
+						} else {
+							ffDate = "01/01/2222";
+						}
 						return (
-							data["Situação"] === "Pendente" ||
-							data["Data Envio"].split(" ")[0] >= hoje
+							data["Situação"] === "Pendente" || ffDate >= hoje
 						);
 					});
 					setFilteredArr(filteredData);

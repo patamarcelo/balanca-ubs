@@ -75,7 +75,8 @@ const SementeTable = (props) => {
 				<thead>
 					<tr>
 						<th>Data Solicitação</th>
-						<th>Fazenda</th>
+						<th>Origem</th>
+						<th>Destino</th>
 						<th>Produto</th>
 						<th>Peso</th>
 						<th>Bags</th>
@@ -86,6 +87,21 @@ const SementeTable = (props) => {
 				</thead>
 				<tbody>
 					{data.map((data, i) => {
+						var sendData = data["Data Envio"]
+							.split("(")[1]
+							.split(")")[0];
+						const mapData = sendData
+							.split(",")
+							.map((data) => Number(data));
+						let fDate = new Date(...mapData);
+						const ffDate = fDate.toLocaleDateString("pt-BR", {
+							year: "numeric",
+							month: "2-digit",
+							day: "2-digit"
+						});
+
+						const envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+
 						const fontColor =
 							data["Situação"] === "Pendente"
 								? "solicitacao-pendente"
@@ -95,6 +111,7 @@ const SementeTable = (props) => {
 								<th className="data-format">
 									{data["Data Solicitação"]}
 								</th>
+								<th>{data.Origem}</th>
 								<th>{data.Destino}</th>
 
 								<th>
@@ -118,9 +135,7 @@ const SementeTable = (props) => {
 									{data.Quantidade > 1 ? "Bags" : "Bag"}
 								</th>
 
-								<th className="data-format">
-									{data["Data Envio"]}
-								</th>
+								<th className="data-format">{envDateFormat}</th>
 
 								<th>{data.OBS}</th>
 
