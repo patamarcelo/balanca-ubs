@@ -79,18 +79,16 @@ const RetrieveData = () => {
 					let newDict = [];
 					json.table.rows.forEach((row, index) => {
 						let newObj = {};
-						if (index < 15) {
-							row.c.forEach((cell, index) => {
-								let cellValue = cell === null ? "-" : cell.v;
-								if (index === 0) {
-									cellValue = cell.f;
-								}
-								if (index === 11 && cellValue.length > 1) {
-									cellValue = cell.f;
-								}
-								newObj[columnsHeader[index]?.label] = cellValue;
-							});
-						}
+						row.c.forEach((cell, index) => {
+							let cellValue = cell === null ? "-" : cell.v;
+							if (index === 0) {
+								cellValue = cell.f;
+							}
+							if (index === 11 && cellValue.length > 1) {
+								cellValue = cell.f;
+							}
+							newObj[columnsHeader[index]?.label] = cellValue;
+						});
 						newDict.push(newObj);
 					});
 					const filteredData = newDict.filter((data) => {
@@ -99,7 +97,11 @@ const RetrieveData = () => {
 						const hoje = diaNovo
 							.toLocaleString("PT-br")
 							.split(" ")[0];
-						if (data["Data Envio"].length > 4) {
+						if (
+							data["Data Solicitação"] !== undefined &&
+							data["Data Envio"] !== undefined &&
+							data["Data Envio"].length > 4
+						) {
 							var sendData = data["Data Envio"]
 								.split("(")[1]
 								.split(")")[0];
@@ -123,7 +125,7 @@ const RetrieveData = () => {
 					setDataArr(newDict);
 				});
 		} catch (err) {
-			console.log("Erro ao pegar os dados ");
+			console.log("Erro ao pegar os dados ", err);
 		} finally {
 			setIsLoading(false);
 		}
