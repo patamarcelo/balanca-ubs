@@ -173,7 +173,9 @@ const RetrieveData = () => {
 				"& .MuiInputLabel-outlined": {
 					// color: "white !important"
 					color: `whitesmoke !important`
-				}
+				},
+				maxHeight: "90%",
+				overflow: "auto"
 			}}
 		>
 			{isdone && (
