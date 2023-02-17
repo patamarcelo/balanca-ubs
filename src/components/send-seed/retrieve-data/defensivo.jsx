@@ -6,6 +6,9 @@ import NoDataShow from "./no-data";
 
 const DefensivoTable = (props) => {
 	const { data } = props;
+	const newData = data.sort((a, b) =>
+		a["Situação"].localeCompare(b["Situação"])
+	);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -80,7 +83,7 @@ const DefensivoTable = (props) => {
 					</tr>
 				</thead>
 				<tbody>
-					{data.map((data, i) => {
+					{newData.map((data, i) => {
 						if (data["Data Envio"].length > 4) {
 							var sendData = data["Data Envio"]
 								.split("(")[1]

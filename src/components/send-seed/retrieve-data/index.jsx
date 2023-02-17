@@ -174,7 +174,7 @@ const RetrieveData = () => {
 					// color: "white !important"
 					color: `whitesmoke !important`
 				},
-				maxHeight: "90%",
+				maxHeight: "99%",
 				overflow: "auto"
 			}}
 		>

@@ -12,6 +12,9 @@ const DICT_COLOR = {
 };
 const SementeTable = (props) => {
 	const { data } = props;
+	const newData = data.sort((a, b) =>
+		a["Situação"].localeCompare(b["Situação"])
+	);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -89,7 +92,7 @@ const SementeTable = (props) => {
 					</tr>
 				</thead>
 				<tbody>
-					{data.map((data, i) => {
+					{newData.map((data, i) => {
 						if (data["Data Envio"].length > 4) {
 							var sendData = data["Data Envio"]
 								.split("(")[1]
