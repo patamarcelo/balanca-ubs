@@ -32,7 +32,10 @@ const DefensivoTable = (props) => {
 						style={{
 							marginBottom: "5px",
 							backgroundColor: colors.blueOrigin[800],
-							width: "100%"
+							width: "100%",
+							border: "0.5px solid",
+							borderColor: "whitesmoke",
+							borderRadius: "8px"
 						}}
 					>
 						ST
