@@ -54,7 +54,8 @@ const DefensivoTable = (props) => {
 			alignItems="center"
 			width="100%"
 			sx={{
-				marginTop: "30px"
+				marginTop: "30px",
+				marginBottom: "30px"
 			}}
 		>
 			<Box width="100%" sx={{ textAlign: "center" }}>

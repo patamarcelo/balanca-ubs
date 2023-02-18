@@ -116,11 +116,25 @@ const RetrieveData = () => {
 							});
 						} else {
 							ffDate = "01/01/2222";
+							console.log("Undeffff: ", ffDate);
 						}
+						console.log("Hoje : ", hoje, "FFDate: ", ffDate);
+
+						const [day, month, year] = hoje.split("/");
+						const formatDateHoje = [month, day, year].join("-");
+
+						const [ffday, ffmonth, ffyear] = ffDate.split("/");
+						const formatDateffDate = [ffmonth, ffday, ffyear].join(
+							"-"
+						);
+
 						return (
-							data["Situação"] === "Pendente" || ffDate >= hoje
+							data["Situação"] === "Pendente" ||
+							new Date(formatDateffDate) >=
+								new Date(formatDateHoje)
 						);
 					});
+					console.log(filteredData);
 					setFilteredArr(filteredData);
 					setDataArr(newDict);
 				});
@@ -161,7 +175,7 @@ const RetrieveData = () => {
 	return (
 		<Box
 			width="100%"
-			height="100%"
+			height="92%"
 			p={3}
 			sx={{
 				backgroundColor: colors.blueOrigin[700],
@@ -174,7 +188,8 @@ const RetrieveData = () => {
 					// color: "white !important"
 					color: `whitesmoke !important`
 				},
-				maxHeight: "99%",
+				maxHeight: "92%",
+				minHeight: "92%",
 				overflow: "auto"
 			}}
 		>
@@ -201,9 +216,11 @@ const RetrieveData = () => {
 				display="flex"
 				flexDirection="column"
 				gap="80px"
+				// height="100%"
 				sx={{
 					justifyContent: "space-evenly",
-					alignItems: "center"
+					alignItems: "center",
+					marginBottom: "10px"
 				}}
 			>
 				<SementeTable

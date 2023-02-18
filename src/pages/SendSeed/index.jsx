@@ -12,7 +12,7 @@ const SendSeed = () => {
 	const sendSeedData = useSelector(selectTruckSendSeed);
 
 	return (
-		<Box width="100%" height="98%">
+		<Box width="100%" height="96%">
 			<Typography variant="h6" color={colors.primary[300]}>
 				Planilha Google
 			</Typography>
