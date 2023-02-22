@@ -175,7 +175,7 @@ const RetrieveData = () => {
 	return (
 		<Box
 			width="100%"
-			height="92%"
+			height="100%"
 			p={3}
 			sx={{
 				backgroundColor: colors.blueOrigin[700],
@@ -188,7 +188,7 @@ const RetrieveData = () => {
 					// color: "white !important"
 					color: `whitesmoke !important`
 				},
-				maxHeight: "92%",
+				maxHeight: "100%",
 				minHeight: "92%",
 				overflow: "auto"
 			}}
