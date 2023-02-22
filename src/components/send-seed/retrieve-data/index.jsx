@@ -54,7 +54,6 @@ const RetrieveData = () => {
 			return data["Situação"] === "Pendente" || ffDate >= formDate;
 		});
 		setFilteredArr(filteredData);
-		console.log(formDate);
 		setValue(formDate);
 	};
 
@@ -116,9 +115,7 @@ const RetrieveData = () => {
 							});
 						} else {
 							ffDate = "01/01/2222";
-							console.log("Undeffff: ", ffDate);
 						}
-						console.log("Hoje : ", hoje, "FFDate: ", ffDate);
 
 						const [day, month, year] = hoje.split("/");
 						const formatDateHoje = [month, day, year].join("-");
@@ -134,7 +131,6 @@ const RetrieveData = () => {
 								new Date(formatDateHoje)
 						);
 					});
-					console.log(filteredData);
 					setFilteredArr(filteredData);
 					setDataArr(newDict);
 				});

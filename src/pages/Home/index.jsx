@@ -74,6 +74,7 @@ const HomePage = () => {
 	const [truckValues, setTruckValues] = useState(TRUCK_INITIAL_STATE);
 
 	const [selectedUnitOp, setSelectedUnitOp] = useState(unidadeOpUser);
+	const [allUnits, setAllUnits] = useState([]);
 
 	const totalCarregando = useSelector(selectTrucksCarregando(selectedUnitOp));
 	const totalDescarregando = useSelector(
@@ -87,34 +88,16 @@ const HomePage = () => {
 		setFormatUnidade(value[0].description);
 	}, [selectedUnitOp]);
 
-	// toast.success(
-	// 	<Typography variant="h6" color={colors.grey[500]} fontWeight="bold">
-	// 		Movimentação de Carga!!
-	// 	</Typography>,
-	// 	{
-	// 		position: "top-center",
-	// 		duration: 3500,
-	// 		icon: (
-	// 			<FontAwesomeIcon
-	// 				icon={faTruckMoving}
-	// 				color={colors.blueOrigin[500]}
-	// 				size="lg"
-	// 			/>
-	// 		)
-	// 	}
-	// );
-
-	// const table = useSelector(selectTruckLoadsOnWork);
-
-	// useEffect(() => {
-	// 	const getData = async () => {
-	// 		setIsLoading(true);
-	// 		const data = await getTruckMoves();
-	// 		dispatch(setTruckLoads(data));
-	// 		setIsLoading(false);
-	// 	};
-	// 	getData();
-	// }, []);
+	useEffect(() => {
+		if (unidadeOpUser === "ubs") {
+			setAllUnits(UNITS_OP);
+		} else {
+			const filteredUnitOps = () => {
+				UNITS_OP.filter((data) => data.title === unidadeOpUser);
+			};
+			setAllUnits(filteredUnitOps);
+		}
+	}, []);
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
@@ -200,8 +183,6 @@ const HomePage = () => {
 		setSelectedUnitOp(data);
 	};
 
-	// console.log(truckValues)
-
 	const filteredTruckOnWork = (unidadeOp) => {
 		return truckWorks.filter((data) => data.unidadeOp === unidadeOp).length;
 	};
@@ -278,36 +259,39 @@ const HomePage = () => {
 					marginLeft: "15px"
 				}}
 			>
-				{UNITS_OP.map((data, i) => {
-					return (
-						<Box
-							key={i}
-							sx={{
-								marginLeft: i > 0 && "-2px !important",
-								zIndex: selectedUnitOp === data.title && 1,
-								backgroundColor:
-									selectedUnitOp === data.title
-										? colors.blueOrigin[700]
-										: "#22343F",
-								color:
-									selectedUnitOp === data.title
-										? "white"
-										: "#667279",
-								padding: "10px",
-								cursor: "pointer",
-								textTransform: "capitalize",
-								borderRadius: "4px",
-								boxShadow:
-									selectedUnitOp === data.title &&
-									`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
-							}}
-							onClick={() => handleFilteredUnidadeOp(data.title)}
-						>
-							{data.description} &nbsp;&nbsp;
-							{filteredTruckOnWork(data.title)}
-						</Box>
-					);
-				})}
+				{allUnits &&
+					allUnits.map((data, i) => {
+						return (
+							<Box
+								key={i}
+								sx={{
+									marginLeft: i > 0 && "-2px !important",
+									zIndex: selectedUnitOp === data.title && 1,
+									backgroundColor:
+										selectedUnitOp === data.title
+											? colors.blueOrigin[700]
+											: "#22343F",
+									color:
+										selectedUnitOp === data.title
+											? "white"
+											: "#667279",
+									padding: "10px",
+									cursor: "pointer",
+									textTransform: "capitalize",
+									borderRadius: "4px",
+									boxShadow:
+										selectedUnitOp === data.title &&
+										`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
+								}}
+								onClick={() =>
+									handleFilteredUnidadeOp(data.title)
+								}
+							>
+								{data.description} &nbsp;&nbsp;
+								{filteredTruckOnWork(data.title)}
+							</Box>
+						);
+					})}
 			</Box>
 			<Box
 				width="100%"
