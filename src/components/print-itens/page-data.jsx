@@ -19,14 +19,19 @@ const PageData = ({ data }) => {
 	};
 
 	const dictData = [
-		{ label: "Data", value: data.entrada },
-		{ label: "Cultura", value: data.cultura },
-		{ label: "Placa", value: formatPlate(data.placa) }
+		{ label: "Placa", value: formatPlate(data.placa) },
+		{ label: "Motorista", value: data?.motorista ? data.motorista : " - " },
+		{ label: "Cultura", value: data.cultura }
 	];
 	const dictDataR = [
 		{ label: "Peso Bruto", value: data.pesoBruto },
 		{ label: "Tara Veículo", value: data.tara },
 		{ label: "Peso Líquido", value: data.liquido }
+	];
+
+	const DataDict = [
+		{ label: "Entrada", value: data.entrada },
+		{ label: "Saída", value: data?.saida ? data.saida : " - " }
 	];
 
 	return (
@@ -47,29 +52,80 @@ const PageData = ({ data }) => {
 			>
 				<img src={Logo} alt="logo" />
 			</Box>
-
-			{[
-				"TICKET DE REQUISIÇÃO",
-				`LAGOA DA CONFUSÃO-TO / ${
-					data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
-				}`
-			].map((data, i) => {
-				return (
-					<Box key={i}>
-						<Typography
-							variant="h6"
-							color={colors.primary[700]}
-							fontWeight="bold"
-							sx={{
-								padding: "3px 0",
-								marginBottom: i === 1 ? "15px" : ""
-							}}
-						>
-							{data}
-						</Typography>
-					</Box>
-				);
-			})}
+			<Box
+				display="flex"
+				justifyContent="space-between"
+				sx={{ width: "100%" }}
+			>
+				<Box>
+					{[
+						"TICKET DE REQUISIÇÃO",
+						`LAGOA DA CONFUSÃO-TO / ${
+							data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
+						}`
+					].map((data, i) => {
+						return (
+							<Box key={i}>
+								<Typography
+									variant="h6"
+									color={colors.primary[700]}
+									fontWeight="bold"
+									sx={{
+										padding: "3px 0",
+										marginBottom: i === 1 ? "15px" : ""
+									}}
+								>
+									{data}
+								</Typography>
+							</Box>
+						);
+					})}
+				</Box>
+				<Box
+					display="flex"
+					flexDirection="column"
+					justifyContent="center"
+					alignItems="center"
+				>
+					{DataDict.map((data, i) => {
+						return (
+							<Box key={i} display="flex">
+								<Typography
+									color={colors.primary[700]}
+									fontWeight="bold"
+									sx={{
+										padding:
+											i === 1
+												? "0px 0px 0px 0px"
+												: "7px 0px 0px 0px",
+										fontSize: "12px",
+										marginBottom: i === 1 ? "15px" : "",
+										width: "60px",
+										textAlign: "end",
+										marginRight: "5px"
+									}}
+								>
+									{data.label}:
+								</Typography>
+								<Typography
+									color={colors.primary[700]}
+									sx={{
+										padding:
+											i === 1
+												? "0px 0px 0px 0px"
+												: "7px 0px 0px 0px",
+										fontSize: "12px",
+										marginBottom: i === 1 ? "15px" : "",
+										marginLeft: "5px"
+									}}
+								>
+									{data.value}
+								</Typography>
+							</Box>
+						);
+					})}
+				</Box>
+			</Box>
 			<Box
 				width="100%"
 				display="flex"
