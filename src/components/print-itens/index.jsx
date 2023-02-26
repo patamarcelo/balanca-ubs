@@ -10,15 +10,24 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import LoaderPage from "../global/Loader";
 
+import { useSelector } from "react-redux";
+import { selectTruckLoadsFormatData } from "../../store/trucks/trucks.selector";
+
 const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
+	const newData = useSelector(selectTruckLoadsFormatData);
 
 	const [isLoading, setIsLoading] = useState(true);
+	const [printData, setPrintData] = useState([]);
 
 	useEffect(() => {
+		const filterNewData = newData.filter(
+			(filterData) => filterData.id === data.id
+		);
+		setPrintData(filterNewData);
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 500);
@@ -68,7 +77,7 @@ const PrintLayout = ({ data }) => {
 							<LoaderPage isLoading={isLoading} />
 						</Box>
 					) : (
-						<PageData data={data} />
+						<PageData printValue={printData} />
 					)}
 				</Box>
 			</Box>
@@ -115,7 +124,7 @@ const PrintLayout = ({ data }) => {
 							<LoaderPage isLoading={isLoading} />
 						</Box>
 					) : (
-						<PageData data={data} />
+						<PageData printValue={printData} />
 					)}
 				</Box>
 			</Box>

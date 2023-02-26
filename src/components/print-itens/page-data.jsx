@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import PageDataClassFlex from "./page-data-class-flex";
 
-const PageData = ({ data }) => {
+const PageData = ({ printValue }) => {
+	const data = printValue[0];
+	console.log("printData: ", data[0]);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
@@ -19,18 +21,21 @@ const PageData = ({ data }) => {
 	};
 
 	const dictData = [
-		{ label: "Placa", value: formatPlate(data.placa) },
-		{ label: "Motorista", value: data?.motorista ? data.motorista : " - " },
-		{ label: "Cultura", value: data.cultura }
+		{ label: "Placa", value: formatPlate(data?.placa) },
+		{
+			label: "Motorista",
+			value: data?.motorista ? data.motorista : " - "
+		},
+		{ label: "Cultura", value: data?.cultura }
 	];
 	const dictDataR = [
-		{ label: "Peso Bruto", value: data.pesoBruto },
-		{ label: "Tara Veículo", value: data.tara },
-		{ label: "Peso Líquido", value: data.liquido }
+		{ label: "Peso Bruto", value: data?.pesoBruto },
+		{ label: "Tara Veículo", value: data?.tara },
+		{ label: "Peso Líquido", value: data?.liquido }
 	];
 
 	const DataDict = [
-		{ label: "Entrada", value: data.entrada },
+		{ label: "Entrada", value: data?.entrada },
 		{ label: "Saída", value: data?.saida ? data.saida : " - " }
 	];
 
