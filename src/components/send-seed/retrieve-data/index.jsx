@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ptBR from 'dayjs/locale/pt-br';
 
 const RetrieveData = () => {
 	const theme = useTheme();
@@ -62,7 +63,7 @@ const RetrieveData = () => {
 			);
 		});
 		setFilteredArr(filteredData);
-		setValue(formDate);
+		setValue(newValue);
 	};
 
 	// useEffect(() => {
@@ -200,7 +201,8 @@ const RetrieveData = () => {
 			{isdone && (
 				<LocalizationProvider
 					dateAdapter={AdapterDayjs}
-					adapterLocale="en"
+					// adapterLocale="en"
+					adapterLocale={ptBR}
 				>
 					<DesktopDatePicker
 						label="Data de Início"
