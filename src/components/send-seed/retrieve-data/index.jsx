@@ -11,7 +11,6 @@ import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import ptBR from "dayjs/locale/pt-br";
 
 const RetrieveData = () => {
 	const theme = useTheme();
@@ -33,25 +32,34 @@ const RetrieveData = () => {
 
 	const handleChange = (newValue) => {
 		const date = new Date(newValue);
-		const formDate = date?.toLocaleDateString("pt-BR", {
+		let formatFfDateHoje = "";
+		const formDate = date?.toLocaleDateString("en-US", {
 			year: "numeric",
 			month: "2-digit",
 			day: "2-digit"
 		});
+		const [formmonth, formday, formyear] = formDate.split("/");
+		const formatFormDateHoje = [formyear, formmonth, formday].join("-");
+
 		const filteredData = dataArr.filter((data) => {
 			if (data["Data Envio"].length > 4) {
 				var sendData = data["Data Envio"].split("(")[1].split(")")[0];
 				const mapData = sendData.split(",").map((data) => Number(data));
 				let fDate = new Date(...mapData);
-				var ffDate = fDate.toLocaleDateString("pt-BR", {
+				var ffDate = fDate.toLocaleDateString("en-US", {
 					year: "numeric",
 					month: "2-digit",
 					day: "2-digit"
 				});
+				const [ffmonth, ffday, ffyear] = ffDate.split("/");
+				formatFfDateHoje = [ffyear, ffmonth, ffday].join("-");
 			} else {
-				ffDate = "01/01/2222";
+				formatFfDateHoje = "2222/01/01";
 			}
-			return data["Situação"] === "Pendente" || ffDate >= formDate;
+			return (
+				data["Situação"] === "Pendente" ||
+				new Date(formatFfDateHoje) >= new Date(formatFormDateHoje)
+			);
 		});
 		setFilteredArr(filteredData);
 		setValue(formDate);
@@ -118,10 +126,10 @@ const RetrieveData = () => {
 						}
 
 						const [day, month, year] = hoje.split("/");
-						const formatDateHoje = [month, day, year].join("-");
+						const formatDateHoje = [year, month, day].join("-");
 
 						const [ffday, ffmonth, ffyear] = ffDate.split("/");
-						const formatDateffDate = [ffmonth, ffday, ffyear].join(
+						const formatDateffDate = [ffyear, ffmonth, ffday].join(
 							"-"
 						);
 
@@ -192,11 +200,11 @@ const RetrieveData = () => {
 			{isdone && (
 				<LocalizationProvider
 					dateAdapter={AdapterDayjs}
-					adapterLocale={ptBR}
+					adapterLocale="en"
 				>
 					<DesktopDatePicker
 						label="Data de Início"
-						inputFormat="DD/MM/YYYY"
+						inputFormat="MM/DD/YYYY"
 						value={value}
 						onChange={handleChange}
 						renderInput={(params) => (
