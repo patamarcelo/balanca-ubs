@@ -7,8 +7,9 @@ import NoDataShow from "./no-data";
 import Chip from "@mui/material/Chip";
 
 const DICT_COLOR = {
-	"Semente Arroz 424": "rgb(255, 208, 80)",
-	"Semente Arroz 704": "rgb(171,202,221)"
+	"Semente Arroz 424": ["rgb(255, 208, 80)", "black"],
+	"Semente Arroz 704": ["rgb(171,202,221)", "black"],
+	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"]
 };
 const SementeTable = (props) => {
 	const { data } = props;
@@ -131,9 +132,9 @@ const SementeTable = (props) => {
 										label={data.Produto}
 										style={{
 											backgroundColor:
-												DICT_COLOR[data.Produto],
+												DICT_COLOR[data.Produto][0],
 											width: "90%",
-											color: "black",
+											color: DICT_COLOR[data.Produto][1],
 											maxHeight: "17px",
 											margin: "2px auto",
 											display: "inline-block",
