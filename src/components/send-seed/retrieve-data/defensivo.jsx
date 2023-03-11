@@ -7,7 +7,7 @@ import NoDataShow from "./no-data";
 const DefensivoTable = (props) => {
 	const { data } = props;
 	const newData = data.sort((a, b) =>
-		a["Situação"].localeCompare(b["Situação"])
+		b["Situação"].localeCompare(a["Situação"])
 	);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
