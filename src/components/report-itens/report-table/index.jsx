@@ -417,6 +417,18 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "observacoes",
+			headerName: "Obs.",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography color={colors.primary[100]}>
+					{params.row.observacoes ? params.row.observacoes : " - "}
+				</Typography>
+			)
+		},
+		{
 			field: "act",
 			headerName: "Situação",
 			flex: 0,
