@@ -8,7 +8,7 @@ import HomePage from "../../pages/Home";
 import ReportPage from "../../pages/Report";
 import PrintPage from "../../pages/Print";
 import SendSeed from "../../pages/SendSeed";
-import CantinaPage from "../../pages/Catina";
+import OrdemPage from "../../pages/Ordens";
 
 import { useLocation } from "react-router-dom";
 
@@ -73,7 +73,7 @@ const AuthApp = () => {
 						<Route path="/sendseed" element={<SendSeed />} />
 					)}
 					{unidadeOpUser === "ubs" && (
-						<Route path="/cantina" element={<CantinaPage />} />
+						<Route path="/ordem" element={<OrdemPage />} />
 					)}
 				</Routes>
 			</Box>
