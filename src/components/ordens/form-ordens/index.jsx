@@ -6,6 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 import { tokens } from "../../../theme";
 
+import {
+	ordemFields,
+	initialOrdemValues
+} from "../../../store/ordems/ordems.initials";
+
 const initialValues = {
 	firstName: "",
 	lastName: "",
@@ -65,45 +70,98 @@ const FormOrdens = (props) => {
 				marginTop: "20px"
 			}}
 		>
-			<Formik
-				// onSubmit={handleFormSubmit}
-				onSubmit={(values, actions) => {
-					handleFormSubmit(values);
-					actions.setSubmitting(false);
-					actions.resetForm({
-						values: initialValues
-					});
+			<Box
+				width="100%"
+				sx={{
+					backgroundColor: colors.blueOrigin[700],
+					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
+					borderRadius: "8px",
+					overflow: "auto",
+					height: "100%",
+					padding: "20px",
+					maxHeight: !isNonMobile ? "70vh" : "",
+					// border: `0.1px solid ${colors.primary[100]}`
 				}}
-				initialValues={initialValues}
-				validationSchema={userSchema}
-				// validator={() => ({})}
 			>
-				{({
-					values,
-					errors,
-					touched,
-					handleBlur,
-					handleChange,
-					handleSubmit,
-					handleReset
-				}) => (
-					<form onSubmit={handleSubmit}>
-						<Box
-							display="grid"
-							gap="30px"
-							gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-							sx={{
-								"& > div": {
-									gridColumn: isNonMobile
-										? undefined
-										: "span 4"
-								},
-								"& .MuiFormHelperText-contained": {
-									color: "red"
-								}
-							}}
-						>
-							<TextField
+				<Formik
+					// onSubmit={handleFormSubmit}
+					onSubmit={(values, actions) => {
+						handleFormSubmit(values);
+						actions.setSubmitting(false);
+						actions.resetForm({
+							values: initialValues
+						});
+					}}
+					initialValues={initialValues}
+					validationSchema={userSchema}
+					// validator={() => ({})}
+				>
+					{({
+						values,
+						errors,
+						touched,
+						handleBlur,
+						handleChange,
+						handleSubmit,
+						handleReset
+					}) => (
+						<form onSubmit={handleSubmit}>
+							<Box
+								display="grid"
+								gap="30px"
+								gridTemplateColumns="repeat(6, minmax(0, 1fr))"
+								sx={{
+									"& > div": {
+										gridColumn: isNonMobile
+											? undefined
+											: "span 6"
+									},
+									"& .MuiFormHelperText-contained": {
+										color: "red"
+									}
+								}}
+							>
+								{ordemFields.map((data, i) => {
+									return (
+										<TextField
+											key={i}
+											fullWidth
+											variant="outlined"
+											type={data.type}
+											label={data.label}
+											onBlur={handleBlur}
+											onChange={handleChange}
+											value={
+												initialOrdemValues[data.name]
+											}
+											name={data.name}
+											// errors={
+											// 	!!touched.initialOrdemValues[
+											// 		data.name
+											// 	] &&
+											// 	!!errors.initialOrdemValues[
+											// 		data.name
+											// 	]
+											// }
+											helperText={
+												touched[
+													initialOrdemValues[
+														data.name
+													]
+												] &&
+												errors[
+													initialOrdemValues[
+														data.name
+													]
+												]
+											}
+											sx={{
+												gridColumn: "span 3"
+											}}
+										/>
+									);
+								})}
+								{/* <TextField
 								fullWidth
 								variant="filled"
 								type="text"
@@ -196,41 +254,42 @@ const FormOrdens = (props) => {
 								sx={{
 									gridColumn: "span 4"
 								}}
-							/>
-						</Box>
-						<Box display="flex" justifyContent="end" mt="20px">
-							<Button
-								type="reset"
-								onClick={() => {
-									handleReset();
-									setIsOpen(false);
-								}}
-								color="error"
-								variant="contained"
-								sx={{ mr: "15px" }}
-							>
-								Cancelar
-							</Button>
-							<Button
-								type="reset"
-								onClick={() => handleReset()}
-								color="warning"
-								variant="contained"
-								sx={{ mr: "15px" }}
-							>
-								Reset Form
-							</Button>
-							<Button
-								type="submit"
-								color="secondary"
-								variant="contained"
-							>
-								Create New User
-							</Button>
-						</Box>
-					</form>
-				)}
-			</Formik>
+							/> */}
+							</Box>
+							<Box display="flex" justifyContent="end" mt="20px">
+								<Button
+									type="reset"
+									onClick={() => {
+										handleReset();
+										setIsOpen(false);
+									}}
+									color="error"
+									variant="contained"
+									sx={{ mr: "15px" }}
+								>
+									Cancelar
+								</Button>
+								<Button
+									type="reset"
+									onClick={() => handleReset()}
+									color="warning"
+									variant="contained"
+									sx={{ mr: "15px" }}
+								>
+									Resetar
+								</Button>
+								<Button
+									type="submit"
+									color="secondary"
+									variant="contained"
+								>
+									Salvar Ordem
+								</Button>
+							</Box>
+						</form>
+					)}
+				</Formik>
+			</Box>
 		</Box>
 	);
 };
