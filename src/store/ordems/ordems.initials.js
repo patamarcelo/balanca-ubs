@@ -19,72 +19,86 @@ export const ordemFields = [
 		label: "Origem",
 		name: "origem",
 		placeholder: "Origem",
-		type: "text"
+		type: "text",
+        col: '3'
+
 	},
 	{
 		label: "Destino",
 		name: "destino",
 		placeholder: "Destino",
-		type: "text"
+		type: "text",
+        col: '3'
 	},
-	{
-		label: "Placa Trator",
-		name: "placaTrator",
-		placeholder: "Placa Trator",
-		type: "text"
-	},
-	{
-		label: "Placa Caixa",
-		name: "placaVagao1",
-		placeholder: "Placa Caixa",
-		type: "text"
-	},
-	{
-		label: "Placa Caixa 2 ",
-		name: "placaVagao2",
-		placeholder: "Placa Caixa 2",
-		type: "text"
-	},
-	{
+    {
 		label: "Motorista",
 		name: "motorista",
 		placeholder: "Motorista",
-		type: "text"
+		type: "text",
+        col: '3'
 	},
 	{
-		label: "cpf",
+		label: "CPF",
 		name: "cpf",
 		placeholder: "cpf",
-		type: "tel"
+		type: "tel",
+        col: '3'
+	},
+	{
+		label: "Placa Cavalo",
+		name: "placaTrator",
+		placeholder: "Placa Trator",
+		type: "text",
+        col: '2'
+	},
+	{
+		label: "Placa Carreta",
+		name: "placaVagao1",
+		placeholder: "Placa Carreta",
+		type: "text",
+        col: '2'
+	},
+	{
+		label: "Placa Carreta ",
+		name: "placaVagao2",
+		placeholder: "Placa Carreta",
+		type: "text",
+        col: '2'
 	},
 	{
 		label: "Empresa",
-		name: "emrpesa",
+		name: "empresa",
 		placeholder: "empresa",
-		type: "text"
+		type: "text",
+        col: '3'
 	},
 	{
-		label: "Cpf/Cnpj",
+		label: "CPF / CNPJ",
 		name: "cpfcnpj",
-		placeholder: "Cpf/Cnpj",
-		type: "tel"
+		placeholder: "CPF / CNPJ",
+		type: "tel",
+        col: '3'
 	},
 	{
 		label: "Veículo",
 		name: "veiculo",
 		placeholder: "Veículo",
-		type: "text"
+		type: "text",
+        col: '3'
 	},
 	{
 		label: "Mercadoria",
 		name: "mercadoria",
 		placeholder: "Mercadoria",
-		type: "text"
+		type: "text",
+        col: '3'
 	},
 	{
 		label: "Observações",
 		name: "observacao",
 		placeholder: "Observações",
-		type: "text"
+		type: "text",
+        col: '6',
+        rows: 4
 	}
 ];

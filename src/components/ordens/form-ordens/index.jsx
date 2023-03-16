@@ -6,44 +6,53 @@ import { useNavigate } from "react-router-dom";
 
 import { tokens } from "../../../theme";
 
-import {
-	ordemFields,
-	initialOrdemValues
-} from "../../../store/ordems/ordems.initials";
+import { ordemFields } from "../../../store/ordems/ordems.initials";
 
-const initialValues = {
-	firstName: "",
-	lastName: "",
-	email: "",
-	contact: "",
-	address1: "",
-	address2: ""
+import { useState, useEffect } from "react";
+
+import { useSelector } from "react-redux";
+
+import { selectUnidadeOpUser } from "../../../store/user/user.selector";
+
+const initialOrdemValues = {
+	origem: "",
+	destino: "",
+	placaTrator: "",
+	placaVagao1: "",
+	placaVagao2: "",
+	motorista: "",
+	cpf: "",
+	empresa: "",
+	cpfcnpj: "",
+	veiculo: "",
+	mercadoria: "",
+	observacao: ""
 };
 
-const phoneRegExp =
-	/^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+// const phoneRegExp =
+// 	/^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const userSchema = yup.object().shape({
-	firstName: yup
+	origem: yup
 		.string()
 		.min(2, "Too Short")
 		.max(50, "Too Long")
-		.required("required"),
-	lastName: yup
-		.string()
-		.min(2, "Too Short")
-		.max(50, "Too Long")
-		.required("required"),
-	email: yup.string().email("Invalid Email").required("required"),
-	contact: yup
-		.string()
-		.matches(phoneRegExp, "Phone number is not vaid")
-		.required("required"),
-	address1: yup
-		.string()
-		.min(2, "Too Short")
-		.max(120, "Too Long")
 		.required("required")
+	// lastName: yup
+	// 	.string()
+	// 	.min(2, "Too Short")
+	// 	.max(50, "Too Long")
+	// 	.required("required"),
+	// email: yup.string().email("Invalid Email").required("required"),
+	// contact: yup
+	// 	.string()
+	// 	.matches(phoneRegExp, "Phone number is not vaid")
+	// 	.required("required"),
+	// address1: yup
+	// 	.string()
+	// 	.min(2, "Too Short")
+	// 	.max(120, "Too Long")
+	// 	.required("required")
 	// address2: yup
 	// 	.string()
 	// 	.min(2, "Too Short")
@@ -52,17 +61,37 @@ const userSchema = yup.object().shape({
 });
 
 const FormOrdens = (props) => {
+	const { setIsOpen } = props;
+
 	const isNonMobile = useMediaQuery("(min-width: 600px)");
 	const navigate = useNavigate();
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
+	const [formValues, setFormValues] = useState([]);
+	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+
 	const handleFormSubmit = async (values) => {
-		console.log("formSubmit", values);
+		console.log("formSubmit", formValues);
+		console.log('Values', values)
 	};
 
-	const { setIsOpen } = props;
+	const handlerChange = (event) => {
+		setFormValues({
+			...formValues,
+			[event.target.name]: event.target.value
+		});
+		console.log("formValues", formValues);
+	};
+
+	useEffect(() => {
+		setFormValues({ ...initialOrdemValues, origem: unidadeOpUser });
+	}, []);
+
+	useEffect(() => {
+		console.log(formValues);
+	}, [formValues]);
 
 	return (
 		<Box
@@ -79,20 +108,21 @@ const FormOrdens = (props) => {
 					overflow: "auto",
 					height: "100%",
 					padding: "20px",
-					maxHeight: !isNonMobile ? "70vh" : "",
+					maxHeight: !isNonMobile ? "70vh" : "70vh"
 					// border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
 				<Formik
 					// onSubmit={handleFormSubmit}
 					onSubmit={(values, actions) => {
+						console.log("submit", values);
 						handleFormSubmit(values);
 						actions.setSubmitting(false);
 						actions.resetForm({
-							values: initialValues
+							values: initialOrdemValues
 						});
 					}}
-					initialValues={initialValues}
+					initialValues={initialOrdemValues}
 					validationSchema={userSchema}
 					// validator={() => ({})}
 				>
@@ -130,19 +160,19 @@ const FormOrdens = (props) => {
 											type={data.type}
 											label={data.label}
 											onBlur={handleBlur}
-											onChange={handleChange}
-											value={
-												initialOrdemValues[data.name]
+											onChange={handlerChange}
+											rows={data.rows}
+											multiline={
+												data.rows > 0 ? true : false
 											}
+											value={formValues[data.name]}
 											name={data.name}
-											// errors={
-											// 	!!touched.initialOrdemValues[
-											// 		data.name
-											// 	] &&
-											// 	!!errors.initialOrdemValues[
-											// 		data.name
-											// 	]
-											// }
+											errors={
+												!!touched[
+													formValues[data.name]
+												] &&
+												!!errors[formValues[data.name]]
+											}
 											helperText={
 												touched[
 													initialOrdemValues[
@@ -156,7 +186,7 @@ const FormOrdens = (props) => {
 												]
 											}
 											sx={{
-												gridColumn: "span 3"
+												gridColumn: `span ${data.col}`
 											}}
 										/>
 									);
@@ -271,7 +301,9 @@ const FormOrdens = (props) => {
 								</Button>
 								<Button
 									type="reset"
-									onClick={() => handleReset()}
+									onClick={() =>
+										setFormValues(initialOrdemValues)
+									}
 									color="warning"
 									variant="contained"
 									sx={{ mr: "15px" }}
@@ -282,6 +314,7 @@ const FormOrdens = (props) => {
 									type="submit"
 									color="secondary"
 									variant="contained"
+									onClick={() => handleSubmit}
 								>
 									Salvar Ordem
 								</Button>
