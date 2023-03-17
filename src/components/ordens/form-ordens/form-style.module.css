@@ -1,5 +1,9 @@
-.form-class input,.form-class div>textarea {
+.form-class input, #observacao  {
     background-color: #072f48;
+    border-radius: 8px;
+}
+.observacao-style > div {
+    background-color: #072f48 !important;
     border-radius: 8px;
 }
 
@@ -11,4 +15,10 @@
 
 .form-class label{
     color: grey
+}
+
+
+.helperTextFormat {
+    color: whitesmoke !important;
+    font-size: 0.8rem
 }

@@ -19,7 +19,9 @@ import {
 	ordemFields,
 	ordemFieldsPessoa,
 	ordemFieldsCarga,
-	ordemFieldsObs
+	ordemFieldsObs,
+	veiculosPesos,
+	produtosCadastro
 } from "../../../store/ordems/ordems.initials";
 
 import classes from "./form-style.module.css";
@@ -30,6 +32,14 @@ import { useSelector } from "react-redux";
 
 import { selectUnidadeOpUser } from "../../../store/user/user.selector";
 import toast from "react-hot-toast";
+
+import NativeSelect from "@mui/material/NativeSelect";
+import InputLabel from "@mui/material/InputLabel";
+
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import FormHelperText from "@mui/material/FormHelperText";
 
 // const phoneRegExp =
 // 	/^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -119,12 +129,12 @@ const FormOrdens = (props) => {
 					height: "100%",
 					padding: "20px",
 					maxHeight: !isNonMobile ? "70vh" : "70vh"
-					// border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
 				<form
 					onSubmit={formik.handleSubmit}
 					className={classes["form-class"]}
+					// style={{ paddingTop: "10px" }}
 				>
 					<Box
 						display="grid"
@@ -138,7 +148,10 @@ const FormOrdens = (props) => {
 								color: "red"
 							},
 							"& .MuiInputLabel-outlined.Mui-focused": {
-								color: `${colors.primary[300]} !important`,
+								color: `white !important`,
+								borderColor: `white !important`
+							},
+							"& .MuiOutlinedInput-notchedOutline.Mui-focused": {
 								borderColor: `white !important`
 							}
 						}}
@@ -230,30 +243,72 @@ const FormOrdens = (props) => {
 								Dados da Carga
 							</Typography>
 						</Box>
-						{ordemFieldsCarga.map((data, i) => {
-							return (
-								<TextField
-									key={i}
-									fullWidth
-									variant="outlined"
-									type={data.type}
-									label={data.label}
-									rows={data.rows}
-									multiline={data.rows > 0 ? true : false}
-									onChange={formik.handleChange}
-									value={formik.values[data.name]}
-									name={data.name}
-									helperText={
-										formik.errors[data.name]
-											? formik.errors[data.name]
-											: ""
-									}
-									sx={{
-										gridColumn: `span ${data.col}`
-									}}
-								/>
-							);
-						})}
+						<FormControl
+							sx={{ gridColumn: "span 3" }}
+							className={classes["observacao-style"]}
+						>
+							<InputLabel id="veiculo-select-small">
+								Veículo
+							</InputLabel>
+							<Select
+								labelId="veiculo-select-small"
+								id="veiculo"
+								name="veiculo"
+								value={formik.values.veiculo}
+								label="Veículo"
+								onChange={formik.handleChange}
+							>
+								{veiculosPesos.map((iterData, i) => {
+									return (
+										<MenuItem value={iterData.peso} key={i}>
+											{iterData.tipo}
+										</MenuItem>
+									);
+								})}
+							</Select>
+							{formik.values.veiculo && (
+								<FormHelperText
+									className={classes.helperTextFormat}
+								>
+									{veiculosPesos
+										.filter(
+											(data) =>
+												data.peso ===
+												formik.values.veiculo
+										)[0]
+										.peso.toLocaleString("en")
+										.replace(",", ".") + " Kg"}
+								</FormHelperText>
+							)}
+						</FormControl>
+						<FormControl
+							sx={{ gridColumn: "span 3" }}
+							className={classes["observacao-style"]}
+						>
+							<InputLabel id="mercadoria-select-small">
+								Mercadoria
+							</InputLabel>
+							<Select
+								labelId="mercadoria-select-small"
+								id="mercadoria"
+								name="mercadoria"
+								value={formik.values.mercadoria}
+								label="Mercadoria"
+								onChange={formik.handleChange}
+							>
+								{produtosCadastro.map((iterData, i) => {
+									return (
+										<MenuItem
+											value={iterData.produto}
+											key={i}
+										>
+											{iterData.produto}
+										</MenuItem>
+									);
+								})}
+							</Select>
+						</FormControl>
+
 						<Box
 							mb={-2}
 							sx={{
@@ -270,6 +325,8 @@ const FormOrdens = (props) => {
 						{ordemFieldsObs.map((data, i) => {
 							return (
 								<TextField
+									className={classes["observacao-style"]}
+									id={data.name}
 									key={i}
 									fullWidth
 									variant="outlined"

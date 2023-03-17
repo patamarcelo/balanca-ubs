@@ -70,13 +70,13 @@ export const ordemFieldsPessoa = [
 ];
 
 export const ordemFieldsCarga = [
-	{
-		label: "Veículo",
-		name: "veiculo",
-		placeholder: "Veículo",
-		type: "text",
-		col: "3"
-	},
+	// {
+	// 	label: "Veículo",
+	// 	name: "veiculo",
+	// 	placeholder: "Veículo",
+	// 	type: "text",
+	// 	col: "3"
+	// },
 	{
 		label: "Mercadoria",
 		name: "mercadoria",
@@ -105,7 +105,7 @@ export const veiculosPesos = [
 ];
 
 export const produtosCadastro = [
-	{ produto: "Feijão" },
 	{ produto: "Arroz" },
+	{ produto: "Feijão" },
 	{ produto: "Soja" }
 ];
