@@ -1,4 +1,11 @@
-import { Box, Button, TextField, useTheme } from "@mui/material";
+import {
+	Box,
+	Button,
+	TextField,
+	Typography,
+	useTheme,
+	Divider
+} from "@mui/material";
 
 import { useFormik } from "formik";
 
@@ -8,7 +15,12 @@ import { useNavigate } from "react-router-dom";
 
 import { tokens } from "../../../theme";
 
-import { ordemFields } from "../../../store/ordems/ordems.initials";
+import {
+	ordemFields,
+	ordemFieldsPessoa,
+	ordemFieldsCarga,
+	ordemFieldsObs
+} from "../../../store/ordems/ordems.initials";
 
 import { useState, useEffect } from "react";
 
@@ -81,7 +93,7 @@ const FormOrdens = (props) => {
 		}
 	});
 
-	console.log(formik.errors);
+	// console.log(formik.errors);
 
 	const handlerResetForm = () => {
 		toast.success(`Formulário Restado`, {
@@ -122,7 +134,131 @@ const FormOrdens = (props) => {
 							}
 						}}
 					>
+						<Box
+							mb={-2}
+							sx={{
+								gridColumn: "span 6"
+							}}
+						>
+							<Typography
+								variant="h5"
+								color={colors.greenAccent[300]}
+							>
+								Rota
+							</Typography>
+						</Box>
 						{ordemFields.map((data, i) => {
+							return (
+								<TextField
+									key={i}
+									fullWidth
+									variant="outlined"
+									type={data.type}
+									label={data.label}
+									rows={data.rows}
+									multiline={data.rows > 0 ? true : false}
+									onChange={formik.handleChange}
+									value={formik.values[data.name]}
+									name={data.name}
+									helperText={
+										formik.errors[data.name]
+											? formik.errors[data.name]
+											: ""
+									}
+									sx={{
+										gridColumn: `span ${data.col}`
+									}}
+								/>
+							);
+						})}
+						<Box
+							mb={-2}
+							sx={{
+								gridColumn: "span 6"
+							}}
+						>
+							<Typography
+								variant="h5"
+								color={colors.greenAccent[300]}
+							>
+								Dados Motorista / Veículo
+							</Typography>
+						</Box>
+						{ordemFieldsPessoa.map((data, i) => {
+							return (
+								<TextField
+									key={i}
+									fullWidth
+									variant="outlined"
+									type={data.type}
+									label={data.label}
+									rows={data.rows}
+									multiline={data.rows > 0 ? true : false}
+									onChange={formik.handleChange}
+									value={formik.values[data.name]}
+									name={data.name}
+									helperText={
+										formik.errors[data.name]
+											? formik.errors[data.name]
+											: ""
+									}
+									sx={{
+										gridColumn: `span ${data.col}`
+									}}
+								/>
+							);
+						})}
+						<Box
+							mb={-2}
+							sx={{
+								gridColumn: "span 6"
+							}}
+						>
+							<Typography
+								variant="h5"
+								color={colors.greenAccent[300]}
+							>
+								Dados da Carga
+							</Typography>
+						</Box>
+						{ordemFieldsCarga.map((data, i) => {
+							return (
+								<TextField
+									key={i}
+									fullWidth
+									variant="outlined"
+									type={data.type}
+									label={data.label}
+									rows={data.rows}
+									multiline={data.rows > 0 ? true : false}
+									onChange={formik.handleChange}
+									value={formik.values[data.name]}
+									name={data.name}
+									helperText={
+										formik.errors[data.name]
+											? formik.errors[data.name]
+											: ""
+									}
+									sx={{
+										gridColumn: `span ${data.col}`
+									}}
+								/>
+							);
+						})}
+						<Box
+							mb={-2}
+							sx={{
+								gridColumn: "span 6"
+							}}
+						>
+							<Typography
+								variant="h5"
+								color={colors.greenAccent[300]}
+							>
+								Observações
+							</Typography>
+						</Box>
+						{ordemFieldsObs.map((data, i) => {
 							return (
 								<TextField
 									key={i}
