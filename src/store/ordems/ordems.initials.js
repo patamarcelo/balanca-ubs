@@ -95,3 +95,17 @@ export const ordemFieldsObs = [
 		rows: 4
 	}
 ];
+
+export const veiculosPesos = [
+	{ tipo: "Truck", peso: 28000 },
+	{ tipo: "LS Trucada", peso: 32000 },
+	{ tipo: "Vanderleia", peso: 36000 },
+	{ tipo: "Bitrem", peso: 39000 },
+	{ tipo: "Rodotrem", peso: 51000 }
+];
+
+export const produtosCadastro = [
+	{ produto: "Feijão" },
+	{ produto: "Arroz" },
+	{ produto: "Soja" }
+];

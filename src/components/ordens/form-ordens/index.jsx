@@ -22,6 +22,8 @@ import {
 	ordemFieldsObs
 } from "../../../store/ordems/ordems.initials";
 
+import classes from "./form-style.module.css";
+
 import { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux";
@@ -120,7 +122,10 @@ const FormOrdens = (props) => {
 					// border: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
-				<form onSubmit={formik.handleSubmit}>
+				<form
+					onSubmit={formik.handleSubmit}
+					className={classes["form-class"]}
+				>
 					<Box
 						display="grid"
 						gap="30px"
@@ -131,6 +136,10 @@ const FormOrdens = (props) => {
 							},
 							"& .MuiFormHelperText-contained": {
 								color: "red"
+							},
+							"& .MuiInputLabel-outlined.Mui-focused": {
+								color: `${colors.primary[300]} !important`,
+								borderColor: `white !important`
 							}
 						}}
 					>

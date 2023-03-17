@@ -1,0 +1,14 @@
+.form-class input,.form-class div>textarea {
+    background-color: #072f48;
+    border-radius: 8px;
+}
+
+.form-class div>div>fieldset:focus {
+    /* background-color: #1373b4; */
+    border-radius: 8px;
+    border-color: whitesmoke;
+}
+
+.form-class label{
+    color: grey
+}
