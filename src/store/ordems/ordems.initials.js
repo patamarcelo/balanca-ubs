@@ -66,6 +66,20 @@ export const ordemFieldsPessoa = [
 		placeholder: "Placa Carreta",
 		type: "text",
 		col: "2"
+	},
+	{
+		label: "Empresa",
+		name: "empresa",
+		placeholder: "Empresa",
+		type: "text",
+		col: "3"
+	},
+	{
+		label: "CPF / CNPJ ",
+		name: "cpfcnpjplacaVagao2",
+		placeholder: "CPF / CNPJ",
+		type: "text",
+		col: "3"
 	}
 ];
 

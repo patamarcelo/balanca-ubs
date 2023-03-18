@@ -28,9 +28,6 @@ import classes from "./form-style.module.css";
 
 import { useState, useEffect } from "react";
 
-import { useSelector } from "react-redux";
-
-import { selectUnidadeOpUser } from "../../../store/user/user.selector";
 import toast from "react-hot-toast";
 
 import NativeSelect from "@mui/material/NativeSelect";
@@ -40,6 +37,14 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
+
+import { useSelector } from "react-redux";
+import {
+	selectCurrentUser,
+	selectUnidadeOpUser
+} from "../../../store/user/user.selector";
+
+import { addOrdemCarrega } from "../../../utils/firebase/firebase.datatable.ordems";
 
 // const phoneRegExp =
 // 	/^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
@@ -83,6 +88,28 @@ const FormOrdens = (props) => {
 
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
+	const user = useSelector(selectCurrentUser);
+
+	const handlerSubmitForm = async (values) => {
+		console.log("Valores: ", values);
+		const newOrder = await addOrdemCarrega(
+			values.origem,
+			values.destino,
+			values.placaTrator,
+			values.placaVagao1,
+			values.placaVagao2,
+			values.motorista,
+			values.cpf,
+			values.empresa,
+			values.cpfcnpj,
+			values.veiculo,
+			values.mercadoria,
+			values.observacao,
+			user.email
+		);
+		console.log(newOrder);
+	};
+
 	const formik = useFormik({
 		initialValues: {
 			origem: unidadeOpUser,
@@ -99,8 +126,8 @@ const FormOrdens = (props) => {
 			observacao: ""
 		},
 		validationSchema: userSchema,
-		onSubmit: (values, { resetForm }) => {
-			console.log(values);
+		onSubmit: async (values, { resetForm }) => {
+			await handlerSubmitForm(values);
 			resetForm();
 		}
 	});
