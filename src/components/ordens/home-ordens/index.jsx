@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, Button, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import { useState } from "react";
@@ -7,11 +7,12 @@ import FormOrdens from "../form-ordens";
 
 import TableOrdensPage from "../table-ordens";
 
-const HomeOrdemPage = () => {
+const HomeOrdemPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
 	const [isOpen, setIsOpen] = useState(false);
+	const { isLoadingHome } = props;
 
 	return (
 		<Box
@@ -25,20 +26,45 @@ const HomeOrdemPage = () => {
 			}}
 		>
 			<Box
+				display="flex"
+				gap="10px"
+				justifyContent="start"
+				alignItems="center"
 				sx={
 					{
 						// margin: "10px"
 					}
 				}
 			>
-				<AddButton isOpen={isOpen} setIsOpen={setIsOpen} />
+				{!isOpen && (
+					<Box sx={{ width: "auto !important" }}>
+						<AddButton
+							isOpen={isOpen}
+							setIsOpen={setIsOpen}
+							disabled={isOpen}
+						/>
+					</Box>
+				)}
+				{isOpen && (
+					<Button
+						type="reset"
+						onClick={() => {
+							setIsOpen(false);
+						}}
+						color="error"
+						variant="contained"
+						sx={{ mr: "15px" }}
+					>
+						Cancelar
+					</Button>
+				)}
 			</Box>
 			{isOpen && (
 				<Box>
 					<FormOrdens isOpen={isOpen} setIsOpen={setIsOpen} />
 				</Box>
 			)}
-			{!isOpen && (
+			{!isOpen && !isLoadingHome && (
 				<Box
 					sx={{
 						width: "100%",

@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 const AddButton = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { setIsOpen } = props;
+	const { setIsOpen, isOpen } = props;
 
 	const isCellPhone = useMediaQuery("(min-width: 500px)");
 	const isBalanca = useSelector(selectIBalancaUser);
@@ -49,6 +49,7 @@ const AddButton = (props) => {
 					title={`Add Ordem`}
 					color={colors.greenAccent[600]}
 					handleOpenModal={handlerSubmit}
+					isBalanca={isOpen}
 				>
 					<FontAwesomeIcon icon={faClipboard} />
 				</CustomButton>
