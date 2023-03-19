@@ -122,7 +122,7 @@ const FormOrdens = (props) => {
 				icon: "success",
 				title: "Feito",
 				text: `Ordem Cadastrada com successo!!`,
-				timer: 3000
+				timer: 2000
 				// footer: 'Caso o cliente não receba o comprovante, falar com o financeiro@pitayajoias.com.br',
 				// confirmButtonText: 'Finalizar'
 			}).then((result) => {
