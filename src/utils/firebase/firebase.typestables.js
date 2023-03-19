@@ -2,5 +2,6 @@ export const TABLES_FIREBASE = {
 	transactions: "transactions",
 	customer: "customer",
 	contract: "contract",
-	truckmove: "truckmove"
+	truckmove: "truckmove",
+	ordemCarrega: "ordemCarrega"
 };

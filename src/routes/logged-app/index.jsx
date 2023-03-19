@@ -8,6 +8,7 @@ import HomePage from "../../pages/Home";
 import ReportPage from "../../pages/Report";
 import PrintPage from "../../pages/Print";
 import SendSeed from "../../pages/SendSeed";
+import OrdemPage from "../../pages/Ordens";
 
 import { useLocation } from "react-router-dom";
 
@@ -57,6 +58,7 @@ const AuthApp = () => {
 				justifyContent="center"
 				sx={{
 					padding: "10px",
+					overflow: "auto",
 					height: "100%",
 					backgroundColor:
 						location.pathname === "/print"
@@ -70,6 +72,9 @@ const AuthApp = () => {
 					<Route path="/print" element={<PrintPage />} />
 					{unidadeOpUser === "ubs" && (
 						<Route path="/sendseed" element={<SendSeed />} />
+					)}
+					{unidadeOpUser === "ubs" && (
+						<Route path="/ordem" element={<OrdemPage />} />
 					)}
 				</Routes>
 			</Box>
