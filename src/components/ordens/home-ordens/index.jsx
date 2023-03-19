@@ -6,13 +6,14 @@ import AddButton from "../add-ordens/index";
 import FormOrdens from "../form-ordens";
 
 import TableOrdensPage from "../table-ordens";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const HomeOrdemPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
 	const [isOpen, setIsOpen] = useState(false);
-	const { isLoadingHome } = props;
+	const { isLoadingHome, ordems } = props;
 
 	return (
 		<Box
@@ -64,6 +65,29 @@ const HomeOrdemPage = (props) => {
 					<FormOrdens isOpen={isOpen} setIsOpen={setIsOpen} />
 				</Box>
 			)}
+			{!isOpen && isLoadingHome && (
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					width="100%"
+					height="100%"
+					mt={4}
+					sx={{
+						backgroundColor: colors.blueOrigin[700],
+						borderRadius: "8px",
+						boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+					}}
+				>
+					<Typography
+						variant="h2"
+						color={colors.yellow[700]}
+						sx={{ fontWeight: "bold" }}
+					>
+						<CircularProgress sx={{ color: colors.primary[100] }} />
+					</Typography>
+				</Box>
+			)}
 			{!isOpen && !isLoadingHome && (
 				<Box
 					sx={{
@@ -71,7 +95,11 @@ const HomeOrdemPage = (props) => {
 						height: "100%"
 					}}
 				>
-					<TableOrdensPage isOpen={isOpen} setIsOpen={setIsOpen} />
+					<TableOrdensPage
+						isOpen={isOpen}
+						setIsOpen={setIsOpen}
+						ordems={ordems}
+					/>
 				</Box>
 			)}
 		</Box>

@@ -23,9 +23,6 @@ const AddButton = (props) => {
 	const isBalanca = useSelector(selectIBalancaUser);
 
 	const handlerSubmit = () => {
-		toast.success(`Adicionar Ordem`, {
-			position: "top-center"
-		});
 		setIsOpen(true);
 	};
 

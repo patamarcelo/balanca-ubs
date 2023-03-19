@@ -4,6 +4,49 @@ import { query, orderBy, getDocs } from "firebase/firestore";
 import { TABLES_FIREBASE } from "./firebase.typestables";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 
+import toast from "react-hot-toast";
+
+export const handleDeleteOrdem = async (id, data) => {
+	const placaFormat =
+		data?.placaTrator?.toUpperCase().slice(0, 3) +
+		"-" +
+		data?.placaTrator?.toUpperCase().slice(-4);
+	const motorista = data?.motorista;
+	if (window.confirm(`Deletar a carga: ${placaFormat} - ${motorista} ??`)) {
+		const taskDocRef = doc(db, TABLES_FIREBASE.ordemCarrega, id);
+		try {
+			console.log("deletando id: ", id);
+			await deleteDoc(taskDocRef);
+			console.log(
+				`Deletado o ID: ${placaFormat} - ${motorista} com sucesso`
+			);
+			toast.success("Carga deletada com sucesso!!", {
+				position: "top-center",
+				icon: "⚠️",
+				style: {
+					border: "1px solid black",
+					fontWeight: "bold",
+					backgroundColor: "whitesmoke"
+				}
+			});
+			return;
+		} catch (err) {
+			alert(err);
+		}
+		return;
+	} else {
+		toast("Operação Cancelada", {
+			position: "top-center",
+			icon: "⚠️",
+			style: {
+				border: "1px solid black",
+				fontWeight: "bold",
+				backgroundColor: "whitesmoke"
+			}
+		});
+	}
+};
+
 // ADD ORDEM CARREGAMENTO
 export const addOrdemCarrega = async (
 	origem,
@@ -18,7 +61,8 @@ export const addOrdemCarrega = async (
 	veiculo,
 	mercadoria,
 	observacao,
-	user
+	user,
+	unidadeOpUser
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
@@ -39,7 +83,8 @@ export const addOrdemCarrega = async (
 				veiculo,
 				mercadoria,
 				observacao,
-				user
+				user,
+				unidadeOpUser
 			}
 		);
 	} catch (error) {

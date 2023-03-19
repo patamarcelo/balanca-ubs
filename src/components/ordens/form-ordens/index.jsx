@@ -46,8 +46,13 @@ import {
 
 import { addOrdemCarrega } from "../../../utils/firebase/firebase.datatable.ordems";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 // const phoneRegExp =
 // 	/^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+
+const MySwal = withReactContent(Swal);
 
 const userSchema = yup.object().shape({
 	origem: yup
@@ -90,6 +95,8 @@ const FormOrdens = (props) => {
 
 	const user = useSelector(selectCurrentUser);
 
+	console.log(unidadeOpUser);
+
 	const handlerSubmitForm = async (values) => {
 		console.log("Valores: ", values);
 		const newOrder = await addOrdemCarrega(
@@ -105,9 +112,25 @@ const FormOrdens = (props) => {
 			values.veiculo,
 			values.mercadoria,
 			values.observacao,
-			user.email
+			user.email,
+			unidadeOpUser
 		);
 		console.log(newOrder);
+		if (newOrder) {
+			setIsOpen(false);
+			MySwal.fire({
+				icon: "success",
+				title: "Feito",
+				text: `Ordem Cadastrada com successo!!`,
+				timer: 3000
+				// footer: 'Caso o cliente não receba o comprovante, falar com o financeiro@pitayajoias.com.br',
+				// confirmButtonText: 'Finalizar'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					console.log(newOrder);
+				}
+			});
+		}
 	};
 
 	const formik = useFormik({
@@ -143,7 +166,9 @@ const FormOrdens = (props) => {
 	return (
 		<Box
 			sx={{
-				marginTop: "20px"
+				marginTop: "20px",
+				marginBottom: "20px",
+				width: "100%"
 			}}
 		>
 			<Box
@@ -154,8 +179,8 @@ const FormOrdens = (props) => {
 					borderRadius: "8px",
 					overflow: "auto",
 					height: "100%",
-					padding: "20px",
-					maxHeight: !isNonMobile ? "70vh" : "70vh"
+					padding: "20px"
+					// maxHeight: !isNonMobile ? "70vh" : "70vh"
 				}}
 			>
 				<form

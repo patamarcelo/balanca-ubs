@@ -1,4 +1,4 @@
-const formatDate = (entrada) => {
+export const formatDate = (entrada) => {
 	if (entrada) {
 		const newDate = new Date(
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000

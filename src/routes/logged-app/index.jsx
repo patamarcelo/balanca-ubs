@@ -58,6 +58,7 @@ const AuthApp = () => {
 				justifyContent="center"
 				sx={{
 					padding: "10px",
+					overflow: "auto",
 					height: "100%",
 					backgroundColor:
 						location.pathname === "/print"

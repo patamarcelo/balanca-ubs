@@ -10,6 +10,7 @@ import { db } from "../../utils/firebase/firebase";
 import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
 import { useDispatch } from "react-redux";
+import { formatDate } from "../../utils/format-suport/data-format";
 
 const OrdemPage = () => {
 	const theme = useTheme();
@@ -17,15 +18,17 @@ const OrdemPage = () => {
 
 	const dispatch = useDispatch();
 	const [isLoadingHome, setIsLoading] = useState(true);
+	const [ordems, setOrdems] = useState([]);
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.ordemCarrega);
 		const q = query(collRef, orderBy("createdAt"));
 		onSnapshot(q, (snapshot) => {
 			dispatch(
-				console.log(
+				setOrdems(
 					snapshot.docs.map((doc) => ({
 						...doc.data(),
+						data: formatDate(doc.data()["createdAt"]),
 						id: doc.id
 					}))
 				)
@@ -43,24 +46,16 @@ const OrdemPage = () => {
 				height: "100%"
 			}}
 		>
-			<Typography
-				variant="h2"
-				color={colors.blueAccent[600]}
-				mb={1}
-				ml={1}
-			>
-				Ordens de Carregamento
-			</Typography>
 			<Box
 				sx={{
 					width: "100%",
-					height: "92%",
+					height: "100%",
 					// border: "1px solid whitesmoke",
 					borderRadius: "8px",
 					marginBottom: "10px"
 				}}
 			>
-				<HomeOrdemPage isLoadingHome={isLoadingHome} />
+				<HomeOrdemPage isLoadingHome={isLoadingHome} ordems={ordems} />
 			</Box>
 		</Box>
 	);
