@@ -7,7 +7,7 @@ import TableOrdensEach from "../table-ordem-each";
 const TableOrdensPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { ordems } = props;
+	const { ordems, setIsOpenModal, setDataModal } = props;
 
 	return (
 		<Box
@@ -30,7 +30,11 @@ const TableOrdensPage = (props) => {
 					height: "100%"
 				}}
 			>
-				<TableOrdensEach ordems={ordems} />
+				<TableOrdensEach
+					ordems={ordems}
+					setIsOpenModal={setIsOpenModal}
+					setDataModal={setDataModal}
+				/>
 			</Box>
 		</Box>
 	);

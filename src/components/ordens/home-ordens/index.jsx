@@ -8,12 +8,16 @@ import FormOrdens from "../form-ordens";
 import TableOrdensPage from "../table-ordens";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import OrdemModal from "../modal-ordens";
+
 const HomeOrdemPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
 	const [isOpen, setIsOpen] = useState(false);
 	const { isLoadingHome, ordems } = props;
+	const [isOpenModal, setIsOpenModal] = useState(false);
+	const [dataModal, setDataModal] = useState([]);
 
 	return (
 		<Box
@@ -37,6 +41,11 @@ const HomeOrdemPage = (props) => {
 					}
 				}
 			>
+				<OrdemModal
+					isOpenModal={isOpenModal}
+					setIsOpenModal={setIsOpenModal}
+					dataModal={dataModal}
+				/>
 				{!isOpen && (
 					<Box sx={{ width: "auto !important" }}>
 						<AddButton
@@ -99,6 +108,8 @@ const HomeOrdemPage = (props) => {
 						isOpen={isOpen}
 						setIsOpen={setIsOpen}
 						ordems={ordems}
+						setIsOpenModal={setIsOpenModal}
+						setDataModal={setDataModal}
 					/>
 				</Box>
 			)}

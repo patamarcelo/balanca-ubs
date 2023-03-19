@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
+
 import {
 	faPrint,
 	faTrashCan,
@@ -10,46 +10,42 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
 
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
-import { useSelector } from "react-redux";
-import {
-	selectIsAdminUser,
-	selectIBalancaUser
-} from "../../../store/user/user.selector";
-
-import { selectTruckOnID } from "../../../store/trucks/trucks.selector";
+// import { useSelector } from "react-redux";
+// import {
+// 	selectIsAdminUser,
+// 	selectIBalancaUser
+// } from "../../../store/user/user.selector";
 
 import { handleDeleteOrdem } from "../../../utils/firebase/firebase.datatable.ordems";
 
 // import EditModal from "../report-modal-table";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
-import { formatDate } from "../../../store/trucks/trucks.selector";
+// import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+// import { useState, useEffect } from "react";
+// import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
+// import { formatDate } from "../../../store/trucks/trucks.selector";
 
 const TableOrdensEach = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const navigate = useNavigate();
+
+	const { ordems, setIsOpenModal, setDataModal } = props;
 
 	const handlerNavigatePrint = (data) => {
 		console.log(data);
+		setIsOpenModal(true);
+		setDataModal(data);
 		// navigate("/print", { state: { data: data } });
 	};
 
-	const { ordems } = props;
 	console.log(ordems);
 
 	const dataTableRev = [...ordems].reverse();
 
 	// const isAdmin = useSelector(selectIsAdminUser);
 	// const isBalanca = useSelector(selectIBalancaUser);
-	// const [dataTruck, setDataTruck] = useState([TRUCK_INITIAL_STATE]);
-	// const [isOpenModal, setIsOpenModal] = useState(false);
-	// const [filterId, setFilterId] = useState(null);
 
 	const handlerDelete = (dataId, data) => {
 		try {
@@ -77,12 +73,6 @@ const TableOrdensEach = (props) => {
 	// 	setIsOpenModal(true);
 	// 	setDataTruck(data);
 	// };
-
-	// useEffect(() => {
-	// 	if (!isOpenModal) {
-	// 		setDataTruck([]);
-	// 	}
-	// }, [isOpenModal]);
 
 	const columns = [
 		{
