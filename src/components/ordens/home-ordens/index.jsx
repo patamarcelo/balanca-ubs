@@ -35,11 +35,6 @@ const HomeOrdemPage = (props) => {
 				gap="10px"
 				justifyContent="start"
 				alignItems="center"
-				sx={
-					{
-						// margin: "10px"
-					}
-				}
 			>
 				<OrdemModal
 					isOpenModal={isOpenModal}

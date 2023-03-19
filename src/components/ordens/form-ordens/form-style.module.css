@@ -22,3 +22,7 @@
     color: whitesmoke !important;
     font-size: 0.8rem
 }
+.helperTextFormatError {
+    color: red !important;
+    font-size: 0.6rem
+}

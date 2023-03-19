@@ -30,7 +30,7 @@ const OrdemModal = (props) => {
 	};
 
 	return (
-		<div>
+		<>
 			<Modal
 				aria-labelledby="transition-modal-title"
 				aria-describedby="transition-modal-description"
@@ -61,7 +61,7 @@ const OrdemModal = (props) => {
 					</Box>
 				</Fade>
 			</Modal>
-		</div>
+		</>
 	);
 };
 

@@ -1,24 +1,15 @@
-import {
-	Box,
-	Button,
-	TextField,
-	Typography,
-	useTheme,
-	Divider
-} from "@mui/material";
+import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 
 import { useFormik } from "formik";
 
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useNavigate } from "react-router-dom";
 
 import { tokens } from "../../../theme";
 
 import {
 	ordemFields,
 	ordemFieldsPessoa,
-	ordemFieldsCarga,
 	ordemFieldsObs,
 	veiculosPesos,
 	produtosCadastro
@@ -26,11 +17,8 @@ import {
 
 import classes from "./form-style.module.css";
 
-import { useState, useEffect } from "react";
-
 import toast from "react-hot-toast";
 
-import NativeSelect from "@mui/material/NativeSelect";
 import InputLabel from "@mui/material/InputLabel";
 
 import MenuItem from "@mui/material/MenuItem";
@@ -59,34 +47,30 @@ const userSchema = yup.object().shape({
 		.string()
 		.min(2, "Too Short")
 		.max(50, "Too Long")
-		.required("required")
-	// lastName: yup
-	// 	.string()
-	// 	.min(2, "Too Short")
-	// 	.max(50, "Too Long")
-	// 	.required("required"),
+		.required("Obrigatório"),
+	destino: yup
+		.string()
+		.min(2, "Too Short")
+		.max(50, "Too Long")
+		.required("Obrigatório"),
+	mercadoria: yup
+		.string()
+		.oneOf(["Arroz", "Feijão", "Soja"], "não existe")
+		.required("Escolha uma opção"),
+	veiculo: yup.string().required("Escolha uma opção"),
+	motorista: yup.string().required("Obrigatório"),
+	placaTrator: yup.string().required("Obrigatório")
 	// email: yup.string().email("Invalid Email").required("required"),
 	// contact: yup
 	// 	.string()
 	// 	.matches(phoneRegExp, "Phone number is not vaid")
 	// 	.required("required"),
-	// address1: yup
-	// 	.string()
-	// 	.min(2, "Too Short")
-	// 	.max(120, "Too Long")
-	// 	.required("required")
-	// address2: yup
-	// 	.string()
-	// 	.min(2, "Too Short")
-	// 	.max(120, "Too Long")
-	// 	.required("required")
 });
 
 const FormOrdens = (props) => {
 	const { setIsOpen } = props;
 
 	const isNonMobile = useMediaQuery("(min-width: 600px)");
-	const navigate = useNavigate();
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -235,7 +219,8 @@ const FormOrdens = (props) => {
 									value={formik.values[data.name]}
 									name={data.name}
 									helperText={
-										formik.errors[data.name]
+										formik.errors[data.name] &&
+										formik.touched[data.name]
 											? formik.errors[data.name]
 											: ""
 									}
@@ -272,7 +257,8 @@ const FormOrdens = (props) => {
 									value={formik.values[data.name]}
 									name={data.name}
 									helperText={
-										formik.errors[data.name]
+										formik.errors[data.name] &&
+										formik.touched[data.name]
 											? formik.errors[data.name]
 											: ""
 									}
@@ -318,6 +304,16 @@ const FormOrdens = (props) => {
 									);
 								})}
 							</Select>
+							{formik.errors.veiculo &&
+								formik.touched.veiculo && (
+									<FormHelperText
+										className={
+											classes.helperTextFormatError
+										}
+									>
+										{formik.errors["veiculo"]}
+									</FormHelperText>
+								)}
 							{formik.values.veiculo && (
 								<FormHelperText
 									className={classes.helperTextFormat}
@@ -359,6 +355,16 @@ const FormOrdens = (props) => {
 									);
 								})}
 							</Select>
+							{formik.errors.mercadoria &&
+								formik.touched.mercadoria && (
+									<FormHelperText
+										className={
+											classes.helperTextFormatError
+										}
+									>
+										{formik.errors["mercadoria"]}
+									</FormHelperText>
+								)}
 						</FormControl>
 
 						<Box
