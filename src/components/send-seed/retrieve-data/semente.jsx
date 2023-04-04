@@ -9,7 +9,8 @@ import Chip from "@mui/material/Chip";
 const DICT_COLOR = {
 	"Semente Arroz 424": ["rgb(255, 208, 80)", "black"],
 	"Semente Arroz 704": ["rgb(171,202,221)", "black"],
-	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"]
+	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"],
+	"Semente Feijão Branco": ["rgb(231,234,237)", "black"]
 };
 const SementeTable = (props) => {
 	const { data } = props;
