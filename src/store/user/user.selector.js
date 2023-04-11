@@ -12,3 +12,5 @@ export const selectUnidadeOpUser = (state) => {
 };
 
 export const selectAsaasToken = (state) => state.user.asaasToken;
+
+export const selectDjangoToken = (state) => state.user.token;

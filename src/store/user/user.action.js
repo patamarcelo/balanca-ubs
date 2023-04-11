@@ -44,6 +44,18 @@ export const setUnidadeOpUser = (user) => {
 	return unidadeOp;
 };
 
+export const setToken = (user) => {
+	let token = "";
+	if (user?.reloadUserInfo) {
+		const customAttr = user.reloadUserInfo.customAttributes;
+		if (customAttr) {
+			const unidade = JSON.parse(customAttr);
+			token = unidade.token;
+		}
+	}
+	return token;
+};
+
 export const setUser = (user) => {
 	return createAction(USER_ACTIONS_TYPES.SET_CURRENT_USER, user);
 };

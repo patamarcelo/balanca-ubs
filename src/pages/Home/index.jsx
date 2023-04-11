@@ -24,6 +24,7 @@ import {
 import {
 	selectIBalancaUser,
 	selectUnidadeOpUser
+	// selectDjangoToken
 } from "../../store/user/user.selector";
 
 import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
@@ -61,6 +62,7 @@ const HomePage = () => {
 
 	const isBalanca = useSelector(selectIBalancaUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	// const userDjangoToken = useSelector(selectDjangoToken);
 
 	const truckWorks = useSelector(selectTruOnWork);
 
