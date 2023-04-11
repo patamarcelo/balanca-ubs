@@ -23,7 +23,7 @@ import {
 
 import {
 	selectIBalancaUser,
-	selectUnidadeOpUser
+	selectUnidadeOpUser,
 	// selectDjangoToken
 } from "../../store/user/user.selector";
 
@@ -36,6 +36,8 @@ import "./indexTabs.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import toast from "react-hot-toast";
+
+// import djangoApi from "../../utils/axios/axios.utils";
 
 const dataModalText = {
 	carregando: {
@@ -84,6 +86,19 @@ const HomePage = () => {
 	);
 
 	const [formatUnidade, setFormatUnidade] = useState("");
+
+	// useEffect(() => {
+	// 	djangoApi
+	// 		.get("/get_plantio", {
+	// 			headers: {
+	// 				Authorization: `Token ${userDjangoToken}`
+	// 			}
+	// 		})
+	// 		.then((res) => {
+	// 			console.log(res.data);
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// }, []);
 
 	useEffect(() => {
 		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);

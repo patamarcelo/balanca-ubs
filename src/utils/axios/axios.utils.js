@@ -1,11 +1,13 @@
 import axios from "axios";
 
-const baseURL = "https://pitaya-server.herokuapp.com/";
-const baseURLdev = "http://localhost:5500/";
+const baseURL = "https://diamante-quality.up.railway.app/diamante/";
+// const baseURL = "http://localhost:8000/diamante/";
 
-export const createClient = axios.create({
-	baseURL: process.env.NODE_ENV !== "production" ? baseURLdev : baseURL,
+const djangoApi = axios.create({
+	baseURL: baseURL,
 	headers: {
 		"Content-Type": "application/json"
 	}
 });
+
+export default djangoApi;
