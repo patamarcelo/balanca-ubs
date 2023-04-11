@@ -11,7 +11,8 @@ export const INITIAL_STATE = {
 	isAuth: false,
 	isAdmin: false,
 	isBalanca: false,
-	unidadeOp: ""
+	unidadeOp: "",
+	token: ""
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
