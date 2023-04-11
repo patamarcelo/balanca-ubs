@@ -37,7 +37,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import toast from "react-hot-toast";
 
-import djangoApi from "../../utils/axios/axios.utils";
+// import djangoApi from "../../utils/axios/axios.utils";
 
 const dataModalText = {
 	carregando: {
@@ -87,18 +87,18 @@ const HomePage = () => {
 
 	const [formatUnidade, setFormatUnidade] = useState("");
 
-	useEffect(() => {
-		djangoApi
-			.get("/get_plantio/", {
-				headers: {
-					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-				}
-			})
-			.then((res) => {
-				console.log(res.data);
-			})
-			.catch((err) => console.log(err));
-	}, []);
+	// useEffect(() => {
+	// 	djangoApi
+	// 		.get("/get_plantio/", {
+	// 			headers: {
+	// 				Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+	// 			}
+	// 		})
+	// 		.then((res) => {
+	// 			console.log(res.data);
+	// 		})
+	// 		.catch((err) => console.log(err));
+	// }, []);
 
 	useEffect(() => {
 		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);
