@@ -16,6 +16,8 @@ import SheetFields from "./sheet-form-fields";
 
 import formatDate from "../../../utils/format-suport/data-format";
 
+import { PROJETOS_FAZENDAS } from "../../../store/origem-destino";
+
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
 		props;
@@ -24,6 +26,10 @@ const ModalFormFields = (props) => {
 	// const [value, setValue] = useState(new Date());
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+
+	useEffect(() => {
+		console.log(PROJETOS_FAZENDAS);
+	}, []);
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {

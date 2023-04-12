@@ -71,6 +71,18 @@ export const TRUCK_OBS = [
 		type: "text"
 	},
 	{
+		label: "Parcela",
+		name: "parcela",
+		placeholder: "Parcela",
+		type: "text"
+	},
+	{
+		label: "Cultura",
+		name: "cultura",
+		placeholder: "Cultura",
+		type: "text"
+	},
+	{
 		label: "Mercadoria",
 		name: "mercadoria",
 		placeholder: "mercadoria",
@@ -83,20 +95,7 @@ export const TRUCK_OBS = [
 		placeholder: "Projeto",
 		type: "text"
 	},
-	{
-		label: "Umidade",
-		name: "umidade",
-		placeholder: "Umidade",
-		// required: true,
-		type: "number"
-	},
-	{
-		label: "Impureza",
-		name: "impureza",
-		placeholder: "Impureza",
-		// required: true,
-		type: "number"
-	}
+	
 ];
 
 export const TRUCK_SHEETS = [
@@ -104,18 +103,6 @@ export const TRUCK_SHEETS = [
 		label: "NF Entrada",
 		name: "nfEntrada",
 		placeholder: "NF Entrada",
-		type: "text"
-	},
-	{
-		label: "Parcela",
-		name: "parcela",
-		placeholder: "Parcela",
-		type: "text"
-	},
-	{
-		label: "Cultura",
-		name: "cultura",
-		placeholder: "Cultura",
 		type: "text"
 	},
 	{
@@ -135,5 +122,19 @@ export const TRUCK_SHEETS = [
 		name: "ticket",
 		placeholder: "Ticket",
 		type: "tel"
+	},
+	{
+		label: "Umidade",
+		name: "umidade",
+		placeholder: "Umidade",
+		// required: true,
+		type: "number"
+	},
+	{
+		label: "Impureza",
+		name: "impureza",
+		placeholder: "Impureza",
+		// required: true,
+		type: "number"
 	}
 ];
