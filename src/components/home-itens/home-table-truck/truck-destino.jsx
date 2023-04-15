@@ -8,6 +8,20 @@ const DestinoTruck = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
+	const returnName = (data) => {
+		let name = "";
+		if (data.destino !== "") {
+			name = data.destino;
+			return name;
+		}
+		if (data.fazendaDestino !== "") {
+			name = data.fazendaDestino;
+			return name;
+		}
+
+		return name;
+	};
+
 	return (
 		<Box
 			display="flex"
@@ -27,7 +41,7 @@ const DestinoTruck = (props) => {
 					Destino
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
-					{data.destino}
+					{returnName(data)}
 				</Typography>
 			</>
 		</Box>

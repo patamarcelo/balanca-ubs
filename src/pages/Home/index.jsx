@@ -37,6 +37,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import toast from "react-hot-toast";
 
+import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
+
 // import djangoApi from "../../utils/axios/axios.utils";
 
 const dataModalText = {
@@ -201,7 +203,21 @@ const HomePage = () => {
 	};
 
 	const filteredTruckOnWork = (unidadeOp) => {
-		return truckWorks.filter((data) => data.unidadeOp === unidadeOp).length;
+		const origemDest = [];
+		console.log(unidadeOp);
+		const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+			(data) => data.user === unidadeOp
+		);
+		filteredOrigemDestino.map((data) => {
+			origemDest.push(data.local);
+			return data;
+		});
+		return truckWorks.filter(
+			(data) =>
+				data.unidadeOp === unidadeOp ||
+				origemDest.includes(data.fazendaOrigem) ||
+				origemDest.includes(data.fazendaDestino)
+		).length;
 	};
 
 	return (

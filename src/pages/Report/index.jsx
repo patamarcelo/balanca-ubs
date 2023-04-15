@@ -12,6 +12,8 @@ import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
 import { selectUnidadeOpUser } from "../../store/user/user.selector";
 
+import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
+
 const ReportPage = () => {
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
 
@@ -22,12 +24,24 @@ const ReportPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [saved, handlerSave] = useState(0);
 
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === unidadeOpUser
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
+
 	useEffect(() => {
 		if (unidadeOpUser === "ubs") {
 			setFilteredTable(dataTableForm);
 		} else {
 			const filteredTable = dataTableForm.filter(
-				(data) => data.unidadeOp === unidadeOpUser
+				(data) =>
+					data.unidadeOp === unidadeOpUser ||
+					origemDest.includes(data.fazendaDestino) ||
+					origemDest.includes(data.fazendaOrigem)
 			);
 			setFilteredTable(filteredTable);
 		}

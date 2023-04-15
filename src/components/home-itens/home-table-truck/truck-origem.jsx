@@ -6,6 +6,20 @@ const OrigemTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
+	const returnName = (data) => {
+		let name = ''
+		if(data.origem !== ""){
+			name = data.origem
+			return name
+		} 
+		if (data.fazendaOrigem !== ""){
+			name = data.fazendaOrigem
+			return name
+		}
+
+		return name
+	}
+
 	return (
 		<Box
 			display="flex"
@@ -18,7 +32,7 @@ const OrigemTruck = (props) => {
 					Origem
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
-					{data.origem}
+					{returnName(data)}
 				</Typography>
 			</>
 		</Box>

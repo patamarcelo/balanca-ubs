@@ -30,10 +30,16 @@ export const handleUpdateClassic = async (e, id, data) => {
 
 export const handleUpdateTruck = async (e, id, data) => {
 	e.preventDefault();
+	let newEntrada;
+	if (!data.entrada & (data.pesoBruto > 0 || data.tara > 0)) {
+		newEntrada = new Date();
+	} else {
+		newEntrada = data.entrada;
+	}
 	const saida = new Date();
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 	let updatedDoc;
-	const updatedData = { ...data, saida: saida };
+	const updatedData = { ...data, saida: saida, entrada: newEntrada };
 	try {
 		updatedDoc = await updateDoc(taskDocRef, {
 			...updatedData
@@ -88,6 +94,7 @@ export const addTruckMove = async (
 	umidade,
 	mercadoria,
 	origem,
+	fazendaOrigem,
 	impureza,
 	projeto,
 	motorista,
@@ -95,6 +102,7 @@ export const addTruckMove = async (
 	tipo,
 	observacoes,
 	destino,
+	fazendaDestino,
 	unidadeOp,
 	parcela,
 	nfEntrada,
@@ -107,13 +115,17 @@ export const addTruckMove = async (
 	if (liquido) {
 		saida = entrada;
 	}
+	let hora_entrada;
+	if (pesoBruto || tara) {
+		hora_entrada = entrada;
+	} else hora_entrada = "";
 	try {
 		newTransaction = await addDoc(
 			collection(db, TABLES_FIREBASE.truckmove),
 			{
 				createdAt,
 				user,
-				entrada,
+				entrada: hora_entrada,
 				pesoBruto,
 				tara,
 				liquido,
@@ -122,6 +134,7 @@ export const addTruckMove = async (
 				umidade,
 				mercadoria,
 				origem,
+				fazendaOrigem,
 				impureza,
 				projeto,
 				motorista,
@@ -129,6 +142,7 @@ export const addTruckMove = async (
 				tipo,
 				observacoes,
 				destino,
+				fazendaDestino,
 				unidadeOp,
 				parcela,
 				nfEntrada,

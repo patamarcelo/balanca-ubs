@@ -52,6 +52,8 @@ const ReportTable = (props) => {
 
 	const truckLoadId = useSelector(selectTruckOnID(filterId));
 
+	const defaultFontSize = "13px";
+
 	const handlerDelete = (dataId, data) => {
 		try {
 			handleDeleteTruck(dataId, data);
@@ -185,7 +187,10 @@ const ReportTable = (props) => {
 			align: "center",
 			width: 130,
 			renderCell: (params) => (
-				<Typography color={colors.greenAccent[400]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.greenAccent[400]}
+				>
 					{params.row.entrada}
 				</Typography>
 			)
@@ -199,7 +204,9 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography>{formatPlate(params.row.placa)}</Typography>
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{formatPlate(params.row.placa)}
+				</Typography>
 			)
 		},
 		{
@@ -209,7 +216,12 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 120
+			width: 120,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.motorista ? params.row.motorista : "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "origem",
@@ -217,7 +229,16 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 120
+			width: 140,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.fazendaOrigem
+						? params.row.fazendaOrigem
+						: params.row.origem
+						? params.row.origem
+						: "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "destino",
@@ -225,7 +246,16 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 100
+			width: 140,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.fazendaDestino
+						? params.row.fazendaDestino
+						: params.row.destino
+						? params.row.destino
+						: "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "mercadoria",
@@ -233,7 +263,12 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 100
+			width: 100,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.mercadoria ? params.row.mercadoria : "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "projeto",
@@ -241,7 +276,12 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 100
+			width: 100,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.projeto ? params.row.projeto : "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "cultura",
@@ -249,7 +289,12 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			// flex: 1
-			width: 100
+			width: 100,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.cultura ? params.row.cultura : "-"}
+				</Typography>
+			)
 		},
 		{
 			field: "saida",
@@ -259,7 +304,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.blueOrigin[400]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.blueOrigin[400]}
+				>
 					{params.row.saida}
 				</Typography>
 			)
@@ -278,7 +326,7 @@ const ReportTable = (props) => {
 		// 	headerName: "Operação",
 		// 	flex: 0.5,
 		// 	renderCell: (params) => (
-		// 		<Typography
+		// 		<Typography sx={{ fontSize: defaultFontSize }}
 		// 			className={params.row.type === "pix" ? "pix" : "credito"}
 		// 		>
 		// 			{params.row.type}
@@ -293,7 +341,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.greenAccent[400]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.greenAccent[400]}
+				>
 					{formatWeight(params.row.pesoBruto)}
 				</Typography>
 			)
@@ -306,7 +357,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.greenAccent[400]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.greenAccent[400]}
+				>
 					{formatWeight(params.row.tara)}
 				</Typography>
 			)
@@ -319,7 +373,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.greenAccent[400]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.greenAccent[400]}
+				>
 					{formatWeight(params.row.liquido)}
 				</Typography>
 			)
@@ -332,7 +389,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.umidade
 						? parseFloat(params.row.umidade).toFixed(2) + " %"
 						: " - "}
@@ -347,7 +407,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.impureza
 						? parseFloat(params.row.impureza).toFixed(2) + " %"
 						: " - "}
@@ -361,7 +424,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.parcela ? params.row.parcela : " - "}
 				</Typography>
 			)
@@ -373,7 +439,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.nfEntrada ? params.row.nfEntrada : " - "}
 				</Typography>
 			)
@@ -385,7 +454,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.op ? params.row.op : " - "}
 				</Typography>
 			)
@@ -397,7 +469,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.relatorioColheita
 						? params.row.relatorioColheita
 						: " - "}
@@ -411,7 +486,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.ticket ? params.row.ticket : " - "}
 				</Typography>
 			)
@@ -423,7 +501,10 @@ const ReportTable = (props) => {
 			headerAlign: "center",
 			align: "center",
 			renderCell: (params) => (
-				<Typography color={colors.primary[100]}>
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
 					{params.row.observacoes ? params.row.observacoes : " - "}
 				</Typography>
 			)
@@ -577,6 +658,7 @@ const ReportTable = (props) => {
 				}}
 			>
 				<DataGrid
+					// density="compact"
 					rows={dataTableRev}
 					columns={columns}
 					components={{ Toolbar: GridToolbar }}

@@ -1,3 +1,5 @@
+import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
+
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
 export const selectTruckSendSeed = (state) => {
@@ -9,9 +11,23 @@ export const selectTruckSendSeed = (state) => {
 export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 	const dataLoad = state.truckLoads.truckLoads;
 	const unidadeOpFiltered = unidadeOp ? unidadeOp : "ubs";
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === unidadeOp
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
+	console.log(origemDest);
 	return dataLoad
 		.filter((data) => data.pesoBruto === "" || data.tara === "")
-		.filter((data) => data.unidadeOp === unidadeOpFiltered);
+		.filter(
+			(data) =>
+				data.unidadeOp === unidadeOpFiltered ||
+				origemDest.includes(data.fazendaDestino) ||
+				origemDest.includes(data.fazendaOrigem)
+		);
 };
 
 export const selectTruOnWork = (state) => {
@@ -51,21 +67,41 @@ export const selectTruckLoadsFormatData = (state) => {
 };
 
 export const selectTrucksCarregando = (unidadeOp) => (state) => {
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === unidadeOp
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
 	const dataLoad = state.truckLoads.truckLoads.filter(
 		(data) =>
-			data.tipo === "carregando" &&
+			// data.tipo === "carregando" &&
 			(data.pesoBruto === "" || data.tara === "") &&
-			data.unidadeOp === unidadeOp
+			origemDest.includes(data.fazendaOrigem)
 	);
+
+	console.log("dataLoad: ", dataLoad);
+
 	return Object.keys(dataLoad).length;
 };
 
 export const selectTrucksDescarregando = (unidadeOp) => (state) => {
+	console.log("Uidade Teste: ", unidadeOp);
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === unidadeOp
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
 	const dataLoad = state.truckLoads.truckLoads.filter(
 		(data) =>
-			data.tipo === "descarregando" &&
+			// data.tipo === "descarregando" &&
 			(data.pesoBruto === "" || data.tara === "") &&
-			data.unidadeOp === unidadeOp
+			origemDest.includes(data.fazendaDestino)
 	);
 	return Object.keys(dataLoad).length;
 };

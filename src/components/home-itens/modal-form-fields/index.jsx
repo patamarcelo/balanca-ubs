@@ -3,7 +3,11 @@ import { tokens } from "../../../theme";
 import TextField from "@mui/material/TextField";
 import "dayjs/locale/pt-br";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { TRUCK, TRUCK_OBS } from "../../../store/trucks/reducer.initials";
+import {
+	TRUCK,
+	TRUCK_OBS,
+	FAZENDA_ORIGEM
+} from "../../../store/trucks/reducer.initials";
 import { hanlderHelperText } from "../../../utils/formHelper";
 
 import { useSelector } from "react-redux";
@@ -18,6 +22,11 @@ import formatDate from "../../../utils/format-suport/data-format";
 
 import { PROJETOS_FAZENDAS } from "../../../store/origem-destino";
 
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
 		props;
@@ -27,9 +36,14 @@ const ModalFormFields = (props) => {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
-	useEffect(() => {
-		console.log(PROJETOS_FAZENDAS);
-	}, []);
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === unidadeOpUser
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {
@@ -57,7 +71,6 @@ const ModalFormFields = (props) => {
 			console.log("Open Modal Carregando");
 			setTruckValues({
 				...truckValues,
-				origem: unidadeOpUser?.toUpperCase(),
 				data: new Date()
 			});
 		} else if (
@@ -67,7 +80,6 @@ const ModalFormFields = (props) => {
 			console.log("Open Modal DESCARREGANDO");
 			setTruckValues({
 				...truckValues,
-				destino: unidadeOpUser?.toUpperCase(),
 				data: new Date()
 			});
 		} else {
@@ -250,6 +262,63 @@ const ModalFormFields = (props) => {
 					}
 				}}
 			>
+				<FormControl
+					gridTemplateColumns={`repeat(${
+						!isNonMobile ? "1" : "2"
+					}, minmax(0, 1fr))`}
+					// sx={{ gridColumn: "span 3" }}
+					className={classes["observacao-style"]}
+				>
+					<InputLabel id="fazendaOrigem-select-small">
+						Origem
+					</InputLabel>
+					<Select
+						labelId="fazendaOrigem-select-small"
+						id="fazendaOrigem"
+						name="fazendaOrigem"
+						value={truckValues["fazendaOrigem"]}
+						label="Mercadoria"
+						onChange={handleChangeTruck}
+					>
+						{FAZENDA_ORIGEM.map((iterData, i) => {
+							return (
+								<MenuItem value={iterData.local} key={i}>
+									{iterData.local}
+								</MenuItem>
+							);
+						})}
+					</Select>
+				</FormControl>
+				<FormControl
+					gridTemplateColumns={`repeat(${
+						!isNonMobile ? "1" : "2"
+					}, minmax(0, 1fr))`}
+					// sx={{ gridColumn: "span 3" }}
+					className={classes["observacao-style"]}
+				>
+					<InputLabel id="fazendaDestino-select-small">
+						Destino
+					</InputLabel>
+					<Select
+						labelId="fazendaDestino-select-small"
+						id="fazendaDestino"
+						name="fazendaDestino"
+						value={truckValues["fazendaDestino"]}
+						label="Mercadoria"
+						onChange={handleChangeTruck}
+					>
+						{FAZENDA_ORIGEM.filter(
+							(data) => data.local.split(" ")[0] !== "Projeto"
+						).map((iterData, i) => {
+							console.log("Split :", iterData.local.split(" "));
+							return (
+								<MenuItem value={iterData.local} key={i}>
+									{iterData.local}
+								</MenuItem>
+							);
+						})}
+					</Select>
+				</FormControl>
 				{TRUCK_OBS.map((input, index) => {
 					return (
 						<TextField
@@ -263,14 +332,38 @@ const ModalFormFields = (props) => {
 							name={input.name}
 							value={truckValues[input.name]}
 							placeholder={input.placeholder}
+							helperText={input.helperText}
 							inputProps={{
 								// maxLength: 13,
 								step: "0.10",
 								min: "0"
 							}}
 							sx={{
-								width: "100%"
+								width: "100%",
+								display:
+									(input.name === "origem" &&
+										truckValues["fazendaOrigem"] !==
+											"Outros" &&
+										truckValues["origem"] === "" &&
+										"none") ||
+									(input.name === "destino" &&
+										truckValues["fazendaDestino"] !==
+											"Outros" &&
+										truckValues["destino"] === "" &&
+										"none") ||
+									(input.name === "projeto" &&
+										truckValues["projeto"] === "" &&
+										"none")
 							}}
+							disabled={
+								(input.name === "origem" &&
+									truckValues["fazendaOrigem"] !== "Outros" &&
+									true) ||
+								(input.name === "destino" &&
+									truckValues["fazendaDestino"] !==
+										"Outros" &&
+									true)
+							}
 						/>
 					);
 				})}

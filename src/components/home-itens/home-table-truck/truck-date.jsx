@@ -2,19 +2,32 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 const DateTruck = (props) => {
-	const { entrada } = props;
+	const { entrada, data } = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const newDate = new Date(
-		entrada.seconds * 1000 + entrada.nanoseconds / 1000000
-	);
+	let atTime;
+	let formatDate;
+	if (entrada) {
+		const newDate = new Date(
+			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
+		);
 
-	const date = newDate.toISOString().split("T")[0];
-	const atTime = newDate.toLocaleTimeString();
-	const [year, month, day] = date.split("-");
-	const formatDate = [day, month, year].join("/");
+		const date = newDate.toISOString().split("T")[0];
+		atTime = newDate.toLocaleTimeString();
+		const [year, month, day] = date.split("-");
+		formatDate = [day, month, year].join("/");
+	} else {
+		const newDate = new Date(
+			data.createdAt.seconds * 1000 + data.createdAt.nanoseconds / 1000000
+		);
+
+		const date = newDate.toISOString().split("T")[0];
+		atTime = newDate.toLocaleTimeString();
+		const [year, month, day] = date.split("-");
+		formatDate = [day, month, year].join("/");
+	}
 
 	return (
 		<Box

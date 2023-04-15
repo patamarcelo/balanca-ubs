@@ -79,6 +79,7 @@ export default function FormDialog(props) {
 			mercadoria,
 			motorista,
 			origem,
+			fazendaOrigem,
 			pesoBruto,
 			placa,
 			projeto,
@@ -88,6 +89,7 @@ export default function FormDialog(props) {
 			umidade,
 			observacoes,
 			destino,
+			fazendaDestino,
 			parcela,
 			nfEntrada,
 			op,
@@ -107,6 +109,7 @@ export default function FormDialog(props) {
 				umidade,
 				mercadoria,
 				origem,
+				fazendaOrigem,
 				impureza,
 				projeto,
 				motorista,
@@ -114,6 +117,7 @@ export default function FormDialog(props) {
 				tipo,
 				observacoes,
 				destino,
+				fazendaDestino,
 				unidadeOp,
 				parcela,
 				nfEntrada,
@@ -140,20 +144,24 @@ export default function FormDialog(props) {
 	const handleEditCarga = async (event) => {
 		event.preventDefault();
 		setIsLoadingSubmit(true);
+
 		try {
 			const newTransData = {
 				...truckValues,
 				userSaida: user.email
 			};
+			console.log('NewTransData: ',newTransData)
 			await handleUpdateTruck(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();
 			handlerSave(saved + 1);
-			handlerNavigatePrint(
-				filterTableForm({
-					...truckValues
-				})
-			);
+			if (isNumber(truckValues.liquido) > 0) {
+				handlerNavigatePrint(
+					filterTableForm({
+						...truckValues
+					})
+				);
+			}
 		} catch (error) {
 			console.log("erro ao editar a transação", error);
 		} finally {
@@ -249,16 +257,17 @@ export default function FormDialog(props) {
 							size="small"
 							loading={isLoadingSubmit}
 							onClick={handleEditCarga}
-							disabled={
-								truckValues.liquido < 1 ||
-								!isNumber(truckValues.liquido)
-							}
+							// disabled={
+							// 	truckValues.liquido < 1
+							// }
 							sx={{
 								backgroundColor: colors.greenAccent[600],
 								color: "white"
 							}}
 						>
-							Registrar Saída
+							{isNumber(truckValues.liquido) > 0
+								? "Registrar Saída"
+								: "Editar Carga"}
 						</LoadingButton>
 					)}
 					{(dataModal.title === "Carregando" ||
@@ -273,12 +282,8 @@ export default function FormDialog(props) {
 								color: "white"
 							}}
 							disabled={
-								(dataModal.title === "Descarregando" &&
-									truckValues.pesoBruto < 1) ||
-								(dataModal.title === "Carregando" &&
-									truckValues.tara < 1) ||
 								truckValues.liquido ===
-									"Valor Negativo, verificar"
+								"Valor Negativo, verificar"
 							}
 						>
 							Registrar Entrada

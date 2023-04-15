@@ -34,6 +34,8 @@ import toast from "react-hot-toast";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import { FAZENDA_ORIGEM } from "../../../store/trucks/reducer.initials";
+
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -64,6 +66,15 @@ const HomeTableTruck = (props) => {
 		selectedUnitOp
 	} = props;
 
+	const origemDest = [];
+	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
+		(data) => data.user === selectedUnitOp
+	);
+	filteredOrigemDestino.map((data) => {
+		origemDest.push(data.local);
+		return data;
+	});
+
 	const table = useSelector(selectTruckLoadsOnWork(selectedUnitOp));
 
 	const handlerDelete = (dataId, data) => {
@@ -92,6 +103,20 @@ const HomeTableTruck = (props) => {
 			{table.map((data, i) => {
 				const unidadeOpTable = data.unidadeOp ? data.unidadeOp : "ubs";
 				const disableInput = unidadeOpUser === unidadeOpTable;
+
+				const setColorTruck = (data) => {
+					let color;
+					if (origemDest.includes(data.fazendaOrigem)) {
+						color = colors.greenAccent[600];
+						return color;
+					}
+					if (origemDest.includes(data.fazendaDestino)) {
+						color = colors.redAccent[600];
+						return color;
+					}
+					color = colors.primary[300];
+					return color;
+				};
 				return (
 					<Box
 						key={i}
@@ -109,7 +134,18 @@ const HomeTableTruck = (props) => {
 						}}
 					>
 						<Box>
-							{data.tipo === "carregando" ? (
+							<FontAwesomeIcon
+								color={setColorTruck(data)}
+								icon={faTruckMoving}
+								size="3x"
+								className={
+									setColorTruck(data) ===
+									colors.greenAccent[600]
+										? "fa-flip-horizontal"
+										: ""
+								}
+							/>
+							{/* {data.tipo === "carregando" ? (
 								<FontAwesomeIcon
 									color={colors.greenAccent[600]}
 									icon={faTruckMoving}
@@ -122,7 +158,7 @@ const HomeTableTruck = (props) => {
 									icon={faTruckMoving}
 									size="3x"
 								/>
-							)}
+							)} */}
 						</Box>
 						<Box
 							display="flex"
@@ -136,13 +172,17 @@ const HomeTableTruck = (props) => {
 								maxWidth: "90%"
 							}}
 						>
-							<DateTruck entrada={data.entrada} />
+							<DateTruck entrada={data.entrada} data={data} />
 							<PlateTruck data={data} />
 							<QuantityTruck data={data} />
 							<QuantityTruckHold data={data} />
 							{data.mercadoria && <MercadoriaTruck data={data} />}
-							{data.origem && <OrigemTruck data={data} />}
-							{data.destino && <DestinoTruck data={data} />}
+							{(data.origem || data.fazendaOrigem) && (
+								<OrigemTruck data={data} />
+							)}
+							{(data.destino || data.fazendaDestino) && (
+								<DestinoTruck data={data} />
+							)}
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
 							<IconButton

@@ -30,9 +30,9 @@ const PageDataClassFlex = ({ data }) => {
 		},
 		{
 			label: "Origem",
-			value: data.origem,
+			value: data.fazendaOrigem ? data.fazendaOrigem : data.origem,
 			label2: "Destino",
-			value2: data.destino,
+			value2: data.fazendaDestino ? data.fazendaDestino : data.destino,
 			size: "35%"
 		}
 	];
