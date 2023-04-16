@@ -108,7 +108,8 @@ export const addTruckMove = async (
 	nfEntrada,
 	op,
 	relatorioColheita,
-	ticket
+	ticket,
+	parcelasNovas
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
@@ -148,7 +149,8 @@ export const addTruckMove = async (
 				nfEntrada,
 				op,
 				relatorioColheita,
-				ticket
+				ticket,
+				parcelasNovas
 			}
 		);
 	} catch (error) {

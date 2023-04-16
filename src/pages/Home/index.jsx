@@ -175,6 +175,12 @@ const HomePage = () => {
 
 	const handleChangeTruck = (e) => {
 		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
+		if (e.target.name === "fazendaOrigem") {
+			setTruckValues((truckValues) => ({
+				...truckValues,
+				parcelasNovas: []
+			}));
+		}
 	};
 
 	const handleBlurTruck = (e) => {

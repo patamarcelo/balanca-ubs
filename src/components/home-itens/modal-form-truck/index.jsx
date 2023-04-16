@@ -94,7 +94,8 @@ export default function FormDialog(props) {
 			nfEntrada,
 			op,
 			relatorioColheita,
-			ticket
+			ticket,
+			parcelasNovas
 		} = truckValues;
 		setIsLoadingSubmit(true);
 		try {
@@ -123,7 +124,8 @@ export default function FormDialog(props) {
 				nfEntrada,
 				op,
 				relatorioColheita,
-				ticket
+				ticket,
+				parcelasNovas
 			);
 			toast.success("Carga registrada com sucesso!!");
 			if (newTrans) {
@@ -150,7 +152,8 @@ export default function FormDialog(props) {
 				...truckValues,
 				userSaida: user.email
 			};
-			console.log('NewTransData: ',newTransData)
+			console.log(truckValues.parcelasNovas);
+			console.log("NewTransData: ", newTransData);
 			await handleUpdateTruck(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();

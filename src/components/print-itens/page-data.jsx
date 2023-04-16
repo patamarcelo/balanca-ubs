@@ -19,6 +19,9 @@ const PageData = ({ printValue }) => {
 		);
 	};
 
+	console.log(data.parcelasNovas)
+	console.log(typeof data.parcelasNovas)
+
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
 		{
@@ -342,6 +345,11 @@ const PageData = ({ printValue }) => {
 						{data?.parcela && <b>Parcela: </b>}
 						{data?.parcela && data?.parcela}
 						{data?.parcela && <br />}
+						
+						{data?.parcelasNovas && data.parcelasNovas.length > 1 && <b>Parcelas: </b>}
+						{data?.parcelasNovas && data.parcelasNovas.length === 1 && <b>Parcela: </b>}
+						{data?.parcelasNovas && data?.parcelasNovas.toString().replaceAll(",", " , ")}
+						{data?.parcelasNovas && <br />}
 
 						{data?.observacoes}
 					</Typography>

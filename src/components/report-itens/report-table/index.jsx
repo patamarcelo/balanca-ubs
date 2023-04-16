@@ -428,7 +428,11 @@ const ReportTable = (props) => {
 					sx={{ fontSize: defaultFontSize }}
 					color={colors.primary[100]}
 				>
-					{params.row.parcela ? params.row.parcela : " - "}
+					{params.row.parcelasNovas
+						? params.row.parcelasNovas.toString().replaceAll(',', " , ")
+						: params.row.parcela
+						? params.row.parcela
+						: " - "}
 				</Typography>
 			)
 		},

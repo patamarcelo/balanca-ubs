@@ -58,7 +58,6 @@ const ModalFormFields = (props) => {
 				newParcFiltered.push(i);
 			}
 			setNewParcelas(newParcFiltered);
-			console.log(newParcFiltered);
 		}
 	}, [truckValues]);
 
@@ -359,19 +358,21 @@ const ModalFormFields = (props) => {
 
 				<FormControl
 					disabled={newParelas.length < 1}
-					gridTemplateColumns={`repeat(${
-						!isNonMobile ? "1" : "2"
-					}, minmax(0, 1fr))`}
-					// sx={{ gridColumn: "span 3" }}
-					className={classes["observacao-style"]}
+					className={classes["parcelasF"]}
 				>
-					<InputLabel id="parcelas-select-small">Parcelas</InputLabel>
+					<InputLabel id="parcelasNovas-select-small">
+						Parcelas
+					</InputLabel>
 					<Select
-						labelId="parcelas-select-small"
-						id="parcelas"
+						labelId="parcelasNovas-select-small"
+						id="parcelasNovas"
 						multiple
-						name="parcelas"
-						value={truckValues["parcelasNovas"]}
+						name="parcelasNovas"
+						value={
+							truckValues["parcelasNovas"]
+								? truckValues["parcelasNovas"]
+								: []
+						}
 						label="Parcelas"
 						onChange={handleChangeTruck}
 					>
@@ -419,6 +420,9 @@ const ModalFormFields = (props) => {
 										"none") ||
 									(input.name === "projeto" &&
 										truckValues["projeto"] === "" &&
+										"none") ||
+									(input.name === "parcela" &&
+										truckValues["parcela"] === "" &&
 										"none")
 							}}
 							disabled={
