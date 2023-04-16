@@ -6,7 +6,7 @@ const QuantityTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const taraFormated = Number(data.tara).toLocaleString("pt-BR") + " Kg";
+	// const taraFormated = Number(data.tara).toLocaleString("pt-BR") + " Kg";
 	const brutoFormated =
 		Number(data.pesoBruto).toLocaleString("pt-BR") + " Kg";
 
@@ -17,22 +17,30 @@ const QuantityTruck = (props) => {
 			justifyContent="space-around"
 			alignItems="center"
 		>
-			{data.tipo === "carregando" ? (
+			{data.pesoBruto > 0 ? (
 				<>
-					<Typography variant="h6" color={colors.primary[300]} sx={{fontStyle: 'italic'}}>
-						Tara Veículo
-					</Typography>
-					<Typography variant="h6" color={colors.primary[100]}>
-						{taraFormated}
-					</Typography>
-				</>
-			) : (
-				<>
-					<Typography variant="h6" color={colors.primary[300]} sx={{fontStyle: 'italic'}}>
+					<Typography
+						variant="h6"
+						color={colors.primary[300]}
+						sx={{ fontStyle: "italic" }}
+					>
 						Peso Bruto
 					</Typography>
 					<Typography variant="h6" color={colors.primary[100]}>
 						{brutoFormated}
+					</Typography>
+				</>
+			) : (
+				<>
+					<Typography
+						variant="h6"
+						color={colors.primary[300]}
+						sx={{ fontStyle: "italic" }}
+					>
+						Peso Bruto
+					</Typography>
+					<Typography variant="h6" color={colors.yellow[700]}>
+						Aguardando
 					</Typography>
 				</>
 			)}

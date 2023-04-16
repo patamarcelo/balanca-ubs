@@ -1,0 +1,3217 @@
+{
+    "msg": "Consulta realizada com sucesso!!",
+    "total_return": 454,
+    "Area Total dos Talhoes Plantados": {
+        "area_colheita__sum": 10999.51
+    },
+    "dados": {
+        "Projeto 5 Estrelas": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Benção de Deus": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B28": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B29": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B42": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B43": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Campo Guapo": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C05a": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "G01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "G02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "G03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "G04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "G05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "G06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "G07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "G08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "H10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "I": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "J01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "704",
+                "finalizado_colheita": false
+            },
+            "J02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Cacíque": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A14a": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            }
+        },
+        "Projeto Tuiuiu": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A22": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "E02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Capivara": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "C06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "E01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "E04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "E05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Cervo": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "D08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "D13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "E13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "E14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "F01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "F08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Jacaré": {
+            "14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            }
+        },
+        "Projeto Praia Alta": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B22": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B23": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B24": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B25": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B26": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B27": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B28": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B29": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B30": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B31": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "G01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "H01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Tucano": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A22": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            }
+        },
+        "Projeto Eldorado": {
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Fazendinha": {
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "704",
+                "finalizado_colheita": false
+            },
+            "C05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "704",
+                "finalizado_colheita": false
+            },
+            "C06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "704",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Lago Verde": {
+            "A09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A15": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A16": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A17": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A18": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A19": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A20": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A22": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A23": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A24": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A25": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A26": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A27": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A28": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A29": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A30": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A31": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B09": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B10": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "704",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Novo Acordo": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "B01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "B02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "B03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            },
+            "B04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "Pampeira",
+                "finalizado_colheita": false
+            }
+        },
+        "Projeto Santa Maria": {
+            "A01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A03": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A04": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A05": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "A06": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A07": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "A08": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B11": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B12": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B13": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B14": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B21": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B22": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B23": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "B24": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B25": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B31": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B32": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            },
+            "B33": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C01": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": false
+            },
+            "C02": {
+                "safra": "22/23",
+                "ciclo": 3,
+                "cultura": "Arroz",
+                "variedade": "424",
+                "finalizado_colheita": true
+            }
+        }
+    }
+}

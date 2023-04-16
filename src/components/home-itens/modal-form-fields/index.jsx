@@ -20,12 +20,12 @@ import SheetFields from "./sheet-form-fields";
 
 import formatDate from "../../../utils/format-suport/data-format";
 
-import { PROJETOS_FAZENDAS } from "../../../store/origem-destino";
-
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+
+import dataParcelas from "../../../store/parcelas.json";
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -44,6 +44,46 @@ const ModalFormFields = (props) => {
 		origemDest.push(data.local);
 		return data;
 	});
+
+	const [newOrigin, setNewOrigin] = useState([]);
+	const [newDestin, setNewDestin] = useState([]);
+	const [newParelas, setNewParcelas] = useState([]);
+
+	useEffect(() => {
+		if (truckValues.fazendaOrigem) {
+			const newParcFiltered = [];
+			const parcelasArray =
+				dataParcelas["dados"][truckValues.fazendaOrigem];
+			for (let i in parcelasArray) {
+				newParcFiltered.push(i);
+			}
+			setNewParcelas(newParcFiltered);
+			console.log(newParcFiltered);
+		}
+	}, [truckValues]);
+
+	useEffect(() => {
+		if (unidadeOpUser === "diamante" || unidadeOpUser === "ubs") {
+			setNewOrigin(FAZENDA_ORIGEM);
+		} else {
+			const newData = FAZENDA_ORIGEM.filter((data) => {
+				return data.user === unidadeOpUser;
+			});
+			setNewOrigin(newData);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (unidadeOpUser === "ubs" || unidadeOpUser === "diamante") {
+			setNewDestin(FAZENDA_ORIGEM);
+		} else {
+			const newData = FAZENDA_ORIGEM.filter((data) => {
+				return data.local.split(" ")[0] !== "Projeto";
+			});
+			setNewDestin(newData);
+			return;
+		}
+	}, []);
 
 	useEffect(() => {
 		if (truckValues.liquido > 0) {
@@ -280,7 +320,7 @@ const ModalFormFields = (props) => {
 						label="Mercadoria"
 						onChange={handleChangeTruck}
 					>
-						{FAZENDA_ORIGEM.map((iterData, i) => {
+						{newOrigin.map((iterData, i) => {
 							return (
 								<MenuItem value={iterData.local} key={i}>
 									{iterData.local}
@@ -307,10 +347,7 @@ const ModalFormFields = (props) => {
 						label="Mercadoria"
 						onChange={handleChangeTruck}
 					>
-						{FAZENDA_ORIGEM.filter(
-							(data) => data.local.split(" ")[0] !== "Projeto"
-						).map((iterData, i) => {
-							console.log("Split :", iterData.local.split(" "));
+						{newDestin.map((iterData, i) => {
 							return (
 								<MenuItem value={iterData.local} key={i}>
 									{iterData.local}
@@ -319,6 +356,35 @@ const ModalFormFields = (props) => {
 						})}
 					</Select>
 				</FormControl>
+
+				<FormControl
+					disabled={newParelas.length < 1}
+					gridTemplateColumns={`repeat(${
+						!isNonMobile ? "1" : "2"
+					}, minmax(0, 1fr))`}
+					// sx={{ gridColumn: "span 3" }}
+					className={classes["observacao-style"]}
+				>
+					<InputLabel id="parcelas-select-small">Parcelas</InputLabel>
+					<Select
+						labelId="parcelas-select-small"
+						id="parcelas"
+						multiple
+						name="parcelas"
+						value={truckValues["parcelasNovas"]}
+						label="Parcelas"
+						onChange={handleChangeTruck}
+					>
+						{newParelas.map((iterData, i) => {
+							return (
+								<MenuItem value={iterData} key={i}>
+									{iterData}
+								</MenuItem>
+							);
+						})}
+					</Select>
+				</FormControl>
+
 				{TRUCK_OBS.map((input, index) => {
 					return (
 						<TextField

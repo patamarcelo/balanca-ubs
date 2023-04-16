@@ -19,7 +19,6 @@ export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 		origemDest.push(data.local);
 		return data;
 	});
-	console.log(origemDest);
 	return dataLoad
 		.filter((data) => data.pesoBruto === "" || data.tara === "")
 		.filter(
@@ -82,13 +81,10 @@ export const selectTrucksCarregando = (unidadeOp) => (state) => {
 			origemDest.includes(data.fazendaOrigem)
 	);
 
-	console.log("dataLoad: ", dataLoad);
-
 	return Object.keys(dataLoad).length;
 };
 
 export const selectTrucksDescarregando = (unidadeOp) => (state) => {
-	console.log("Uidade Teste: ", unidadeOp);
 	const origemDest = [];
 	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
 		(data) => data.user === unidadeOp

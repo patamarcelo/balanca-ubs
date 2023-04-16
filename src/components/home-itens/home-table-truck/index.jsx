@@ -8,7 +8,8 @@ import { IconButton } from "@mui/material";
 
 import DateTruck from "./truck-date";
 import PlateTruck from "./truck-plate";
-import QuantityTruck from "./truck-quantity";
+import QuantityTruckTara from "./truck-quantity-tara";
+import QuantityTruckBruto from "./truck-quantity-bruto";
 import QuantityTruckHold from "./truck-quantity-hold";
 import MercadoriaTruck from "./truck-mercadoria";
 import OrigemTruck from "./truck-origem";
@@ -174,8 +175,9 @@ const HomeTableTruck = (props) => {
 						>
 							<DateTruck entrada={data.entrada} data={data} />
 							<PlateTruck data={data} />
-							<QuantityTruck data={data} />
-							<QuantityTruckHold data={data} />
+							<QuantityTruckTara data={data} />
+							<QuantityTruckBruto data={data} />
+							{/* <QuantityTruckHold data={data} /> */}
 							{data.mercadoria && <MercadoriaTruck data={data} />}
 							{(data.origem || data.fazendaOrigem) && (
 								<OrigemTruck data={data} />

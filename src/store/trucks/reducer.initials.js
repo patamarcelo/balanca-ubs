@@ -20,7 +20,8 @@ export const TRUCK_INITIAL_STATE = {
 	nfEntrada: "",
 	op: "",
 	relatorioColheita: "",
-	ticket: ""
+	ticket: "",
+	parcelasNovas: []
 };
 
 // TRUCK INPUT AND FORM
@@ -77,7 +78,7 @@ export const TRUCK_OBS = [
 		name: "parcela",
 		placeholder: "Parcela",
 		type: "text",
-		helperText: 'Coloque as parcelas separadas por vírgula: A01,A02',
+		helperText: "Coloque as parcelas separadas por vírgula: A01,A02"
 	},
 	{
 		label: "Cultura",
