@@ -42,7 +42,7 @@ const ReportTable = (props) => {
 
 	const { dataTable, isLoading, handlerSave, saved } = props;
 
-	const dataTableRev = [...dataTable].reverse();
+	const dataTableRev = [...dataTable];
 
 	const isAdmin = useSelector(selectIsAdminUser);
 	const isBalanca = useSelector(selectIBalancaUser);
@@ -429,7 +429,9 @@ const ReportTable = (props) => {
 					color={colors.primary[100]}
 				>
 					{params.row.parcelasNovas
-						? params.row.parcelasNovas.toString().replaceAll(',', " , ")
+						? params.row.parcelasNovas
+								.toString()
+								.replaceAll(",", " , ")
 						: params.row.parcela
 						? params.row.parcela
 						: " - "}
