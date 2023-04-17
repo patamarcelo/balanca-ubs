@@ -11,7 +11,10 @@ import {
 import { hanlderHelperText } from "../../../utils/formHelper";
 
 import { useSelector } from "react-redux";
-import { selectUnidadeOpUser } from "../../../store/user/user.selector";
+import {
+	selectUnidadeOpUser,
+	selectIsVendasUser
+} from "../../../store/user/user.selector";
 import classes from "./modal-form.module.css";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -34,6 +37,7 @@ const ModalFormFields = (props) => {
 	const colors = tokens(theme.palette.mode);
 	// const [value, setValue] = useState(new Date());
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const isVendasUser = useSelector(selectIsVendasUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const origemDest = [];
@@ -62,7 +66,7 @@ const ModalFormFields = (props) => {
 	}, [truckValues]);
 
 	useEffect(() => {
-		if (unidadeOpUser === "diamante" || unidadeOpUser === "ubs") {
+		if (isVendasUser) {
 			setNewOrigin(FAZENDA_ORIGEM);
 		} else {
 			const newData = FAZENDA_ORIGEM.filter((data) => {
@@ -73,7 +77,7 @@ const ModalFormFields = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (unidadeOpUser === "ubs" || unidadeOpUser === "diamante") {
+		if (isVendasUser) {
 			setNewDestin(FAZENDA_ORIGEM);
 		} else {
 			const newData = FAZENDA_ORIGEM.filter((data) => {

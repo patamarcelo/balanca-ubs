@@ -2,8 +2,9 @@ import { USER_ACTIONS_TYPES } from "./user.types";
 import {
 	setIsAdminUserReducer,
 	setIsBalancaUserReducer,
-	setUnidadeOpUser, 
-	setToken
+	setUnidadeOpUser,
+	setToken,
+	setIsVendasUserReducer
 } from "./user.action";
 
 export const INITIAL_STATE = {
@@ -12,7 +13,8 @@ export const INITIAL_STATE = {
 	isAdmin: false,
 	isBalanca: false,
 	unidadeOp: "",
-	token: ""
+	token: "",
+	isVendas: false
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
@@ -25,13 +27,15 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 			const isBalanca = setIsBalancaUserReducer(payload);
 			const unidadeOp = setUnidadeOpUser(payload);
 			const token = setToken(payload);
+			const isVendas = setIsVendasUserReducer(payload);
 			return {
 				...state,
 				currentUser: payload,
 				isAdmin: isAdminUser,
 				isBalanca: isBalanca,
 				unidadeOp: unidadeOp,
-				token: token
+				token: token,
+				isVendas: isVendas
 			};
 		case USER_ACTIONS_TYPES.SET_AUTH_USER:
 			return {

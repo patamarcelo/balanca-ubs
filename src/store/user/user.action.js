@@ -17,6 +17,22 @@ export const setIsAdminUserReducer = (user) => {
 	}
 	return boolean;
 };
+export const setIsVendasUserReducer = (user) => {
+	let boolean = false;
+	if (user?.reloadUserInfo) {
+		const isAdmin = user.reloadUserInfo.customAttributes;
+		if (isAdmin) {
+			const isAdminBool = JSON.parse(isAdmin);
+			if (isAdminBool.isVendas) {
+				boolean = true;
+			} else {
+				boolean = false;
+			}
+		}
+	}
+	return boolean;
+};
+
 export const setIsBalancaUserReducer = (user) => {
 	let boolean = false;
 	if (user?.reloadUserInfo) {
