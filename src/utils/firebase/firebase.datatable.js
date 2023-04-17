@@ -1,6 +1,6 @@
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { query, orderBy, getDocs } from "firebase/firestore";
+import { query, orderBy, getDocs, limit } from "firebase/firestore";
 import { TABLES_FIREBASE } from "./firebase.typestables";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
 
@@ -162,7 +162,8 @@ export const addTruckMove = async (
 export const getTruckMoves = async () => {
 	const q = await query(
 		collection(db, TABLES_FIREBASE.truckmove),
-		orderBy("createdAt")
+		orderBy("createdAt", "desc"),
+		limit(700)
 	);
 	const querySnapshot = await getDocs(q);
 	return querySnapshot.docs.map((docSnapshot) => {

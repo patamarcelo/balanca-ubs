@@ -39,6 +39,8 @@ import toast from "react-hot-toast";
 
 import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
 
+import { limit } from "firebase/firestore";
+
 // import djangoApi from "../../utils/axios/axios.utils";
 
 const dataModalText = {
@@ -120,7 +122,7 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
-		const q = query(collRef, orderBy("createdAt"));
+		const q = query(collRef, orderBy("createdAt", "desc"), limit(700));
 		onSnapshot(q, (snapshot) => {
 			dispatch(
 				setTruckLoads(

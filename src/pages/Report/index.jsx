@@ -14,6 +14,8 @@ import { selectUnidadeOpUser } from "../../store/user/user.selector";
 
 import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
 
+import { limit } from "firebase/firestore";
+
 const ReportPage = () => {
 	const dataTableForm = useSelector(selectTruckLoadsFormatData);
 
@@ -49,7 +51,7 @@ const ReportPage = () => {
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
-		const q = query(collRef, orderBy("createdAt"));
+		const q = query(collRef, orderBy("createdAt", "desc"), limit(700));
 		onSnapshot(q, (snapshot) => {
 			dispatch(
 				setTruckLoads(
