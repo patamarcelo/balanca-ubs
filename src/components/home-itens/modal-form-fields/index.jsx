@@ -63,6 +63,24 @@ const ModalFormFields = (props) => {
 			}
 			setNewParcelas(newParcFiltered);
 		}
+
+		if (
+			truckValues.fazendaOrigem.length > 0 &&
+			truckValues.parcelasNovas.length > 0 &&
+			truckValues.mercadoria.length === 0 &&
+			truckValues.cultura.length === 0
+		) {
+			const culturaSelected =
+				dataParcelas["dados"][truckValues.fazendaOrigem][
+					truckValues.parcelasNovas[0]
+				].cultura;
+			const variedadeSelected =
+				dataParcelas["dados"][truckValues.fazendaOrigem][
+					truckValues.parcelasNovas[0]
+				].variedade;
+			truckValues.mercadoria = variedadeSelected;
+			truckValues.cultura = culturaSelected;
+		}
 	}, [truckValues]);
 
 	useEffect(() => {
