@@ -26,7 +26,7 @@ export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 				data.unidadeOp === unidadeOpFiltered ||
 				origemDest.includes(data.fazendaDestino) ||
 				origemDest.includes(data.fazendaOrigem)
-		);
+		).reverse();
 };
 
 export const selectTruOnWork = (state) => {
