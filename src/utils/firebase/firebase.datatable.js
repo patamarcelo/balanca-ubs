@@ -36,7 +36,13 @@ export const handleUpdateTruck = async (e, id, data) => {
 	} else {
 		newEntrada = data.entrada;
 	}
-	const saida = new Date();
+	let saida;
+	console.log('liquido firebase: ',data.liquido)
+	if(data.liquido > 0){
+		saida = new Date();
+	} else {
+		saida = ''
+	}
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 	let updatedDoc;
 	const updatedData = { ...data, saida: saida, entrada: newEntrada };
