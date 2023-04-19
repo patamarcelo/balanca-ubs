@@ -9,6 +9,7 @@ import ReportPage from "../../pages/Report";
 import PrintPage from "../../pages/Print";
 import SendSeed from "../../pages/SendSeed";
 import OrdemPage from "../../pages/Ordens";
+import PrintRCPage from "../../pages/Print-RC";
 
 import { useLocation } from "react-router-dom";
 
@@ -70,6 +71,7 @@ const AuthApp = () => {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/report" element={<ReportPage />} />
 					<Route path="/print" element={<PrintPage />} />
+					<Route path="/rcprint" element={<PrintRCPage />} />
 					{unidadeOpUser === "ubs" && (
 						<Route path="/sendseed" element={<SendSeed />} />
 					)}

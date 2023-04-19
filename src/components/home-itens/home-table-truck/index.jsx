@@ -37,6 +37,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { FAZENDA_ORIGEM } from "../../../store/trucks/reducer.initials";
 
+import { useNavigate } from "react-router-dom";
+
+import classes from "./index.module.css";
+
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -51,6 +55,12 @@ const HomeTableTruck = (props) => {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+
+	const navigate = useNavigate();
+
+	const handlerNavigatePrint = (data) => {
+		navigate("/rcprint", { state: { data: data } });
+	};
 
 	const {
 		saved,
@@ -118,6 +128,13 @@ const HomeTableTruck = (props) => {
 					color = colors.primary[300];
 					return color;
 				};
+
+				const classesTruckclassesTruckOut =
+					setColorTruck(data) === colors.greenAccent[600]
+						? "fa-flip-horizontal"
+						: "";
+				const classesTruck = `${classesTruckclassesTruckOut} ${classes["hover-truck"]}`;
+
 				return (
 					<Box
 						key={i}
@@ -139,12 +156,9 @@ const HomeTableTruck = (props) => {
 								color={setColorTruck(data)}
 								icon={faTruckMoving}
 								size="3x"
-								className={
-									setColorTruck(data) ===
-									colors.greenAccent[600]
-										? "fa-flip-horizontal"
-										: ""
-								}
+								className={classesTruck}
+								style={{ cursor: "pointer" }}
+								onClick={() => handlerNavigatePrint(data)}
 							/>
 							{/* {data.tipo === "carregando" ? (
 								<FontAwesomeIcon
