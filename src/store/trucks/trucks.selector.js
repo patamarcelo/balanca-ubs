@@ -26,7 +26,8 @@ export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 				data.unidadeOp === unidadeOpFiltered ||
 				origemDest.includes(data.fazendaDestino) ||
 				origemDest.includes(data.fazendaOrigem)
-		).reverse();
+		)
+		.reverse();
 };
 
 export const selectTruOnWork = (state) => {
@@ -40,10 +41,17 @@ const formatDate = (entrada) => {
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
 		);
 
-		const date = newDate.toISOString('pt-br').split("T")[0];
-		console.log(date)
+		console.log(newDate.getFullYear());
+		console.log(newDate.getMonth() + 1);
+		console.log(newDate.getDate());
+
 		const atTime = newDate.toLocaleTimeString().slice(0, 5);
-		const [year, month, day] = date.split("-");
+		const [year, underMonth, day] = [
+			newDate.getFullYear(),
+			newDate.getMonth() + 1,
+			newDate.getDate()
+		];
+		const month = underMonth < 10 ? `0${underMonth}` : underMonth;
 		const formatDate = [day, month, year].join("/");
 		const dateF = `${formatDate} - ${atTime}`;
 		return dateF;
