@@ -40,12 +40,26 @@ import { FAZENDA_ORIGEM } from "../../../store/trucks/reducer.initials";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./index.module.css";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
+import Zoom from "@mui/material/Zoom";
 
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
 	text: "formulário do carregamento formulário do carregamento formulário do carregamento formulário do carregamento "
 };
+
+const LightTooltip = styled(({ className, ...props }) => (
+	<Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+	[`& .${tooltipClasses.tooltip}`]: {
+		backgroundColor: theme.palette.common.white,
+		color: "rgba(0, 0, 0, 0.87)",
+		boxShadow: theme.shadows[1],
+		fontSize: 11
+	}
+}));
 
 const HomeTableTruck = (props) => {
 	const theme = useTheme();
@@ -129,11 +143,11 @@ const HomeTableTruck = (props) => {
 					return color;
 				};
 
-				const classesTruckclassesTruckOut =
+				const classesTruck = ` ${
 					setColorTruck(data) === colors.greenAccent[600]
 						? "fa-flip-horizontal"
-						: "";
-				const classesTruck = `${classesTruckclassesTruckOut} ${classes["hover-truck"]}`;
+						: ""
+				} ${classes["hover-truck"]}`;
 
 				return (
 					<Box
@@ -151,15 +165,22 @@ const HomeTableTruck = (props) => {
 							padding: "10px"
 						}}
 					>
-						<Box>
-							<FontAwesomeIcon
-								color={setColorTruck(data)}
-								icon={faTruckMoving}
-								size="3x"
-								className={classesTruck}
-								style={{ cursor: "pointer" }}
-								onClick={() => handlerNavigatePrint(data)}
-							/>
+						<Box className={classes["changeTruck"]}>
+							<LightTooltip
+								title="Gerar Romaneio"
+								placement="top"
+								arrow
+								TransitionComponent={Zoom}
+							>
+								<FontAwesomeIcon
+									color={setColorTruck(data)}
+									icon={faTruckMoving}
+									size="3x"
+									className={classesTruck}
+									style={{ cursor: "pointer" }}
+									onClick={() => handlerNavigatePrint(data)}
+								/>
+							</LightTooltip>
 							{/* {data.tipo === "carregando" ? (
 								<FontAwesomeIcon
 									color={colors.greenAccent[600]}
