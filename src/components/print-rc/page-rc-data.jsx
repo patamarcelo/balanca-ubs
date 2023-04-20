@@ -26,13 +26,13 @@ const PageRcData = ({ printValue }) => {
 		{
 			label: "Motorista",
 			value: data?.motorista ? data.motorista : " - "
-		},
-		{ label: "Cultura", value: data?.cultura }
+		}
 	];
 	const dictDataR = [
-		{ label: "Peso Bruto", value: data?.pesoBruto },
-		{ label: "Tara Veículo", value: data?.tara },
-		{ label: "Peso Líquido", value: data?.liquido }
+		{ label: "FAZENDA / PROJETO", value: data?.fazendaOrigem },
+		{ label: "CULTURA", value: data?.cultura },
+		{ label: "VARIEDADE", value: data?.variedade },
+		{ label: "ROMANEIO", value: data?.relatorioColheita }
 	];
 
 	const DataDict = [
@@ -44,58 +44,142 @@ const PageRcData = ({ printValue }) => {
 		<Box
 			height="100%"
 			sx={{
-				padding: "20px 50px",
-				width: "100% !important"
+				padding: "20px",
+				width: "100% !important",
+				border: "1px solid",
+				borderColor: colors.blueOrigin[700],
+				borderRadius: "8px",
+				margin: "30px"
 			}}
 		>
 			<Box
 				display="flex"
 				justifyContent="start"
+				alignItems="end"
 				sx={{
 					width: "100%",
 					height: "100px"
 				}}
 			>
 				<img src={Logo} alt="logo" />
+				<Typography
+					color={colors.primary[700]}
+					fontWeight="bold"
+					sx={{
+						fontSize: "12px",
+						textAlign: "end",
+						marginRight: "5px",
+						marginLeft: "auto",
+						width: "100%"
+					}}
+				>
+					{data.entrada}
+				</Typography>
+			</Box>
+
+			<Box
+				display="flex"
+				justifyContent="space-between"
+				sx={{ width: "100%" }}
+			>
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					sx={{
+						width: "100%",
+						backgroundColor: colors.blueOrigin[700],
+						padding: "5px"
+					}}
+				>
+					<Typography variant="h4" color="whitesmoke">
+						CONTROLE DE COLHEITA
+					</Typography>
+				</Box>
+			</Box>
+			<Box display="flex" justifyContent="start">
+				{dictDataR.map((data, i) => {
+					return (
+						<Box
+							display="flex"
+							justifyContent="start"
+							// flexDirection="column"
+							alignItems="center"
+							sx={{
+								width: "100%",
+								padding: "10px",
+								margin: "10px"
+							}}
+						>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								fontWeight="bold"
+							>
+								{data.label}:
+							</Typography>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								sx={{ marginLeft: "10px" }}
+							>
+								{data.value}
+							</Typography>
+						</Box>
+					);
+				})}
 			</Box>
 			<Box
 				display="flex"
 				justifyContent="space-between"
 				sx={{ width: "100%" }}
 			>
-				<Box>
-					{[
-						"TICKET DE REQUISIÇÃO",
-						`LAGOA DA CONFUSÃO-TO / ${
-							data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
-						}`
-					].map((data, i) => {
-						return (
-							<Box key={i}>
-								<Typography
-									variant="h6"
-									color={colors.primary[700]}
-									fontWeight="bold"
-									sx={{
-										padding: "3px 0",
-										marginBottom: i === 1 ? "15px" : ""
-									}}
-								>
-									{data}
-								</Typography>
-							</Box>
-						);
-					})}
-				</Box>
-				<Typography variant="h1" color={colors.primary[200]}>
-					Pagina de Romaneio de carga
-				</Typography>
 				<Box
 					display="flex"
-					flexDirection="column"
 					justifyContent="center"
 					alignItems="center"
-				></Box>
+					sx={{
+						width: "100%",
+						backgroundColor: colors.blueOrigin[700],
+						padding: "5px"
+					}}
+				>
+					<Typography variant="h4" color="whitesmoke">
+						TRANSPORTE
+					</Typography>
+				</Box>
+			</Box>
+			<Box display="flex" justifyContent="start">
+				{dictData.map((data, i) => {
+					return (
+						<Box
+							display="flex"
+							justifyContent="start"
+							// flexDirection="column"
+							alignItems="center"
+							sx={{
+								width: "100%",
+								padding: "10px",
+								margin: "10px"
+							}}
+						>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								fontWeight="bold"
+							>
+								{data.label}:
+							</Typography>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								sx={{ marginLeft: "10px" }}
+							>
+								{data.value}
+							</Typography>
+						</Box>
+					);
+				})}
 			</Box>
 		</Box>
 	);
