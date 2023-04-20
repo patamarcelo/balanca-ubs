@@ -40,7 +40,8 @@ const formatDate = (entrada) => {
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
 		);
 
-		const date = newDate.toISOString().split("T")[0];
+		const date = newDate.toISOString('pt-br').split("T")[0];
+		console.log(date)
 		const atTime = newDate.toLocaleTimeString().slice(0, 5);
 		const [year, month, day] = date.split("-");
 		const formatDate = [day, month, year].join("/");
