@@ -65,10 +65,10 @@ const ModalFormFields = (props) => {
 		}
 
 		if (
-			truckValues.fazendaOrigem.length > 0 &&
-			truckValues.parcelasNovas.length > 0 &&
-			truckValues.mercadoria.length === 0 &&
-			truckValues.cultura.length === 0
+			truckValues?.fazendaOrigem?.length > 0 &&
+			truckValues?.parcelasNovas?.length > 0 &&
+			truckValues?.mercadoria?.length === 0 &&
+			truckValues?.cultura?.length === 0
 		) {
 			const culturaSelected =
 				dataParcelas["dados"][truckValues.fazendaOrigem][
