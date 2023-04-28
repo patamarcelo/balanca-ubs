@@ -4,12 +4,24 @@ import Logo from "../../utils/assets/img/logo.jpg";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
+import { UNITS_OP } from "../../store/trucks/trucks.types";
+
+import classes from "./index.module.css";
+
 const PageRcData = ({ printValue }) => {
 	const data = printValue[0];
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
 
+	const getName = (UNITS_OP, nameTo) => {
+		if (nameTo) {
+			const nameFiltered = UNITS_OP.filter(
+				(data) => data.title === nameTo
+			);
+			return nameFiltered[0].description;
+		}
+	};
 	const formatPlate = (placa) => {
 		return (
 			placa?.toUpperCase().slice(0, 3) +
@@ -29,22 +41,30 @@ const PageRcData = ({ printValue }) => {
 		}
 	];
 	const dictDataR = [
-		{ label: "FAZENDA / PROJETO", value: data?.fazendaOrigem },
 		{ label: "CULTURA", value: data?.cultura },
-		{ label: "VARIEDADE", value: data?.variedade },
-		{ label: "ROMANEIO", value: data?.relatorioColheita }
+		{ label: "VARIEDADE", value: data?.mercadoria }
 	];
 
 	const DataDict = [
 		{ label: "Entrada", value: data?.entrada },
 		{ label: "Saída", value: data?.saida ? data.saida : " - " }
 	];
+	const CordeDict = [
+		{ label: "Origem", value: data?.fazendaOrigem },
+		{ label: "Destino", value: data?.fazendaDestino }
+	];
+	const ProdDict = [
+		{
+			label: "Parcelas",
+			value: data?.parcelasNovas?.toString().replaceAll(",", " , ")
+		}
+	];
 
 	return (
 		<Box
 			height="100%"
 			sx={{
-				padding: "20px",
+				padding: "15px",
 				width: "100% !important",
 				border: "1px solid",
 				borderColor: colors.blueOrigin[700],
@@ -54,27 +74,82 @@ const PageRcData = ({ printValue }) => {
 		>
 			<Box
 				display="flex"
-				justifyContent="start"
+				justifyContent="space-between"
 				alignItems="end"
 				sx={{
 					width: "100%",
-					height: "100px"
+					height: "180px"
 				}}
 			>
-				<img src={Logo} alt="logo" />
-				<Typography
-					color={colors.primary[700]}
-					fontWeight="bold"
-					sx={{
-						fontSize: "12px",
-						textAlign: "end",
-						marginRight: "5px",
-						marginLeft: "auto",
-						width: "100%"
-					}}
+				<Box
+					display="flex"
+					flexDirection="column"
+					justifyContent="space-between"
+					alignItems="space-between"
+					height="100%"
 				>
-					{data.entrada}
-				</Typography>
+					<Box>
+						<img src={Logo} alt="logo" />
+					</Box>
+					<Box>
+						{[
+							`LAGOA DA CONFUSÃO - TO / ${
+								data?.unidadeOp
+									? getName(UNITS_OP, data.unidadeOp)
+									: ""
+							}`
+						].map((data, i) => {
+							return (
+								<Box key={i}>
+									<Typography
+										variant="h6"
+										color={colors.primary[700]}
+										fontWeight="bold"
+										sx={{
+											padding: "3px 0",
+											marginBottom: i === 1 ? "15px" : ""
+										}}
+									>
+										{data.split("/")[1]} <br />{" "}
+										{data.split("/")[0]}
+									</Typography>
+								</Box>
+							);
+						})}
+					</Box>
+				</Box>
+				<Box
+					display="flex"
+					flexDirection="column"
+					justifyContent="space-between"
+					alignItems="space-between"
+					height="100%"
+				>
+					<Typography
+						color={colors.redAccent[400]}
+						fontWeight="bold"
+						alignSelf={"center"}
+						mt={6}
+						fontSize={"16px"}
+					>
+						{data.relatorioColheita
+							? `Nº ${data.relatorioColheita}`
+							: ""}
+					</Typography>
+					<Typography
+						color={colors.primary[700]}
+						fontWeight="bold"
+						sx={{
+							fontSize: "12px",
+							textAlign: "end",
+							marginRight: "5px",
+							marginLeft: "auto",
+							width: "100%"
+						}}
+					>
+						{data.entrada}
+					</Typography>
+				</Box>
 			</Box>
 
 			<Box
@@ -97,17 +172,22 @@ const PageRcData = ({ printValue }) => {
 					</Typography>
 				</Box>
 			</Box>
-			<Box display="flex" justifyContent="start">
+			<Box
+				display="flex"
+				justifyContent="start"
+				sx={{ border: `1px  ${colors.blueOrigin[700]} dotted` }}
+				mt={2}
+				mb={2}
+			>
 				{dictDataR.map((data, i) => {
 					return (
 						<Box
 							display="flex"
 							justifyContent="start"
-							// flexDirection="column"
 							alignItems="center"
 							sx={{
 								width: "100%",
-								padding: "10px",
+								padding: "0px 10px 0px 0px",
 								margin: "10px"
 							}}
 						>
@@ -149,7 +229,15 @@ const PageRcData = ({ printValue }) => {
 					</Typography>
 				</Box>
 			</Box>
-			<Box display="flex" justifyContent="start">
+			<Box
+				display="flex"
+				justifyContent="start"
+				mt={2}
+				sx={{
+					border: `1px  ${colors.blueOrigin[700]} dotted`,
+					borderBottom: "none"
+				}}
+			>
 				{dictData.map((data, i) => {
 					return (
 						<Box
@@ -159,7 +247,7 @@ const PageRcData = ({ printValue }) => {
 							alignItems="center"
 							sx={{
 								width: "100%",
-								padding: "10px",
+								padding: "0px 10px 0px 0px",
 								margin: "10px"
 							}}
 						>
@@ -180,6 +268,147 @@ const PageRcData = ({ printValue }) => {
 						</Box>
 					);
 				})}
+			</Box>
+			<Box
+				display="flex"
+				justifyContent="start"
+				sx={{
+					border: `1px  ${colors.blueOrigin[700]} dotted`,
+					borderBottom: "none"
+				}}
+			>
+				{CordeDict.map((data, i) => {
+					return (
+						<Box
+							display="flex"
+							justifyContent="start"
+							// flexDirection="column"
+							alignItems="center"
+							sx={{
+								width: "100%",
+								padding: "0px 10px 0px 0px",
+								margin: "10px"
+							}}
+						>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								fontWeight="bold"
+							>
+								{data.label}:
+							</Typography>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								sx={{ marginLeft: "10px" }}
+							>
+								{data.value}
+							</Typography>
+						</Box>
+					);
+				})}
+			</Box>
+			<Box
+				display="flex"
+				justifyContent="start"
+				sx={{ border: `1px  ${colors.blueOrigin[700]} dotted` }}
+			>
+				{ProdDict.map((data, i) => {
+					return (
+						<Box
+							display="flex"
+							justifyContent="start"
+							// flexDirection="column"
+							alignItems="center"
+							sx={{
+								width: "100%",
+								padding: "0px 10px 0px 0px",
+								margin: "10px"
+							}}
+						>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								fontWeight="bold"
+							>
+								{data.label}:
+							</Typography>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								sx={{ marginLeft: "10px" }}
+							>
+								{data.value}
+							</Typography>
+						</Box>
+					);
+				})}
+			</Box>
+			<Box
+				mt="70px"
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				mb={6}
+				sx={{
+					width: "100%"
+				}}
+			>
+				<Box
+					display="flex"
+					justifyContent="center"
+					flexDirection="column"
+					sx={{
+						width: "40%",
+						alignItems: "center"
+					}}
+				>
+					<Box
+						display="flex"
+						justifyContent="center"
+						sx={{
+							width: "100%",
+							borderTop: "1px solid black"
+						}}
+					>
+						<Typography
+							variant="h6"
+							color={colors.grey[800]}
+							fontWeight="bold"
+						>
+							{user?.displayName}
+						</Typography>
+					</Box>
+				</Box>
+				<Box
+					display="flex"
+					justifyContent="center"
+					flexDirection="column"
+					sx={{
+						width: "40%",
+						alignItems: "center"
+					}}
+				>
+					<Box
+						display="flex"
+						justifyContent="center"
+						sx={{
+							width: "100%",
+							borderTop: "1px solid black"
+						}}
+					>
+						<Typography
+							variant="h6"
+							color={colors.grey[800]}
+							fontWeight="bold"
+							sx={{
+								textTransform: "capitalize"
+							}}
+						>
+							{data.motorista ? data.motorista : "Motorista"}
+						</Typography>
+					</Box>
+				</Box>
 			</Box>
 		</Box>
 	);
