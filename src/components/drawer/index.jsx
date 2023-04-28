@@ -17,6 +17,7 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 
@@ -40,6 +41,12 @@ const NAVIGATION = [
 		to: "/ordem",
 		unidade: "ubs"
 	}
+	// {
+	// 	title: "Defensivos",
+	// 	icon: faCalendarDays,
+	// 	to: "/defensivo",
+	// 	unidade: "ubs"
+	// }
 ];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {

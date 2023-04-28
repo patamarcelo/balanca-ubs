@@ -10,6 +10,7 @@ import PrintPage from "../../pages/Print";
 import SendSeed from "../../pages/SendSeed";
 import OrdemPage from "../../pages/Ordens";
 import PrintRCPage from "../../pages/Print-RC";
+import DefensivoPage from "../../pages/Defensivo";
 
 import { useLocation } from "react-router-dom";
 
@@ -78,6 +79,9 @@ const AuthApp = () => {
 					{unidadeOpUser === "ubs" && (
 						<Route path="/ordem" element={<OrdemPage />} />
 					)}
+					{/* {unidadeOpUser === "ubs" && (
+						<Route path="/defensivo" element={<DefensivoPage />} />
+					)} */}
 				</Routes>
 			</Box>
 		</Box>
