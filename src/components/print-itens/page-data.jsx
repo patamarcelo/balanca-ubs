@@ -19,8 +19,8 @@ const PageData = ({ printValue }) => {
 		);
 	};
 
-	console.log(data.parcelasNovas)
-	console.log(typeof data.parcelasNovas)
+	console.log(data.parcelasNovas);
+	console.log(typeof data.parcelasNovas);
 
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
@@ -88,6 +88,12 @@ const PageData = ({ printValue }) => {
 						);
 					})}
 				</Box>
+				{/* <Typography
+					color={colors.redAccent[900]}
+					sx={{ fontSize: "10px", alignSelf: "end" }}
+				>
+					{data.id}
+				</Typography> */}
 				<Box
 					display="flex"
 					flexDirection="column"
@@ -337,21 +343,58 @@ const PageData = ({ printValue }) => {
 						wordBreak: "break-word"
 					}}
 				>
-					<Typography variant="h6" color={colors.grey[800]}>
-						{data?.relatorioColheita && <b>Relatório Colheita: </b>}
-						{data?.relatorioColheita && data?.relatorioColheita}
-						{data?.relatorioColheita && <br />}
-
-						{data?.parcela && <b>Parcela: </b>}
-						{data?.parcela && data?.parcela}
-						{data?.parcela && <br />}
-						
-						{data?.parcelasNovas && data.parcelasNovas.length > 1 && <b>Parcelas: </b>}
-						{data?.parcelasNovas && data.parcelasNovas.length === 1 && <b>Parcela: </b>}
-						{data?.parcelasNovas && data?.parcelasNovas.toString().replaceAll(",", " , ")}
-						{data?.parcelasNovas && <br />}
-
-						{data?.observacoes}
+					<Typography
+						color={colors.grey[800]}
+						sx={{ fontSize: "11px" }}
+						display="flex"
+						flexDirection="column"
+						justifyContent="space-between"
+						gap="1px"
+					>
+						<div>
+							{data?.relatorioColheita && (
+								<b>Relatório Colheita: </b>
+							)}
+							{data?.relatorioColheita && data?.relatorioColheita}
+							{data?.relatorioColheita && <br />}
+						</div>
+						<div>
+							{data?.parcela && <b>Parcela: </b>}
+							{data?.parcela && data?.parcela}
+							{data?.parcela && <br />}
+						</div>
+						<div>
+							{data?.parcelasNovas &&
+								data.parcelasNovas.length > 1 && (
+									<b>Parcelas: </b>
+								)}
+							{data?.parcelasNovas &&
+								data.parcelasNovas.length === 1 && (
+									<b>Parcela: </b>
+								)}
+							{data?.parcelasNovas &&
+								data?.parcelasNovas
+									.toString()
+									.replaceAll(",", " , ")}
+							{data?.parcelasNovas && <br />}
+						</div>
+						<div>
+							{data?.valorFrete && <b>Valor do Frete: </b>}
+							{data?.valorFrete &&
+								"R$ " +
+									parseFloat(data.valorFrete)
+										.toFixed(2)
+										.replace(".", ",")
+										.toLocaleString("pt-BR", {
+											style: "currency",
+											currency: "BRL"
+										})}
+							{data?.valorFrete && <br />}
+						</div>
+						<div>
+							{data?.observacoes && <b>Observações: </b>}
+							{data?.observacoes && data.observacoes}
+						</div>
 					</Typography>
 				</Box>
 			</Box>

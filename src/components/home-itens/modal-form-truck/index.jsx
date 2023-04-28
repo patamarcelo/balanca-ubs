@@ -95,7 +95,8 @@ export default function FormDialog(props) {
 			op,
 			relatorioColheita,
 			ticket,
-			parcelasNovas
+			parcelasNovas,
+			valorFrete
 		} = truckValues;
 		setIsLoadingSubmit(true);
 		try {
@@ -125,7 +126,8 @@ export default function FormDialog(props) {
 				op,
 				relatorioColheita,
 				ticket,
-				parcelasNovas
+				parcelasNovas,
+				valorFrete
 			);
 			toast.success("Carga registrada com sucesso!!");
 			if (newTrans) {

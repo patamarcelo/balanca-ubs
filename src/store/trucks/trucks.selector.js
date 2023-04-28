@@ -41,10 +41,6 @@ const formatDate = (entrada) => {
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
 		);
 
-		console.log(newDate.getFullYear());
-		console.log(newDate.getMonth() + 1);
-		console.log(newDate.getDate());
-
 		const atTime = newDate.toLocaleTimeString().slice(0, 5);
 		const [year, underMonth, day] = [
 			newDate.getFullYear(),

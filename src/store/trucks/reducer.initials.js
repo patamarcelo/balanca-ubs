@@ -21,7 +21,8 @@ export const TRUCK_INITIAL_STATE = {
 	op: "",
 	relatorioColheita: "",
 	ticket: "",
-	parcelasNovas: []
+	parcelasNovas: [],
+	valorFrete: ""
 };
 
 // TRUCK INPUT AND FORM
@@ -98,6 +99,13 @@ export const TRUCK_OBS = [
 		name: "projeto",
 		placeholder: "Projeto",
 		type: "text"
+	},
+	{
+		label: "Valor do Frete",
+		name: "valorFrete",
+		placeholder: "Valor do Frete",
+		type: "number",
+		helperText: "Valor do Frete por Tonelada"
 	}
 ];
 

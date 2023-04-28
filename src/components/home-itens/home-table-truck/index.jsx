@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
@@ -155,7 +155,7 @@ const HomeTableTruck = (props) => {
 						display="flex"
 						justifyContent="space-between"
 						alignItems="center"
-						gap="10px"
+						gap="1px"
 						width="100%"
 						sx={{
 							width: isNonMobile ? "98%" : "95%",
@@ -165,7 +165,17 @@ const HomeTableTruck = (props) => {
 							padding: "10px"
 						}}
 					>
-						<Box className={classes["changeTruck"]}>
+						<Box
+							className={classes["changeTruck"]}
+							display="flex"
+							justifyContent="space-around"
+							alignItems="center"
+							flexDirection={!isNonMobile ? "column" : "row"}
+							sx={{
+								// backgroundColor: "red",
+								width: "9%"
+							}}
+						>
 							<LightTooltip
 								title="Gerar Romaneio"
 								placement="top"
@@ -181,6 +191,18 @@ const HomeTableTruck = (props) => {
 									onClick={() => handlerNavigatePrint(data)}
 								/>
 							</LightTooltip>
+							<Typography
+								variant="h6"
+								color={colors.redAccent[200]}
+								// ml={10}
+								sx={
+									{
+										// backgroundColor: "white"
+									}
+								}
+							>
+								{data.relatorioColheita}
+							</Typography>
 							{/* {data.tipo === "carregando" ? (
 								<FontAwesomeIcon
 									color={colors.greenAccent[600]}
@@ -204,7 +226,7 @@ const HomeTableTruck = (props) => {
 							justifyContent="space-between"
 							sx={{
 								// backgroundColor: 'red',
-								flex: 0.8,
+								flex: 0.88,
 								maxWidth: "90%"
 							}}
 						>

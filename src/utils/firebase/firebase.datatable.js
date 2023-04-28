@@ -37,11 +37,11 @@ export const handleUpdateTruck = async (e, id, data) => {
 		newEntrada = data.entrada;
 	}
 	let saida;
-	console.log('liquido firebase: ',data.liquido)
-	if(data.liquido > 0){
+	console.log("liquido firebase: ", data.liquido);
+	if (data.liquido > 0) {
 		saida = new Date();
 	} else {
-		saida = ''
+		saida = "";
 	}
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 	let updatedDoc;
@@ -115,7 +115,8 @@ export const addTruckMove = async (
 	op,
 	relatorioColheita,
 	ticket,
-	parcelasNovas
+	parcelasNovas,
+	valorFrete
 ) => {
 	const createdAt = new Date();
 	let newTransaction;
@@ -156,7 +157,8 @@ export const addTruckMove = async (
 				op,
 				relatorioColheita,
 				ticket,
-				parcelasNovas
+				parcelasNovas,
+				valorFrete
 			}
 		);
 	} catch (error) {

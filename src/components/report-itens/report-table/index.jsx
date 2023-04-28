@@ -224,6 +224,29 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "valorFrete",
+			headerName: "Frete",
+			// type: "number",
+			headerAlign: "center",
+			align: "center",
+			// flex: 1
+			width: 120,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.valorFrete
+						? "R$ " +
+						  parseFloat(params.row.valorFrete)
+								.toFixed(2)
+								.replace(".", ",")
+								.toLocaleString("pt-BR", {
+									style: "currency",
+									currency: "BRL"
+								})
+						: "-"}
+				</Typography>
+			)
+		},
+		{
 			field: "origem",
 			headerName: "Origem",
 			headerAlign: "center",
