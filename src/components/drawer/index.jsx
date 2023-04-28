@@ -40,13 +40,13 @@ const NAVIGATION = [
 		icon: faClipboard,
 		to: "/ordem",
 		unidade: "ubs"
+	},
+	{
+		title: "Defensivos",
+		icon: faCalendarDays,
+		to: "/defensivo",
+		unidade: "ubs"
 	}
-	// {
-	// 	title: "Defensivos",
-	// 	icon: faCalendarDays,
-	// 	to: "/defensivo",
-	// 	unidade: "ubs"
-	// }
 ];
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {

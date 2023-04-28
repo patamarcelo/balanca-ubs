@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "https://diamante-quality.up.railway.app/diamante/";
-// const baseURL = "http://localhost:8000/diamante/";
+// const baseURL = "https://diamante-quality.up.railway.app/diamante/";
+const baseURL = "http://localhost:8000/diamante/";
 
 const djangoApi = axios.create({
 	baseURL: baseURL,
