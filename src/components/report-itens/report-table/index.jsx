@@ -31,6 +31,10 @@ import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
 
 import { newDateArr } from "../../../utils/format-suport/data-format";
 
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
+import Zoom from "@mui/material/Zoom";
+
 const ReportTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -38,6 +42,10 @@ const ReportTable = (props) => {
 
 	const handlerNavigatePrint = (data) => {
 		navigate("/print", { state: { data: data } });
+	};
+
+	const handlerNavigatePrintRomaneio = (data) => {
+		navigate("/rcprint", { state: { data: data } });
 	};
 
 	const { dataTable, isLoading, handlerSave, saved } = props;
@@ -53,6 +61,17 @@ const ReportTable = (props) => {
 	const truckLoadId = useSelector(selectTruckOnID(filterId));
 
 	const defaultFontSize = "13px";
+
+	const LightTooltip = styled(({ className, ...props }) => (
+		<Tooltip {...props} classes={{ popper: className }} />
+	))(({ theme }) => ({
+		[`& .${tooltipClasses.tooltip}`]: {
+			backgroundColor: theme.palette.common.white,
+			color: "rgba(0, 0, 0, 0.87)",
+			boxShadow: theme.shadows[1],
+			fontSize: 11
+		}
+	}));
 
 	const handlerDelete = (dataId, data) => {
 		try {
@@ -117,25 +136,46 @@ const ReportTable = (props) => {
 				>
 					{params.row.tipo === "carregando" ? (
 						<>
-							<FontAwesomeIcon
-								color={colors.greenAccent[600]}
-								icon={faTruckMoving}
-								size="xs"
-								className="fa-flip-horizontal"
-							/>
-
-							<Typography
-								color={colors.greenAccent[400]}
-								sx={{ cursor: "pointer" }}
-								onClick={() => handlerNavigatePrint(params.row)}
+							<Box sx={{ cursor: "pointer" }}>
+								<LightTooltip
+									title="Romaneio"
+									placement="top"
+									arrow
+									TransitionComponent={Zoom}
+								>
+									<FontAwesomeIcon
+										color={colors.greenAccent[600]}
+										icon={faTruckMoving}
+										size="xs"
+										className="fa-flip-horizontal"
+										onClick={() =>
+											handlerNavigatePrintRomaneio(
+												params.row
+											)
+										}
+									/>
+								</LightTooltip>
+							</Box>
+							<LightTooltip
+								title="Ticket"
+								placement="top"
+								arrow
+								TransitionComponent={Zoom}
 							>
-								<FontAwesomeIcon
-									color={colors.grey[200]}
-									icon={faPrint}
-									size="sm"
-								/>
-							</Typography>
-
+								<Typography
+									color={colors.greenAccent[400]}
+									sx={{ cursor: "pointer" }}
+									onClick={() =>
+										handlerNavigatePrint(params.row)
+									}
+								>
+									<FontAwesomeIcon
+										color={colors.grey[200]}
+										icon={faPrint}
+										size="sm"
+									/>
+								</Typography>
+							</LightTooltip>
 							<FontAwesomeIcon
 								color={
 									params.row.liquido

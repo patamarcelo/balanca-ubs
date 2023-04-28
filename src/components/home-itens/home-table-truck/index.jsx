@@ -177,7 +177,7 @@ const HomeTableTruck = (props) => {
 							}}
 						>
 							<LightTooltip
-								title="Gerar Romaneio"
+								title="Romaneio"
 								placement="top"
 								arrow
 								TransitionComponent={Zoom}
