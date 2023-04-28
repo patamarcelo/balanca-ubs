@@ -188,22 +188,45 @@ const ReportTable = (props) => {
 						</>
 					) : (
 						<>
-							<FontAwesomeIcon
-								color={colors.redAccent[600]}
-								icon={faTruckMoving}
-								size="xs"
-							/>
-							<Typography
-								color={colors.greenAccent[400]}
-								sx={{ cursor: "pointer" }}
-								onClick={() => handlerNavigatePrint(params.row)}
+							<Box sx={{ cursor: "pointer" }}>
+								<LightTooltip
+									title="Romaneio"
+									placement="top"
+									arrow
+									TransitionComponent={Zoom}
+								>
+									<FontAwesomeIcon
+										color={colors.redAccent[600]}
+										icon={faTruckMoving}
+										size="xs"
+										onClick={() =>
+											handlerNavigatePrintRomaneio(
+												params.row
+											)
+										}
+									/>
+								</LightTooltip>
+							</Box>
+							<LightTooltip
+								title="Ticket"
+								placement="top"
+								arrow
+								TransitionComponent={Zoom}
 							>
-								<FontAwesomeIcon
-									color={colors.grey[200]}
-									icon={faPrint}
-									size="sm"
-								/>
-							</Typography>
+								<Typography
+									color={colors.greenAccent[400]}
+									sx={{ cursor: "pointer" }}
+									onClick={() =>
+										handlerNavigatePrint(params.row)
+									}
+								>
+									<FontAwesomeIcon
+										color={colors.grey[200]}
+										icon={faPrint}
+										size="sm"
+									/>
+								</Typography>
+							</LightTooltip>
 
 							<FontAwesomeIcon
 								color={
