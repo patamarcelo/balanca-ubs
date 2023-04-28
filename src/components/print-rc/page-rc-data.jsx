@@ -176,15 +176,54 @@ const PageRcData = ({ printValue }) => {
 			<Box
 				display="flex"
 				justifyContent="start"
-				sx={{ border: `1px  ${colors.blueOrigin[700]} dotted` }}
+				sx={{
+					border: `1px  ${colors.blueOrigin[700]} dotted`,
+					borderBottom: "none"
+				}}
 				mt={2}
-				mb={2}
 			>
 				{dictDataR.map((data, i) => {
 					return (
 						<Box
 							display="flex"
 							justifyContent="start"
+							alignItems="center"
+							sx={{
+								width: "100%",
+								padding: "0px 10px 0px 0px",
+								margin: "10px"
+							}}
+						>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								fontWeight="bold"
+							>
+								{data.label}:
+							</Typography>
+							<Typography
+								variant="h6"
+								color={colors.primary[500]}
+								sx={{ marginLeft: "10px" }}
+							>
+								{data.value}
+							</Typography>
+						</Box>
+					);
+				})}
+			</Box>
+			<Box
+				display="flex"
+				justifyContent="start"
+				sx={{ border: `1px  ${colors.blueOrigin[700]} dotted` }}
+				mb={2}
+			>
+				{ProdDict.map((data, i) => {
+					return (
+						<Box
+							display="flex"
+							justifyContent="start"
+							// flexDirection="column"
 							alignItems="center"
 							sx={{
 								width: "100%",
@@ -274,47 +313,10 @@ const PageRcData = ({ printValue }) => {
 				display="flex"
 				justifyContent="start"
 				sx={{
-					border: `1px  ${colors.blueOrigin[700]} dotted`,
-					borderBottom: "none"
+					border: `1px  ${colors.blueOrigin[700]} dotted`
 				}}
 			>
 				{CordeDict.map((data, i) => {
-					return (
-						<Box
-							display="flex"
-							justifyContent="start"
-							// flexDirection="column"
-							alignItems="center"
-							sx={{
-								width: "100%",
-								padding: "0px 10px 0px 0px",
-								margin: "10px"
-							}}
-						>
-							<Typography
-								variant="h6"
-								color={colors.primary[500]}
-								fontWeight="bold"
-							>
-								{data.label}:
-							</Typography>
-							<Typography
-								variant="h6"
-								color={colors.primary[500]}
-								sx={{ marginLeft: "10px" }}
-							>
-								{data.value}
-							</Typography>
-						</Box>
-					);
-				})}
-			</Box>
-			<Box
-				display="flex"
-				justifyContent="start"
-				sx={{ border: `1px  ${colors.blueOrigin[700]} dotted` }}
-			>
-				{ProdDict.map((data, i) => {
 					return (
 						<Box
 							display="flex"
