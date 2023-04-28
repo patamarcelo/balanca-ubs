@@ -1,12 +1,17 @@
 table {
     width: 100%;
-    border-spacing: 1px;
+    border-collapse: collapse;
 }
 
 table thead {
     background-color: black;
     color: whitesmoke;
 }
+
+tbody tr th {
+    border: 1px solid #0B466D;
+}
+
 
 
 .data-format {

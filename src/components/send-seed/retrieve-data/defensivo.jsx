@@ -35,7 +35,7 @@ const DefensivoTable = (props) => {
 							width: "100%",
 							border: "0.5px solid",
 							borderColor: "whitesmoke",
-							borderRadius: "8px"
+							borderRadius: "4px"
 						}}
 					>
 						ST
@@ -68,7 +68,7 @@ const DefensivoTable = (props) => {
 						width: "100%",
 						border: "0.5px solid",
 						borderColor: "whitesmoke",
-						borderRadius: "8px"
+						borderRadius: "4px"
 					}}
 				>
 					ST
