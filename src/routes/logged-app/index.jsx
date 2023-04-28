@@ -71,7 +71,7 @@ const AuthApp = () => {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/report" element={<ReportPage />} />
 					<Route path="/print" element={<PrintPage />} />
-					{/* <Route path="/rcprint" element={<PrintRCPage />} /> */}
+					<Route path="/rcprint" element={<PrintRCPage />} />
 					{unidadeOpUser === "ubs" && (
 						<Route path="/sendseed" element={<SendSeed />} />
 					)}
