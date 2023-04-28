@@ -35,19 +35,20 @@ export const selectTruOnWork = (state) => {
 	return dataLoad.filter((data) => data.pesoBruto === "" || data.tara === "");
 };
 
-const formatDate = (entrada) => {
+export const formatDate = (entrada) => {
 	if (entrada) {
 		const newDate = new Date(
 			entrada.seconds * 1000 + entrada.nanoseconds / 1000000
 		);
 
 		const atTime = newDate.toLocaleTimeString().slice(0, 5);
-		const [year, underMonth, day] = [
+		const [year, underMonth, underDay] = [
 			newDate.getFullYear(),
 			newDate.getMonth() + 1,
 			newDate.getDate()
 		];
 		const month = underMonth < 10 ? `0${underMonth}` : underMonth;
+		const day = underDay < 10 ? `0${underDay}` : underDay;
 		const formatDate = [day, month, year].join("/");
 		const dateF = `${formatDate} - ${atTime}`;
 		return dateF;

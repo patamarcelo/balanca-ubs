@@ -7,6 +7,7 @@ import { selectCurrentUser } from "../../store/user/user.selector";
 import { UNITS_OP } from "../../store/trucks/trucks.types";
 
 import classes from "./index.module.css";
+import { formatDate } from "../../store/trucks/trucks.selector";
 
 const PageRcData = ({ printValue }) => {
 	const data = printValue[0];
@@ -147,7 +148,7 @@ const PageRcData = ({ printValue }) => {
 							width: "100%"
 						}}
 					>
-						{data.entrada}
+						{formatDate(data.createdAt)}
 					</Typography>
 				</Box>
 			</Box>
