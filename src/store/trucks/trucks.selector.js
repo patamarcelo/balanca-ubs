@@ -32,7 +32,8 @@ export const selectTruckLoadsOnWork = (unidadeOp) => (state) => {
 
 export const selectTruOnWork = (state) => {
 	const dataLoad = state.truckLoads.truckLoads;
-	return dataLoad.filter((data) => data.pesoBruto === "" || data.tara === "");
+	const newArr = dataLoad.sort((a, b) => b.createdAt - a.createdAt);
+	return newArr.filter((data) => data.pesoBruto === "" || data.tara === "");
 };
 
 export const formatDate = (entrada) => {

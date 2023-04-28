@@ -27,7 +27,7 @@ import {
 	// selectDjangoToken
 } from "../../store/user/user.selector";
 
-import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
+import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { db } from "../../utils/firebase/firebase";
 import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
 
@@ -122,8 +122,9 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
-		const q = query(collRef, orderBy("createdAt", "desc"), limit(700));
+		const q = query(collRef, where("liquido", "==", ""), limit(500));
 		onSnapshot(q, (snapshot) => {
+			// console.log("SnapsDocs: ", snapshot.docs);
 			dispatch(
 				setTruckLoads(
 					snapshot.docs.map((doc) => ({
@@ -133,6 +134,7 @@ const HomePage = () => {
 				)
 			);
 		});
+
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 1000);
@@ -212,7 +214,6 @@ const HomePage = () => {
 
 	const filteredTruckOnWork = (unidadeOp) => {
 		const origemDest = [];
-		console.log(unidadeOp);
 		const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
 			(data) => data.user === unidadeOp
 		);
