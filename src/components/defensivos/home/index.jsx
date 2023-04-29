@@ -26,7 +26,7 @@ const HomeDefensivoPage = (props) => {
 				}
 			})
 			.then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 				setDataDef(res.data.dados);
 			})
 			.catch((err) => console.log(err));

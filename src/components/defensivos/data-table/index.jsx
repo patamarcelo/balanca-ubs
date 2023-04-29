@@ -11,6 +11,56 @@ const DataDefensivoPage = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const { isLoadingHome, data } = props;
 
+	const totalByDate = (dataFrom) => {
+		const resumeByDate = [];
+
+		dataFrom.map((data) => {
+			const cronograma = data["dados"]["cronograma"];
+			cronograma.map((dataCronograma) => {
+				const dataPrevista = dataCronograma["data prevista"];
+				const filtered = resumeByDate.filter(
+					(data, i) => data.data === dataPrevista
+				);
+				if (filtered.length === 0) {
+					resumeByDate.push({ data: dataPrevista, produtos: [] });
+				}
+
+				const filteredIndex = resumeByDate.findIndex(
+					(data, i) => data.data === dataPrevista
+				);
+
+				const produtos = dataCronograma["produtos"];
+
+				produtos.map((prod) => {
+					const produtosAplicar = prod.produto;
+					const quantidadeAplicar = prod["quantidade aplicar"];
+					if (resumeByDate[filteredIndex]) {
+						resumeByDate[filteredIndex].produtos.push({
+							produto: produtosAplicar,
+							valor: quantidadeAplicar
+						});
+					}
+				});
+
+				return dataPrevista;
+			});
+			return resumeByDate;
+		});
+
+		return resumeByDate.sort((a, b) => {
+			var aa = a.data.replace("-", ""),
+				bb = b.data.replace("-", "");
+			return aa < bb ? -1 : aa > bb ? 1 : 0;
+		});
+	};
+
+	useEffect(() => {
+		if (data) {
+			const newArr = totalByDate(data);
+			console.log("resumeby", newArr);
+		}
+	}, [data]);
+
 	return (
 		<Box
 			width="100%"
