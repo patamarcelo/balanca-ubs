@@ -35,6 +35,10 @@ import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import Zoom from "@mui/material/Zoom";
 
+import { formatDate } from "../../../store/trucks/trucks.selector";
+
+import classes from "./table.module.css";
+
 const ReportTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -243,6 +247,22 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "createdAt",
+			headerName: "Criado",
+			// flex: 1,
+			headerAlign: "center",
+			align: "center",
+			width: 130,
+			renderCell: (params) => (
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.blueOrigin[300]}
+				>
+					{params.row.createdAt}
+				</Typography>
+			)
+		},
+		{
 			field: "entrada",
 			headerName: "Entrada",
 			// flex: 1,
@@ -327,6 +347,19 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "fazendaOrigem",
+			headerName: "Fazenda Origem",
+			headerAlign: "center",
+			align: "center",
+			// flex: 1
+			width: 140,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.fazendaOrigem ? params.row.fazendaOrigem : "-"}
+				</Typography>
+			)
+		},
+		{
 			field: "destino",
 			headerName: "Destino",
 			headerAlign: "center",
@@ -339,6 +372,21 @@ const ReportTable = (props) => {
 						? params.row.fazendaDestino
 						: params.row.destino
 						? params.row.destino
+						: "-"}
+				</Typography>
+			)
+		},
+		{
+			field: "fazendaDestino",
+			headerName: "Fazenda Destino",
+			headerAlign: "center",
+			align: "center",
+			// flex: 1
+			width: 140,
+			renderCell: (params) => (
+				<Typography sx={{ fontSize: defaultFontSize }}>
+					{params.row.fazendaDestino
+						? params.row.fazendaDestino
 						: "-"}
 				</Typography>
 			)
@@ -754,6 +802,7 @@ const ReportTable = (props) => {
 					rows={dataTableRev}
 					columns={columns}
 					components={{ Toolbar: GridToolbar }}
+					className={classes.table}
 				/>
 			</Box>
 		</Box>

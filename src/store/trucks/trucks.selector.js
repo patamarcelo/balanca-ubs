@@ -63,10 +63,12 @@ export const selectTruckLoadsFormatData = (state) => {
 	const fd = dataLoad.map((data) => {
 		const formatData = formatDate(data.entrada);
 		const formatDataSaida = formatDate(data.saida);
+		const formatCreatedAt = formatDate(data.createdAt);
 		return {
 			...data,
 			entrada: formatData,
-			saida: formatDataSaida
+			saida: formatDataSaida,
+			createdAt: formatCreatedAt
 		};
 	});
 	return fd;

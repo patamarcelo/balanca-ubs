@@ -1,0 +1,6 @@
+
+/* .table div[data-field="createdAt"],  */
+.table div[data-field="fazendaOrigem"], 
+.table div[data-field="fazendaDestino"] {
+    display: none  
+}
