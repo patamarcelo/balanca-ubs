@@ -73,7 +73,7 @@ const HomeDefensivoPage = (props) => {
 			{/* <Typography variant="h2" color={colors.blueAccent[700]}>
 				Pagina dos defensivos
 			</Typography> */}
-			<Box mb={1}>
+			<Box>
 				<Stack spacing={2} direction="row">
 					<CustomButton
 						color={colors.greenAccent[700]}

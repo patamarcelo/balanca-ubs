@@ -5,6 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useEffect, useState } from "react";
 
 import classes from "./data-by-day.module.css";
+import DataDefensivoDaysTable from "./data-table-mui";
 
 const DataDefensivoPageByDay = (props) => {
 	const theme = useTheme();
@@ -12,6 +13,9 @@ const DataDefensivoPageByDay = (props) => {
 	const { isLoadingHome, resumeData } = props;
 
 	const [sortedData, setSortedData] = useState([]);
+	const [onlyData, setOnlyData] = useState([]);
+	const [onlyProducts, setOnlyProducts] = useState([]);
+	const [dataTableDays, setDataTableDays] = useState([]);
 
 	useEffect(() => {
 		if (resumeData) {
@@ -24,6 +28,53 @@ const DataDefensivoPageByDay = (props) => {
 		}
 	}, [resumeData]);
 
+	useEffect(() => {
+		const onlyData = sortedData.map((data) => {
+			return data.data;
+		});
+		setOnlyData(onlyData);
+
+		const onlyProdctName = sortedData.map((data) => {
+			const prodFilt = data.produtos.map((produtos) => {
+				return produtos.produto;
+			});
+			return prodFilt;
+		});
+		setOnlyProducts([...new Set(onlyProdctName.flat())].sort());
+	}, [sortedData]);
+
+	useEffect(() => {
+		const arr = [];
+		const newArrTable = onlyProducts.map((prodd) => {
+			const objToappend = {};
+			const prodName = prodd;
+			objToappend["produto"] = prodName;
+			objToappend["id"] = prodName;
+			for (let dataD of onlyData) {
+				for (let sortData of sortedData) {
+					if (dataD === sortData.data) {
+						for (let prodData of sortData.produtos) {
+							if (prodName === prodData.produto) {
+								objToappend[sortData.data] =
+									prodData.quantidade.toLocaleString(
+										"pt-BR",
+										{ maximumFractionDigits: 2 }
+									);
+							}
+							if (!(sortData.data in objToappend)) {
+								objToappend[dataD] = "-";
+							}
+						}
+					}
+				}
+			}
+			arr.push(objToappend);
+			return arr;
+			// return arr;
+		});
+		setDataTableDays(arr);
+	}, [sortedData, isLoadingHome, onlyData, onlyProducts]);
+
 	return (
 		<Box
 			width="100%"
@@ -35,6 +86,7 @@ const DataDefensivoPageByDay = (props) => {
 				}
 			}
 		>
+			<DataDefensivoDaysTable rows={dataTableDays} columns={onlyData} />
 			{isLoadingHome && !sortedData && (
 				<Box
 					display="flex"
@@ -56,52 +108,6 @@ const DataDefensivoPageByDay = (props) => {
 					>
 						<CircularProgress sx={{ color: colors.primary[100] }} />
 					</Typography>
-				</Box>
-			)}
-			{!isLoadingHome && sortedData && (
-				<Box
-					display="flex"
-					flexDirection="column"
-					justifyContent="start"
-					alignItems="start"
-					width="100%"
-					height="100%"
-					className={classes["data-table"]}
-					sx={{
-						padding: "10px 30px",
-						backgroundColor: colors.blueOrigin[700],
-						borderRadius: "8px",
-						boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-					}}
-				>
-					{resumeData.map((data, i) => {
-						return (
-							<Box key={i} display="flex">
-								<Box display="flex" flexDirection="column">
-									<Typography
-										variant="h3"
-										color={colors.primary[300]}
-									>
-										{data.data}
-									</Typography>
-
-									{data.produtos.map((data, j) => {
-										return (
-											<div key={j}>
-												<Typography
-													variant="h4"
-													color={colors.primary[900]}
-												>
-													{data.produto} <br />
-													{data.quantidade}
-												</Typography>
-											</div>
-										);
-									})}
-								</Box>
-							</Box>
-						);
-					})}
 				</Box>
 			)}
 		</Box>
