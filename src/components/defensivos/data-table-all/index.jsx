@@ -27,6 +27,7 @@ const DataDefensivoPage = (props) => {
 			width="100%"
 			height="96%"
 			pb={2}
+			mt={2}
 			sx={
 				{
 					// backgroundColor: "red"

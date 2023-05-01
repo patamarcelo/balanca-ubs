@@ -96,6 +96,7 @@ const HomeDefensivoPage = (props) => {
 							alignItems="center"
 							width="100%"
 							height="100%"
+							mt={2}
 							sx={{
 								backgroundColor: colors.blueOrigin[700],
 								borderRadius: "8px",
@@ -139,6 +140,7 @@ const HomeDefensivoPage = (props) => {
 							alignItems="center"
 							width="100%"
 							height="100%"
+							mt={2}
 							sx={{
 								backgroundColor: colors.blueOrigin[700],
 								borderRadius: "8px",
