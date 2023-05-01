@@ -148,7 +148,7 @@ const PageRcData = ({ printValue }) => {
 							width: "100%"
 						}}
 					>
-						{formatDate(data.createdAt)}
+						{data.createdAt}
 					</Typography>
 				</Box>
 			</Box>
@@ -185,6 +185,7 @@ const PageRcData = ({ printValue }) => {
 				{dictDataR.map((data, i) => {
 					return (
 						<Box
+							key={i}
 							display="flex"
 							justifyContent="start"
 							alignItems="center"
