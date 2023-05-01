@@ -7,6 +7,8 @@ export const TRUCKS_ACTIONS_TYPES = {
 export const UNITS_OP = [
 	{ title: "ubs", description: "UBS" },
 	{ title: "diamante", description: "Diamante" },
-	{ title: "bencaoDeDeus", description: "Benção De Deus" }
+	{ title: "bencaoDeDeus", description: "Benção De Deus" },
+	{ title: "lagoVerde", description: "Lago Verde" },
+	{ title: "eldorado", description: "Eldorado" },
 	// { title: "ouroVerde", description: "Ouro Verde" }
 ];
