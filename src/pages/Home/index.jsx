@@ -124,6 +124,7 @@ const HomePage = () => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
 		const q = query(collRef, orderBy("createdAt", "desc"), limit(700));
 		onSnapshot(q, (snapshot) => {
+			// toast.success("Alguma alteração");
 			dispatch(
 				setTruckLoads(
 					snapshot.docs.map((doc) => ({
