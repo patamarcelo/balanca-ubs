@@ -258,7 +258,7 @@ const ReportTable = (props) => {
 					sx={{ fontSize: defaultFontSize }}
 					color={colors.blueOrigin[300]}
 				>
-					{params.row.createdAt}
+					{formatDate(params.row.createdAt)}
 				</Typography>
 			)
 		},
