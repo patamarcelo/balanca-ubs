@@ -46,6 +46,7 @@ const DataDefensivoPageByDay = (props) => {
 	useEffect(() => {
 		const arr = [];
 		const newArrTable = onlyProducts.map((prodd) => {
+			console.log('Produtosss :', prodd)
 			const objToappend = {};
 			const prodName = prodd;
 			objToappend["produto"] = prodName;
@@ -55,14 +56,15 @@ const DataDefensivoPageByDay = (props) => {
 					if (dataD === sortData.data) {
 						for (let prodData of sortData.produtos) {
 							if (prodName === prodData.produto) {
+								objToappend["tipo"] = prodData.tipo
 								objToappend[sortData.data] =
-									prodData.quantidade.toLocaleString(
-										"pt-BR",
-										{ maximumFractionDigits: 2 }
+								prodData.quantidade.toLocaleString(
+									"pt-BR",
+									{ maximumFractionDigits: 2 }
 									);
-							}
-							if (!(sortData.data in objToappend)) {
-								objToappend[dataD] = "-";
+								}
+								if (!(sortData.data in objToappend)) {
+									objToappend[dataD] = "-";
 							}
 						}
 					}

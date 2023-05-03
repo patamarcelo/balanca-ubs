@@ -3,25 +3,22 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
-const DataDefensivoDaysTable = (props) => {
+const DataDefensivoDaysTableDinamic = (props) => {
 	const { rows, columns } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const column = [
-		{ field: "produto", headerName: "Produto", width: 140 },
-		{ field: "tipo", headerName: "Tipo", width: 140 }
-	];
-	for (let col of columns) {
-		const formatData = col.split("-").reverse().join("/");
-		const newCol = {
-			field: col,
-			headerName: formatData,
-			headerAlign: "center",
-			align: "center"
-		};
-		column.push(newCol);
-	}
+	const column = [{ field: "produto", headerName: "Produto", width: 140 }];
+	// for (let col of columns) {
+	// 	const formatData = col.split("-").reverse().join("/");
+	// 	const newCol = {
+	// 		field: col,
+	// 		headerName: formatData,
+	// 		headerAlign: "center",
+	// 		align: "center"
+	// 	};
+	// 	column.push(newCol);
+	// }
 
 	return (
 		<Box
@@ -66,4 +63,4 @@ const DataDefensivoDaysTable = (props) => {
 	);
 };
 
-export default DataDefensivoDaysTable;
+export default DataDefensivoDaysTableDinamic;

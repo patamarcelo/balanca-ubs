@@ -62,6 +62,12 @@ const DefensivoPage = () => {
 								width={90}
 								height={38}
 							/>
+							<Skeleton
+								animation="wave"
+								variant="rounded"
+								width={90}
+								height={38}
+							/>
 						</Stack>
 						<Box
 							display="flex"
