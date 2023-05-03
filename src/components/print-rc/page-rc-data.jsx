@@ -57,7 +57,7 @@ const PageRcData = ({ printValue }) => {
 	const ProdDict = [
 		{
 			label: "Parcelas",
-			value: data?.parcelasNovas?.toString().replaceAll(",", " , ")
+			value: data?.parcelasNovas ? data?.parcelasNovas?.toString().replaceAll(",", " , ") : ' - '
 		}
 	];
 
@@ -148,7 +148,7 @@ const PageRcData = ({ printValue }) => {
 							width: "100%"
 						}}
 					>
-						{data.createdAt}
+						{formatDate(data.createdAt)}
 					</Typography>
 				</Box>
 			</Box>
