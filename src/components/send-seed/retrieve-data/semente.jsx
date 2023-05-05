@@ -10,7 +10,21 @@ const DICT_COLOR = {
 	"Semente Arroz 424": ["rgb(255, 208, 80)", "black"],
 	"Semente Arroz 704": ["rgb(171,202,221)", "black"],
 	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"],
-	"Semente Feijão Branco": ["rgb(231,234,237)", "black"]
+	"Semente Feijão Branco": ["rgb(231,234,237)", "black"],
+	"Semente Soja": ["rgb(212,237,188)", "black"]
+	// "Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
+	// "Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
+	// "Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
+	// "Semente Soja 84": ["rgb(212,237,188)", "black"]
+};
+
+const getProdColor = (data) => {
+	if (DICT_COLOR[data] === undefined) {
+		return ["rgb(11,70,109)", "whitesmoke"];
+	}
+	return data.includes("Semente Soja")
+		? ["rgb(212,237,188)", "black"]
+		: DICT_COLOR[data];
 };
 const SementeTable = (props) => {
 	const { data } = props;
@@ -132,10 +146,13 @@ const SementeTable = (props) => {
 									<Chip
 										label={data.Produto}
 										style={{
-											backgroundColor:
-												DICT_COLOR[data.Produto][0],
+											backgroundColor: getProdColor(
+												data.Produto
+											)[0],
 											width: "90%",
-											color: DICT_COLOR[data.Produto][1],
+											color: getProdColor(
+												data.Produto
+											)[1],
 											maxHeight: "17px",
 											margin: "2px auto",
 											display: "inline-block",
