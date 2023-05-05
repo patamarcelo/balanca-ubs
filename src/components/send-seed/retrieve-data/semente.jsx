@@ -11,11 +11,11 @@ const DICT_COLOR = {
 	"Semente Arroz 704": ["rgb(171,202,221)", "black"],
 	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"],
 	"Semente Feijão Branco": ["rgb(231,234,237)", "black"],
-	"Semente Soja": ["rgb(212,237,188)", "black"]
-	// "Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
-	// "Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
-	// "Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
-	// "Semente Soja 84": ["rgb(212,237,188)", "black"]
+	"Semente Soja": ["rgb(212,237,188)", "black"],
+	"Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
+	"Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
+	"Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
+	"Semente Soja 84": ["rgb(212,237,188)", "black"]
 };
 
 const getProdColor = (data) => {
