@@ -9,16 +9,6 @@ const DataDefensivoDaysTableDinamic = (props) => {
 	const colors = tokens(theme.palette.mode);
 
 	const column = [{ field: "produto", headerName: "Produto", width: 140 }];
-	// for (let col of columns) {
-	// 	const formatData = col.split("-").reverse().join("/");
-	// 	const newCol = {
-	// 		field: col,
-	// 		headerName: formatData,
-	// 		headerAlign: "center",
-	// 		align: "center"
-	// 	};
-	// 	column.push(newCol);
-	// }
 
 	return (
 		<Box

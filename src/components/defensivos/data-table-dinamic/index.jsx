@@ -7,29 +7,29 @@ import { useEffect, useState } from "react";
 import classes from "./data-by-day.module.css";
 import DataDefensivoDaysTableDinamic from "./data-table-dinamic";
 
+import { createDinamicTable } from "../../../utils/format-suport/create-table-dinamic";
+
 const DataDefensivoPageDinamic = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const { isLoadingHome, dataDef } = props;
 
 	// const [sortedData, setSortedData] = useState([]);
-	// const [onlyData, setOnlyData] = useState([]);
+	const [dinamicData, SetDinamicData] = useState([]);
 	// const [onlyProducts, setOnlyProducts] = useState([]);
 	// const [dataTableDays, setDataTableDays] = useState([]);
 
 	useEffect(() => {
-		console.log(dataDef)
-		// if (dataDef) {
-		// 	const sortData = resumeData.sort((a, b) => {
-		// 		var aa = a.data.replace("-", ""),
-		// 			bb = b.data.replace("-", "");
-		// 		return aa < bb ? -1 : aa > bb ? 1 : 0;
-		// 	});
-		// 	setSortedData(sortData);
-		// }
+		const newTable = createDinamicTable(dataDef);
+		if (newTable) {
+			SetDinamicData(newTable);
+		}
 	}, [dataDef]);
 
-	
+	useEffect(() => {
+		console.log(dinamicData);
+	}, [dinamicData]);
+
 	return (
 		<Box
 			width="100%"
