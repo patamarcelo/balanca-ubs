@@ -154,8 +154,6 @@ export default function FormDialog(props) {
 				...truckValues,
 				userSaida: user.email
 			};
-			console.log(truckValues.parcelasNovas);
-			console.log("NewTransData: ", newTransData);
 			await handleUpdateTruck(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
 			handleCloseModal();

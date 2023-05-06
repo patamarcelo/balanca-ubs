@@ -19,9 +19,6 @@ const PageData = ({ printValue }) => {
 		);
 	};
 
-	console.log(data.parcelasNovas);
-	console.log(typeof data.parcelasNovas);
-
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
 		{
