@@ -21,17 +21,14 @@ const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const [isOpen, setIsOpen] = useState(false);
-	const [dataDef, setDataDef] = useState([]);
-	const [resumeData, setResumeDate] = useState([]);
-	const { isLoadingHome } = props;
+	const { isLoadingHome, dataDef, resumeData } = props;
 
 	const [isOpenProducts, setIsOpenProducts] = useState(false);
 	const [isOpenProductsByDay, setisOpenProductsByDay] = useState(true);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
 		useState(false);
 
-	const [isTimeLoad, setisTimeLoad] = useState(true);
+	const [isChangingTable, setIsChangingTable] = useState(false);
 
 	const dictComps = {
 		dinamic: "dinamic",
@@ -40,7 +37,7 @@ const HomeDefensivoPage = (props) => {
 	};
 
 	const handleSelectComponent = (name) => {
-		setisTimeLoad(true);
+		setIsChangingTable(true);
 		switch (name) {
 			case "dinamic":
 				setisOpenProductsByDayDinamic(true);
@@ -62,41 +59,12 @@ const HomeDefensivoPage = (props) => {
 		}
 
 		setTimeout(() => {
-			setisTimeLoad(false);
+			setIsChangingTable(false);
 		}, 500);
 	};
 
-	useEffect(() => {
-		(async () => {
-			try {
-				djangoApi
-					.get("plantio/get_plantio_operacoes_detail/", {
-						headers: {
-							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-						}
-					})
-					.then((res) => {
-						// console.log(res.data);
-						setDataDef(res.data.dados);
-						setResumeDate(res.data.app_date);
-					})
-					.catch((err) => console.log(err));
-			} catch (err) {
-				console.log("Erro ao consumir a API", err);
-			} finally {
-				console.log("Finally statement");
-			}
-		})();
-		setTimeout(() => {
-			setisTimeLoad(false);
-		}, 1000);
-	}, []);
-
 	return (
 		<Box width="100%" height="100%">
-			{/* <Typography variant="h2" color={colors.blueAccent[700]}>
-				Pagina dos defensivos
-			</Typography> */}
 			<Box>
 				<Stack spacing={2} direction="row">
 					<CustomButton
@@ -136,7 +104,7 @@ const HomeDefensivoPage = (props) => {
 			</Box>
 			{isOpenProducts && (
 				<>
-					{isTimeLoad && (
+					{isChangingTable && (
 						<Box
 							display="flex"
 							justifyContent="center"
@@ -170,7 +138,7 @@ const HomeDefensivoPage = (props) => {
 							</Box>
 						</Box>
 					)}
-					{!isTimeLoad && (
+					{!isLoadingHome && (
 						<DataDefensivoPage
 							isLoadingHome={isLoadingHome}
 							data={dataDef}
@@ -180,7 +148,7 @@ const HomeDefensivoPage = (props) => {
 			)}
 			{isOpenProductsByDay && (
 				<>
-					{isTimeLoad && (
+					{isChangingTable && (
 						<Box
 							display="flex"
 							justifyContent="center"
@@ -214,7 +182,7 @@ const HomeDefensivoPage = (props) => {
 							</Box>
 						</Box>
 					)}
-					{!isTimeLoad && (
+					{!isLoadingHome && (
 						<DataDefensivoPageByDay
 							isLoadingHome={isLoadingHome}
 							resumeData={resumeData}
@@ -224,7 +192,7 @@ const HomeDefensivoPage = (props) => {
 			)}
 			{isOpenProductsByDayDinamic && (
 				<>
-					{isTimeLoad && (
+					{isChangingTable && (
 						<Box
 							display="flex"
 							justifyContent="center"
@@ -258,7 +226,7 @@ const HomeDefensivoPage = (props) => {
 							</Box>
 						</Box>
 					)}
-					{!isTimeLoad && (
+					{!isLoadingHome && (
 						<DataDefensivoPageDinamic
 							isLoadingHome={isLoadingHome}
 							dataDef={dataDef}

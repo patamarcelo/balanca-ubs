@@ -14,6 +14,8 @@ import { formatDate } from "../../utils/format-suport/data-format";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
+import djangoApi from "../../utils/axios/axios.utils";
+
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -22,11 +24,38 @@ const DefensivoPage = () => {
 	const [isLoadingHome, setIsLoading] = useState(true);
 	const [ordems, setOrdems] = useState([]);
 
+	const [dataDef, setDataDef] = useState([]);
+	const [resumeData, setResumeDate] = useState([]);
+
 	useEffect(() => {
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 1000);
 	}, [dispatch]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				await djangoApi
+					.get("plantio/get_plantio_operacoes_detail/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						// console.log(res.data);
+						setDataDef(res.data.dados);
+						setResumeDate(res.data.app_date);
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+			} finally {
+				console.log("Finally statement");
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
 	return (
 		<Box
@@ -45,7 +74,11 @@ const DefensivoPage = () => {
 				}}
 			>
 				{!isLoadingHome && (
-					<HomeDefensivoPage isLoadingHome={isLoadingHome} />
+					<HomeDefensivoPage
+						dataDef={dataDef}
+						resumeData={resumeData}
+						isLoadingHome={isLoadingHome}
+					/>
 				)}
 				{isLoadingHome && (
 					<Box width="100%" height="100%">
