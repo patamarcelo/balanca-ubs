@@ -15,7 +15,7 @@ const DICT_COLOR = {
 	"Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
 	"Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
 	"Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
-	"Semente Soja 84": ["rgb(212,237,188)", "black"],
+	"Semente Soja ANsc 84": ["rgb(212,237,188)", "black"],
 	"Semente Soja CG SPEED": ["rgb(212,237,188)", "black"]
 };
 
