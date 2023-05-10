@@ -79,9 +79,9 @@ const AuthApp = () => {
 					{unidadeOpUser === "ubs" && (
 						<Route path="/ordem" element={<OrdemPage />} />
 					)}
-					{/* {unidadeOpUser === "ubs" && (
+					{unidadeOpUser === "ubs" && (
 						<Route path="/defensivo" element={<DefensivoPage />} />
-					)} */}
+					)}
 				</Routes>
 			</Box>
 		</Box>
