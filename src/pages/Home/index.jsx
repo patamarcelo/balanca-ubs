@@ -124,11 +124,7 @@ const HomePage = () => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
 		const q = query(collRef, where("liquido", "==", ""), limit(500));
 		onSnapshot(q, (snapshot) => {
-<<<<<<< HEAD
 			// console.log("SnapsDocs: ", snapshot.docs);
-=======
-			// toast.success("Alguma alteração");
->>>>>>> apiDefensivos
 			dispatch(
 				setTruckLoads(
 					snapshot.docs.map((doc) => ({
