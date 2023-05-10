@@ -1,5 +1,6 @@
 export const createDinamicTable = (data) => {
 	const tableArray = [];
+	let count = 0;
 	data.forEach((data, i) => {
 		const cronograma = data.dados.cronograma;
 		const projeto = data.fazenda;
@@ -12,7 +13,7 @@ export const createDinamicTable = (data) => {
 		const fazendaGrupo = dados.fazenda_grupo;
 		const talhaoIdUnico = dados.talhao_id_unico;
 		const plantioFinalizado = dados.plantio_finalizado;
-		const area = dados.area_colheita;
+		const area = dados.area_colheita.toFixed(2).replace(".", ",");
 		const dataPlantio = dados.data_plantio;
 		const dap = dados.dap;
 		const programa = dados.programa;
@@ -27,9 +28,12 @@ export const createDinamicTable = (data) => {
 			produtos.forEach((prod, i) => {
 				const produto = prod.produto;
 				const tipo = prod.tipo;
-				const dose = prod.dose;
-				const quantidadeAplicar = prod["quantidade aplicar"];
+				const dose = prod.dose.toFixed(3).replace(".", ",");
+				const quantidadeAplicar = prod["quantidade aplicar"]
+					.toFixed(4)
+					.replace(".", ",");
 				const newObj = {
+					id: count,
 					projeto: projeto,
 					parcela: parcela,
 					safra: safra,
@@ -55,6 +59,7 @@ export const createDinamicTable = (data) => {
 					quantidadeAplicar: quantidadeAplicar
 				};
 				tableArray.push(newObj);
+				count += 1;
 			});
 		});
 	});

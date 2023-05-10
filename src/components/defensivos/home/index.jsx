@@ -109,7 +109,7 @@ const HomeDefensivoPage = (props) => {
 					/>
 					<CustomButton
 						color={colors.greenAccent[700]}
-						title="Dinamic"
+						title="Dinamica"
 						handleOpenModal={() =>
 							handleSelectComponent(dictComps.dinamic)
 						}

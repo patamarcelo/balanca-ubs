@@ -41,10 +41,7 @@ const DataDefensivoPageDinamic = (props) => {
 				}
 			}
 		>
-			{/* <DataDefensivoDaysTableDinamic
-				rows={dataTableDays}
-				columns={onlyData}
-			/> */}
+			<DataDefensivoDaysTableDinamic rows={dinamicData} />
 			{isLoadingHome && !dataDef && (
 				<Box
 					display="flex"
