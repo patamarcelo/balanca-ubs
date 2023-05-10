@@ -15,7 +15,8 @@ const DICT_COLOR = {
 	"Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
 	"Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
 	"Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
-	"Semente Soja 84": ["rgb(212,237,188)", "black"]
+	"Semente Soja 84": ["rgb(212,237,188)", "black"],
+	"Semente Soja CG SPEED": ["rgb(212,237,188)", "black"]
 };
 
 const getProdColor = (data) => {
@@ -28,9 +29,13 @@ const getProdColor = (data) => {
 };
 const SementeTable = (props) => {
 	const { data } = props;
-	const newData = data.sort((a, b) =>
-		b["Situação"].localeCompare(a["Situação"])
-	);
+	const newData = data.sort((a, b) => {
+		const sitB = b["Situação"];
+		const sitA = a["Situação"];
+		if (sitB && sitA) {
+			return b["Situação"].localeCompare(a["Situação"]);
+		}
+	});
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
