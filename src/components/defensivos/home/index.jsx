@@ -40,7 +40,6 @@ const HomeDefensivoPage = (props) => {
 	};
 
 	const handleSelectComponent = (name) => {
-		console.log("name to active: ", name);
 		setisTimeLoad(true);
 		switch (name) {
 			case "dinamic":
@@ -68,19 +67,26 @@ const HomeDefensivoPage = (props) => {
 	};
 
 	useEffect(() => {
-		djangoApi
-			.get("plantio/get_plantio_operacoes_detail/", {
-				headers: {
-					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-				}
-			})
-			.then((res) => {
-				// console.log(res.data);
-				setDataDef(res.data.dados);
-				setResumeDate(res.data.app_date);
-			})
-			.catch((err) => console.log(err));
-
+		(async () => {
+			try {
+				djangoApi
+					.get("plantio/get_plantio_operacoes_detail/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						// console.log(res.data);
+						setDataDef(res.data.dados);
+						setResumeDate(res.data.app_date);
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+			} finally {
+				console.log("Finally statement");
+			}
+		})();
 		setTimeout(() => {
 			setisTimeLoad(false);
 		}, 1000);
@@ -94,22 +100,34 @@ const HomeDefensivoPage = (props) => {
 			<Box>
 				<Stack spacing={2} direction="row">
 					<CustomButton
-						color={colors.greenAccent[700]}
-						title="Produtos"
+						color={
+							isOpenProducts
+								? colors.greenAccent[900]
+								: colors.greenAccent[600]
+						}
+						title="Programação"
 						handleOpenModal={() =>
 							handleSelectComponent(dictComps.table)
 						}
 					/>
 					<CustomButton
-						color={colors.greenAccent[700]}
-						title="Datas"
+						color={
+							isOpenProductsByDay
+								? colors.greenAccent[900]
+								: colors.greenAccent[600]
+						}
+						title="Produtos"
 						handleOpenModal={() =>
 							handleSelectComponent(dictComps.tableByDay)
 						}
 					/>
 					<CustomButton
-						color={colors.greenAccent[700]}
-						title="Dinamica"
+						color={
+							isOpenProductsByDayDinamic
+								? colors.greenAccent[900]
+								: colors.greenAccent[600]
+						}
+						title="AP Detalhado"
 						handleOpenModal={() =>
 							handleSelectComponent(dictComps.dinamic)
 						}

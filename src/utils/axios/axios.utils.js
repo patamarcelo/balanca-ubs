@@ -1,10 +1,10 @@
 import axios from "axios";
 
-// const baseURL = "https://diamante-quality.up.railway.app/diamante/";
-const baseURL = "http://localhost:8000/diamante/";
+const baseURL = "https://diamante-quality.up.railway.app/diamante/";
+const baseURLdev = "http://localhost:8000/diamante/";
 
 const djangoApi = axios.create({
-	baseURL: baseURL,
+	baseURL: process.env.NODE_ENV !== "production" ? baseURLdev : baseURL,
 	headers: {
 		"Content-Type": "application/json"
 	}

@@ -26,9 +26,9 @@ const DataDefensivoPageDinamic = (props) => {
 		}
 	}, [dataDef]);
 
-	useEffect(() => {
-		console.log(dinamicData);
-	}, [dinamicData]);
+	// useEffect(() => {
+	// 	console.log(dinamicData);
+	// }, [dinamicData]);
 
 	return (
 		<Box
