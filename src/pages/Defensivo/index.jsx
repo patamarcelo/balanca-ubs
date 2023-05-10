@@ -28,12 +28,6 @@ const DefensivoPage = () => {
 	const [resumeData, setResumeDate] = useState([]);
 
 	useEffect(() => {
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 1000);
-	}, [dispatch]);
-
-	useEffect(() => {
 		(async () => {
 			try {
 				await djangoApi
