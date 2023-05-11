@@ -61,7 +61,9 @@ const DataDefensivoPage = (props) => {
 					</Typography>
 				</Box>
 			)}
-			{!isLoadingHome && data && <ProgramaTablePage rows={tableData} />}
+			{!isLoadingHome && data && (
+				<ProgramaTablePage loading={isLoadingHome} rows={tableData} />
+			)}
 		</Box>
 	);
 };

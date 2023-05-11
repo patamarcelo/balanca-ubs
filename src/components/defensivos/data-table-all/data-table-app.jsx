@@ -6,7 +6,7 @@ import { tokens } from "../../../theme";
 import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
 
 const ProgramaTablePage = (props) => {
-	const { rows } = props;
+	const { rows, loading } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const defaultFontSize = "13px";
@@ -79,6 +79,7 @@ const ProgramaTablePage = (props) => {
 				rows={rows}
 				columns={columns}
 				checkboxSelection
+				loading={loading}
 				components={{ Toolbar: CustomToolbar }}
 				componentsProps={{ toolbar: { title: "Programacoes" } }}
 			/>

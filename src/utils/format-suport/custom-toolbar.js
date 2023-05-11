@@ -7,7 +7,6 @@ import { GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 
 export default function CustomToolbar(props) {
 	const { title } = props;
-	console.log(props);
 	return (
 		<GridToolbarContainer>
 			<GridToolbarExport

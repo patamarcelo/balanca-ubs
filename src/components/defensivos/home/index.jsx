@@ -23,8 +23,8 @@ const HomeDefensivoPage = (props) => {
 
 	const { isLoadingHome, dataDef, resumeData } = props;
 
-	const [isOpenProducts, setIsOpenProducts] = useState(false);
-	const [isOpenProductsByDay, setisOpenProductsByDay] = useState(true);
+	const [isOpenProducts, setIsOpenProducts] = useState(true);
+	const [isOpenProductsByDay, setisOpenProductsByDay] = useState(false);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
 		useState(false);
 
