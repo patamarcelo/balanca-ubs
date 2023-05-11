@@ -3,6 +3,8 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
+import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
+
 const DataDefensivoDaysTableDinamic = (props) => {
 	const { rows } = props;
 	const theme = useTheme();
@@ -90,7 +92,8 @@ const DataDefensivoDaysTableDinamic = (props) => {
 				rows={rows}
 				columns={columns}
 				checkboxSelection
-				components={{ Toolbar: GridToolbar }}
+				components={{ Toolbar: CustomToolbar }}
+				componentsProps={{ toolbar: { title: "Produtos Detalhato" } }}
 			/>
 		</Box>
 	);

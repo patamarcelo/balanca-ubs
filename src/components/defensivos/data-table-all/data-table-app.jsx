@@ -1,19 +1,20 @@
 import * as React from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
+
+import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
 
 const ProgramaTablePage = (props) => {
 	const { rows } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-
 	// const defaultFontSize = "13px";
 
 	const columns = [
-		{ field: "id", headerName: "ID" },
-		{ field: "fazendaGrupo", headerName: "Fazenda", width: 140 },
-		{ field: "projeto", headerName: "Projeto", width: 140 },
+		{ field: "id", headerName: "ID", width: 20 },
+		{ field: "fazendaGrupo", headerName: "Fazenda", width: 180 },
+		{ field: "projeto", headerName: "Projeto", width: 180 },
 		{ field: "parcela", headerName: "Parcela", width: 80 },
 		{ field: "talhaoIdUnico", headerName: "ID Talhao" },
 		{
@@ -24,7 +25,7 @@ const ProgramaTablePage = (props) => {
 		{
 			field: "capacidadePlantioDia",
 			headerName: "Plantio Dia",
-			width: 140
+			width: 80
 		},
 		{ field: "ciclo", headerName: "Ciclo", width: 80 },
 		{ field: "safra", headerName: "Safra", width: 80 },
@@ -37,7 +38,7 @@ const ProgramaTablePage = (props) => {
 		{ field: "programaStartDate", headerName: "Start Janela", width: 140 },
 		{ field: "programaEndDate", headerName: "Fim Janela", width: 140 },
 		{ field: "estagio", headerName: "Estagio", width: 140 },
-		{ field: "dapAplicacao", headerName: "DAP AP", width: 140 },
+		{ field: "dapAplicacao", headerName: "DAP AP", width: 80 },
 		{ field: "dataPrevista", headerName: "Data Prevista AP", width: 140 }
 	];
 
@@ -78,7 +79,8 @@ const ProgramaTablePage = (props) => {
 				rows={rows}
 				columns={columns}
 				checkboxSelection
-				components={{ Toolbar: GridToolbar }}
+				components={{ Toolbar: CustomToolbar }}
+				componentsProps={{ toolbar: { title: "Programacoes" } }}
 			/>
 		</Box>
 	);

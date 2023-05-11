@@ -39,6 +39,8 @@ import { formatDate } from "../../../store/trucks/trucks.selector";
 
 import classes from "./table.module.css";
 
+import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
+
 const ReportTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -801,7 +803,8 @@ const ReportTable = (props) => {
 					// density="compact"
 					rows={dataTableRev}
 					columns={columns}
-					components={{ Toolbar: GridToolbar }}
+					components={{ Toolbar: CustomToolbar }}
+					componentsProps={{ toolbar: { title: "Cargas" } }}
 					className={classes.table}
 				/>
 			</Box>
