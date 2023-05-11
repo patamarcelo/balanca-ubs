@@ -9,6 +9,21 @@ const PageDataClassFlex = ({ data }) => {
 
 	const isNonMobile = useMediaQuery("(min-width: 1090px)");
 
+	console.log(data);
+
+	const getDestino = (data) => {
+		if (data.destino) {
+			return data.destino;
+		}
+		if (data.fazendaDestino === "Outros") {
+			return data.destino;
+		}
+		if (data.fazendaDestino !== "Outros" && data.fazendaDestino !== null) {
+			return data.fazendaDestino;
+		}
+		return " - ";
+	};
+
 	const dictData = [
 		{
 			label: "Umidade",
@@ -32,7 +47,7 @@ const PageDataClassFlex = ({ data }) => {
 			label: "Origem",
 			value: data.fazendaOrigem ? data.fazendaOrigem : data.origem,
 			label2: "Destino",
-			value2: data.fazendaDestino ? data.fazendaDestino : data.destino,
+			value2: getDestino(data),
 			size: "35%"
 		}
 	];
