@@ -43,6 +43,11 @@ import { limit } from "firebase/firestore";
 
 // import djangoApi from "../../utils/axios/axios.utils";
 
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -212,6 +217,10 @@ const HomePage = () => {
 		setSelectedUnitOp(data);
 	};
 
+	const handleChengeSelect = (data) => {
+		setSelectedUnitOp(data.target.value);
+	};
+
 	const filteredTruckOnWork = (unidadeOp) => {
 		const origemDest = [];
 		const filteredOrigemDestino = FAZENDA_ORIGEM.filter(
@@ -293,47 +302,98 @@ const HomePage = () => {
 			</Box>
 			<Box
 				display="flex"
-				justifyContent="start"
-				className="tabs"
+				justifyContent={isNonMobile ? "start" : "center"}
+				className={isNonMobile ? "tabs" : ""}
 				sx={{
 					// border: "1px solid white",
-					marginBottom: "-22px",
-					marginLeft: "15px"
+					marginBottom: isNonMobile ? "-22px" : "-5px",
+					marginLeft: isNonMobile ?? "15px",
+					borderRadius: !isNonMobile ?? "8px",
+					"& label": {
+						color: `whitesmoke !important`
+					}
 				}}
 			>
-				{allUnits &&
+				{allUnits && allUnits.length > 0 && !isNonMobile ? (
+					<Box
+						sx={{
+							width: "99%",
+							pading: "10px 20px",
+							borderRadius: "8px"
+						}}
+					>
+						<FormControl
+							sx={{
+								width: "100%",
+								backgroundColor: colors.blueOrigin[700],
+								borderRadius: "8px"
+							}}
+						>
+							<InputLabel id="demo-simple-select-label">
+								unidade
+							</InputLabel>
+							<Select
+								sx={{ width: "100%" }}
+								labelId="demo-simple-select-label"
+								id="demo-simple-select"
+								value={selectedUnitOp}
+								label="Unidade"
+								onChange={handleChengeSelect}
+							>
+								{allUnits.map((data, i) => {
+									return (
+										<MenuItem value={data.title} key={i}>
+											{data.description} &nbsp;&nbsp;
+											{filteredTruckOnWork(data.title)}
+										</MenuItem>
+									);
+								})}
+							</Select>
+						</FormControl>
+					</Box>
+				) : (
+					allUnits &&
+					allUnits.length > 0 &&
 					allUnits.map((data, i) => {
 						return (
-							<Box
-								key={i}
-								sx={{
-									marginLeft: i > 0 && "-2px !important",
-									zIndex: selectedUnitOp === data.title && 1,
-									backgroundColor:
-										selectedUnitOp === data.title
-											? colors.blueOrigin[700]
-											: "#22343F",
-									color:
-										selectedUnitOp === data.title
-											? "white"
-											: "#667279",
-									padding: "10px",
-									cursor: "pointer",
-									textTransform: "capitalize",
-									borderRadius: "4px",
-									boxShadow:
-										selectedUnitOp === data.title &&
-										`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
-								}}
-								onClick={() =>
-									handleFilteredUnidadeOp(data.title)
-								}
-							>
-								{data.description} &nbsp;&nbsp;
-								{filteredTruckOnWork(data.title)}
-							</Box>
+							<>
+								{isNonMobile && (
+									<Box
+										key={i}
+										sx={{
+											marginLeft:
+												i > 0 && "-2px !important",
+											zIndex:
+												selectedUnitOp === data.title &&
+												1,
+											backgroundColor:
+												selectedUnitOp === data.title
+													? colors.blueOrigin[700]
+													: "#22343F",
+											color:
+												selectedUnitOp === data.title
+													? "white"
+													: "#667279",
+											padding: "5px 25px 5px 15px",
+											cursor: "pointer",
+											textTransform: "capitalize",
+											borderRadius: "4px",
+											boxShadow:
+												selectedUnitOp === data.title &&
+												`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
+										}}
+										onClick={() =>
+											handleFilteredUnidadeOp(data.title)
+										}
+									>
+										{data.description} &nbsp;&nbsp;
+										{filteredTruckOnWork(data.title)}
+									</Box>
+								)}
+							</>
 						);
-					})}
+					})
+				)}
 			</Box>
 			<Box
 				width="100%"
@@ -344,7 +404,7 @@ const HomePage = () => {
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
 					position: "relative",
-					height: isNonMobile ? "90%" : "75%",
+					height: isNonMobile ? "90%" : "100%",
 					zIndex: 2
 				}}
 			>
