@@ -16,6 +16,8 @@ import Stack from "@mui/material/Stack";
 
 import djangoApi from "../../utils/axios/axios.utils";
 
+import LoaderHomeSkeleton from "../../components/defensivos/home/loader";
+
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -45,7 +47,7 @@ const DefensivoPage = () => {
 			} catch (err) {
 				console.log("Erro ao consumir a API", err);
 			} finally {
-				console.log("Finally statement");
+				// console.log("Finally statement");
 				setIsLoading(false);
 			}
 		})();
@@ -96,41 +98,7 @@ const DefensivoPage = () => {
 								height={38}
 							/>
 						</Stack>
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							width="100%"
-							height="100%"
-							mt={1}
-							sx={{
-								backgroundColor: colors.blueOrigin[700],
-								borderRadius: "8px",
-								boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-							}}
-						>
-							<Box
-								sx={{
-									width: "100%",
-									height: "100%",
-									padding: "20px"
-								}}
-							>
-								<Typography variant="h1">
-									<Skeleton
-										variant="rectangular"
-										animation="wave"
-									/>
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-								</Typography>
-							</Box>
-						</Box>
+						<LoaderHomeSkeleton />
 					</Box>
 				)}
 			</Box>

@@ -17,6 +17,8 @@ import CustomButton from "../../button";
 
 import Skeleton from "@mui/material/Skeleton";
 
+import LoaderHomeSkeleton from "./loader";
+
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -104,41 +106,8 @@ const HomeDefensivoPage = (props) => {
 			</Box>
 			{isOpenProducts && (
 				<>
-					{isChangingTable && (
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							width="100%"
-							height="100%"
-							mt={2}
-							sx={{
-								backgroundColor: colors.blueOrigin[700],
-								borderRadius: "8px",
-								boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-							}}
-						>
-							<Box
-								sx={{
-									width: "100%",
-									height: "100%",
-									padding: "20px"
-								}}
-							>
-								<Typography variant="h1">
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-								</Typography>
-							</Box>
-						</Box>
-					)}
-					{!isLoadingHome && (
+					{isChangingTable && <LoaderHomeSkeleton />}
+					{!isLoadingHome && !isChangingTable && (
 						<DataDefensivoPage
 							isLoadingHome={isLoadingHome}
 							data={dataDef}
@@ -148,41 +117,8 @@ const HomeDefensivoPage = (props) => {
 			)}
 			{isOpenProductsByDay && (
 				<>
-					{isChangingTable && (
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							width="100%"
-							height="100%"
-							mt={2}
-							sx={{
-								backgroundColor: colors.blueOrigin[700],
-								borderRadius: "8px",
-								boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-							}}
-						>
-							<Box
-								sx={{
-									width: "100%",
-									height: "100%",
-									padding: "20px"
-								}}
-							>
-								<Typography variant="h1">
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-								</Typography>
-							</Box>
-						</Box>
-					)}
-					{!isLoadingHome && (
+					{isChangingTable && <LoaderHomeSkeleton />}
+					{!isLoadingHome && !isChangingTable && (
 						<DataDefensivoPageByDay
 							isLoadingHome={isLoadingHome}
 							resumeData={resumeData}
@@ -192,41 +128,8 @@ const HomeDefensivoPage = (props) => {
 			)}
 			{isOpenProductsByDayDinamic && (
 				<>
-					{isChangingTable && (
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							width="100%"
-							height="100%"
-							mt={2}
-							sx={{
-								backgroundColor: colors.blueOrigin[700],
-								borderRadius: "8px",
-								boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
-							}}
-						>
-							<Box
-								sx={{
-									width: "100%",
-									height: "100%",
-									padding: "20px"
-								}}
-							>
-								<Typography variant="h1">
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-									<Skeleton animation="wave" />
-								</Typography>
-							</Box>
-						</Box>
-					)}
-					{!isLoadingHome && (
+					{isChangingTable && <LoaderHomeSkeleton />}
+					{!isLoadingHome && !isChangingTable && (
 						<DataDefensivoPageDinamic
 							isLoadingHome={isLoadingHome}
 							dataDef={dataDef}
