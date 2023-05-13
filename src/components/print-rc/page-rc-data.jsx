@@ -31,19 +31,23 @@ const PageRcData = ({ printValue }) => {
 		);
 	};
 
-	console.log(data.parcelasNovas);
-	console.log(typeof data.parcelasNovas);
+	const handleExistData = (data) => {
+		if (data) {
+			return data;
+		}
+		return " - ";
+	};
 
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
 		{
 			label: "Motorista",
-			value: data?.motorista ? data.motorista : " - "
+			value: handleExistData(data?.motorista)
 		}
 	];
 	const dictDataR = [
-		{ label: "CULTURA", value: data?.cultura },
-		{ label: "VARIEDADE", value: data?.mercadoria }
+		{ label: "CULTURA", value: handleExistData(data?.cultura) },
+		{ label: "VARIEDADE", value: handleExistData(data?.mercadoria) }
 	];
 
 	const DataDict = [
@@ -57,7 +61,10 @@ const PageRcData = ({ printValue }) => {
 	const ProdDict = [
 		{
 			label: "Parcelas",
-			value: data?.parcelasNovas ? data?.parcelasNovas?.toString().replaceAll(",", " , ") : ' - '
+			value:
+				handleExistData(data?.parcelasNovas) !== " - "
+					? data?.parcelasNovas?.toString().replaceAll(",", " , ")
+					: " - "
 		}
 	];
 

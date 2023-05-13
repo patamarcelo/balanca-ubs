@@ -19,11 +19,18 @@ const PageData = ({ printValue }) => {
 		);
 	};
 
+	const handleExistData = (data) => {
+		if (data) {
+			return data;
+		}
+		return " - ";
+	};
+
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
 		{
 			label: "Motorista",
-			value: data?.motorista ? data.motorista : " - "
+			value: handleExistData(data?.motorista)
 		},
 		{ label: "Cultura", value: data?.cultura }
 	];
@@ -307,7 +314,9 @@ const PageData = ({ printValue }) => {
 								textTransform: "capitalize"
 							}}
 						>
-							{data.motorista ? data.motorista : "Motorista"}
+							{handleExistData(data?.motorista) !== " - "
+								? data.motorista
+								: "Motorista"}
 						</Typography>
 					</Box>
 				</Box>
