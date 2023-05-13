@@ -173,7 +173,8 @@ const HomeTableTruck = (props) => {
 							flexDirection={!isNonMobile ? "column" : "row"}
 							sx={{
 								// backgroundColor: "red",
-								width: "9%"
+								width: "9%",
+								marginLeft: '25px'
 							}}
 						>
 							<LightTooltip
@@ -193,6 +194,7 @@ const HomeTableTruck = (props) => {
 							</LightTooltip>
 							<Typography
 								variant="h6"
+								mt={2}
 								color={colors.redAccent[200]}
 								// ml={10}
 								sx={
