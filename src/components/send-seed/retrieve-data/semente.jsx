@@ -38,6 +38,7 @@ const SementeTable = (props) => {
 	});
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	console.log(data);
 
 	if (data.length === 0) {
 		return (
@@ -108,8 +109,9 @@ const SementeTable = (props) => {
 						<th>Origem</th>
 						<th>Destino</th>
 						<th>Produto</th>
-						<th>Peso</th>
 						<th>Bags</th>
+						<th>Peso</th>
+						<th>Peso Total</th>
 						<th>Data Envio</th>
 						<th>Obs.</th>
 						<th>Situação</th>
@@ -136,7 +138,8 @@ const SementeTable = (props) => {
 						}
 
 						const fontColor =
-							data["Situação"] === "Pendente"
+							data["Situação"] === "Pendente" ||
+							data["Situação"] === null
 								? "solicitacao-pendente"
 								: "solicitacao-atendida";
 						return (
@@ -166,11 +169,24 @@ const SementeTable = (props) => {
 									/>
 								</th>
 
-								<th>{data.Peso.toLocaleString("pt-BR")} Kg</th>
+								<th>
+									{data.Quantidade > 0
+										? data.Quantidade
+										: " - "}
+								</th>
 
 								<th>
-									{data.Quantidade}{" "}
-									{data.Quantidade > 1 ? "Bags" : "Bag"}
+									{data.Peso > 0
+										? data.Peso.toLocaleString("pt-BR") +
+										  " Kg"
+										: " - "}
+								</th>
+								<th>
+									{data["Peso Total"] > 0
+										? data["Peso Total"].toLocaleString(
+												"pt-BR"
+										  ) + " Kg"
+										: " - "}
 								</th>
 
 								<th className="data-format">{envDateFormat}</th>
