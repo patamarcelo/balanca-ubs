@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import DataDefensivoPage from "../data-table-all";
 import DataDefensivoPageByDay from "../data-table-by-day";
 import DataDefensivoPageDinamic from "../data-table-dinamic";
+import DataProgramPage from "../data-program";
 
 import Stack from "@mui/material/Stack";
 import CustomButton from "../../button";
@@ -29,13 +30,15 @@ const HomeDefensivoPage = (props) => {
 	const [isOpenProductsByDay, setisOpenProductsByDay] = useState(false);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
 		useState(false);
+	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(false);
 
 	const [isChangingTable, setIsChangingTable] = useState(false);
 
 	const dictComps = {
 		dinamic: "dinamic",
 		table: "table",
-		tableByDay: "tableByDay"
+		tableByDay: "tableByDay",
+		productsProgram: "productsProgram"
 	};
 
 	const handleSelectComponent = (name) => {
@@ -45,14 +48,23 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsByDayDinamic(true);
 				setisOpenProductsByDay(false);
 				setIsOpenProducts(false);
+				setisOpenProductsProgram(false);
 				break;
 			case "tableByDay":
 				setisOpenProductsByDay(true);
 				setisOpenProductsByDayDinamic(false);
 				setIsOpenProducts(false);
+				setisOpenProductsProgram(false);
 				break;
 			case "table":
 				setIsOpenProducts(true);
+				setisOpenProductsByDay(false);
+				setisOpenProductsByDayDinamic(false);
+				setisOpenProductsProgram(false);
+				break;
+			case "productsProgram":
+				setisOpenProductsProgram(true);
+				setIsOpenProducts(false);
 				setisOpenProductsByDay(false);
 				setisOpenProductsByDayDinamic(false);
 				break;
@@ -102,6 +114,17 @@ const HomeDefensivoPage = (props) => {
 							handleSelectComponent(dictComps.dinamic)
 						}
 					/>
+					<CustomButton
+						color={
+							isOpenProductsProgram
+								? colors.greenAccent[900]
+								: colors.greenAccent[600]
+						}
+						title="Programas"
+						handleOpenModal={() =>
+							handleSelectComponent(dictComps.productsProgram)
+						}
+					/>
 				</Stack>
 			</Box>
 			{isOpenProducts && (
@@ -131,6 +154,17 @@ const HomeDefensivoPage = (props) => {
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
 						<DataDefensivoPageDinamic
+							isLoadingHome={isLoadingHome}
+							dataDef={dataDef}
+						/>
+					)}
+				</>
+			)}
+			{isOpenProductsProgram && (
+				<>
+					{isChangingTable && <LoaderHomeSkeleton />}
+					{!isLoadingHome && !isChangingTable && (
+						<DataProgramPage
 							isLoadingHome={isLoadingHome}
 							dataDef={dataDef}
 						/>

@@ -1,0 +1,92 @@
+.div{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 20px;
+}
+.div h5 {
+    padding: 5px 20px;
+    background-color: rgb(60,165,137);
+    color: whitesmoke;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform .35s;
+}
+
+.div h5:hover {
+    background-color: black;
+    color: rgb(60,165,137);
+    transform: scale(1.1);
+}
+
+.mainDiv {
+    width: 100%;
+    height: auto;
+    background-color: rgb(164, 195, 195, 0.5);
+    margin: 5px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.box-program {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: center; */
+    width: 100%;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+
+}
+
+.box-program > div {
+    /* background-color: rgb(223, 219, 215, 0.5);
+    border-radius: 8px;
+    padding: 10px;
+    width: 18%;
+    color: black; */
+    display: flex;
+    flex-direction: column;
+    margin: 30px 10px;
+    padding-left: 4px;
+}
+
+.parcelas-div {
+    /* background-color: wheat; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    border-bottom: 1px dotted black;
+    gap: 10px;
+}
+
+.parcelas-div div {
+    margin: 0px 10px;
+    padding: 0px 10px;
+    text-align: center;
+
+    /* background-color: aqua; */
+}
+
+
+.geral-program-div {
+    /* border: 1px solid beige; */
+    width: 80%;
+    
+}
+
+.fazenda-div {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(3,24,36, 0.5);
+    padding: 0px;
+    box-shadow: 8px 5px 5px black;
+}
+
+
