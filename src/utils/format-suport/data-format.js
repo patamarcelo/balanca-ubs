@@ -29,4 +29,8 @@ export const newDateArr = (dataFor) => {
 	return date;
 };
 
+export const displayDate = (date) => {
+	return date.split("-").reverse().join("/");
+};
+
 export default formatDate;

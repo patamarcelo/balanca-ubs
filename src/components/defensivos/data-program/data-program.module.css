@@ -1,28 +1,39 @@
 .div{
     display: flex;
     flex-direction: row;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 20px;
+    margin: 20px 10px 0px 10px;
+    background-color: rgb(8,47,72);
+    border-radius: 8px;
+    padding: 8px 10px;
 }
 .div h5 {
     padding: 5px 20px;
-    background-color: rgb(60,165,137);
-    color: whitesmoke;
     border-radius: 8px;
     cursor: pointer;
     transition: transform .35s;
 }
 
 .div h5:hover {
-    background-color: black;
+    background-color: rgb(0,0,0,0.5);
     color: rgb(60,165,137);
     transform: scale(1.1);
+}
+
+
+.div-not-selected {
+    background-color: rgb(60,165,137);
+    color: whitesmoke !important;
+}
+.div-selected {
+    background-color: rgb(0,0,0);
+    color: rgb(60,165,137);
 }
 
 .mainDiv {
     width: 100%;
     height: auto;
-    background-color: rgb(164, 195, 195, 0.5);
+    background-color: rgb(22, 71, 104);
     margin: 5px;
     padding: 5px;
     border-radius: 8px;
@@ -36,8 +47,6 @@
     width: 100%;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 10px;
-
 }
 
 .box-program > div {
@@ -52,41 +61,96 @@
     padding-left: 4px;
 }
 
-.parcelas-div {
-    /* background-color: wheat; */
+.fazenda-div {
+    width: 15%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    flex-direction: column;
+    font-size: 1rem;
+    justify-content: center;
     align-items: center;
-
-    border-bottom: 1px dotted black;
-    gap: 10px;
-}
-
-.parcelas-div div {
-    margin: 0px 10px;
-    padding: 0px 10px;
-    text-align: center;
-
-    /* background-color: aqua; */
+    background-color: rgb(8,47,72);
+    border-radius: 8px;
+    padding: 0px;
+    box-shadow: 8px 5px 5px rgb(0,0,0,0.7);
 }
 
 
 .geral-program-div {
     /* border: 1px solid beige; */
     width: 80%;
+    gap: 8px;
     
 }
 
-.fazenda-div {
-    width: 15%;
+
+.detail-parcela-div {
+    background-color: rgb(8,47,72);
+    box-shadow: rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px dotted black;
+    gap: 10px;
+}
+
+.detail-parcela-div div {
+    padding: 0px 10px;
+    text-align: center;
+
+    /* background-color: aqua; */
+}
+
+.estagio-div{
+    min-width: 20%;
+}
+
+.parcelas-resumo-div{
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    width: 90%;
+}
+
+.parcelas-resumo-div > div{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(3,24,36, 0.5);
-    padding: 0px;
-    box-shadow: 8px 5px 5px black;
+    width: 100%;
+
 }
 
 
+.parcelas-detail-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10px;
+}
+
+
+
+
+
+.date-picker-div {
+    margin: 10px 20px 0px 0px;
+    padding: 10px 0px 10px 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+.date-picker {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 30px
+}
+
+.title-div-picker {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+}

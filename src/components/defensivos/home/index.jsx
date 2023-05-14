@@ -79,7 +79,7 @@ const HomeDefensivoPage = (props) => {
 
 	return (
 		<Box width="100%" height="100%">
-			<Box>
+			<Box sx={{ marginLeft: "5px" }} mb={2}>
 				<Stack spacing={2} direction="row">
 					<CustomButton
 						color={
