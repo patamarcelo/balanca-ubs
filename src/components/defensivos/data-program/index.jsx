@@ -84,7 +84,8 @@ const DataProgramPage = (props) => {
 		});
 		const filtArray = filtParcelas
 			.flat()
-			.sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp));
+			.sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp))
+			.sort((a, b) => a.dapApp - b.dapApp);
 
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
