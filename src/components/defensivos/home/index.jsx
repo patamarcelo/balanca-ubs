@@ -43,6 +43,12 @@ const HomeDefensivoPage = (props) => {
 	);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
+	useEffect(() => {
+		const current = new Date();
+		current.setDate(current.getDate() + 7);
+		setFinalDateForm(current.toISOString().split("T")[0]);
+	}, []);
+
 	const dictComps = {
 		dinamic: "dinamic",
 		table: "table",
