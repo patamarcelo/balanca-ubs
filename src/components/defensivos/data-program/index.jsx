@@ -88,8 +88,11 @@ const DataProgramPage = (props) => {
 
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
-			if (acc[estagio] == null) acc[estagio] = [];
-			acc[estagio].push(curr);
+			const dapApp = curr.dapApp;
+			if (dapApp > 0) {
+				if (acc[estagio] == null) acc[estagio] = [];
+				acc[estagio].push(curr);
+			}
 			return acc;
 		}, {});
 
@@ -107,6 +110,7 @@ const DataProgramPage = (props) => {
 		});
 
 		setObjList(dictTotal);
+		console.log(dictTotal);
 		setFarmParcelasList(
 			filtParcelas
 				.flat()
