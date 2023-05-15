@@ -180,61 +180,74 @@ const DataProgramPage = (props) => {
 								</div>
 								<div className={classes["parcelas-resumo-div"]}>
 									<div>
-										{data.cronograma.map((data, i) => {
-											return (
-												<div
-													key={i}
-													className={
-														classes[
-															"parcelas-detail-div"
-														]
-													}
-												>
+										{data.cronograma
+											.sort(
+												(a, b) =>
+													a.parcela.slice(-2) -
+													b.parcela.slice(-2)
+											)
+											.map((data, i) => {
+												return (
 													<div
+														key={i}
 														className={
 															classes[
-																"parcela-div"
+																"parcelas-detail-div"
 															]
 														}
 													>
-														{data.parcela}
+														<div
+															className={
+																classes[
+																	"parcela-div"
+																]
+															}
+														>
+															{data.parcela}
+														</div>
+														<div
+															style={{
+																color: colors
+																	.greenAccent[300]
+															}}
+														>
+															{displayDate(
+																data.dataPlantio
+															)}
+														</div>
+														<div>
+															{data.dap < 10
+																? "0" + data.dap
+																: data.dap}
+														</div>
+														<div>
+															{data.cultura}
+														</div>
+														<div>
+															{data.variedade}
+														</div>
+														<div>
+															{displayDate(
+																data.dataPrevApp
+															)}
+														</div>
+														<div>{data.dapApp}</div>
+														<div
+															style={{
+																color: colors
+																	.primary[200]
+															}}
+														>
+															{data.area
+																.toFixed(2)
+																.replace(
+																	".",
+																	","
+																)}
+														</div>
 													</div>
-													<div
-														style={{
-															color: colors
-																.greenAccent[300]
-														}}
-													>
-														{displayDate(
-															data.dataPlantio
-														)}
-													</div>
-													<div>
-														{data.dap < 10
-															? "0" + data.dap
-															: data.dap}
-													</div>
-													<div>{data.cultura}</div>
-													<div>{data.variedade}</div>
-													<div>
-														{displayDate(
-															data.dataPrevApp
-														)}
-													</div>
-													<div>{data.dapApp}</div>
-													<div
-														style={{
-															color: colors
-																.primary[200]
-														}}
-													>
-														{data.area
-															.toFixed(2)
-															.replace(".", ",")}
-													</div>
-												</div>
-											);
-										})}
+												);
+											})}
 									</div>
 								</div>
 							</div>
