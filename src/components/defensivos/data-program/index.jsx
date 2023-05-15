@@ -9,7 +9,7 @@ import DateIntervalPage from "./date-interval";
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { dataDef, isLoadingHome } = props;
+	const { dataDef, isLoadingHome, initialDateForm, finalDateForm } = props;
 
 	const [farmList, setFarmList] = useState([]);
 	const [farmParcelasList, setFarmParcelasList] = useState([]);
@@ -17,11 +17,6 @@ const DataProgramPage = (props) => {
 
 	const [filteredList, setFilteredList] = useState([]);
 	const [farmSelected, setFarmSelected] = useState("");
-
-	const [initialDateForm, setInitialDate] = useState(
-		new Date().toISOString().slice(0, 10)
-	);
-	const [finalDateForm, setFinalDateForm] = useState(null);
 
 	useEffect(() => {
 		const initDa = new Date().toISOString().slice(0, 10);
@@ -144,22 +139,11 @@ const DataProgramPage = (props) => {
 				})}
 			</Box>
 			<Box className={classes["date-picker-div"]}>
-				<div className={classes["date-picker"]}>
-					<DateIntervalPage
-						setInitialDate={setInitialDate}
-						initialDateForm={initialDateForm}
-						label="Data Inicial"
-					/>
-					<DateIntervalPage
-						setInitialDate={setFinalDateForm}
-						initialDateForm={finalDateForm}
-						label="Data Final"
-					/>
-				</div>
 				<div className={classes["title-div-picker"]}>
-					<Typography variant="h4" color={colors.primary[200]}>
-						Programações:{" "}
-						{initialDateForm && displayDate(initialDateForm)} até{" "}
+					<Typography variant="h2" color={colors.primary[200]}>
+						Programações: &nbsp;&nbsp;&nbsp;
+						{initialDateForm &&
+							displayDate(initialDateForm)} até{" "}
 						{finalDateForm && displayDate(finalDateForm)}
 					</Typography>
 				</div>

@@ -57,7 +57,7 @@
     color: black; */
     display: flex;
     flex-direction: column;
-    margin: 30px 10px 10px 10px;
+    margin: 10px 10px 10px 10px;
     padding-left: 4px;
 }
 
@@ -149,6 +149,9 @@
     gap: 30px
 }
 
+.date-picker > div > div {
+    background-color: rgb(22,71,104);
+}
 .title-div-picker {
     display: flex;
     justify-content: center;
@@ -159,3 +162,4 @@
 .parcelas-detail-div div {
     min-width: 43px;
 }
+

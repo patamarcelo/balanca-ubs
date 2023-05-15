@@ -21,7 +21,7 @@ const DateIntervalPage = ({ setInitialDate, initialDateForm, label }) => {
 						new Date(newValue).toISOString().slice(0, 10)
 					);
 				}}
-				renderInput={(params) => <TextField {...params} />}
+				renderInput={(params) => <TextField size="small" {...params} />}
 			/>
 		</LocalizationProvider>
 	);

@@ -20,6 +20,10 @@ import Skeleton from "@mui/material/Skeleton";
 
 import LoaderHomeSkeleton from "./loader";
 
+import DateIntervalPage from "../data-program/date-interval";
+
+import classes from "../data-program/data-program.module.css";
+
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -33,6 +37,11 @@ const HomeDefensivoPage = (props) => {
 	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(false);
 
 	const [isChangingTable, setIsChangingTable] = useState(false);
+
+	const [initialDateForm, setInitialDate] = useState(
+		new Date().toISOString().slice(0, 10)
+	);
+	const [finalDateForm, setFinalDateForm] = useState(null);
 
 	const dictComps = {
 		dinamic: "dinamic",
@@ -80,51 +89,76 @@ const HomeDefensivoPage = (props) => {
 	return (
 		<Box width="100%" height="100%">
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
-				<Stack spacing={2} direction="row">
-					<CustomButton
-						color={
-							isOpenProducts
-								? colors.greenAccent[900]
-								: colors.greenAccent[600]
-						}
-						title="Programação"
-						handleOpenModal={() =>
-							handleSelectComponent(dictComps.table)
-						}
-					/>
-					<CustomButton
-						color={
-							isOpenProductsByDay
-								? colors.greenAccent[900]
-								: colors.greenAccent[600]
-						}
-						title="Produtos"
-						handleOpenModal={() =>
-							handleSelectComponent(dictComps.tableByDay)
-						}
-					/>
-					<CustomButton
-						color={
-							isOpenProductsByDayDinamic
-								? colors.greenAccent[900]
-								: colors.greenAccent[600]
-						}
-						title="AP Detalhado"
-						handleOpenModal={() =>
-							handleSelectComponent(dictComps.dinamic)
-						}
-					/>
-					<CustomButton
-						color={
-							isOpenProductsProgram
-								? colors.greenAccent[900]
-								: colors.greenAccent[600]
-						}
-						title="Programas"
-						handleOpenModal={() =>
-							handleSelectComponent(dictComps.productsProgram)
-						}
-					/>
+				<Stack spacing={2} direction="row" justifyContent="start">
+					<Box display="flex" justifyContent="start" gap="20px">
+						<CustomButton
+							color={
+								isOpenProducts
+									? colors.greenAccent[900]
+									: colors.greenAccent[600]
+							}
+							title="Programação"
+							handleOpenModal={() =>
+								handleSelectComponent(dictComps.table)
+							}
+						/>
+						<CustomButton
+							color={
+								isOpenProductsByDay
+									? colors.greenAccent[900]
+									: colors.greenAccent[600]
+							}
+							title="Produtos"
+							handleOpenModal={() =>
+								handleSelectComponent(dictComps.tableByDay)
+							}
+						/>
+						<CustomButton
+							color={
+								isOpenProductsByDayDinamic
+									? colors.greenAccent[900]
+									: colors.greenAccent[600]
+							}
+							title="AP Detalhado"
+							handleOpenModal={() =>
+								handleSelectComponent(dictComps.dinamic)
+							}
+						/>
+						<CustomButton
+							color={
+								isOpenProductsProgram
+									? colors.greenAccent[900]
+									: colors.greenAccent[600]
+							}
+							title="Programas"
+							handleOpenModal={() =>
+								handleSelectComponent(dictComps.productsProgram)
+							}
+						/>
+					</Box>
+					{isOpenProductsProgram && (
+						<Box
+							sx={{
+								maxHeight: " 33px",
+								flexGrow: 1,
+								display: "flex",
+								justifyContent: "center"
+							}}
+						>
+							<div className={classes["date-picker"]}>
+								<DateIntervalPage
+									setInitialDate={setInitialDate}
+									initialDateForm={initialDateForm}
+									label="Data Inicial"
+								/>
+								<DateIntervalPage
+									setInitialDate={setFinalDateForm}
+									initialDateForm={finalDateForm}
+									label="Data Final"
+								/>
+							</div>
+						</Box>
+					)}
 				</Stack>
 			</Box>
 			{isOpenProducts && (
@@ -165,6 +199,8 @@ const HomeDefensivoPage = (props) => {
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
 						<DataProgramPage
+							initialDateForm={initialDateForm}
+							finalDateForm={finalDateForm}
 							isLoadingHome={isLoadingHome}
 							dataDef={dataDef}
 						/>
