@@ -11,7 +11,7 @@ import TextField from "@mui/material/TextField";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import ptBR from 'dayjs/locale/pt-br';
+import ptBR from "dayjs/locale/pt-br";
 
 const RetrieveData = () => {
 	const theme = useTheme();
@@ -211,6 +211,10 @@ const RetrieveData = () => {
 						onChange={handleChange}
 						renderInput={(params) => (
 							<TextField
+								style={{
+									backgroundColor: colors.blueOrigin[800]
+								}}
+								size="small"
 								{...params}
 								placeholder="Data de início"
 							/>
@@ -222,6 +226,7 @@ const RetrieveData = () => {
 				display="flex"
 				flexDirection="column"
 				gap="80px"
+				mt={3}
 				// height="100%"
 				sx={{
 					justifyContent: "space-evenly",
