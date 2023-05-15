@@ -171,7 +171,7 @@ const DataProgramPage = (props) => {
 								<div className={classes["estagio-div"]}>
 									<p>{data.estagio}</p>
 									<p style={{ color: colors.primary[200] }}>
-										Area Total: {data.total} ha
+										Area Total: {data.total}
 									</p>
 								</div>
 								<div className={classes["parcelas-resumo-div"]}>
@@ -216,7 +216,9 @@ const DataProgramPage = (props) => {
 																.primary[200]
 														}}
 													>
-														{data.area}
+														{data.area
+															.toFixed(2)
+															.replace(".", ",")}
 													</div>
 												</div>
 											);

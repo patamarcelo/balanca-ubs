@@ -57,12 +57,13 @@
     color: black; */
     display: flex;
     flex-direction: column;
-    margin: 30px 10px;
+    margin: 30px 10px 10px 10px;
     padding-left: 4px;
 }
 
 .fazenda-div {
-    width: 15%;
+    width: 100%;
+    margin-bottom: 0px;
     display: flex;
     flex-direction: column;
     font-size: 1rem;
@@ -70,16 +71,16 @@
     align-items: center;
     background-color: rgb(8,47,72);
     border-radius: 8px;
-    padding: 0px;
+    padding: 10px;
     box-shadow: 8px 5px 5px rgb(0,0,0,0.7);
 }
 
 
 .geral-program-div {
     /* border: 1px solid beige; */
-    width: 80%;
+    width: 100%;
     gap: 8px;
-    
+    margin-top: 10px !important;
 }
 
 
