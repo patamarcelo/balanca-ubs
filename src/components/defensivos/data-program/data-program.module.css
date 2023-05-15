@@ -155,3 +155,7 @@
     flex-direction: row;
     width: 100%;
 }
+
+.parcelas-detail-div div {
+    min-width: 43px;
+}

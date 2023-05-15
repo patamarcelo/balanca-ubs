@@ -190,7 +190,15 @@ const DataProgramPage = (props) => {
 														]
 													}
 												>
-													<div>{data.parcela}</div>
+													<div
+														className={
+															classes[
+																"parcela-div"
+															]
+														}
+													>
+														{data.parcela}
+													</div>
 													<div
 														style={{
 															color: colors
