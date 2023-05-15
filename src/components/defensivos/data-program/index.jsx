@@ -182,10 +182,10 @@ const DataProgramPage = (props) => {
 								<div className={classes["parcelas-resumo-div"]}>
 									<div>
 										{data.cronograma
-											.sort(
-												(a, b) =>
-													a.parcela.slice(-2) -
-													b.parcela.slice(-2)
+											.sort((a, b) =>
+												a.parcela.localeCompare(
+													b.parcela
+												)
 											)
 											.map((data, i) => {
 												return (
