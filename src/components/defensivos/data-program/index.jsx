@@ -132,7 +132,7 @@ const DataProgramPage = (props) => {
 								color={colors.greenAccent[500]}
 								onClick={() => handleFilterList(data)}
 							>
-								{data}
+								{data.replace("Projeto ", "")}
 							</Typography>
 						</Box>
 					);
