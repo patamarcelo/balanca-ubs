@@ -1,13 +1,16 @@
 import { Box, Typography, Button, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
 import DateIntervalPage from "./date-interval";
 
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import Zoom from "@mui/material/Zoom";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -21,6 +24,8 @@ const DataProgramPage = (props) => {
 	const [farmSelected, setFarmSelected] = useState("");
 
 	const [showProducts, setShoeProducts] = useState(false);
+
+	const containerRef = useRef(null);
 
 	useEffect(() => {
 		const initDa = new Date().toISOString().slice(0, 10);
@@ -179,8 +184,14 @@ const DataProgramPage = (props) => {
 							>
 								<div className={classes["estagio-div"]}>
 									<FontAwesomeIcon
-										icon={faEye}
-										color={colors.yellow[600]}
+										icon={
+											!showProducts ? faEyeSlash : faEye
+										}
+										color={
+											!showProducts
+												? colors.redAccent[500]
+												: colors.greenAccent[500]
+										}
 										size="sm"
 										style={{
 											marginTop: "20px",
@@ -194,60 +205,72 @@ const DataProgramPage = (props) => {
 									<p style={{ color: colors.primary[200] }}>
 										Area Total: {data.total}
 									</p>
-									<div
-										className={
-											classes[
-												"div-produtos-aplicar-outside"
-											]
-										}
+									<Zoom
+										in={showProducts}
+										style={{
+											transitionDelay: showProducts
+												? "300ms"
+												: "0ms"
+										}}
 									>
-										{data.produtos.map((dataP, i) => {
-											const quantidade =
-												dataP[
-													"quantidade aplicar"
-												].toFixed(2);
-											return (
-												<div
-													key={i}
-													style={{
-														height: "100%",
-														transition: "height 3s",
-														display: showProducts
-															? ""
-															: "none"
-													}}
-												>
+										<div
+											className={
+												classes[
+													"div-produtos-aplicar-outside"
+												]
+											}
+										>
+											{data.produtos.map((dataP, i) => {
+												const quantidade =
+													dataP[
+														"quantidade aplicar"
+													].toFixed(2);
+												return (
 													<div
-														className={
-															classes[
-																"div-produtos-aplicar"
-															]
-														}
+														key={i}
+														style={{
+															height: "100%",
+															transition:
+																"height 3s",
+															display:
+																showProducts
+																	? ""
+																	: "none"
+														}}
 													>
 														<div
 															className={
 																classes[
-																	"div-produtos-aplicar-produto"
+																	"div-produtos-aplicar"
 																]
 															}
 														>
-															{dataP.produto}
-														</div>
-														<div
-															className={
-																classes[
-																	"div-produtos-aplicar-quantidade"
-																]
-															}
-														>
-															{" "}
-															{quantidade}
+															<div
+																className={
+																	classes[
+																		"div-produtos-aplicar-produto"
+																	]
+																}
+															>
+																{dataP.produto +
+																	` - ${dataP.dose}`}
+															</div>
+															<div
+																className={
+																	classes[
+																		"div-produtos-aplicar-quantidade"
+																	]
+																}
+															>
+																{" "}
+																{quantidade}
+															</div>
 														</div>
 													</div>
-												</div>
-											);
-										})}
-									</div>
+												);
+											})}
+										</div>
+									</Zoom>
 								</div>
 								<div className={classes["parcelas-resumo-div"]}>
 									<div>
