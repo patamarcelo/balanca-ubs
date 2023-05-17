@@ -10,23 +10,27 @@ const DICT_COLOR = {
 	"Semente Arroz 424": ["rgb(255, 208, 80)", "black"],
 	"Semente Arroz 704": ["rgb(171,202,221)", "black"],
 	"Semente Feijão Mungo": ["rgb(17,115,75)", "whitesmoke"],
-	"Semente Feijão Branco": ["rgb(231,234,237)", "black"],
-	"Semente Soja": ["rgb(212,237,188)", "black"],
-	"Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
-	"Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
-	"Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
-	"Semente Soja ANsc 84": ["rgb(212,237,188)", "black"],
-	"Semente Soja CG SPEED": ["rgb(212,237,188)", "black"]
+	"Semente Feijão Branco": ["rgb(231,234,237)", "black"]
+	// "Semente Soja": ["rgb(212,237,188)", "black"],
+	// "Semente Soja ANsc 88": ["rgb(212,237,188)", "black"],
+	// "Semente Soja ANsc 89": ["rgb(212,237,188)", "black"],
+	// "Semente Soja TMG 2383": ["rgb(212,237,188)", "black"],
+	// "Semente Soja ANsc 84": ["rgb(212,237,188)", "black"],
+	// "Semente Soja CG SPEED": ["rgb(212,237,188)", "black"]
+	// "Semente Soja 3282": ["rgb(212,237,188)", "black"]
 };
 
 const getProdColor = (data) => {
+	if (data.includes("Semente Soja")) {
+		return ["rgb(212,237,188)", "black"];
+	}
 	if (DICT_COLOR[data] === undefined) {
 		return ["rgb(11,70,109)", "whitesmoke"];
 	}
-	return data.includes("Semente Soja")
-		? ["rgb(212,237,188)", "black"]
-		: DICT_COLOR[data];
+
+	return DICT_COLOR[data];
 };
+
 const SementeTable = (props) => {
 	const { data } = props;
 	const newData = data.sort((a, b) => {
