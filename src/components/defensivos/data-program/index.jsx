@@ -19,18 +19,12 @@ const DataProgramPage = (props) => {
 
 	const [farmList, setFarmList] = useState([]);
 	const [objList, setObjList] = useState([]);
+	const [objResumValues, setObjResumValues] = useState([]);
 
 	const [filteredList, setFilteredList] = useState([]);
 	const [farmSelected, setFarmSelected] = useState("");
 
 	const [showProducts, setShoeProducts] = useState(false);
-
-	const containerRef = useRef(null);
-
-	useEffect(() => {
-		const initDa = new Date().toISOString().slice(0, 10);
-		console.log(initDa);
-	}, []);
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -109,37 +103,50 @@ const DataProgramPage = (props) => {
 				return curr.area + acc;
 			}, 0);
 
-			let produtosArr = [];
-			result[data].forEach((element) => {
-				element.produtos.forEach((data) => produtosArr.push(data));
+			const produtosArr = result[data].map((data, i) => {
+				const filtArr = data.produtos.map((data) => {
+					return data;
+				});
+				return filtArr;
 			});
-
-			let formatProd = [];
-			formatProd = produtosArr.reduce((acc2, curr2) => {
-				let existItem = acc2.find(
-					({ produto }) => curr2.produto === produto
-				);
-				if (existItem) {
-					existItem["quantidade aplicar"] +=
-						curr2["quantidade aplicar"];
-				} else {
-					acc2.push(curr2);
-				}
-				return acc2;
-			}, []);
 
 			const newDic = {
 				estagio: data,
 				cronograma: result[data],
 				total: total.toFixed(2).replace(".", ","),
-				produtos: formatProd
+				produtos: produtosArr.flat()
 			};
 			dictTotal.push(newDic);
-			console.log(newDic);
 			return newDic;
 		});
 		setObjList(dictTotal);
 	}, [filteredList, initialDateForm, finalDateForm]);
+
+	useEffect(() => {
+		const useArr = [...objList];
+		const filtArr = useArr.map((data, i) => {
+			const dataProdutos = data.produtos;
+			console.log(dataProdutos);
+			var result = [];
+
+			dataProdutos.reduce(function (res, value) {
+				if (!res[value.produto]) {
+					res[value.produto] = {
+						produto: value.produto,
+						qty: 0,
+						dose: value.dose
+					};
+					result.push(res[value.produto]);
+				}
+				res[value.produto].qty += value["quantidade aplicar"];
+				return res;
+			}, {});
+			console.log(result);
+			return { data, totais: result };
+		});
+		console.log(filtArr);
+		setObjResumValues(filtArr);
+	}, [objList]);
 
 	return (
 		<Box className={classes.mainDiv}>
@@ -176,177 +183,190 @@ const DataProgramPage = (props) => {
 			<Box className={classes["box-program"]}>
 				<Box className={classes["fazenda-div"]}>{farmSelected}</Box>
 				<Box className={classes["geral-program-div"]}>
-					{objList.map((data, i) => {
-						return (
-							<div
-								key={i}
-								className={classes["detail-parcela-div"]}
-							>
-								<div className={classes["estagio-div"]}>
-									<FontAwesomeIcon
-										icon={
-											!showProducts ? faEyeSlash : faEye
-										}
-										color={
-											!showProducts
-												? colors.redAccent[500]
-												: colors.greenAccent[500]
-										}
-										size="sm"
-										style={{
-											marginTop: "20px",
-											cursor: "pointer"
-										}}
-										onClick={() =>
-											setShoeProducts(!showProducts)
-										}
-									/>
-									<p>{data.estagio}</p>
-									<p style={{ color: colors.primary[200] }}>
-										Area Total: {data.total}
-									</p>
-									<Zoom
-										in={showProducts}
-										style={{
-											transitionDelay: showProducts
-												? "300ms"
-												: "0ms"
-										}}
-									>
-										<div
-											className={
-												classes[
-													"div-produtos-aplicar-outside"
-												]
+					{objResumValues.length > 0 &&
+						objResumValues.map((dat, i) => {
+							const data = dat.data;
+							return (
+								<div
+									key={i}
+									className={classes["detail-parcela-div"]}
+								>
+									<div className={classes["estagio-div"]}>
+										<FontAwesomeIcon
+											icon={
+												!showProducts
+													? faEyeSlash
+													: faEye
 											}
+											color={
+												!showProducts
+													? colors.redAccent[500]
+													: colors.greenAccent[500]
+											}
+											size="sm"
+											style={{
+												marginTop: "20px",
+												cursor: "pointer"
+											}}
+											onClick={() =>
+												setShoeProducts(!showProducts)
+											}
+										/>
+										<p>{data.estagio}</p>
+										<p
+											style={{
+												color: colors.primary[200]
+											}}
 										>
-											{data.produtos.map((dataP, i) => {
-												const quantidade =
-													dataP[
-														"quantidade aplicar"
-													].toFixed(2);
-												return (
-													<div
-														key={i}
-														style={{
-															height: "100%",
-															transition:
-																"height 3s",
-															display:
-																showProducts
-																	? ""
-																	: "none"
-														}}
-													>
+											Area Total: {data.total}
+										</p>
+										<Zoom
+											in={showProducts}
+											style={{
+												transitionDelay: showProducts
+													? "300ms"
+													: "0ms"
+											}}
+										>
+											<div
+												className={
+													classes[
+														"div-produtos-aplicar-outside"
+													]
+												}
+											>
+												{dat.totais.map((dataP, i) => {
+													const quantidade =
+														dataP.qty.toFixed(2);
+													return (
 														<div
-															className={
-																classes[
-																	"div-produtos-aplicar"
-																]
-															}
+															key={i}
+															style={{
+																height: "100%",
+																transition:
+																	"height 3s",
+																display:
+																	showProducts
+																		? ""
+																		: "none"
+															}}
 														>
 															<div
 																className={
 																	classes[
-																		"div-produtos-aplicar-produto"
+																		"div-produtos-aplicar"
 																	]
 																}
 															>
-																{dataP.produto +
-																	` - ${dataP.dose}`}
-															</div>
-															<div
-																className={
-																	classes[
-																		"div-produtos-aplicar-quantidade"
-																	]
-																}
-															>
-																{" "}
-																{quantidade}
+																<div
+																	className={
+																		classes[
+																			"div-produtos-aplicar-produto"
+																		]
+																	}
+																>
+																	{dataP.produto +
+																		` - ${dataP.dose}`}
+																</div>
+																<div
+																	className={
+																		classes[
+																			"div-produtos-aplicar-quantidade"
+																		]
+																	}
+																>
+																	{" "}
+																	{quantidade}
+																</div>
 															</div>
 														</div>
-													</div>
-												);
-											})}
-										</div>
-									</Zoom>
-								</div>
-								<div className={classes["parcelas-resumo-div"]}>
-									<div>
-										{data.cronograma
-											.sort((a, b) =>
-												a.parcela.localeCompare(
-													b.parcela
+													);
+												})}
+											</div>
+										</Zoom>
+									</div>
+									<div
+										className={
+											classes["parcelas-resumo-div"]
+										}
+									>
+										<div>
+											{data.cronograma
+												.sort((a, b) =>
+													a.parcela.localeCompare(
+														b.parcela
+													)
 												)
-											)
-											.map((data, i) => {
-												return (
-													<div
-														key={i}
-														className={
-															classes[
-																"parcelas-detail-div"
-															]
-														}
-													>
+												.map((data, i) => {
+													return (
 														<div
+															key={i}
 															className={
 																classes[
-																	"parcela-div"
+																	"parcelas-detail-div"
 																]
 															}
 														>
-															{data.parcela}
-														</div>
-														<div
-															style={{
-																color: colors
-																	.greenAccent[300]
-															}}
-														>
-															{displayDate(
-																data.dataPlantio
-															)}
-														</div>
-														<div>
-															{data.dap < 10
-																? "0" + data.dap
-																: data.dap}
-														</div>
-														<div>
-															{data.cultura}
-														</div>
-														<div>
-															{data.variedade}
-														</div>
-														<div>
-															{displayDate(
-																data.dataPrevApp
-															)}
-														</div>
-														<div>{data.dapApp}</div>
-														<div
-															style={{
-																color: colors
-																	.primary[200]
-															}}
-														>
-															{data.area
-																.toFixed(2)
-																.replace(
-																	".",
-																	","
+															<div
+																className={
+																	classes[
+																		"parcela-div"
+																	]
+																}
+															>
+																{data.parcela}
+															</div>
+															<div
+																style={{
+																	color: colors
+																		.greenAccent[300]
+																}}
+															>
+																{displayDate(
+																	data.dataPlantio
 																)}
+															</div>
+															<div>
+																{data.dap < 10
+																	? "0" +
+																	  data.dap
+																	: data.dap}
+															</div>
+															<div>
+																{data.cultura}
+															</div>
+															<div>
+																{data.variedade}
+															</div>
+															<div>
+																{displayDate(
+																	data.dataPrevApp
+																)}
+															</div>
+															<div>
+																{data.dapApp}
+															</div>
+															<div
+																style={{
+																	color: colors
+																		.primary[200]
+																}}
+															>
+																{data.area
+																	.toFixed(2)
+																	.replace(
+																		".",
+																		","
+																	)}
+															</div>
 														</div>
-													</div>
-												);
-											})}
+													);
+												})}
+										</div>
 									</div>
 								</div>
-							</div>
-						);
-					})}
+							);
+						})}
 				</Box>
 			</Box>
 		</Box>
