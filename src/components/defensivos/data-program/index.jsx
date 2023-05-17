@@ -113,7 +113,9 @@ const DataProgramPage = (props) => {
 			const newDic = {
 				estagio: data,
 				cronograma: result[data],
-				total: total.toFixed(2).replace(".", ","),
+				total: total.toLocaleString("pt-br", {
+					maximumFractionDigits: 2
+				}),
 				produtos: produtosArr.flat()
 			};
 			dictTotal.push(newDic);
@@ -236,8 +238,11 @@ const DataProgramPage = (props) => {
 												}
 											>
 												{dat.totais.map((dataP, i) => {
-													const quantidade =
-														dataP.qty.toFixed(2);
+													const quantidade = Number(
+														dataP.qty
+													).toLocaleString("pt-br", {
+														maximumFractionDigits: 2
+													});
 													return (
 														<div
 															key={i}
@@ -266,7 +271,13 @@ const DataProgramPage = (props) => {
 																	}
 																>
 																	{dataP.produto +
-																		` - ${dataP.dose}`}
+																		` - ${dataP.dose.toLocaleString(
+																			"pt-br",
+																			{
+																				minimumFractionDigits: 3,
+																				maximumFractionDigits: 3
+																			}
+																		)}`}
 																</div>
 																<div
 																	className={
