@@ -104,7 +104,11 @@
 }
 
 .estagio-div{
-    min-width: 20%;
+    min-width: 25%;
+}
+
+.estagio-div p{
+    margin: 7px;
 }
 
 .parcelas-resumo-div{
@@ -160,7 +164,44 @@
     width: 100%;
 }
 
-.parcelas-detail-div div {
-    min-width: 43px;
+.title-div-picker-moving {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: 100%;
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
 
+.parcelas-detail-div div {
+    min-width: 43px;
+    
+}
+
+.div-produtos-aplicar-outside {
+    margin-bottom: 20px;
+    /* width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; */
+}
+
+.div-produtos-aplicar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.div-produtos-aplicar-produto {
+    color: grey;
+    white-space: nowrap;
+    justify-content: end;
+}
+
+.div-produtos-aplicar-quantidade{
+    color: whitesmoke;
+    font-style: italic;
+}

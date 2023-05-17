@@ -6,17 +6,21 @@ import classes from "./data-program.module.css";
 import { displayDate } from "../../../utils/format-suport/data-format";
 import DateIntervalPage from "./date-interval";
 
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const { dataDef, isLoadingHome, initialDateForm, finalDateForm } = props;
 
 	const [farmList, setFarmList] = useState([]);
-	const [farmParcelasList, setFarmParcelasList] = useState([]);
 	const [objList, setObjList] = useState([]);
 
 	const [filteredList, setFilteredList] = useState([]);
 	const [farmSelected, setFarmSelected] = useState("");
+
+	const [showProducts, setShoeProducts] = useState(false);
 
 	useEffect(() => {
 		const initDa = new Date().toISOString().slice(0, 10);
@@ -61,6 +65,7 @@ const DataProgramPage = (props) => {
 					const area = data.dados.area_colheita;
 					const dap = data.dados.dap;
 					const cultura = data.dados.cultura;
+					const produtos = cron.produtos;
 					cronOb = {
 						parcela,
 						variedade,
@@ -70,7 +75,8 @@ const DataProgramPage = (props) => {
 						dapApp,
 						area,
 						dap,
-						cultura
+						cultura,
+						produtos
 					};
 				}
 				return cronOb;
@@ -94,26 +100,40 @@ const DataProgramPage = (props) => {
 
 		const dictTotal = [];
 		Object.keys(result).map((data, i) => {
-			const dic = {};
-			dic["estagio"] = data;
-			dic["cronograma"] = result[data];
 			const total = result[data].reduce((acc, curr) => {
 				return curr.area + acc;
 			}, 0);
-			dic["total"] = total.toFixed(2).replace(".", ",");
-			dictTotal.push(dic);
-			return dic;
-		});
 
+			let produtosArr = [];
+			result[data].forEach((element) => {
+				element.produtos.forEach((data) => produtosArr.push(data));
+			});
+
+			let formatProd = [];
+			formatProd = produtosArr.reduce((acc2, curr2) => {
+				let existItem = acc2.find(
+					({ produto }) => curr2.produto === produto
+				);
+				if (existItem) {
+					existItem["quantidade aplicar"] +=
+						curr2["quantidade aplicar"];
+				} else {
+					acc2.push(curr2);
+				}
+				return acc2;
+			}, []);
+
+			const newDic = {
+				estagio: data,
+				cronograma: result[data],
+				total: total.toFixed(2).replace(".", ","),
+				produtos: formatProd
+			};
+			dictTotal.push(newDic);
+			console.log(newDic);
+			return newDic;
+		});
 		setObjList(dictTotal);
-		console.log(dictTotal);
-		setFarmParcelasList(
-			filtParcelas
-				.flat()
-				.sort(
-					(a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp)
-				)
-		);
 	}, [filteredList, initialDateForm, finalDateForm]);
 
 	return (
@@ -158,10 +178,76 @@ const DataProgramPage = (props) => {
 								className={classes["detail-parcela-div"]}
 							>
 								<div className={classes["estagio-div"]}>
+									<FontAwesomeIcon
+										icon={faEye}
+										color={colors.yellow[600]}
+										size="sm"
+										style={{
+											marginTop: "20px",
+											cursor: "pointer"
+										}}
+										onClick={() =>
+											setShoeProducts(!showProducts)
+										}
+									/>
 									<p>{data.estagio}</p>
 									<p style={{ color: colors.primary[200] }}>
 										Area Total: {data.total}
 									</p>
+									<div
+										className={
+											classes[
+												"div-produtos-aplicar-outside"
+											]
+										}
+									>
+										{data.produtos.map((dataP, i) => {
+											const quantidade =
+												dataP[
+													"quantidade aplicar"
+												].toFixed(2);
+											return (
+												<div
+													key={i}
+													style={{
+														height: "100%",
+														transition: "height 3s",
+														display: showProducts
+															? ""
+															: "none"
+													}}
+												>
+													<div
+														className={
+															classes[
+																"div-produtos-aplicar"
+															]
+														}
+													>
+														<div
+															className={
+																classes[
+																	"div-produtos-aplicar-produto"
+																]
+															}
+														>
+															{dataP.produto}
+														</div>
+														<div
+															className={
+																classes[
+																	"div-produtos-aplicar-quantidade"
+																]
+															}
+														>
+															{" "}
+															{quantidade}
+														</div>
+													</div>
+												</div>
+											);
+										})}
+									</div>
 								</div>
 								<div className={classes["parcelas-resumo-div"]}>
 									<div>
