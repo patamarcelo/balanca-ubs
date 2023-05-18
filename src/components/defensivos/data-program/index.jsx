@@ -9,6 +9,7 @@ import DateIntervalPage from "./date-interval";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Zoom from "@mui/material/Zoom";
 
@@ -25,6 +26,8 @@ const DataProgramPage = (props) => {
 	const [farmSelected, setFarmSelected] = useState("");
 
 	const [showProducts, setShoeProducts] = useState(false);
+	const isNonIpad = useMediaQuery("(min-width: 1404px)");
+	const isCellPhone = useMediaQuery("(min-width: 850px)");
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -128,7 +131,6 @@ const DataProgramPage = (props) => {
 		const useArr = [...objList];
 		const filtArr = useArr.map((data, i) => {
 			const dataProdutos = data.produtos;
-			console.log(dataProdutos);
 			var result = [];
 
 			dataProdutos.reduce(function (res, value) {
@@ -143,10 +145,8 @@ const DataProgramPage = (props) => {
 				res[value.produto].qty += value["quantidade aplicar"];
 				return res;
 			}, {});
-			console.log(result);
 			return { data, totais: result };
 		});
-		console.log(filtArr);
 		setObjResumValues(filtArr);
 	}, [objList]);
 
@@ -174,7 +174,10 @@ const DataProgramPage = (props) => {
 			</Box>
 			<Box className={classes["date-picker-div"]}>
 				<div className={classes["title-div-picker"]}>
-					<Typography variant="h2" color={colors.primary[200]}>
+					<Typography
+						variant={!isCellPhone ? "h5" : "h3"}
+						color={colors.primary[200]}
+					>
 						Programações: &nbsp;&nbsp;&nbsp;
 						{initialDateForm &&
 							displayDate(initialDateForm)} até{" "}
@@ -191,9 +194,23 @@ const DataProgramPage = (props) => {
 							return (
 								<div
 									key={i}
-									className={classes["detail-parcela-div"]}
+									className={
+										classes[
+											`${
+												!isCellPhone
+													? "detail-parcela-div-mobile"
+													: "detail-parcela-div"
+											}`
+										]
+									}
 								>
-									<div className={classes["estagio-div"]}>
+									<div
+										className={
+											!isNonIpad
+												? classes["estagio-div-ipad"]
+												: classes["estagio-div"]
+										}
+									>
 										<FontAwesomeIcon
 											icon={
 												!showProducts
