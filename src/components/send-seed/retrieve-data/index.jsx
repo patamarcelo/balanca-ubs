@@ -90,7 +90,7 @@ const RetrieveData = () => {
 						row.c.forEach((cell, index) => {
 							let cellValue = cell === null ? "-" : cell.v;
 							if (index === 0) {
-								cellValue = cell.f;
+								cellValue = cell?.f;
 							}
 							if (index === 11 && cellValue.length > 1) {
 								cellValue = cell.f;
