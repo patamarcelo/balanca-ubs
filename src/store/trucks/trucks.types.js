@@ -10,5 +10,6 @@ export const UNITS_OP = [
 	{ title: "bencaoDeDeus", description: "Benção De Deus" },
 	{ title: "lagoVerde", description: "Lago Verde" },
 	{ title: "eldorado", description: "Eldorado" },
+	{ title: "campoGuapo", description: "Campo Guapo" },
 	// { title: "ouroVerde", description: "Ouro Verde" }
 ];
