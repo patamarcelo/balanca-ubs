@@ -162,6 +162,7 @@ export const FAZENDA_ORIGEM = [
 	{ id: 4, local: "Projeto Jacaré", user: "diamante" },
 	// { id: 44, local: "Projeto João de Barro" , user: ""},
 	{ id: 8, local: "Projeto Lago Verde", user: "lagoVerde" },
+	{ id: 12, local: "Projeto Eldorado", user: "lagoVerde" },
 	{ id: 40, local: "Projeto Novo Acordo", user: "novoAcordo" },
 	{ id: 1, local: "Projeto Ouro Verde", user: "ouroVerde" },
 	// { id: 16, local: "Projeto Pau Brasil" , user: ""},
