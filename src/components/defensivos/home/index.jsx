@@ -38,15 +38,26 @@ const HomeDefensivoPage = (props) => {
 
 	const [isChangingTable, setIsChangingTable] = useState(false);
 
-	const [initialDateForm, setInitialDate] = useState(
-		new Date().toISOString().slice(0, 10)
-	);
+	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
+	// useEffect(() => {
+	// 	const current = new Date();
+	// 	current.setDate(current.getDate() + 7);
+	// 	setFinalDateForm(current.toISOString().split("T")[0]);
+	// }, []);
+
 	useEffect(() => {
-		const current = new Date();
-		current.setDate(current.getDate() + 7);
-		setFinalDateForm(current.toISOString().split("T")[0]);
+		const today = new Date();
+		const lastSunday = (today) => {
+			var t = new Date(today);
+			t.setDate(t.getDate() - t.getDay());
+			return [t.toISOString().slice(0, 10), t];
+		};
+		setInitialDate(lastSunday(today)[0]);
+		const finalDate = lastSunday(today)[1];
+		finalDate.setDate(finalDate.getDate() + 6);
+		setFinalDateForm(finalDate.toISOString().split("T")[0]);
 	}, []);
 
 	const dictComps = {
