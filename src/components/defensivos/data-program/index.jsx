@@ -287,14 +287,14 @@ const DataProgramPage = (props) => {
 																		]
 																	}
 																>
-																	{dataP.produto +
-																		` - ${dataP.dose.toLocaleString(
-																			"pt-br",
-																			{
-																				minimumFractionDigits: 3,
-																				maximumFractionDigits: 3
-																			}
-																		)}`}
+																	{`${dataP.dose.toLocaleString(
+																		"pt-br",
+																		{
+																			minimumFractionDigits: 3,
+																			maximumFractionDigits: 3
+																		}
+																	)} - ` +
+																		dataP.produto}
 																</div>
 																<div
 																	className={
