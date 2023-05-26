@@ -174,7 +174,7 @@ const HomeTableTruck = (props) => {
 							sx={{
 								// backgroundColor: "red",
 								width: "9%",
-								marginLeft: '25px'
+								marginLeft: "25px"
 							}}
 						>
 							<LightTooltip
@@ -194,14 +194,10 @@ const HomeTableTruck = (props) => {
 							</LightTooltip>
 							<Typography
 								variant="h6"
-								mt={2}
 								color={colors.redAccent[200]}
-								// ml={10}
-								sx={
-									{
-										// backgroundColor: "white"
-									}
-								}
+								sx={{
+									margin: "2px 10px"
+								}}
 							>
 								{data.relatorioColheita}
 							</Typography>
