@@ -8,10 +8,15 @@ import DateIntervalPage from "./date-interval";
 
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Zoom from "@mui/material/Zoom";
+import CustomButton from "../../button";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -28,6 +33,8 @@ const DataProgramPage = (props) => {
 	const [showProducts, setShoeProducts] = useState(false);
 	const isNonIpad = useMediaQuery("(min-width: 1404px)");
 	const isCellPhone = useMediaQuery("(min-width: 850px)");
+
+	const [onlyOpenApp, setOnlyOpenApp] = useState(false);
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -55,6 +62,7 @@ const DataProgramPage = (props) => {
 			const finalDate = finalDateForm ? finalDateForm : "2023-05-29";
 			const cronograma = data.dados.cronograma;
 			const cronArr = cronograma.map((cron, i) => {
+				const aplicado = cron.aplicado;
 				let cronOb;
 				const dataPrev = cron["data prevista"];
 				if (dataPrev >= initialDate && dataPrev <= finalDate) {
@@ -78,12 +86,19 @@ const DataProgramPage = (props) => {
 						area,
 						dap,
 						cultura,
-						produtos
+						produtos,
+						aplicado
 					};
 				}
 				return cronOb;
 			});
-			return cronArr.filter((data) => data !== undefined);
+			if (!onlyOpenApp) {
+				return cronArr.filter(
+					(data) => data !== undefined && data.aplicado === false
+				);
+			} else {
+				return cronArr.filter((data) => data !== undefined);
+			}
 		});
 		const filtArray = filtParcelas
 			.flat()
@@ -125,7 +140,7 @@ const DataProgramPage = (props) => {
 			return newDic;
 		});
 		setObjList(dictTotal);
-	}, [filteredList, initialDateForm, finalDateForm]);
+	}, [filteredList, initialDateForm, finalDateForm, onlyOpenApp]);
 
 	useEffect(() => {
 		const useArr = [...objList];
@@ -138,11 +153,11 @@ const DataProgramPage = (props) => {
 					res[value.produto] = {
 						produto: value.produto,
 						qty: 0,
-						dose: value.dose
+						dose: Number(value.dose)
 					};
 					result.push(res[value.produto]);
 				}
-				res[value.produto].qty += value["quantidade aplicar"];
+				res[value.produto].qty += Number(value["quantidade aplicar"]);
 				return res;
 			}, {});
 			return { data, totais: result };
@@ -186,7 +201,23 @@ const DataProgramPage = (props) => {
 				</div>
 			</Box>
 			<Box className={classes["box-program"]}>
-				<Box className={classes["fazenda-div"]}>{farmSelected}</Box>
+				<Box className={classes["fazenda-div"]}>
+					{farmSelected}
+					<FontAwesomeIcon
+						icon={!onlyOpenApp ? faCheckDouble : faClock}
+						color={
+							!onlyOpenApp
+								? colors.greenAccent[500]
+								: colors.yellow[500]
+						}
+						size="sm"
+						style={{
+							margin: "0px 10px",
+							cursor: "pointer"
+						}}
+						onClick={() => setOnlyOpenApp(!onlyOpenApp)}
+					/>
+				</Box>
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {

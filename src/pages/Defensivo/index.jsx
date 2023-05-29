@@ -27,6 +27,9 @@ const DefensivoPage = () => {
 	const [ordems, setOrdems] = useState([]);
 
 	const [dataDef, setDataDef] = useState([]);
+
+	const [dataDefFalse, setDataDefFalse] = useState([]);
+	const [dataDefTrue, setDataDefTrue] = useState([]);
 	const [resumeData, setResumeDate] = useState([]);
 
 	useEffect(() => {
@@ -40,7 +43,7 @@ const DefensivoPage = () => {
 					})
 					.then((res) => {
 						// console.log(res.data);
-						setDataDef(res.data.dados);
+						setDataDefFalse(res.data.dados);
 						setResumeDate(res.data.app_date);
 					})
 					.catch((err) => console.log(err));
@@ -52,6 +55,34 @@ const DefensivoPage = () => {
 			}
 		})();
 	}, []);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				await djangoApi
+					.get("plantio/get_plantio_operacoes_detail_json_program/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						// console.log(res.data);
+						setDataDefTrue(res.data.dados_plantio);
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+			} finally {
+				// console.log("Finally statement");
+				setIsLoading(false);
+			}
+		})();
+	}, []);
+
+	useEffect(() => {
+		const newArr = [...dataDefTrue, ...dataDefFalse];
+		setDataDef(newArr);
+	}, [dataDefFalse, dataDefTrue]);
 
 	return (
 		<Box
