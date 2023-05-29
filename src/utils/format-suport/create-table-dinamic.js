@@ -25,6 +25,7 @@ export const createDinamicTable = (data) => {
 			const dapAplicacao = data.dap;
 			const dataPrevista = data["data prevista"];
 			const produtos = data.produtos;
+			const situacaoApp = data.aplicado
 			produtos.forEach((prod, i) => {
 				const produto = prod.produto;
 				const tipo = prod.tipo;
@@ -51,6 +52,7 @@ export const createDinamicTable = (data) => {
 					programaEndDate: programaEndDate,
 					capacidadePlantioDia: capacidadePlantioDia,
 					estagio: estagio,
+					situacaoApp: situacaoApp,
 					dapAplicacao: dapAplicacao,
 					dataPrevista: dataPrevista,
 					produto: produto,
