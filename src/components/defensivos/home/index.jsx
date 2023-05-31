@@ -54,7 +54,8 @@ const HomeDefensivoPage = (props) => {
 			t.setDate(t.getDate() - t.getDay());
 			return [t.toISOString().slice(0, 10), t];
 		};
-		setInitialDate(lastSunday(today)[0]);
+		// setInitialDate(lastSunday(today)[0]);
+		setInitialDate("2023-05-01");
 		const finalDate = lastSunday(today)[1];
 		finalDate.setDate(finalDate.getDate() + 6);
 		setFinalDateForm(finalDate.toISOString().split("T")[0]);
