@@ -13,7 +13,9 @@ export const createDinamicTable = (data) => {
 		const fazendaGrupo = dados.fazenda_grupo;
 		const talhaoIdUnico = dados.talhao_id_unico;
 		const plantioFinalizado = dados.plantio_finalizado;
-		const area = parseFloat(dados.area_colheita).toFixed(2).replace(".", ",");
+		const area = parseFloat(dados.area_colheita)
+			.toFixed(2)
+			.replace(".", ",");
 		const dataPlantio = dados.data_plantio;
 		const dap = dados.dap;
 		const programa = dados.programa;
@@ -30,8 +32,10 @@ export const createDinamicTable = (data) => {
 				const produto = prod.produto;
 				const tipo = prod.tipo;
 				const dose = parseFloat(prod.dose).toFixed(3).replace(".", ",");
-				const quantidadeAplicar = parseFloat(prod["quantidade aplicar"])
-					.toFixed(4)
+				const quantiMult =
+					parseFloat(dados.area_colheita) * parseFloat(prod.dose);
+				const quantidadeAplicar = quantiMult
+					.toFixed(3)
 					.replace(".", ",");
 				const newObj = {
 					id: count,

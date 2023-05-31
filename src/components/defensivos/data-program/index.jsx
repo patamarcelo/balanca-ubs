@@ -75,7 +75,11 @@ const DataProgramPage = (props) => {
 					const area = data.dados.area_colheita;
 					const dap = data.dados.dap;
 					const cultura = data.dados.cultura;
-					const produtos = cron.produtos;
+					const produtosAp = cron.produtos;
+					const produtos = produtosAp.map((data) => ({
+						...data,
+						area: area
+					}));
 					cronOb = {
 						parcela,
 						variedade,
@@ -147,7 +151,8 @@ const DataProgramPage = (props) => {
 		const filtArr = useArr.map((data, i) => {
 			const dataProdutos = data.produtos;
 			var result = [];
-
+			// const area_total = data.total.replace(".", "").replace(",", ".");
+			// console.log(parseFloat(area_total));
 			dataProdutos.reduce(function (res, value) {
 				if (!res[value.produto]) {
 					res[value.produto] = {
@@ -157,7 +162,7 @@ const DataProgramPage = (props) => {
 					};
 					result.push(res[value.produto]);
 				}
-				res[value.produto].qty += Number(value["quantidade aplicar"]);
+				res[value.produto].qty += value.area * Number(value.dose);
 				return res;
 			}, {});
 			return { data, totais: result };
@@ -289,7 +294,8 @@ const DataProgramPage = (props) => {
 													const quantidade = Number(
 														dataP.qty
 													).toLocaleString("pt-br", {
-														maximumFractionDigits: 2
+														maximumFractionDigits: 2,
+														minimumFractionDigits: 2
 													});
 													return (
 														<div

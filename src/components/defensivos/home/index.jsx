@@ -60,10 +60,6 @@ const HomeDefensivoPage = (props) => {
 		setFinalDateForm(finalDate.toISOString().split("T")[0]);
 	}, []);
 
-	useEffect(() => {
-		console.log(dataDef)
-	}, []);
-
 	const dictComps = {
 		dinamic: "dinamic",
 		table: "table",
