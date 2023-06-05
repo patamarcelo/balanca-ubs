@@ -38,7 +38,7 @@ const DataProgramPage = (props) => {
 
 	const [onlyOpenApp, setOnlyOpenApp] = useState(false);
 
-	const [filtData, setFiltData] = useState(true);
+	const [filtData, setFiltData] = useState(false);
 
 	useEffect(() => {
 		const listFarm = dataDef
