@@ -11,6 +11,8 @@ import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -36,6 +38,8 @@ const DataProgramPage = (props) => {
 
 	const [onlyOpenApp, setOnlyOpenApp] = useState(false);
 
+	const [filtData, setFiltData] = useState(true);
+
 	useEffect(() => {
 		const listFarm = dataDef
 			.filter((data) => data.dados.plantio_finalizado === true)
@@ -54,6 +58,10 @@ const DataProgramPage = (props) => {
 				data.dados.plantio_finalizado === true
 		);
 		setFilteredList(filtList);
+	};
+
+	const handleFilterTable = () => {
+		setFiltData(!filtData);
 	};
 
 	useEffect(() => {
@@ -222,10 +230,25 @@ const DataProgramPage = (props) => {
 						}}
 						onClick={() => setOnlyOpenApp(!onlyOpenApp)}
 					/>
+					<FontAwesomeIcon
+						icon={!filtData ? faArrowDownShortWide : faArrowDownAZ}
+						color={
+							!filtData
+								? colors.greenAccent[500]
+								: colors.yellow[500]
+						}
+						size="sm"
+						style={{
+							margin: "0px 0px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleFilterTable()}
+					/>
 				</Box>
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {
+							console.log(dat);
 							const data = dat.data;
 							return (
 								<div
@@ -358,9 +381,16 @@ const DataProgramPage = (props) => {
 										<div>
 											{data.cronograma
 												.sort((a, b) =>
-													a.parcela.localeCompare(
-														b.parcela
-													)
+													!filtData
+														? new Date(
+																a.dataPrevApp
+														  ) -
+														  new Date(
+																b.dataPrevApp
+														  )
+														: a.parcela.localeCompare(
+																b.parcela
+														  )
 												)
 												.map((data, i) => {
 													return (
