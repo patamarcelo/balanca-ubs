@@ -430,7 +430,13 @@ const DataProgramPage = (props) => {
 															<div>
 																{data.cultura}
 															</div>
-															<div>
+															<div
+																className={
+																	classes[
+																		"variedade-div"
+																	]
+																}
+															>
 																{data.variedade}
 															</div>
 															<div>
