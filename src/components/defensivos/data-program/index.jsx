@@ -313,7 +313,7 @@ const DataProgramPage = (props) => {
 													]
 												}
 											>
-												{dat.totais.map((dataP, i) => {
+												{dat.totais.sort((a,b) => a.produto.localeCompare(b.produto)).map((dataP, i) => {
 													const quantidade = Number(
 														dataP.qty
 													).toLocaleString("pt-br", {
