@@ -250,6 +250,8 @@ const DataProgramPage = (props) => {
 						objResumValues.map((dat, i) => {
 							console.log(dat);
 							const data = dat.data;
+							const programa = data.estagio.split("|")[1];
+							const estagio = data.estagio.split("|")[0];
 							return (
 								<div
 									key={i}
@@ -290,7 +292,14 @@ const DataProgramPage = (props) => {
 												setShoeProducts(!showProducts)
 											}
 										/>
-										<p>{data.estagio}</p>
+										<p
+											style={{
+												color: colors.primary[200]
+											}}
+										>
+											{programa}
+										</p>
+										<p>{estagio}</p>
 										<p
 											style={{
 												color: colors.primary[200]
@@ -313,63 +322,75 @@ const DataProgramPage = (props) => {
 													]
 												}
 											>
-												{dat.totais.sort((a,b) => a.produto.localeCompare(b.produto)).map((dataP, i) => {
-													const quantidade = Number(
-														dataP.qty
-													).toLocaleString("pt-br", {
-														maximumFractionDigits: 2,
-														minimumFractionDigits: 2
-													});
-													return (
-														<div
-															key={i}
-															style={{
-																height: "100%",
-																transition:
-																	"height 3s",
-																display:
-																	showProducts
-																		? ""
-																		: "none"
-															}}
-														>
-															<div
-																className={
-																	classes[
-																		"div-produtos-aplicar"
-																	]
+												{dat.totais
+													.sort((a, b) =>
+														a.produto.localeCompare(
+															b.produto
+														)
+													)
+													.map((dataP, i) => {
+														const quantidade =
+															Number(
+																dataP.qty
+															).toLocaleString(
+																"pt-br",
+																{
+																	maximumFractionDigits: 2,
+																	minimumFractionDigits: 2
 																}
+															);
+														return (
+															<div
+																key={i}
+																style={{
+																	height: "100%",
+																	transition:
+																		"height 3s",
+																	display:
+																		showProducts
+																			? ""
+																			: "none"
+																}}
 															>
 																<div
 																	className={
 																		classes[
-																			"div-produtos-aplicar-produto"
+																			"div-produtos-aplicar"
 																		]
 																	}
 																>
-																	{`${dataP.dose.toLocaleString(
-																		"pt-br",
-																		{
-																			minimumFractionDigits: 3,
-																			maximumFractionDigits: 3
+																	<div
+																		className={
+																			classes[
+																				"div-produtos-aplicar-produto"
+																			]
 																		}
-																	)} - ` +
-																		dataP.produto}
-																</div>
-																<div
-																	className={
-																		classes[
-																			"div-produtos-aplicar-quantidade"
-																		]
-																	}
-																>
-																	{" "}
-																	{quantidade}
+																	>
+																		{`${dataP.dose.toLocaleString(
+																			"pt-br",
+																			{
+																				minimumFractionDigits: 3,
+																				maximumFractionDigits: 3
+																			}
+																		)} - ` +
+																			dataP.produto}
+																	</div>
+																	<div
+																		className={
+																			classes[
+																				"div-produtos-aplicar-quantidade"
+																			]
+																		}
+																	>
+																		{" "}
+																		{
+																			quantidade
+																		}
+																	</div>
 																</div>
 															</div>
-														</div>
-													);
-												})}
+														);
+													})}
 											</div>
 										</Zoom>
 									</div>
