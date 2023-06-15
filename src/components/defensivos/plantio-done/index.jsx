@@ -71,7 +71,7 @@ const PlantioDonePage = () => {
 
 	return (
 		<Box className={classes.container}>
-			{!dataF && <LoaderHomeSkeleton />}
+			{isLoading && <LoaderHomeSkeleton />}
 
 			{!isLoading && dataF && (
 				<PlantioDoneTable loading={isLoading} rows={dataF} />
