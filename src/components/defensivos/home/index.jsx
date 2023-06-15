@@ -104,55 +104,48 @@ const HomeDefensivoPage = (props) => {
 		}, 500);
 	};
 
+	const buttonTable = [
+		{
+			title: "Programação",
+			option: dictComps.table,
+			selection: isOpenProducts
+		},
+		{
+			title: "Produtos",
+			option: dictComps.tableByDay,
+			selection: isOpenProductsByDay
+		},
+		{
+			title: "AP Detalhado",
+			option: dictComps.dinamic,
+			selection: isOpenProductsByDayDinamic
+		},
+		{
+			title: "Aplicações",
+			option: dictComps.productsProgram,
+			selection: isOpenProductsProgram
+		}
+	];
 	return (
 		<Box width="100%" height="100%">
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
 				<Stack spacing={2} direction="row" justifyContent="start">
 					<Box display="flex" justifyContent="start" gap="20px">
-						<CustomButton
-							color={
-								isOpenProducts
-									? colors.greenAccent[900]
-									: colors.greenAccent[600]
-							}
-							title="Programação"
-							handleOpenModal={() =>
-								handleSelectComponent(dictComps.table)
-							}
-						/>
-						<CustomButton
-							color={
-								isOpenProductsByDay
-									? colors.greenAccent[900]
-									: colors.greenAccent[600]
-							}
-							title="Produtos"
-							handleOpenModal={() =>
-								handleSelectComponent(dictComps.tableByDay)
-							}
-						/>
-						<CustomButton
-							color={
-								isOpenProductsByDayDinamic
-									? colors.greenAccent[900]
-									: colors.greenAccent[600]
-							}
-							title="AP Detalhado"
-							handleOpenModal={() =>
-								handleSelectComponent(dictComps.dinamic)
-							}
-						/>
-						<CustomButton
-							color={
-								isOpenProductsProgram
-									? colors.greenAccent[900]
-									: colors.greenAccent[600]
-							}
-							title="Programas"
-							handleOpenModal={() =>
-								handleSelectComponent(dictComps.productsProgram)
-							}
-						/>
+						{buttonTable.map((data, i) => {
+							return (
+								<CustomButton
+									color={
+										data.selection
+											? colors.greenAccent[900]
+											: colors.greenAccent[600]
+									}
+									title={data.title}
+									handleOpenModal={() =>
+										handleSelectComponent(data.option)
+									}
+								/>
+							);
+						})}
 					</Box>
 					{isOpenProductsProgram && (
 						<Box
