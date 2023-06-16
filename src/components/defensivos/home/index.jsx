@@ -25,6 +25,8 @@ import DateIntervalPage from "../data-program/date-interval";
 
 import classes from "../data-program/data-program.module.css";
 
+import SafraCicloComp from "./safra-ciclo";
+
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -189,6 +191,7 @@ const HomeDefensivoPage = (props) => {
 							</div>
 						</Box>
 					)}
+					{isOpenPlantioPage && <SafraCicloComp />}
 				</Stack>
 			</Box>
 			{isOpenProducts && (
@@ -242,8 +245,6 @@ const HomeDefensivoPage = (props) => {
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
 						<PlantioDonePage
-							initialDateForm={initialDateForm}
-							finalDateForm={finalDateForm}
 							isLoadingHome={isLoadingHome}
 							dataDef={dataDef}
 						/>
