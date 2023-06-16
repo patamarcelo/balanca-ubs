@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 
 const CustomButton = (props) => {
-	const { title, color, ml, handleOpenModal , isBalanca } = props;
+	const { title, color, ml, handleOpenModal, isBalanca, size } = props;
 	return (
 		<Button
 			variant="contained"
@@ -12,6 +12,7 @@ const CustomButton = (props) => {
 			startIcon={props.children}
 			onClick={handleOpenModal}
 			disabled={isBalanca}
+			size={size}
 		>
 			{title}
 		</Button>

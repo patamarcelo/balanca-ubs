@@ -222,8 +222,7 @@ const DataProgramPage = (props) => {
 										? classes["div-selected"]
 										: classes["div-not-selected"]
 								}
-								variant="h5"
-								color={colors.greenAccent[500]}
+								variant="h6"
 								onClick={() => handleFilterList(data)}
 							>
 								{data.replace("Projeto ", "")}
