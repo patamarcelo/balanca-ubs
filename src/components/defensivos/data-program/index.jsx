@@ -461,7 +461,13 @@ const DataProgramPage = (props) => {
 																	]
 																}
 															>
-																<div>
+																<div
+																	className={
+																		classes[
+																			"parcela-icon-div"
+																		]
+																	}
+																>
 																	<img
 																		src={filteredIcon(
 																			data

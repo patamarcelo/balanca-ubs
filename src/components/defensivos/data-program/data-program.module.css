@@ -238,6 +238,7 @@
 .parcela-div {
     display: flex;
     flex-direction: row;
+    min-width: 110px !important;
 }
 .parcela-div img {
     width: 20px;
