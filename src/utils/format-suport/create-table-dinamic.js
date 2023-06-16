@@ -98,6 +98,7 @@ export const createDataTable = (data) => {
 			const estagio = data.estagio;
 			const dapAplicacao = data.dap;
 			const dataPrevista = data["data prevista"];
+			const aplicado = data.aplicado;
 			if (plantioFinalizado && dapAplicacao > 0) {
 				const newObj = {
 					id: count,
@@ -118,6 +119,7 @@ export const createDataTable = (data) => {
 					programaEndDate: programaEndDate,
 					capacidadePlantioDia: capacidadePlantioDia,
 					estagio: estagio,
+					aplicado: aplicado,
 					dapAplicacao: dapAplicacao,
 					dataPrevista: dataPrevista
 				};

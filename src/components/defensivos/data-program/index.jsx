@@ -248,7 +248,6 @@ const DataProgramPage = (props) => {
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {
-							console.log(dat);
 							const data = dat.data;
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];

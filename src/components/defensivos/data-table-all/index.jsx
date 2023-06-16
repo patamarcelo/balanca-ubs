@@ -22,10 +22,6 @@ const DataDefensivoPage = (props) => {
 		}
 	}, [data]);
 
-	// useEffect(() => {
-	// 	console.log(tableData);
-	// }, [tableData]);
-
 	return (
 		<Box
 			width="100%"
