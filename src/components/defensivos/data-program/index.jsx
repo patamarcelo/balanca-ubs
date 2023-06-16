@@ -20,6 +20,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Zoom from "@mui/material/Zoom";
 import CustomButton from "../../button";
 
+import beans from "../../../utils/assets/icons/beans2.png";
+import soy from "../../../utils/assets/icons/soy.png";
+import rice from "../../../utils/assets/icons/rice.png";
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -39,6 +43,34 @@ const DataProgramPage = (props) => {
 	const [onlyOpenApp, setOnlyOpenApp] = useState(false);
 
 	const [filtData, setFiltData] = useState(false);
+
+	const iconDict = [
+		{ cultura: "Feijão", icon: beans, alt: "feijao" },
+		{ cultura: "Arroz", icon: rice, alt: "arroz" },
+		{ cultura: "Soja", icon: soy, alt: "soja" }
+	];
+
+	const filteredIcon = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data.cultura
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].icon;
+		}
+		return "";
+	};
+
+	const filteredAlt = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data.cultura
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].alt;
+		}
+		return "";
+	};
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -429,6 +461,16 @@ const DataProgramPage = (props) => {
 																	]
 																}
 															>
+																<div>
+																	<img
+																		src={filteredIcon(
+																			data
+																		)}
+																		alt={filteredAlt(
+																			data
+																		)}
+																	/>
+																</div>
 																{data.parcela}
 															</div>
 															<div
