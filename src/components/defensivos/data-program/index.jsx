@@ -494,7 +494,13 @@ const DataProgramPage = (props) => {
 																	  data.dap
 																	: data.dap}
 															</div>
-															<div>
+															<div
+																className={
+																	classes[
+																		"cultura-div"
+																	]
+																}
+															>
 																{data.cultura}
 															</div>
 															<div
@@ -519,6 +525,11 @@ const DataProgramPage = (props) => {
 																	color: colors
 																		.primary[200]
 																}}
+																className={
+																	classes[
+																		"area-div"
+																	]
+																}
 															>
 																{data.area
 																	.toFixed(2)

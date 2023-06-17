@@ -234,10 +234,6 @@
 }
 
 
-.variedade-div {
-    min-width: 150px !important;
-}
-
 
 .parcela-div {
     display: flex;
@@ -249,3 +245,17 @@
     height: 20px;
 }
 
+.area-div {
+    min-width: 60px !important;
+}
+
+@media (max-width: 1000px) {
+    .cultura-div { display: none; }
+    
+}
+@media (min-width: 1100px) {
+    .variedade-div {
+        min-width: 150px !important;
+    }
+    
+}
