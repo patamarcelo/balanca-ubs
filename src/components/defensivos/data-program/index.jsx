@@ -101,6 +101,13 @@ const DataProgramPage = (props) => {
 			const initialDate = initialDateForm;
 			const finalDate = finalDateForm ? finalDateForm : "2023-05-29";
 			const cronograma = data.dados.cronograma;
+
+			// PLOT MAT INFORMATION
+			const projetoMapCentroId = data.dados.projeto_map_centro_id;
+			const mapGeoPoints = data.dados.map_geo_points;
+			const variedadeColor = data.dados.variedade_color;
+			const variedadeColorLine = data.dados.variedade_color_line;
+
 			const cronArr = cronograma.map((cron, i) => {
 				const aplicado = cron.aplicado;
 				let cronOb;
@@ -131,7 +138,11 @@ const DataProgramPage = (props) => {
 						dap,
 						cultura,
 						produtos,
-						aplicado
+						aplicado,
+						projetoMapCentroId,
+						mapGeoPoints,
+						variedadeColor,
+						variedadeColorLine
 					};
 				}
 				return cronOb;
