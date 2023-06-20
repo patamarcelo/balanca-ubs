@@ -27,6 +27,7 @@ import rice from "../../../utils/assets/icons/rice.png";
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
 	const { dataDef, isLoadingHome, initialDateForm, finalDateForm } = props;
 
 	const [farmList, setFarmList] = useState([]);
@@ -239,7 +240,10 @@ const DataProgramPage = (props) => {
 										farmSelected === data
 											? colors.primary[900]
 											: colors.brown[550],
-									color: colors.primary[100]
+									color:
+										farmSelected === data
+											? colors.primary[100]
+											: colors.primary[900]
 								}}
 								variant="h6"
 								onClick={() => handleFilterList(data)}
@@ -254,7 +258,12 @@ const DataProgramPage = (props) => {
 				<div className={classes["title-div-picker"]}>
 					<Typography
 						variant={!isCellPhone ? "h5" : "h3"}
-						color={colors.primary[200]}
+						style={{
+							color:
+								theme.palette.mode === "dark"
+									? colors.primary[200]
+									: "whitesmoke"
+						}}
 					>
 						Programações: &nbsp;&nbsp;&nbsp;
 						{initialDateForm &&
@@ -266,7 +275,13 @@ const DataProgramPage = (props) => {
 			<Box className={classes["box-program"]}>
 				<Box
 					className={classes["fazenda-div"]}
-					style={{ backgroundColor: colors.blueOrigin[800] }}
+					style={{
+						backgroundColor:
+							theme.palette.mode === "dark"
+								? colors.blueOrigin[800]
+								: "whitesmoke",
+						border: "1px solid black"
+					}}
 				>
 					{farmSelected}
 					<FontAwesomeIcon
@@ -308,7 +323,11 @@ const DataProgramPage = (props) => {
 								<div
 									key={i}
 									style={{
-										backgroundColor: colors.blueOrigin[800]
+										backgroundColor:
+											theme.palette.mode === "dark"
+												? colors.blueOrigin[800]
+												: "whitesmoke",
+										border: "1px solid black"
 									}}
 									className={
 										classes[
