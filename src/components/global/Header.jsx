@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
+import { ColorModeContext, tokens } from "../../theme";
+import { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import PowerSettingsNewOutlinedIcon from "@mui/icons-material/PowerSettingsNewOutlined";
 import IconButton from "@mui/material/IconButton";
@@ -29,9 +30,15 @@ import {
 	selectUnidadeOpUser
 } from "../../store/user/user.selector";
 
+
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+
+
 const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const colorMode = useContext(ColorModeContext);
 	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
@@ -175,6 +182,11 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						color={colors.blueOrigin[500]}
 						size={isNonMobile ? "sm" : "xs"}
 					/>
+				</IconButton>
+				<IconButton onClick={colorMode.toggleColorMode}>
+					{theme.palette.mode === "dark"
+						? <DarkModeOutlinedIcon />
+						: <LightModeOutlinedIcon />}
 				</IconButton>
 				<IconButton onClick={handlerLogout}>
 					<FontAwesomeIcon

@@ -222,17 +222,25 @@ const DataProgramPage = (props) => {
 	}, [objList]);
 
 	return (
-		<Box className={classes.mainDiv}>
-			<Box className={classes.div}>
+		<Box
+			className={classes.mainDiv}
+			style={{ backgroundColor: colors.blueOrigin[700] }}
+		>
+			<Box
+				className={classes.div}
+				style={{ backgroundColor: colors.blueOrigin[800] }}
+			>
 				{farmList.map((data, i) => {
 					return (
 						<Box key={i} gap={10}>
 							<Typography
-								className={
-									farmSelected === data
-										? classes["div-selected"]
-										: classes["div-not-selected"]
-								}
+								style={{
+									backgroundColor:
+										farmSelected === data
+											? colors.primary[900]
+											: colors.brown[550],
+									color: colors.primary[100]
+								}}
 								variant="h6"
 								onClick={() => handleFilterList(data)}
 							>
@@ -256,7 +264,10 @@ const DataProgramPage = (props) => {
 				</div>
 			</Box>
 			<Box className={classes["box-program"]}>
-				<Box className={classes["fazenda-div"]}>
+				<Box
+					className={classes["fazenda-div"]}
+					style={{ backgroundColor: colors.blueOrigin[800] }}
+				>
 					{farmSelected}
 					<FontAwesomeIcon
 						icon={!onlyOpenApp ? faCheckDouble : faClock}
@@ -296,6 +307,9 @@ const DataProgramPage = (props) => {
 							return (
 								<div
 									key={i}
+									style={{
+										backgroundColor: colors.blueOrigin[800]
+									}}
 									className={
 										classes[
 											`${
@@ -401,6 +415,10 @@ const DataProgramPage = (props) => {
 																	}
 																>
 																	<div
+																		style={{
+																			color: colors
+																				.primary[300]
+																		}}
 																		className={
 																			classes[
 																				"div-produtos-aplicar-produto"
@@ -417,6 +435,10 @@ const DataProgramPage = (props) => {
 																			dataP.produto}
 																	</div>
 																	<div
+																		style={{
+																			color: colors
+																				.primary[100]
+																		}}
 																		className={
 																			classes[
 																				"div-produtos-aplicar-quantidade"
