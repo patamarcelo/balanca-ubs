@@ -24,6 +24,8 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
+import MapPage from "../maps";
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -43,6 +45,8 @@ const DataProgramPage = (props) => {
 	const [onlyOpenApp, setOnlyOpenApp] = useState(false);
 
 	const [filtData, setFiltData] = useState(false);
+
+	const [mapArray, setMapArray] = useState([]);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -71,6 +75,26 @@ const DataProgramPage = (props) => {
 		}
 		return "";
 	};
+
+	useEffect(() => {
+		const mapArray = dataDef.map((data, i) => {
+			return {
+				projeto: data.fazenda,
+				parcela: data.parcela,
+				map_centro_id: data.dados.projeto_map_centro_id,
+				cultura: data.dados.cultura,
+				variedade: data.dados.variedade,
+				variedadeColor: data.dados.variedade_color,
+				variedadeColorLine: data.dados.variedade_color_line,
+				map_geo_poins: data.dados.map_geo_points.map((data) => ({
+					lat: Number(data.latitude),
+					lng: Number(data.longitude)
+				}))
+			};
+		});
+
+		setMapArray(mapArray.filter((data) => data.projeto === farmSelected));
+	}, [dataDef, farmSelected]);
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -580,6 +604,16 @@ const DataProgramPage = (props) => {
 							);
 						})}
 				</Box>
+			</Box>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					borderRadius: "8px"
+				}}
+			>
+				<MapPage mapArray={mapArray} />
 			</Box>
 		</Box>
 	);
