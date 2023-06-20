@@ -238,7 +238,9 @@ const DataProgramPage = (props) => {
 								style={{
 									backgroundColor:
 										farmSelected === data
-											? theme.palette.mode === "dark" ? colors.primary[900] : 'black'
+											? theme.palette.mode === "dark"
+												? colors.primary[900]
+												: "black"
 											: colors.brown[550],
 									color:
 										theme.palette.mode === "dark"
@@ -262,7 +264,8 @@ const DataProgramPage = (props) => {
 							color:
 								theme.palette.mode === "dark"
 									? colors.primary[200]
-									: "whitesmoke"
+									: "whitesmoke",
+							fontWeight: "bold"
 						}}
 					>
 						Programações: &nbsp;&nbsp;&nbsp;

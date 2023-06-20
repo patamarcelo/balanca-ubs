@@ -8,6 +8,8 @@
     padding: 8px 10px;
     flex-wrap: wrap;
 }
+
+
 .div h6 {
     padding: 5px 10px;
     border-radius: 8px;
@@ -57,6 +59,7 @@
     flex-direction: column;
     margin: 10px 10px 10px 10px;
     padding-left: 4px;
+    font-weight: bold;
 }
 
 .fazenda-div {
@@ -162,7 +165,8 @@
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    gap: 30px
+    gap: 30px;
+    font-weight: bold;
 }
 
 
