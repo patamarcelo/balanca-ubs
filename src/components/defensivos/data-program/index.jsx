@@ -264,7 +264,7 @@ const DataProgramPage = (props) => {
 							color:
 								theme.palette.mode === "dark"
 									? colors.primary[200]
-									: "whitesmoke",
+									: "white",
 							fontWeight: "bold"
 						}}
 					>
@@ -282,7 +282,7 @@ const DataProgramPage = (props) => {
 						backgroundColor:
 							theme.palette.mode === "dark"
 								? colors.blueOrigin[800]
-								: "whitesmoke",
+								: "white",
 						border: "1px solid black"
 					}}
 				>
@@ -329,7 +329,7 @@ const DataProgramPage = (props) => {
 										backgroundColor:
 											theme.palette.mode === "dark"
 												? colors.blueOrigin[800]
-												: "whitesmoke",
+												: "white",
 										border: "1px solid black"
 									}}
 									className={
