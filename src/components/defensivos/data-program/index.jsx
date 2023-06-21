@@ -13,6 +13,7 @@ import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons";
+import { faMapLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -50,11 +51,17 @@ const DataProgramPage = (props) => {
 
 	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
 
+	const [showMapps, setShowMapps] = useState(false);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" }
 	];
+
+	const handleShowMaps = () => {
+		setShowMapps(!showMapps);
+	};
 
 	const filteredIcon = (data) => {
 		const filtered = iconDict.filter(
@@ -290,16 +297,19 @@ const DataProgramPage = (props) => {
 						color={colors.primary[200]}
 					>
 						Programações: &nbsp;&nbsp;&nbsp;
-						{initialDateForm &&
-							displayDate(initialDateForm)} até{" "}
-						{finalDateForm && displayDate(finalDateForm)}
+						<span style={{ fontStyle: "italic" }}>
+							{initialDateForm && displayDate(initialDateForm)}{" "}
+							até {finalDateForm && displayDate(finalDateForm)}
+						</span>
 						{areaFiltTotal > 0 && (
 							<>
 								&nbsp;&nbsp;&nbsp; Área Total:{" "}
-								{areaFiltTotal.toLocaleString("pt-br", {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
-								})}
+								<span style={{ fontStyle: "italic" }}>
+									{areaFiltTotal.toLocaleString("pt-br", {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2
+									})}
+								</span>
 							</>
 						)}
 					</Typography>
@@ -338,6 +348,20 @@ const DataProgramPage = (props) => {
 							cursor: "pointer"
 						}}
 						onClick={() => handleFilterTable()}
+					/>
+					<FontAwesomeIcon
+						icon={faMapLocationDot}
+						color={
+							!showMapps
+								? colors.greenAccent[500]
+								: colors.yellow[500]
+						}
+						size="sm"
+						style={{
+							margin: "0px 10px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleShowMaps()}
 					/>
 				</Box>
 				<Box className={classes["geral-program-div"]}>
@@ -646,10 +670,12 @@ const DataProgramPage = (props) => {
 											borderRadius: "8px"
 										}}
 									>
-										{/* <MapPage
-											mapArray={mapArray}
-											filtData={data}
-										/> */}
+										{showMapps && (
+											<MapPage
+												mapArray={mapArray}
+												filtData={data}
+											/>
+										)}
 									</Box>
 								</div>
 							);

@@ -66,7 +66,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				mapContainerStyle={containerStyle}
 				center={center}
 				mapTypeId={"satellite"}
-				zoom={12.5}
+				zoom={13}
 				disableDefaultUI={true}
 				options={MapOptions}
 			>
