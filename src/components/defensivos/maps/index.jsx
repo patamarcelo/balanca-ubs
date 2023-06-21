@@ -8,19 +8,6 @@ const containerStyle = {
 	height: "50vh"
 };
 
-const options = {
-	fillColor: "white",
-	fillOpacity: 0.4,
-	strokeColor: "white",
-	strokeOpacity: 1,
-	strokeWeight: 1,
-	clickable: false,
-	draggable: false,
-	editable: false,
-	geodesic: false,
-	zIndex: 1
-};
-
 const MapOptions = {
 	// disableDefaultUI: true
 	zoomControl: true,
@@ -35,12 +22,18 @@ const MapOptions = {
 // 	console.log("polygon: ", polygon);
 // };
 
-const MapPage = ({ mapArray }) => {
+const MapPage = ({ mapArray, filtData }) => {
 	const [paths, setPaths] = useState([]);
 	const [center, setCenter] = useState({});
+	const [parcelasApp, setParcelasApp] = useState([]);
+	const [appArray, setAppArray] = useState([]);
 
 	useEffect(() => {
-		console.log();
+		const newArrParcelas = filtData.cronograma.map((data) => data.parcela);
+		setParcelasApp(newArrParcelas);
+	}, [filtData]);
+
+	useEffect(() => {
 		setCenter(
 			mapArray[Number(mapArray.length / 2).toFixed(0)]?.map_geo_poins[0]
 		);
@@ -48,10 +41,24 @@ const MapPage = ({ mapArray }) => {
 
 	useEffect(() => {
 		const onlyPaths = mapArray.map((data, i) => {
-			return { path: data.map_geo_poins };
+			return {
+				path: data.map_geo_poins,
+				color: "white",
+				parcela: data.parcela
+			};
 		});
 		setPaths(onlyPaths);
 	}, [mapArray]);
+
+	useEffect(() => {
+		const updateColorArray = paths.map((data) => {
+			const newColor = parcelasApp.includes(data.parcela)
+				? "red"
+				: "white";
+			return { path: data.path, color: newColor };
+		});
+		setAppArray(updateColorArray);
+	}, [mapArray, filtData, parcelasApp, paths]);
 
 	return (
 		<LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_KEY}>
@@ -63,12 +70,23 @@ const MapPage = ({ mapArray }) => {
 				disableDefaultUI={true}
 				options={MapOptions}
 			>
-				{paths &&
-					paths.map((data, i) => {
+				{appArray &&
+					appArray.map((data, i) => {
 						return (
 							<PolygonF
 								key={i}
-								options={options}
+								options={{
+									fillColor: data.color,
+									fillOpacity: 0.4,
+									strokeColor: "white",
+									strokeOpacity: 1,
+									strokeWeight: 1,
+									clickable: false,
+									draggable: false,
+									editable: false,
+									geodesic: false,
+									zIndex: 1
+								}}
 								// onLoad={onLoad}
 								paths={data.path}
 							/>
