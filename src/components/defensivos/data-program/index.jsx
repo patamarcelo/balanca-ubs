@@ -294,7 +294,7 @@ const DataProgramPage = (props) => {
 				<div className={classes["title-div-picker"]}>
 					<Typography
 						variant={!isCellPhone ? "h5" : "h3"}
-						color={colors.primary[200]}
+						color={colors.primary[100]}
 					>
 						Programações: &nbsp;&nbsp;&nbsp;
 						<span style={{ fontStyle: "italic" }}>
@@ -376,7 +376,8 @@ const DataProgramPage = (props) => {
 										key={i}
 										style={{
 											backgroundColor:
-												colors.blueOrigin[800]
+												colors.blueOrigin[800],
+											border: theme.palette.mode === 'light' && "1px solid black"
 										}}
 										className={
 											classes[
