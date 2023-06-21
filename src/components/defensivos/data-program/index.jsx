@@ -296,17 +296,25 @@ const DataProgramPage = (props) => {
 					);
 				})}
 			</Box>
-			<Box className={classes["date-picker-div"]}>
-				<div className={classes["title-div-picker"]}>
+			<Box className={classes["box-program"]} mt={2}>
+				<Box
+					className={classes["fazenda-div"]}
+					style={{ backgroundColor: colors.blueOrigin[800] }}
+				>
 					<Typography
-						variant={!isCellPhone ? "h5" : "h4"}
-						color={colors.primary[100]}
+						variant={!isCellPhone ? "h6" : "h6"}
+						color={
+							theme.palette.mode === "dark"
+								? colors.primary[100]
+								: "black"
+						}
 						sx={{
 							display: "flex",
 							flexDirection: "row",
 							width: "100%",
 							justifyContent: "space-between",
-							paddingLeft: "5px"
+							paddingLeft: "5px",
+							fontWeight: "bold"
 						}}
 					>
 						<div>
@@ -316,6 +324,55 @@ const DataProgramPage = (props) => {
 								até{" "}
 								{finalDateForm && displayDate(finalDateForm)}
 							</span>
+						</div>
+						<div>
+							{farmSelected}
+							<FontAwesomeIcon
+								icon={!onlyOpenApp ? faCheckDouble : faClock}
+								color={
+									!onlyOpenApp
+										? colors.greenAccent[500]
+										: colors.yellow[500]
+								}
+								size="sm"
+								style={{
+									margin: "0px 10px",
+									cursor: "pointer"
+								}}
+								onClick={() => setOnlyOpenApp(!onlyOpenApp)}
+							/>
+							<FontAwesomeIcon
+								icon={
+									!filtData
+										? faArrowDownShortWide
+										: faArrowDownAZ
+								}
+								color={
+									!filtData
+										? colors.greenAccent[500]
+										: colors.yellow[500]
+								}
+								size="sm"
+								style={{
+									margin: "0px 0px",
+									cursor: "pointer"
+								}}
+								onClick={() => handleFilterTable()}
+							/>
+							<FontAwesomeIcon
+								icon={faMapLocationDot}
+								color={
+									!showMapps
+										? colors.greenAccent[500]
+										: colors.yellow[500]
+								}
+								size="sm"
+								style={{
+									margin: "0px 10px",
+									cursor: "pointer"
+								}}
+								onClick={() => handleShowMaps()}
+							/>
 						</div>
 						<div>
 							{areaFiltTotal > 0 && (
@@ -331,56 +388,6 @@ const DataProgramPage = (props) => {
 							)}
 						</div>
 					</Typography>
-				</div>
-			</Box>
-			<Box className={classes["box-program"]}>
-				<Box
-					className={classes["fazenda-div"]}
-					style={{ backgroundColor: colors.blueOrigin[800] }}
-				>
-					{farmSelected}
-					<FontAwesomeIcon
-						icon={!onlyOpenApp ? faCheckDouble : faClock}
-						color={
-							!onlyOpenApp
-								? colors.greenAccent[500]
-								: colors.yellow[500]
-						}
-						size="sm"
-						style={{
-							margin: "0px 10px",
-							cursor: "pointer"
-						}}
-						onClick={() => setOnlyOpenApp(!onlyOpenApp)}
-					/>
-					<FontAwesomeIcon
-						icon={!filtData ? faArrowDownShortWide : faArrowDownAZ}
-						color={
-							!filtData
-								? colors.greenAccent[500]
-								: colors.yellow[500]
-						}
-						size="sm"
-						style={{
-							margin: "0px 0px",
-							cursor: "pointer"
-						}}
-						onClick={() => handleFilterTable()}
-					/>
-					<FontAwesomeIcon
-						icon={faMapLocationDot}
-						color={
-							!showMapps
-								? colors.greenAccent[500]
-								: colors.yellow[500]
-						}
-						size="sm"
-						style={{
-							margin: "0px 10px",
-							cursor: "pointer"
-						}}
-						onClick={() => handleShowMaps()}
-					/>
 				</Box>
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
