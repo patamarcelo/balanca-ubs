@@ -30,10 +30,8 @@ import {
 	selectUnidadeOpUser
 } from "../../store/user/user.selector";
 
-
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-
 
 const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const theme = useTheme();
@@ -124,7 +122,9 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					backgroundColor: colors.blueOrigin[800],
 					padding: "0px 5px",
 					borderRadius: "8px",
-					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`
+					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
+					border:
+						theme.palette.mode === "light" && "0.5px solid black"
 				}}
 			>
 				{location.pathname.includes("print") && (
@@ -150,7 +150,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					<IconButton onClick={handlerNavHome}>
 						<FontAwesomeIcon
 							icon={faHouse}
-							color={colors.yellow[500]}
+							color={colors.yellow[400]}
 							size={isNonMobile ? "sm" : "xs"}
 						/>
 					</IconButton>
@@ -164,7 +164,14 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						/>
 					</IconButton>
 				)}
-				<Typography variant="h6" color={colors.primary[100]}>
+				<Typography
+					variant="h6"
+					color={
+						theme.palette.mode === "dark"
+							? colors.grey[100]
+							: "black"
+					}
+				>
 					<Box
 						display="flex"
 						flexDirection="column"
@@ -184,9 +191,11 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					/>
 				</IconButton>
 				<IconButton onClick={colorMode.toggleColorMode}>
-					{theme.palette.mode === "dark"
-						? <DarkModeOutlinedIcon />
-						: <LightModeOutlinedIcon />}
+					{theme.palette.mode === "dark" ? (
+						<DarkModeOutlinedIcon />
+					) : (
+						<LightModeOutlinedIcon />
+					)}
 				</IconButton>
 				<IconButton onClick={handlerLogout}>
 					<FontAwesomeIcon

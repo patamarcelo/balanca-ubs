@@ -279,7 +279,13 @@ const DataProgramPage = (props) => {
 										farmSelected === data
 											? colors.primary[900]
 											: colors.brown[550],
-									color: colors.primary[100]
+									color:
+										farmSelected === data &&
+										theme.palette.mode === "light"
+											? "black"
+											: colors.primary[100],
+
+									fontStyle: "italic"
 								}}
 								variant="h6"
 								onClick={() => handleFilterList(data)}
@@ -377,7 +383,9 @@ const DataProgramPage = (props) => {
 										style={{
 											backgroundColor:
 												colors.blueOrigin[800],
-											border: theme.palette.mode === 'light' && "1px solid black"
+											border:
+												theme.palette.mode ===
+													"light" && "1px solid black"
 										}}
 										className={
 											classes[
@@ -491,8 +499,14 @@ const DataProgramPage = (props) => {
 																	>
 																		<div
 																			style={{
-																				color: colors
-																					.primary[300]
+																				color:
+																					theme
+																						.palette
+																						.mode ===
+																					"light"
+																						? "grey"
+																						: colors
+																								.primary[300]
 																			}}
 																			className={
 																				classes[
@@ -511,8 +525,14 @@ const DataProgramPage = (props) => {
 																		</div>
 																		<div
 																			style={{
-																				color: colors
-																					.primary[100]
+																				color:
+																					theme
+																						.palette
+																						.mode ===
+																					"light"
+																						? "black"
+																						: colors
+																								.primary[100]
 																			}}
 																			className={
 																				classes[
