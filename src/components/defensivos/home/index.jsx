@@ -155,6 +155,7 @@ const HomeDefensivoPage = (props) => {
 						{buttonTable.map((data, i) => {
 							return (
 								<CustomButton
+									key={i}
 									color={
 										data.selection
 											? colors.greenAccent[900]

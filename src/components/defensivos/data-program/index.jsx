@@ -13,6 +13,7 @@ import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons";
+import { faMapLocationDot } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -23,6 +24,8 @@ import CustomButton from "../../button";
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
+
+import MapPage from "../maps";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -45,11 +48,21 @@ const DataProgramPage = (props) => {
 
 	const [filtData, setFiltData] = useState(false);
 
+	const [mapArray, setMapArray] = useState([]);
+
+	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
+
+	const [showMapps, setShowMapps] = useState(false);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" }
 	];
+
+	const handleShowMaps = () => {
+		setShowMapps(!showMapps);
+	};
 
 	const filteredIcon = (data) => {
 		const filtered = iconDict.filter(
@@ -72,6 +85,26 @@ const DataProgramPage = (props) => {
 		}
 		return "";
 	};
+
+	useEffect(() => {
+		const mapArray = dataDef.map((data, i) => {
+			return {
+				projeto: data.fazenda,
+				parcela: data.parcela,
+				map_centro_id: data.dados.projeto_map_centro_id,
+				cultura: data.dados.cultura,
+				variedade: data.dados.variedade,
+				variedadeColor: data.dados.variedade_color,
+				variedadeColorLine: data.dados.variedade_color_line,
+				map_geo_poins: data.dados.map_geo_points.map((data) => ({
+					lat: Number(data.latitude),
+					lng: Number(data.longitude)
+				}))
+			};
+		});
+
+		setMapArray(mapArray.filter((data) => data.projeto === farmSelected));
+	}, [dataDef, farmSelected]);
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -219,6 +252,13 @@ const DataProgramPage = (props) => {
 			}, {});
 			return { data, totais: result };
 		});
+		const totalArea = filtArr.map((data) =>
+			Number(data.data.total.replace(".", "").replace(",", "."))
+		);
+		var sum = totalArea.reduce((accumulator, currentValue) => {
+			return accumulator + currentValue;
+		}, 0);
+		setAreaFiltTotal(sum);
 		setObjResumValues(filtArr);
 	}, [objList]);
 
@@ -269,9 +309,21 @@ const DataProgramPage = (props) => {
 						}}
 					>
 						Programações: &nbsp;&nbsp;&nbsp;
-						{initialDateForm &&
-							displayDate(initialDateForm)} até{" "}
-						{finalDateForm && displayDate(finalDateForm)}
+						<span style={{ fontStyle: "italic" }}>
+							{initialDateForm && displayDate(initialDateForm)}{" "}
+							até {finalDateForm && displayDate(finalDateForm)}
+						</span>
+						{areaFiltTotal > 0 && (
+							<>
+								&nbsp;&nbsp;&nbsp; Área Total:{" "}
+								<span style={{ fontStyle: "italic" }}>
+									{areaFiltTotal.toLocaleString("pt-br", {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2
+									})}
+								</span>
+							</>
+						)}
 					</Typography>
 				</div>
 			</Box>
@@ -315,6 +367,20 @@ const DataProgramPage = (props) => {
 						}}
 						onClick={() => handleFilterTable()}
 					/>
+					<FontAwesomeIcon
+						icon={faMapLocationDot}
+						color={
+							!showMapps
+								? colors.greenAccent[500]
+								: colors.yellow[500]
+						}
+						size="sm"
+						style={{
+							margin: "0px 10px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleShowMaps()}
+					/>
 				</Box>
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
@@ -323,6 +389,7 @@ const DataProgramPage = (props) => {
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];
 							return (
+<<<<<<< HEAD
 								<div
 									key={i}
 									style={{
@@ -342,262 +409,314 @@ const DataProgramPage = (props) => {
 										]
 									}
 								>
+=======
+								<div key={i}>
+>>>>>>> mapApi
 									<div
+										key={i}
+										style={{
+											backgroundColor:
+												colors.blueOrigin[800]
+										}}
 										className={
-											!isNonIpad
-												? classes["estagio-div-ipad"]
-												: classes["estagio-div"]
+											classes[
+												`${
+													!isCellPhone
+														? "detail-parcela-div-mobile"
+														: "detail-parcela-div"
+												}`
+											]
 										}
 									>
-										<FontAwesomeIcon
-											icon={
-												!showProducts
-													? faEyeSlash
-													: faEye
+										<div
+											className={
+												!isNonIpad
+													? classes[
+															"estagio-div-ipad"
+													  ]
+													: classes["estagio-div"]
 											}
-											color={
-												!showProducts
-													? colors.redAccent[500]
-													: colors.greenAccent[500]
-											}
-											size="sm"
-											style={{
-												marginTop: "20px",
-												cursor: "pointer"
-											}}
-											onClick={() =>
-												setShoeProducts(!showProducts)
-											}
-										/>
-										<p
-											style={{
-												color: colors.primary[200]
-											}}
 										>
-											{programa}
-										</p>
-										<p>{estagio}</p>
-										<p
-											style={{
-												color: colors.primary[200]
-											}}
-										>
-											Area Total: {data.total}
-										</p>
-										<Zoom
-											in={showProducts}
-											style={{
-												transitionDelay: showProducts
-													? "300ms"
-													: "0ms"
-											}}
-										>
-											<div
-												className={
-													classes[
-														"div-produtos-aplicar-outside"
-													]
+											<FontAwesomeIcon
+												icon={
+													!showProducts
+														? faEyeSlash
+														: faEye
 												}
-											>
-												{dat.totais
-													.sort((a, b) =>
-														a.produto.localeCompare(
-															b.produto
-														)
+												color={
+													!showProducts
+														? colors.redAccent[500]
+														: colors
+																.greenAccent[500]
+												}
+												size="sm"
+												style={{
+													marginTop: "20px",
+													cursor: "pointer"
+												}}
+												onClick={() =>
+													setShoeProducts(
+														!showProducts
 													)
-													.map((dataP, i) => {
-														const quantidade =
-															Number(
-																dataP.qty
-															).toLocaleString(
-																"pt-br",
-																{
-																	maximumFractionDigits: 2,
-																	minimumFractionDigits: 2
-																}
+												}
+											/>
+											<p
+												style={{
+													color: colors.primary[200]
+												}}
+											>
+												{programa}
+											</p>
+											<p>{estagio}</p>
+											<p
+												style={{
+													color: colors.primary[200]
+												}}
+											>
+												Area Total: {data.total}
+											</p>
+											<Zoom
+												in={showProducts}
+												style={{
+													transitionDelay:
+														showProducts
+															? "300ms"
+															: "0ms"
+												}}
+											>
+												<div
+													className={
+														classes[
+															"div-produtos-aplicar-outside"
+														]
+													}
+												>
+													{dat.totais
+														.sort((a, b) =>
+															a.produto.localeCompare(
+																b.produto
+															)
+														)
+														.map((dataP, i) => {
+															const quantidade =
+																Number(
+																	dataP.qty
+																).toLocaleString(
+																	"pt-br",
+																	{
+																		maximumFractionDigits: 2,
+																		minimumFractionDigits: 2
+																	}
+																);
+															return (
+																<div
+																	key={i}
+																	style={{
+																		height: "100%",
+																		transition:
+																			"height 3s",
+																		display:
+																			showProducts
+																				? ""
+																				: "none"
+																	}}
+																>
+																	<div
+																		className={
+																			classes[
+																				"div-produtos-aplicar"
+																			]
+																		}
+																	>
+																		<div
+																			style={{
+																				color: colors
+																					.primary[300]
+																			}}
+																			className={
+																				classes[
+																					"div-produtos-aplicar-produto"
+																				]
+																			}
+																		>
+																			{`${dataP.dose.toLocaleString(
+																				"pt-br",
+																				{
+																					minimumFractionDigits: 3,
+																					maximumFractionDigits: 3
+																				}
+																			)} - ` +
+																				dataP.produto}
+																		</div>
+																		<div
+																			style={{
+																				color: colors
+																					.primary[100]
+																			}}
+																			className={
+																				classes[
+																					"div-produtos-aplicar-quantidade"
+																				]
+																			}
+																		>
+																			{" "}
+																			{
+																				quantidade
+																			}
+																		</div>
+																	</div>
+																</div>
 															);
+														})}
+												</div>
+											</Zoom>
+										</div>
+										<div
+											className={
+												classes["parcelas-resumo-div"]
+											}
+										>
+											<div>
+												{data.cronograma
+													.sort((a, b) =>
+														!filtData
+															? new Date(
+																	a.dataPrevApp
+															  ) -
+															  new Date(
+																	b.dataPrevApp
+															  )
+															: a.parcela.localeCompare(
+																	b.parcela
+															  )
+													)
+													.map((data, i) => {
 														return (
 															<div
 																key={i}
-																style={{
-																	height: "100%",
-																	transition:
-																		"height 3s",
-																	display:
-																		showProducts
-																			? ""
-																			: "none"
-																}}
+																className={
+																	classes[
+																		"parcelas-detail-div"
+																	]
+																}
 															>
 																<div
 																	className={
 																		classes[
-																			"div-produtos-aplicar"
+																			"parcela-div"
 																		]
 																	}
 																>
 																	<div
-																		style={{
-																			color: colors
-																				.primary[300]
-																		}}
 																		className={
 																			classes[
-																				"div-produtos-aplicar-produto"
+																				"parcela-icon-div"
 																			]
 																		}
 																	>
-																		{`${dataP.dose.toLocaleString(
-																			"pt-br",
-																			{
-																				minimumFractionDigits: 3,
-																				maximumFractionDigits: 3
-																			}
-																		)} - ` +
-																			dataP.produto}
+																		<img
+																			src={filteredIcon(
+																				data
+																			)}
+																			alt={filteredAlt(
+																				data
+																			)}
+																		/>
 																	</div>
-																	<div
-																		style={{
-																			color: colors
-																				.primary[100]
-																		}}
-																		className={
-																			classes[
-																				"div-produtos-aplicar-quantidade"
-																			]
-																		}
-																	>
-																		{" "}
-																		{
-																			quantidade
-																		}
-																	</div>
+																	{
+																		data.parcela
+																	}
+																</div>
+																<div
+																	style={{
+																		color: colors
+																			.greenAccent[300]
+																	}}
+																>
+																	{displayDate(
+																		data.dataPlantio
+																	)}
+																</div>
+																<div>
+																	{data.dap <
+																	10
+																		? "0" +
+																		  data.dap
+																		: data.dap}
+																</div>
+																<div
+																	className={
+																		classes[
+																			"cultura-div"
+																		]
+																	}
+																>
+																	{
+																		data.cultura
+																	}
+																</div>
+																<div
+																	className={
+																		classes[
+																			"variedade-div"
+																		]
+																	}
+																>
+																	{
+																		data.variedade
+																	}
+																</div>
+																<div>
+																	{displayDate(
+																		data.dataPrevApp
+																	)}
+																</div>
+																<div>
+																	{
+																		data.dapApp
+																	}
+																</div>
+																<div
+																	style={{
+																		color: colors
+																			.primary[200]
+																	}}
+																	className={
+																		classes[
+																			"area-div"
+																		]
+																	}
+																>
+																	{data.area
+																		.toFixed(
+																			2
+																		)
+																		.replace(
+																			".",
+																			","
+																		)}
 																</div>
 															</div>
 														);
 													})}
 											</div>
-										</Zoom>
-									</div>
-									<div
-										className={
-											classes["parcelas-resumo-div"]
-										}
-									>
-										<div>
-											{data.cronograma
-												.sort((a, b) =>
-													!filtData
-														? new Date(
-																a.dataPrevApp
-														  ) -
-														  new Date(
-																b.dataPrevApp
-														  )
-														: a.parcela.localeCompare(
-																b.parcela
-														  )
-												)
-												.map((data, i) => {
-													return (
-														<div
-															key={i}
-															className={
-																classes[
-																	"parcelas-detail-div"
-																]
-															}
-														>
-															<div
-																className={
-																	classes[
-																		"parcela-div"
-																	]
-																}
-															>
-																<div
-																	className={
-																		classes[
-																			"parcela-icon-div"
-																		]
-																	}
-																>
-																	<img
-																		src={filteredIcon(
-																			data
-																		)}
-																		alt={filteredAlt(
-																			data
-																		)}
-																	/>
-																</div>
-																{data.parcela}
-															</div>
-															<div
-																style={{
-																	color: colors
-																		.greenAccent[300]
-																}}
-															>
-																{displayDate(
-																	data.dataPlantio
-																)}
-															</div>
-															<div>
-																{data.dap < 10
-																	? "0" +
-																	  data.dap
-																	: data.dap}
-															</div>
-															<div
-																className={
-																	classes[
-																		"cultura-div"
-																	]
-																}
-															>
-																{data.cultura}
-															</div>
-															<div
-																className={
-																	classes[
-																		"variedade-div"
-																	]
-																}
-															>
-																{data.variedade}
-															</div>
-															<div>
-																{displayDate(
-																	data.dataPrevApp
-																)}
-															</div>
-															<div>
-																{data.dapApp}
-															</div>
-															<div
-																style={{
-																	color: colors
-																		.primary[200]
-																}}
-																className={
-																	classes[
-																		"area-div"
-																	]
-																}
-															>
-																{data.area
-																	.toFixed(2)
-																	.replace(
-																		".",
-																		","
-																	)}
-															</div>
-														</div>
-													);
-												})}
 										</div>
 									</div>
+									<Box
+										sx={{
+											display: "flex",
+											justifyContent: "center",
+											alignItems: "center",
+											borderRadius: "8px"
+										}}
+									>
+										{showMapps && (
+											<MapPage
+												mapArray={mapArray}
+												filtData={data}
+											/>
+										)}
+									</Box>
 								</div>
 							);
 						})}
