@@ -389,7 +389,6 @@ const DataProgramPage = (props) => {
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];
 							return (
-<<<<<<< HEAD
 								<div
 									key={i}
 									style={{
@@ -409,9 +408,6 @@ const DataProgramPage = (props) => {
 										]
 									}
 								>
-=======
-								<div key={i}>
->>>>>>> mapApi
 									<div
 										key={i}
 										style={{
