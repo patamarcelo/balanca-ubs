@@ -662,21 +662,24 @@ const DataProgramPage = (props) => {
 											</div>
 										</div>
 									</div>
-									<Box
-										sx={{
-											display: "flex",
-											justifyContent: "center",
-											alignItems: "center",
-											borderRadius: "8px"
-										}}
-									>
-										{showMapps && (
+									{showMapps && (
+										<Box
+											sx={{
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+												borderRadius: "8px",
+												backgroundColor:
+													colors.blueOrigin[800]
+											}}
+											className={classes["geral-map-div"]}
+										>
 											<MapPage
 												mapArray={mapArray}
 												filtData={data}
 											/>
-										)}
-									</Box>
+										</Box>
+									)}
 								</div>
 							);
 						})}

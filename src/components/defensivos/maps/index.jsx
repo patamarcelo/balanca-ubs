@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 const containerStyle = {
-	width: "98%",
+	width: "100%",
 	height: "50vh"
 };
 
