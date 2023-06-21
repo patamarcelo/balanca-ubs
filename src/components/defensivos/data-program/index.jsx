@@ -299,25 +299,37 @@ const DataProgramPage = (props) => {
 			<Box className={classes["date-picker-div"]}>
 				<div className={classes["title-div-picker"]}>
 					<Typography
-						variant={!isCellPhone ? "h5" : "h3"}
+						variant={!isCellPhone ? "h5" : "h4"}
 						color={colors.primary[100]}
+						sx={{
+							display: "flex",
+							flexDirection: "row",
+							width: "100%",
+							justifyContent: "space-between",
+							paddingLeft: "5px"
+						}}
 					>
-						Programações: &nbsp;&nbsp;&nbsp;
-						<span style={{ fontStyle: "italic" }}>
-							{initialDateForm && displayDate(initialDateForm)}{" "}
-							até {finalDateForm && displayDate(finalDateForm)}
-						</span>
-						{areaFiltTotal > 0 && (
-							<>
-								&nbsp;&nbsp;&nbsp; Área Total:{" "}
-								<span style={{ fontStyle: "italic" }}>
-									{areaFiltTotal.toLocaleString("pt-br", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2
-									})}
-								</span>
-							</>
-						)}
+						<div>
+							<span style={{ fontStyle: "italic" }}>
+								{initialDateForm &&
+									displayDate(initialDateForm)}{" "}
+								até{" "}
+								{finalDateForm && displayDate(finalDateForm)}
+							</span>
+						</div>
+						<div>
+							{areaFiltTotal > 0 && (
+								<>
+									&nbsp;&nbsp;&nbsp; Área:{" "}
+									<span style={{ fontStyle: "italic" }}>
+										{areaFiltTotal.toLocaleString("pt-br", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2
+										})}
+									</span>
+								</>
+							)}
+						</div>
 					</Typography>
 				</div>
 			</Box>
