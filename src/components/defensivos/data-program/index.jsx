@@ -48,6 +48,8 @@ const DataProgramPage = (props) => {
 
 	const [mapArray, setMapArray] = useState([]);
 
+	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
@@ -242,6 +244,13 @@ const DataProgramPage = (props) => {
 			}, {});
 			return { data, totais: result };
 		});
+		const totalArea = filtArr.map((data) =>
+			Number(data.data.total.replace(".", "").replace(",", "."))
+		);
+		var sum = totalArea.reduce((accumulator, currentValue) => {
+			return accumulator + currentValue;
+		}, 0);
+		setAreaFiltTotal(sum);
 		setObjResumValues(filtArr);
 	}, [objList]);
 
@@ -284,6 +293,15 @@ const DataProgramPage = (props) => {
 						{initialDateForm &&
 							displayDate(initialDateForm)} até{" "}
 						{finalDateForm && displayDate(finalDateForm)}
+						{areaFiltTotal > 0 && (
+							<>
+								&nbsp;&nbsp;&nbsp; Área Total:{" "}
+								{areaFiltTotal.toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								})}
+							</>
+						)}
 					</Typography>
 				</div>
 			</Box>
@@ -628,10 +646,10 @@ const DataProgramPage = (props) => {
 											borderRadius: "8px"
 										}}
 									>
-										<MapPage
+										{/* <MapPage
 											mapArray={mapArray}
 											filtData={data}
-										/>
+										/> */}
 									</Box>
 								</div>
 							);
