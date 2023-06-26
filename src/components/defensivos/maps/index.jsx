@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const containerStyle = {
 	width: "100%",
-	height: "50vh"
+	height: "65vh"
 };
 
 const MapOptions = {
@@ -34,9 +34,15 @@ const MapPage = ({ mapArray, filtData }) => {
 	}, [filtData]);
 
 	useEffect(() => {
-		setCenter(
-			mapArray[Number(mapArray.length / 2).toFixed(0)]?.map_geo_poins[0]
-		);
+		const centerId = mapArray[0]?.map_centro_id;
+		if (centerId) {
+			setCenter(centerId);
+		} else {
+			setCenter(
+				mapArray[Number(mapArray.length / 2).toFixed(0)]
+					?.map_geo_poins[0]
+			);
+		}
 	}, [mapArray]);
 
 	useEffect(() => {
@@ -44,7 +50,9 @@ const MapPage = ({ mapArray, filtData }) => {
 			return {
 				path: data.map_geo_poins,
 				color: "white",
-				parcela: data.parcela
+				parcela: data.parcela,
+				variedadeColor: data.variedadeColor,
+				variedadeColorLine: data.variedadeColorLine
 			};
 		});
 		setPaths(onlyPaths);
@@ -55,7 +63,12 @@ const MapPage = ({ mapArray, filtData }) => {
 			const newColor = parcelasApp.includes(data.parcela)
 				? "red"
 				: "white";
-			return { path: data.path, color: newColor };
+			return {
+				path: data.path,
+				color: newColor,
+				variedadeColor: data.variedadeColor,
+				variedadeColorLine: data.variedadeColorLine
+			};
 		});
 		setAppArray(updateColorArray);
 	}, [mapArray, filtData, parcelasApp, paths]);
