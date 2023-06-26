@@ -15,7 +15,8 @@ const MapOptions = {
 	scaleControl: true,
 	streetViewControl: false,
 	rotateControl: true,
-	fullscreenControl: true
+	fullscreenControl: true,
+	scrollwheel: false
 };
 
 // const onLoad = (polygon) => {
@@ -91,9 +92,9 @@ const MapPage = ({ mapArray, filtData }) => {
 								options={{
 									fillColor: data.color,
 									fillOpacity: 0.4,
-									strokeColor: "white",
-									strokeOpacity: 1,
-									strokeWeight: 1,
+									strokeColor: "black",
+									strokeOpacity: 0.4,
+									strokeWeight: 0.5,
 									clickable: false,
 									draggable: false,
 									editable: false,
