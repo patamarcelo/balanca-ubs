@@ -95,7 +95,7 @@ const DataProgramPage = (props) => {
 				variedade: data.dados.variedade,
 				variedadeColor: data.dados.variedade_color,
 				variedadeColorLine: data.dados.variedade_color_line,
-				map_geo_poins: data.dados.map_geo_points.map((data) => ({
+				map_geo_poins: data?.dados?.map_geo_points?.map((data) => ({
 					lat: Number(data.latitude),
 					lng: Number(data.longitude)
 				}))
