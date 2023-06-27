@@ -8,17 +8,6 @@ const containerStyle = {
 	height: "65vh"
 };
 
-const MapOptions = {
-	// disableDefaultUI: true
-	zoomControl: true,
-	mapTypeControl: false,
-	scaleControl: true,
-	streetViewControl: false,
-	rotateControl: true,
-	fullscreenControl: true,
-	scrollwheel: false
-};
-
 // const onLoad = (polygon) => {
 // 	console.log("polygon: ", polygon);
 // };
@@ -29,6 +18,18 @@ const MapPage = ({ mapArray, filtData }) => {
 	const [parcelasApp, setParcelasApp] = useState([]);
 	const [appArray, setAppArray] = useState([]);
 	const [zoomMap, setZoomMap] = useState();
+
+	const MapOptions = {
+		// disableDefaultUI: true
+		zoomControl: true,
+		mapTypeControl: false,
+		scaleControl: true,
+		streetViewControl: false,
+		rotateControl: true,
+		fullscreenControl: true,
+		scrollwheel: false,
+		zoom: zoomMap
+	};
 
 	useEffect(() => {
 		const newArrParcelas = filtData.cronograma.map((data) => data.parcela);
@@ -87,7 +88,6 @@ const MapPage = ({ mapArray, filtData }) => {
 				mapContainerStyle={containerStyle}
 				center={center}
 				mapTypeId={"satellite"}
-				zoom={zoomMap}
 				disableDefaultUI={true}
 				options={MapOptions}
 			>
