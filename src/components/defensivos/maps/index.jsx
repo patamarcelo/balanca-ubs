@@ -90,6 +90,9 @@ const MapPage = ({ mapArray, filtData }) => {
 				mapTypeId={"satellite"}
 				disableDefaultUI={true}
 				options={MapOptions}
+				onLoad={(map) => {
+					new window.google.maps.LatLngBounds();
+				}}
 			>
 				{appArray &&
 					appArray.map((data, i) => {
