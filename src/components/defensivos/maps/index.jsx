@@ -28,6 +28,7 @@ const MapPage = ({ mapArray, filtData }) => {
 	const [center, setCenter] = useState({});
 	const [parcelasApp, setParcelasApp] = useState([]);
 	const [appArray, setAppArray] = useState([]);
+	const [zoomMap, setZoomMap] = useState();
 
 	useEffect(() => {
 		const newArrParcelas = filtData.cronograma.map((data) => data.parcela);
@@ -43,6 +44,12 @@ const MapPage = ({ mapArray, filtData }) => {
 				mapArray[Number(mapArray.length / 2).toFixed(0)]
 					?.map_geo_poins[0]
 			);
+		}
+		const mapZoom = mapArray[0]?.map_zoom;
+		if (mapZoom) {
+			setZoomMap(mapZoom);
+		} else {
+			setZoomMap(13.6);
 		}
 	}, [mapArray]);
 
@@ -80,7 +87,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				mapContainerStyle={containerStyle}
 				center={center}
 				mapTypeId={"satellite"}
-				zoom={13}
+				zoom={zoomMap}
 				disableDefaultUI={true}
 				options={MapOptions}
 			>

@@ -91,6 +91,7 @@ const DataProgramPage = (props) => {
 				projeto: data.fazenda,
 				parcela: data.parcela,
 				map_centro_id: data.dados.projeto_map_centro_id,
+				map_zoom: data.dados.projeto_map_zoom,
 				cultura: data.dados.cultura,
 				variedade: data.dados.variedade,
 				variedadeColor: data.dados.variedade_color,
