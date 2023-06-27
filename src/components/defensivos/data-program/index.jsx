@@ -1,6 +1,6 @@
 import { Box, Typography, Button, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
@@ -62,6 +62,19 @@ const DataProgramPage = (props) => {
 	const handleShowMaps = () => {
 		setShowMapps(!showMapps);
 	};
+
+	const handlerShowMaps = useCallback(() => {
+		if (showMapps && farmSelected) {
+			setShowMapps(false);
+			setTimeout(() => {
+				setShowMapps(true);
+			}, 500);
+		}
+	}, [farmSelected]);
+
+	useEffect(() => {
+		handlerShowMaps();
+	}, [farmSelected, handlerShowMaps]);
 
 	const filteredIcon = (data) => {
 		const filtered = iconDict.filter(
