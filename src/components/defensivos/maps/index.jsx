@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { PolygonF } from "@react-google-maps/api";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,6 +13,11 @@ const containerStyle = {
 // };
 
 const MapPage = ({ mapArray, filtData }) => {
+	const { isLoaded } = useJsApiLoader({
+		id: "google-map-script",
+		googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
+	});
+
 	const [paths, setPaths] = useState([]);
 	const [center, setCenter] = useState({});
 	const [parcelasApp, setParcelasApp] = useState([]);
@@ -47,6 +52,7 @@ const MapPage = ({ mapArray, filtData }) => {
 			);
 		}
 		const mapZoom = mapArray[0]?.map_zoom;
+		console.log(mapZoom)
 		if (mapZoom) {
 			setZoomMap(mapZoom);
 		} else {
@@ -82,42 +88,42 @@ const MapPage = ({ mapArray, filtData }) => {
 		setAppArray(updateColorArray);
 	}, [mapArray, filtData, parcelasApp, paths]);
 
-	return (
-		<LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_KEY}>
-			<GoogleMap
-				mapContainerStyle={containerStyle}
-				center={center}
-				mapTypeId={"satellite"}
-				disableDefaultUI={true}
-				options={MapOptions}
-				onLoad={(map) => {
-					new window.google.maps.LatLngBounds();
-				}}
-			>
-				{appArray &&
-					appArray.map((data, i) => {
-						return (
-							<PolygonF
-								key={i}
-								options={{
-									fillColor: data.color,
-									fillOpacity: 0.4,
-									strokeColor: "black",
-									strokeOpacity: 0.4,
-									strokeWeight: 0.5,
-									clickable: false,
-									draggable: false,
-									editable: false,
-									geodesic: false,
-									zIndex: 1
-								}}
-								// onLoad={onLoad}
-								paths={data.path}
-							/>
-						);
-					})}
-			</GoogleMap>
-		</LoadScript>
+	return isLoaded ? (
+		<GoogleMap
+			mapContainerStyle={containerStyle}
+			center={center}
+			mapTypeId={"satellite"}
+			disableDefaultUI={true}
+			options={MapOptions}
+			onLoad={(map) => {
+				new window.google.maps.LatLngBounds();
+			}}
+		>
+			{appArray &&
+				appArray.map((data, i) => {
+					return (
+						<PolygonF
+							key={i}
+							options={{
+								fillColor: data.color,
+								fillOpacity: 0.4,
+								strokeColor: "black",
+								strokeOpacity: 0.4,
+								strokeWeight: 0.5,
+								clickable: false,
+								draggable: false,
+								editable: false,
+								geodesic: false,
+								zIndex: 1
+							}}
+							// onLoad={onLoad}
+							paths={data.path}
+						/>
+					);
+				})}
+		</GoogleMap>
+	) : (
+		<></>
 	);
 };
 
