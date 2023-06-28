@@ -26,11 +26,13 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
 import MapPage from "../maps";
+import djangoApi from "../../../utils/axios/axios.utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { dataDef, isLoadingHome, initialDateForm, finalDateForm } = props;
+	const { dataDef, initialDateForm, finalDateForm } = props;
 
 	const [farmList, setFarmList] = useState([]);
 	const [objList, setObjList] = useState([]);
@@ -48,10 +50,13 @@ const DataProgramPage = (props) => {
 	const [filtData, setFiltData] = useState(false);
 
 	const [mapArray, setMapArray] = useState([]);
+	const [dataToMap, setDataToMap] = useState([]);
 
 	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
 
 	const [showMapps, setShowMapps] = useState(false);
+
+	const [isLoadingHome, setIsLoading] = useState(true);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -99,25 +104,50 @@ const DataProgramPage = (props) => {
 	};
 
 	useEffect(() => {
-		const mapArray = dataDef.map((data, i) => {
-			return {
-				projeto: data.fazenda,
-				parcela: data.parcela,
-				map_centro_id: data.dados.projeto_map_centro_id,
-				map_zoom: data.dados.projeto_map_zoom,
-				cultura: data.dados.cultura,
-				variedade: data.dados.variedade,
-				variedadeColor: data.dados.variedade_color,
-				variedadeColorLine: data.dados.variedade_color_line,
-				map_geo_poins: data?.dados?.map_geo_points?.map((data) => ({
-					lat: Number(data.latitude),
-					lng: Number(data.longitude)
-				}))
-			};
-		});
+		(async () => {
+			try {
+				await djangoApi
+					.get("plantio/get_plantio_detail_map/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						setDataToMap(res.data.dados_plantio);
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+			} finally {
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
-		setMapArray(mapArray.filter((data) => data.projeto === farmSelected));
-	}, [dataDef, farmSelected]);
+	useEffect(() => {
+		if (dataToMap) {
+			const mapArray = dataToMap.map((data, i) => {
+				return {
+					projeto: data.fazenda,
+					parcela: data.parcela,
+					map_centro_id: data.dados.projeto_map_centro_id,
+					map_zoom: data.dados.projeto_map_zoom,
+					cultura: data.dados.cultura,
+					variedade: data.dados.variedade,
+					variedadeColor: data.dados.variedade_color,
+					variedadeColorLine: data.dados.variedade_color_line,
+					map_geo_poins: data?.dados?.map_geo_points?.map((data) => ({
+						lat: Number(data.latitude),
+						lng: Number(data.longitude)
+					}))
+				};
+			});
+
+			setMapArray(
+				mapArray.filter((data) => data.projeto === farmSelected)
+			);
+		}
+	}, [dataToMap, farmSelected]);
 
 	useEffect(() => {
 		const listFarm = dataDef
@@ -373,20 +403,35 @@ const DataProgramPage = (props) => {
 								}}
 								onClick={() => handleFilterTable()}
 							/>
-							<FontAwesomeIcon
-								icon={faMapLocationDot}
-								color={
-									!showMapps
-										? colors.greenAccent[500]
-										: colors.yellow[500]
-								}
-								size="sm"
-								style={{
-									margin: "0px 10px",
-									cursor: "pointer"
-								}}
-								onClick={() => handleShowMaps()}
-							/>
+							{isLoadingHome ? (
+								<CircularProgress
+									size={15}
+									sx={{
+										margin: "0px 10px",
+										color: (theme) =>
+											colors.greenAccent[
+												theme.palette.mode === "dark"
+													? 200
+													: 800
+											]
+									}}
+								/>
+							) : (
+								<FontAwesomeIcon
+									icon={faMapLocationDot}
+									color={
+										!showMapps
+											? colors.greenAccent[500]
+											: colors.yellow[500]
+									}
+									size="sm"
+									style={{
+										margin: "0px 10px",
+										cursor: "pointer"
+									}}
+									onClick={() => handleShowMaps()}
+								/>
+							)}
 						</div>
 						<div>
 							{areaFiltTotal > 0 && (

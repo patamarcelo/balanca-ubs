@@ -52,7 +52,7 @@ const MapPage = ({ mapArray, filtData }) => {
 			);
 		}
 		const mapZoom = mapArray[0]?.map_zoom;
-		console.log(mapZoom)
+		// console.log(mapZoom)
 		if (mapZoom) {
 			setZoomMap(mapZoom);
 		} else {
@@ -88,7 +88,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		setAppArray(updateColorArray);
 	}, [mapArray, filtData, parcelasApp, paths]);
 
-	return isLoaded ? (
+	return isLoaded && center ? (
 		<GoogleMap
 			mapContainerStyle={containerStyle}
 			center={center}
