@@ -43,7 +43,6 @@ const DefensivoPage = () => {
 				.then((res) => {
 					// console.log(res.data);
 					setDataDefFalse(res.data.dados);
-					setResumeDate(res.data.app_date);
 				})
 				.catch((err) => console.log(err));
 		} catch (err) {
@@ -89,6 +88,7 @@ const DefensivoPage = () => {
 	useEffect(() => {
 		const newArr = [...dataDefTrue, ...dataDefFalse];
 		setDataDef(newArr);
+		setResumeDate(newArr);
 	}, [dataDefFalse, dataDefTrue]);
 
 	return (
@@ -121,12 +121,6 @@ const DefensivoPage = () => {
 								animation="wave"
 								variant="rounded"
 								width={120}
-								height={38}
-							/>
-							<Skeleton
-								animation="wave"
-								variant="rounded"
-								width={90}
 								height={38}
 							/>
 							<Skeleton

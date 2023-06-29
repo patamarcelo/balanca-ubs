@@ -15,7 +15,7 @@ const DataDefensivoDaysTable = (props) => {
 		{ field: "tipo", headerName: "Tipo", width: 140 }
 	];
 	for (let col of columns) {
-		const formatData = col.split("-").reverse().join("/");
+		const formatData = col?.split("-").reverse().join("/");
 		const newCol = {
 			field: col,
 			headerName: formatData,

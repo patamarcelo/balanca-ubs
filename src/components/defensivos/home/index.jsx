@@ -45,12 +45,6 @@ const HomeDefensivoPage = (props) => {
 	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
-	// useEffect(() => {
-	// 	const current = new Date();
-	// 	current.setDate(current.getDate() + 7);
-	// 	setFinalDateForm(current.toISOString().split("T")[0]);
-	// }, []);
-
 	useEffect(() => {
 		const today = new Date();
 		const lastSunday = (today) => {
@@ -67,7 +61,6 @@ const HomeDefensivoPage = (props) => {
 
 	const dictComps = {
 		dinamic: "dinamic",
-		table: "table",
 		tableByDay: "tableByDay",
 		productsProgram: "productsProgram",
 		plantioPage: "plantioPage"
@@ -87,13 +80,6 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsByDay(true);
 				setisOpenProductsByDayDinamic(false);
 				setIsOpenProducts(false);
-				setisOpenProductsProgram(false);
-				setIsOpenPlantioPage(false);
-				break;
-			case "table":
-				setIsOpenProducts(true);
-				setisOpenProductsByDay(false);
-				setisOpenProductsByDayDinamic(false);
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				break;
@@ -125,11 +111,6 @@ const HomeDefensivoPage = (props) => {
 			title: "Programação",
 			option: dictComps.table,
 			selection: isOpenProducts
-		},
-		{
-			title: "Produtos",
-			option: dictComps.tableByDay,
-			selection: isOpenProductsByDay
 		},
 		{
 			title: "AP Detalhado",
@@ -202,17 +183,6 @@ const HomeDefensivoPage = (props) => {
 						<DataDefensivoPage
 							isLoadingHome={isLoadingHome}
 							data={dataDef}
-						/>
-					)}
-				</>
-			)}
-			{isOpenProductsByDay && (
-				<>
-					{isChangingTable && <LoaderHomeSkeleton />}
-					{!isLoadingHome && !isChangingTable && (
-						<DataDefensivoPageByDay
-							isLoadingHome={isLoadingHome}
-							resumeData={resumeData}
 						/>
 					)}
 				</>

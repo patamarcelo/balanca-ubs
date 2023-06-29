@@ -20,8 +20,8 @@ const DataDefensivoPageByDay = (props) => {
 	useEffect(() => {
 		if (resumeData) {
 			const sortData = resumeData.sort((a, b) => {
-				var aa = a.data.replace("-", ""),
-					bb = b.data.replace("-", "");
+				var aa = a?.data?.replace("-", ""),
+					bb = b?.data?.replace("-", "");
 				return aa < bb ? -1 : aa > bb ? 1 : 0;
 			});
 			setSortedData(sortData);
@@ -29,51 +29,59 @@ const DataDefensivoPageByDay = (props) => {
 	}, [resumeData]);
 
 	useEffect(() => {
-		const onlyData = sortedData.map((data) => {
-			return data.data;
-		});
-		setOnlyData(onlyData);
-
-		const onlyProdctName = sortedData.map((data) => {
-			const prodFilt = data.produtos.map((produtos) => {
-				return produtos.produto;
+		if (sortedData) {
+			const onlyData = sortedData.map((data) => {
+				return data.dados;
 			});
-			return prodFilt;
-		});
-		setOnlyProducts([...new Set(onlyProdctName.flat())].sort());
+			setOnlyData(onlyData);
+
+			const onlyProdctName = sortedData.map((data) => {
+				const neww = data.dados.cronograma.map((pp) => {
+					return pp.produtos.map((prod) => {
+						return prod.produto;
+					});
+				});
+				return neww;
+			});
+			setOnlyProducts([...new Set(onlyProdctName.flat().flat())].sort());
+		}
 	}, [sortedData]);
 
 	useEffect(() => {
-		const arr = [];
-		const newArrTable = onlyProducts.map((prodd) => {
-			const objToappend = {};
-			const prodName = prodd;
-			objToappend["produto"] = prodName;
-			objToappend["id"] = prodName;
-			for (let dataD of onlyData) {
-				for (let sortData of sortedData) {
-					if (dataD === sortData.data) {
-						for (let prodData of sortData.produtos) {
-							if (prodName === prodData.produto) {
-								objToappend["tipo"] = prodData.tipo;
-								objToappend[sortData.data] =
-									prodData.quantidade.toLocaleString(
-										"pt-BR",
-										{ maximumFractionDigits: 2 }
-									);
-							}
-							if (!(sortData.data in objToappend)) {
-								objToappend[dataD] = "-";
+		if (onlyProducts && onlyData.length > 0) {
+			console.log(onlyData);
+			const arr = [];
+			const newArrTable = onlyProducts.map((prodd) => {
+				const objToappend = {};
+				const prodName = prodd;
+				objToappend["produto"] = prodName;
+				objToappend["id"] = prodName;
+				for (let dataD of onlyData) {
+					for (let sortData of sortedData) {
+						console.log(dataD);
+						if (dataD === sortData?.data) {
+							for (let prodData of sortData?.produtos) {
+								if (prodName === prodData?.produto) {
+									objToappend["tipo"] = prodData.tipo;
+									objToappend[sortData.data] =
+										prodData.quantidade.toLocaleString(
+											"pt-BR",
+											{ maximumFractionDigits: 2 }
+										);
+								}
+								if (!(sortData.data in objToappend)) {
+									objToappend[dataD] = "-";
+								}
 							}
 						}
 					}
 				}
-			}
-			arr.push(objToappend);
-			return arr;
-			// return arr;
-		});
-		setDataTableDays(arr);
+				arr.push(objToappend);
+				return arr;
+				// return arr;
+			});
+			setDataTableDays(arr);
+		}
 	}, [sortedData, isLoadingHome, onlyData, onlyProducts]);
 
 	return (
