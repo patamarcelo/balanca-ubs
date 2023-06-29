@@ -139,7 +139,8 @@ const DataProgramPage = (props) => {
 					map_geo_poins: data?.dados?.map_geo_points?.map((data) => ({
 						lat: Number(data.latitude),
 						lng: Number(data.longitude)
-					}))
+					})),
+					map_geo_center_points: data?.dados?.map_geo_points_center
 				};
 			});
 
