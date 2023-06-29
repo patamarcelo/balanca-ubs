@@ -312,7 +312,7 @@ const DataProgramPage = (props) => {
 			style={{ backgroundColor: colors.blueOrigin[700] }}
 		>
 			<Box
-				className={classes.div}
+				className={`${classes.div} ${classes["farm-list-div"]}`}
 				style={{ backgroundColor: colors.blueOrigin[800] }}
 			>
 				{farmList.map((data, i) => {

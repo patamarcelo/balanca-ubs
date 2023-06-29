@@ -3,21 +3,14 @@ import { tokens } from "../../../theme";
 
 import { useState } from "react";
 
-import CircularProgress from "@mui/material/CircularProgress";
-
-import djangoApi from "../../../utils/axios/axios.utils";
-
 import { useEffect } from "react";
 import DataDefensivoPage from "../data-table-all";
-import DataDefensivoPageByDay from "../data-table-by-day";
 import DataDefensivoPageDinamic from "../data-table-dinamic";
 import DataProgramPage from "../data-program";
 import PlantioDonePage from "../plantio-done";
 
 import Stack from "@mui/material/Stack";
 import CustomButton from "../../button";
-
-import Skeleton from "@mui/material/Skeleton";
 
 import LoaderHomeSkeleton from "./loader";
 
@@ -31,7 +24,7 @@ const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const { isLoadingHome, dataDef, resumeData } = props;
+	const { isLoadingHome, dataDef } = props;
 
 	const [isOpenProducts, setIsOpenProducts] = useState(true);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =

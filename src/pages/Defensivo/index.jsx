@@ -5,12 +5,6 @@ import { useEffect, useState } from "react";
 
 import HomeDefensivoPage from "../../components/defensivos/home";
 
-import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
-import { db } from "../../utils/firebase/firebase";
-import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
-
-import { useDispatch } from "react-redux";
-import { formatDate } from "../../utils/format-suport/data-format";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -22,15 +16,12 @@ const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const dispatch = useDispatch();
 	const [isLoadingHome, setIsLoading] = useState(true);
-	const [ordems, setOrdems] = useState([]);
 
 	const [dataDef, setDataDef] = useState([]);
 
 	const [dataDefFalse, setDataDefFalse] = useState([]);
 	const [dataDefTrue, setDataDefTrue] = useState([]);
-	const [resumeData, setResumeDate] = useState([]);
 
 	const getTrueApi = async () => {
 		try {
@@ -88,7 +79,6 @@ const DefensivoPage = () => {
 	useEffect(() => {
 		const newArr = [...dataDefTrue, ...dataDefFalse];
 		setDataDef(newArr);
-		setResumeDate(newArr);
 	}, [dataDefFalse, dataDefTrue]);
 
 	return (
@@ -110,7 +100,6 @@ const DefensivoPage = () => {
 				{!isLoadingHome && (
 					<HomeDefensivoPage
 						dataDef={dataDef}
-						resumeData={resumeData}
 						isLoadingHome={isLoadingHome}
 					/>
 				)}
