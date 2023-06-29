@@ -32,48 +32,55 @@ const DefensivoPage = () => {
 	const [dataDefTrue, setDataDefTrue] = useState([]);
 	const [resumeData, setResumeDate] = useState([]);
 
-	useEffect(() => {
-		(async () => {
-			try {
-				await djangoApi
-					.get("plantio/get_plantio_operacoes_detail/", {
-						headers: {
-							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-						}
-					})
-					.then((res) => {
-						// console.log(res.data);
-						setDataDefFalse(res.data.dados);
-						setResumeDate(res.data.app_date);
-					})
-					.catch((err) => console.log(err));
-			} catch (err) {
-				console.log("Erro ao consumir a API", err);
-			} finally {
-				// console.log("Finally statement");
-				setIsLoading(false);
-			}
-		})();
-	}, []);
+	const getTrueApi = async () => {
+		try {
+			await djangoApi
+				.get("plantio/get_plantio_operacoes_detail/", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					// console.log(res.data);
+					setDataDefFalse(res.data.dados);
+					setResumeDate(res.data.app_date);
+				})
+				.catch((err) => console.log(err));
+		} catch (err) {
+			console.log("Erro ao consumir a API", err);
+		} finally {
+			// console.log("Finally statement");
+		}
+	};
+
+	const getFalseApi = async () => {
+		try {
+			await djangoApi
+				.get("plantio/get_plantio_operacoes_detail_json_program/", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					// console.log(res.data);
+					setDataDefTrue(res.data.dados_plantio);
+				})
+				.catch((err) => console.log(err));
+		} catch (err) {
+			console.log("Erro ao consumir a API", err);
+		} finally {
+			// console.log("Finally statement");
+		}
+	};
 
 	useEffect(() => {
 		(async () => {
 			try {
-				await djangoApi
-					.get("plantio/get_plantio_operacoes_detail_json_program/", {
-						headers: {
-							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-						}
-					})
-					.then((res) => {
-						// console.log(res.data);
-						setDataDefTrue(res.data.dados_plantio);
-					})
-					.catch((err) => console.log(err));
+				await getTrueApi();
+				await getFalseApi();
 			} catch (err) {
 				console.log("Erro ao consumir a API", err);
 			} finally {
-				// console.log("Finally statement");
 				setIsLoading(false);
 			}
 		})();

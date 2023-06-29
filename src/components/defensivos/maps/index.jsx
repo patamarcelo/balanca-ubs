@@ -75,7 +75,6 @@ const MapPage = ({ mapArray, filtData }) => {
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
-			console.log(data)
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
