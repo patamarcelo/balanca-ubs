@@ -34,7 +34,6 @@ const HomeDefensivoPage = (props) => {
 	const { isLoadingHome, dataDef, resumeData } = props;
 
 	const [isOpenProducts, setIsOpenProducts] = useState(true);
-	const [isOpenProductsByDay, setisOpenProductsByDay] = useState(false);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
 		useState(false);
 	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(false);
@@ -61,6 +60,7 @@ const HomeDefensivoPage = (props) => {
 
 	const dictComps = {
 		dinamic: "dinamic",
+		table: "table",
 		tableByDay: "tableByDay",
 		productsProgram: "productsProgram",
 		plantioPage: "plantioPage"
@@ -71,22 +71,19 @@ const HomeDefensivoPage = (props) => {
 		switch (name) {
 			case "dinamic":
 				setisOpenProductsByDayDinamic(true);
-				setisOpenProductsByDay(false);
 				setIsOpenProducts(false);
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				break;
-			case "tableByDay":
-				setisOpenProductsByDay(true);
+			case "table":
+				setIsOpenProducts(true);
 				setisOpenProductsByDayDinamic(false);
-				setIsOpenProducts(false);
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				break;
 			case "productsProgram":
 				setisOpenProductsProgram(true);
 				setIsOpenProducts(false);
-				setisOpenProductsByDay(false);
 				setisOpenProductsByDayDinamic(false);
 				setIsOpenPlantioPage(false);
 				break;
@@ -94,7 +91,6 @@ const HomeDefensivoPage = (props) => {
 				setIsOpenPlantioPage(true);
 				setisOpenProductsProgram(false);
 				setIsOpenProducts(false);
-				setisOpenProductsByDay(false);
 				setisOpenProductsByDayDinamic(false);
 				break;
 			default:
