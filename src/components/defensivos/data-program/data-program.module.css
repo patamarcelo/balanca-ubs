@@ -23,7 +23,8 @@
 .div h6:hover {
     background-color: rgb(0,0,0, 0.7);
     color: whitesmoke;
-    transform: scale(1.1);
+    transform: scale(1.12);
+    opacity: 0.7;
 }
 
 

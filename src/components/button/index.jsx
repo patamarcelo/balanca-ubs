@@ -1,13 +1,25 @@
 import Button from "@mui/material/Button";
 
 const CustomButton = (props) => {
-	const { title, color, ml, handleOpenModal, isBalanca, size } = props;
+	const { title, color, ml, handleOpenModal, isBalanca, size, fontColor } =
+		props;
+
+	const fontColorAdj = (fontColor) => {
+		if (fontColor) {
+			return fontColor;
+		}
+		return "white";
+	};
 	return (
 		<Button
 			variant="contained"
 			sx={{
 				backgroundColor: color,
-				marginLeft: `${ml}px`
+				marginLeft: `${ml}px`,
+				color: fontColorAdj(fontColor),
+				":hover": {
+					color: "white"
+				}
 			}}
 			startIcon={props.children}
 			onClick={handleOpenModal}

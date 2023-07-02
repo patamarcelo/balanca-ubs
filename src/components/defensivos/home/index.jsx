@@ -131,6 +131,7 @@ const HomeDefensivoPage = (props) => {
 											? colors.greenAccent[900]
 											: colors.greenAccent[600]
 									}
+									fontColor={colors.primary[100]}
 									title={data.title}
 									handleOpenModal={() =>
 										handleSelectComponent(data.option)

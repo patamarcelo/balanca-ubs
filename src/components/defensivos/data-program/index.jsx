@@ -327,10 +327,12 @@ const DataProgramPage = (props) => {
 									color:
 										farmSelected === data &&
 										theme.palette.mode === "light"
-											? "black"
+											? "black" :
+											farmSelected !== data &&
+											theme.palette.mode === "light" ? "white"
 											: colors.primary[100],
-
-									fontStyle: "italic"
+									fontStyle: "italic",
+									fontWeight: 600
 								}}
 								variant="h6"
 								onClick={() => handleFilterList(data)}
