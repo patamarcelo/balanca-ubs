@@ -19,6 +19,7 @@ import DateIntervalPage from "../data-program/date-interval";
 import classes from "../data-program/data-program.module.css";
 
 import SafraCicloComp from "./safra-ciclo";
+import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
 
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
@@ -146,7 +147,8 @@ const HomeDefensivoPage = (props) => {
 								maxHeight: " 33px",
 								flexGrow: 1,
 								display: "flex",
-								justifyContent: "center"
+								justifyContent: "center",
+								margin: "5px"
 							}}
 						>
 							<div className={classes["date-picker"]}>
@@ -203,7 +205,11 @@ const HomeDefensivoPage = (props) => {
 			)}
 			{isOpenPlantioPage && (
 				<>
-					{isChangingTable && <LoaderHomeSkeleton />}
+					{isChangingTable && (
+						<Box className={classesPlantioDone.container}>
+							<LoaderHomeSkeleton />
+						</Box>
+					)}
 					{!isLoadingHome && !isChangingTable && (
 						<PlantioDonePage
 							isLoadingHome={isLoadingHome}

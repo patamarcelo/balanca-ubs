@@ -71,7 +71,7 @@ const PlantioDonePage = () => {
 
 	return (
 		<>
-			<Box className={classes.container}>
+			<Box className={classes.container} >
 				{isLoading && <LoaderHomeSkeleton />}
 
 				{!isLoading && dataF && (
