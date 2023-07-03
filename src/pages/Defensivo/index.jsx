@@ -12,6 +12,11 @@ import djangoApi from "../../utils/axios/axios.utils";
 
 import LoaderHomeSkeleton from "../../components/defensivos/home/loader";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
+
+import CircularProgress from "@mui/material/CircularProgress";
+
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -76,6 +81,18 @@ const DefensivoPage = () => {
 		})();
 	}, []);
 
+	const handleRefreshData = async () => {
+		setIsLoading(true);
+		try {
+			await getTrueApi();
+			await getFalseApi();
+		} catch (err) {
+			console.log("Erro ao consumir a API", err);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		const newArr = [...dataDefTrue, ...dataDefFalse];
 		setDataDef(newArr);
@@ -88,6 +105,36 @@ const DefensivoPage = () => {
 				height: "100%"
 			}}
 		>
+			<Box
+				sx={{
+					textAlign: "right",
+					marginBottom: "-30px"
+				}}
+			>
+				{isLoadingHome ? (
+					<CircularProgress
+						size={20}
+						sx={{
+							margin: "-10px 10px",
+							color: (theme) =>
+								colors.greenAccent[
+									theme.palette.mode === "dark" ? 200 : 800
+								]
+						}}
+					/>
+				) : (
+					<FontAwesomeIcon
+						icon={faArrowsRotate}
+						color={colors.greenAccent[500]}
+						size="lg"
+						style={{
+							margin: "-10px 10px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleRefreshData()}
+					/>
+				)}
+			</Box>
 			<Box
 				sx={{
 					width: "100%",
