@@ -196,7 +196,7 @@ const DataProgramPage = (props) => {
 					const dapApp = cron.dap;
 					const parcela = data.parcela;
 					const variedade = data.dados.variedade;
-					const dataPlantio = data.dados.data_plantio;
+					const dataPlantio = data.dados.data_inicio_plantio;
 					const area = data.dados.area_colheita;
 					const dap = data.dados.dap;
 					const cultura = data.dados.cultura;
