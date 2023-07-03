@@ -56,6 +56,10 @@ const PlantioDonePage = () => {
 							data_plantio: data.data_plantio
 								.split("-")
 								.reverse()
+								.join("/"),
+							data_plantio_inicio: data["cronograma_programa__0"]["Data Plantio"]
+								.split("-")
+								.reverse()
 								.join("/")
 						}));
 						setDataF(newData);

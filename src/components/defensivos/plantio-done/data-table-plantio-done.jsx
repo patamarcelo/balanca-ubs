@@ -11,6 +11,7 @@ const PlantioDoneTable = (props) => {
 	const colors = tokens(theme.palette.mode);
 
 	const columns = [
+		{ field: "data_plantio_inicio", headerName: "Data Ini.", flex: 0 },
 		{ field: "data_plantio", headerName: "Data", flex: 0 },
 		{
 			field: "talhao__fazenda__fazenda__nome",
