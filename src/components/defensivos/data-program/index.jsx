@@ -58,11 +58,40 @@ const DataProgramPage = (props) => {
 
 	const [isLoadingHome, setIsLoading] = useState(true);
 
+	const [updateApp, setUpdateApp] = useState([]);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" }
 	];
+
+	const handleSetApp = (dataId, estagio) => {
+		const newDict = {
+			id: dataId,
+			estagio: estagio
+		};
+
+		const isIn = updateApp.some(
+			(data) => data.id === dataId && data.estagio === estagio
+		);
+		if (isIn) {
+			// console.log("já colocado");
+			const newArr = updateApp.filter((data) => {
+				const newData = `${data.id}${data.estagio}`;
+				const oldData = `${dataId}${estagio}`;
+				return newData !== oldData;
+			});
+			setUpdateApp(newArr);
+		} else {
+			setUpdateApp((updateApp) => [...updateApp, newDict]);
+			// console.log("ainda não estava");
+		}
+	};
+
+	useEffect(() => {
+		console.log(updateApp);
+	}, [updateApp]);
 
 	const handleShowMaps = () => {
 		setShowMapps(!showMapps);
@@ -185,6 +214,7 @@ const DataProgramPage = (props) => {
 			const mapGeoPoints = data.dados.map_geo_points;
 			const variedadeColor = data.dados.variedade_color;
 			const variedadeColorLine = data.dados.variedade_color_line;
+			const plantioId = data.dados.plantio_id;
 
 			const cronArr = cronograma.map((cron, i) => {
 				const aplicado = cron.aplicado;
@@ -220,7 +250,8 @@ const DataProgramPage = (props) => {
 						projetoMapCentroId,
 						mapGeoPoints,
 						variedadeColor,
-						variedadeColorLine
+						variedadeColorLine,
+						plantioId
 					};
 				}
 				return cronOb;
@@ -247,7 +278,6 @@ const DataProgramPage = (props) => {
 			}
 			return acc;
 		}, {});
-
 		const dictTotal = [];
 		Object.keys(result).map((data, i) => {
 			const total = result[data].reduce((acc, curr) => {
@@ -260,7 +290,6 @@ const DataProgramPage = (props) => {
 				});
 				return filtArr;
 			});
-
 			const newDic = {
 				estagio: data,
 				cronograma: result[data],
@@ -327,9 +356,10 @@ const DataProgramPage = (props) => {
 									color:
 										farmSelected === data &&
 										theme.palette.mode === "light"
-											? "black" :
-											farmSelected !== data &&
-											theme.palette.mode === "light" ? "white"
+											? "black"
+											: farmSelected !== data &&
+											  theme.palette.mode === "light"
+											? "white"
 											: colors.primary[100],
 									fontStyle: "italic",
 									fontWeight: 600
@@ -638,7 +668,7 @@ const DataProgramPage = (props) => {
 												classes["parcelas-resumo-div"]
 											}
 										>
-											<div>
+											<div style={{ gap: "5px" }}>
 												{data.cronograma
 													.sort((a, b) =>
 														!filtData
@@ -653,14 +683,32 @@ const DataProgramPage = (props) => {
 															  )
 													)
 													.map((data, i) => {
+														const dataId =
+															data.plantioId;
+														const setEstagio =
+															data.estagio.split(
+																"|"
+															)[0];
+
+														const checkSelected =
+															updateApp.some(
+																(data) =>
+																	data.id ===
+																		dataId &&
+																	data.estagio ===
+																		estagio
+															);
 														return (
 															<div
 																key={i}
-																className={
+																className={`${
 																	classes[
 																		"parcelas-detail-div"
 																	]
 																}
+																	${checkSelected && classes["parcelas-resumo-div-selected"]}
+																}
+																	`}
 															>
 																<div
 																	className={
@@ -674,6 +722,12 @@ const DataProgramPage = (props) => {
 																			classes[
 																				"parcela-icon-div"
 																			]
+																		}
+																		onClick={() =>
+																			handleSetApp(
+																				dataId,
+																				setEstagio
+																			)
 																		}
 																	>
 																		<img

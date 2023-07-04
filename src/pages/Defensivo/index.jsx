@@ -128,8 +128,9 @@ const DefensivoPage = () => {
 						color={colors.greenAccent[500]}
 						size="lg"
 						style={{
-							margin: "-10px 10px",
-							cursor: "pointer"
+							margin: "0px 10px",
+							cursor: "pointer",
+							position: 'relative'
 						}}
 						onClick={() => handleRefreshData()}
 					/>

@@ -160,6 +160,7 @@
 .parcelas-detail-div {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-around;
     margin: 2px;
 }
@@ -241,6 +242,7 @@
 .parcela-div {
     display: flex;
     flex-direction: row;
+    align-items: center;
     min-width: 110px !important;
 }
 .parcela-div img {
@@ -266,4 +268,29 @@
 
 .farm-list-div {
     box-shadow: rgba(0, 0, 0, 0.65) 0px 5px 15px;
+}
+
+
+.parcela-icon-div {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.parcela-icon-div > img {
+    vertical-align: top;
+}
+
+
+
+.parcelas-detail-div:has(.parcela-div .parcela-icon-div:hover) {
+    background-color: rgb(245,245,245, 0.2);
+    border-radius: 15px;
+    box-shadow: inset -0.5px -0.5px 0.5px 0.5px black;
+}
+
+
+.parcelas-resumo-div-selected {
+    background-color: rgb(0,128,0,0.3) !important;
+    border-radius: 15px;
+    box-shadow: inset -0.5px -0.5px 0.5px 0.5px black;
 }
