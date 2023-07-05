@@ -32,6 +32,9 @@ import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 import Fade from "@mui/material/Fade";
 
+import { useSelector } from "react-redux";
+import { selectIsAdminUser } from "../../../store/user/user.selector";
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -66,6 +69,8 @@ const DataProgramPage = (props) => {
 
 	const [sendingData, setSendingData] = useState(false);
 	const [positiveSignal, setPositiveSignal] = useState(false);
+
+	const isAdminUser = useSelector(selectIsAdminUser);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -501,7 +506,8 @@ const DataProgramPage = (props) => {
 								/>
 							)}
 
-							{updateApp.length > 0 &&
+							{isAdminUser &&
+								updateApp.length > 0 &&
 								(sendingData ? (
 									<CircularProgress
 										size={15}
