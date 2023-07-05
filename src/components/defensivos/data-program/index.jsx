@@ -35,7 +35,8 @@ import Fade from "@mui/material/Fade";
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { dataDef, initialDateForm, finalDateForm } = props;
+	const { dataDef, initialDateForm, finalDateForm, handleRefreshData } =
+		props;
 
 	const [farmList, setFarmList] = useState([]);
 	const [objList, setObjList] = useState([]);
@@ -120,6 +121,10 @@ const DataProgramPage = (props) => {
 			setTimeout(() => {
 				setPositiveSignal(false);
 			}, 1500);
+
+			setTimeout(() => {
+				handleRefreshData();
+			}, 1700);
 		}
 	};
 

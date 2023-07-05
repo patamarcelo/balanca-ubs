@@ -147,6 +147,7 @@ const DefensivoPage = () => {
 			>
 				{!isLoadingHome && (
 					<HomeDefensivoPage
+						handleRefreshData={handleRefreshData}
 						dataDef={dataDef}
 						isLoadingHome={isLoadingHome}
 					/>
