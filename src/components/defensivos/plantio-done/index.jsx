@@ -57,7 +57,9 @@ const PlantioDonePage = () => {
 								.split("-")
 								.reverse()
 								.join("/"),
-							data_plantio_inicio: data["cronograma_programa__0"]["Data Plantio"]
+							data_plantio_inicio: data["cronograma_programa__0"][
+								"Data Plantio"
+							]
 								.split("-")
 								.reverse()
 								.join("/")
@@ -75,7 +77,7 @@ const PlantioDonePage = () => {
 
 	return (
 		<>
-			<Box className={classes.container} >
+			<Box className={classes.container}>
 				{isLoading && <LoaderHomeSkeleton />}
 
 				{!isLoading && dataF && (

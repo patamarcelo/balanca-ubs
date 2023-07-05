@@ -30,6 +30,11 @@ const PlantioDoneTable = (props) => {
 			headerName: "Variedade",
 			flex: 1
 		},
+		{
+			field: "variedade__dias_ciclo",
+			headerName: "Variedade Ciclo",
+			flex: 1
+		},
 		{ field: "area_colheita", headerName: "Area", flex: 1 },
 		{ field: "safra__safra", headerName: "Safra", flex: 1 },
 		{ field: "ciclo__ciclo", headerName: "Ciclo", flex: 1 }
