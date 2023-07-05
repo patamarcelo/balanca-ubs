@@ -6,7 +6,7 @@ import classes from "./data-program.module.css";
 import { displayDate } from "../../../utils/format-suport/data-format";
 import DateIntervalPage from "./date-interval";
 
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEye } from "@fortawesome/free-solid-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
@@ -14,12 +14,14 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 import { faArrowDownShortWide } from "@fortawesome/free-solid-svg-icons";
 import { faMapLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Zoom from "@mui/material/Zoom";
 import CustomButton from "../../button";
+import IconButton from "@mui/material/IconButton";
 
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
@@ -28,6 +30,7 @@ import rice from "../../../utils/assets/icons/rice.png";
 import MapPage from "../maps";
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
+import Fade from "@mui/material/Fade";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -60,6 +63,9 @@ const DataProgramPage = (props) => {
 
 	const [updateApp, setUpdateApp] = useState([]);
 
+	const [sendingData, setSendingData] = useState(false);
+	const [positiveSignal, setPositiveSignal] = useState(false);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
@@ -89,9 +95,33 @@ const DataProgramPage = (props) => {
 		}
 	};
 
-	useEffect(() => {
-		console.log(updateApp);
-	}, [updateApp]);
+	const handleSendApiApp = async (data) => {
+		const params = JSON.stringify({
+			data: data
+		});
+		try {
+			setSendingData(true);
+			await djangoApi
+				.put("plantio/update_aplication_plantio/", params, {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					console.log(res);
+				});
+		} catch (err) {
+			console.log("Erro ao alterar as aplicações", err);
+		} finally {
+			setUpdateApp([]);
+			setSendingData(false);
+
+			setPositiveSignal(true);
+			setTimeout(() => {
+				setPositiveSignal(false);
+			}, 1500);
+		}
+	};
 
 	const handleShowMaps = () => {
 		setShowMapps(!showMapps);
@@ -465,6 +495,45 @@ const DataProgramPage = (props) => {
 									onClick={() => handleShowMaps()}
 								/>
 							)}
+
+							{updateApp.length > 0 &&
+								(sendingData ? (
+									<CircularProgress
+										size={15}
+										sx={{
+											margin: "0px 10px",
+											color: (theme) =>
+												colors.greenAccent[
+													theme.palette.mode ===
+													"dark"
+														? 200
+														: 800
+												]
+										}}
+									/>
+								) : (
+									<IconButton
+										aria-label="delete"
+										onClick={() =>
+											handleSendApiApp(updateApp)
+										}
+									>
+										<FontAwesomeIcon
+											icon={faCircleCheck}
+											size="xs"
+										/>
+									</IconButton>
+								))}
+
+							{
+								<Fade in={positiveSignal}>
+									<FontAwesomeIcon
+										icon={faCheck}
+										size="xs"
+										color={colors.greenAccent[500]}
+									/>
+								</Fade>
+							}
 						</div>
 						<div>
 							{areaFiltTotal > 0 && (
