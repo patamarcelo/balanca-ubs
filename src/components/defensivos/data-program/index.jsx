@@ -1,10 +1,9 @@
-import { Box, Typography, Button, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
-import DateIntervalPage from "./date-interval";
 
 import { faCheck, faEye } from "@fortawesome/free-solid-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Zoom from "@mui/material/Zoom";
-import CustomButton from "../../button";
+// import CustomButton from "../../button";
 import IconButton from "@mui/material/IconButton";
 
 import beans from "../../../utils/assets/icons/beans2.png";
@@ -34,12 +33,12 @@ import Fade from "@mui/material/Fade";
 
 import { useSelector } from "react-redux";
 import { selectIsAdminUser } from "../../../store/user/user.selector";
+import { selectPlantio } from "../../../store/plantio/plantio.selector";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { dataDef, initialDateForm, finalDateForm, handleRefreshData } =
-		props;
+	const { initialDateForm, finalDateForm, handleRefreshData } = props;
 
 	const [farmList, setFarmList] = useState([]);
 	const [objList, setObjList] = useState([]);
@@ -71,6 +70,7 @@ const DataProgramPage = (props) => {
 	const [positiveSignal, setPositiveSignal] = useState(false);
 
 	const isAdminUser = useSelector(selectIsAdminUser);
+	const plantioRedux = useSelector(selectPlantio);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -220,7 +220,7 @@ const DataProgramPage = (props) => {
 	}, [dataToMap, farmSelected]);
 
 	useEffect(() => {
-		const listFarm = dataDef
+		const listFarm = plantioRedux
 			.filter((data) => data.dados.plantio_finalizado === true)
 			.map((data, i) => {
 				return data.fazenda;
@@ -231,7 +231,7 @@ const DataProgramPage = (props) => {
 
 	const handleFilterList = (farmName) => {
 		setFarmSelected(farmName);
-		const filtList = dataDef.filter(
+		const filtList = plantioRedux.filter(
 			(data) =>
 				data.fazenda === farmName &&
 				data.dados.plantio_finalizado === true

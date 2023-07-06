@@ -1,5 +1,4 @@
-import { Box, Typography, Button, useTheme } from "@mui/material";
-import { tokens } from "../../../theme";
+import { Box } from "@mui/material";
 
 import classes from "./plantio-done-page.module.css";
 
@@ -10,9 +9,6 @@ import PlantioDoneTable from "./data-table-plantio-done";
 import LoaderHomeSkeleton from "../home/loader";
 
 const PlantioDonePage = () => {
-	const theme = useTheme();
-	const colors = tokens(theme.palette.mode);
-
 	const safraDict = {
 		first: "2022/2023",
 		second: "2023/2024"

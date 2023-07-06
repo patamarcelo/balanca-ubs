@@ -17,9 +17,13 @@ import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { useDispatch } from "react-redux";
+import { setPlantio } from "../../store/plantio/plantio.actions";
+
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const dispatch = useDispatch();
 
 	const [isLoadingHome, setIsLoading] = useState(true);
 
@@ -96,7 +100,8 @@ const DefensivoPage = () => {
 	useEffect(() => {
 		const newArr = [...dataDefTrue, ...dataDefFalse];
 		setDataDef(newArr);
-	}, [dataDefFalse, dataDefTrue]);
+		dispatch(setPlantio(newArr));
+	}, [dataDefFalse, dataDefTrue, dispatch]);
 
 	return (
 		<Box
@@ -130,7 +135,7 @@ const DefensivoPage = () => {
 						style={{
 							margin: "0px 10px",
 							cursor: "pointer",
-							position: 'relative'
+							position: "relative"
 						}}
 						onClick={() => handleRefreshData()}
 					/>
@@ -148,7 +153,6 @@ const DefensivoPage = () => {
 				{!isLoadingHome && (
 					<HomeDefensivoPage
 						handleRefreshData={handleRefreshData}
-						dataDef={dataDef}
 						isLoadingHome={isLoadingHome}
 					/>
 				)}

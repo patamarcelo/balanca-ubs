@@ -25,7 +25,7 @@ const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
-	const { isLoadingHome, dataDef, handleRefreshData } = props;
+	const { isLoadingHome, handleRefreshData } = props;
 
 	const [isOpenProducts, setIsOpenProducts] = useState(true);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
@@ -172,10 +172,7 @@ const HomeDefensivoPage = (props) => {
 				<>
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
-						<DataDefensivoPage
-							isLoadingHome={isLoadingHome}
-							data={dataDef}
-						/>
+						<DataDefensivoPage isLoadingHome={isLoadingHome} />
 					)}
 				</>
 			)}
@@ -185,7 +182,6 @@ const HomeDefensivoPage = (props) => {
 					{!isLoadingHome && !isChangingTable && (
 						<DataDefensivoPageDinamic
 							isLoadingHome={isLoadingHome}
-							dataDef={dataDef}
 						/>
 					)}
 				</>
@@ -195,11 +191,10 @@ const HomeDefensivoPage = (props) => {
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
 						<DataProgramPage
-						handleRefreshData={handleRefreshData}
+							handleRefreshData={handleRefreshData}
 							initialDateForm={initialDateForm}
 							finalDateForm={finalDateForm}
 							isLoadingHome={isLoadingHome}
-							dataDef={dataDef}
 						/>
 					)}
 				</>
@@ -212,10 +207,7 @@ const HomeDefensivoPage = (props) => {
 						</Box>
 					)}
 					{!isLoadingHome && !isChangingTable && (
-						<PlantioDonePage
-							isLoadingHome={isLoadingHome}
-							dataDef={dataDef}
-						/>
+						<PlantioDonePage isLoadingHome={isLoadingHome} />
 					)}
 				</>
 			)}

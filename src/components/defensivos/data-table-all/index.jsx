@@ -1,26 +1,29 @@
-import { Box, Typography, Button, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { useEffect, useState } from "react";
 
-import classes from "./data.module.css";
 import { createDataTable } from "../../../utils/format-suport/create-table-dinamic";
 import ProgramaTablePage from "./data-table-app";
+
+import { useSelector } from "react-redux";
+import { selectPlantio } from "../../../store/plantio/plantio.selector";
 
 const DataDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const { isLoadingHome, data } = props;
+	const { isLoadingHome } = props;
+	const plantioRedux = useSelector(selectPlantio);
 
 	const [tableData, SetTableData] = useState([]);
 
 	useEffect(() => {
-		const newTable = createDataTable(data);
+		const newTable = createDataTable(plantioRedux);
 		if (newTable) {
 			SetTableData(newTable);
 		}
-	}, [data]);
+	}, [plantioRedux]);
 
 	return (
 		<Box
@@ -34,7 +37,7 @@ const DataDefensivoPage = (props) => {
 				}
 			}
 		>
-			{isLoadingHome && data && (
+			{isLoadingHome && plantioRedux && (
 				<Box
 					display="flex"
 					justifyContent="center"
@@ -57,7 +60,7 @@ const DataDefensivoPage = (props) => {
 					</Typography>
 				</Box>
 			)}
-			{!isLoadingHome && data && (
+			{!isLoadingHome && plantioRedux && (
 				<ProgramaTablePage loading={isLoadingHome} rows={tableData} />
 			)}
 		</Box>
