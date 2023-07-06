@@ -40,6 +40,7 @@
 
 .mainDiv {
     width: 100%;
+    min-height: 94%;
     height: auto;
     margin: 5px;
     padding: 5px;
@@ -293,4 +294,14 @@
     background-color: rgb(0,128,0,0.3) !important;
     border-radius: 15px;
     box-shadow: inset -0.5px -0.5px 0.5px 0.5px black;
+}
+
+
+.emptyResultPage {
+    box-shadow: rgba(0, 0, 0, 0.65) 0px 5px 15px;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

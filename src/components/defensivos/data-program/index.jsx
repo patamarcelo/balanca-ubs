@@ -35,6 +35,8 @@ import { useSelector } from "react-redux";
 import { selectIsAdminUser } from "../../../store/user/user.selector";
 import { selectPlantio } from "../../../store/plantio/plantio.selector";
 
+import EmptyResultPage from "./empty-result";
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -386,7 +388,14 @@ const DataProgramPage = (props) => {
 			>
 				{farmList.map((data, i) => {
 					return (
-						<Box key={i} gap={10}>
+						<Box
+							key={i}
+							gap={10}
+							sx={{
+								boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
+								borderRadius: "8px"
+							}}
+						>
 							<Typography
 								style={{
 									backgroundColor:
@@ -561,6 +570,8 @@ const DataProgramPage = (props) => {
 						</div>
 					</Typography>
 				</Box>
+
+				{objResumValues.length === 0 && <EmptyResultPage />}
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {
