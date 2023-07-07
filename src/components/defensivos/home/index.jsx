@@ -8,6 +8,7 @@ import DataDefensivoPage from "../data-table-all";
 import DataDefensivoPageDinamic from "../data-table-dinamic";
 import DataProgramPage from "../data-program";
 import PlantioDonePage from "../plantio-done";
+import FarmBoxPage from "../farmbox-data";
 
 import Stack from "@mui/material/Stack";
 import CustomButton from "../../button";
@@ -32,6 +33,7 @@ const HomeDefensivoPage = (props) => {
 		useState(false);
 	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(false);
 	const [isOpenPlantioPage, setIsOpenPlantioPage] = useState(false);
+	const [isOpenFarmbox, setIsOpenFarmbox] = useState(false);
 
 	const [isChangingTable, setIsChangingTable] = useState(false);
 
@@ -57,7 +59,8 @@ const HomeDefensivoPage = (props) => {
 		table: "table",
 		tableByDay: "tableByDay",
 		productsProgram: "productsProgram",
-		plantioPage: "plantioPage"
+		plantioPage: "plantioPage",
+		farmboxData: "farmbox"
 	};
 
 	const handleSelectComponent = (name) => {
@@ -65,6 +68,7 @@ const HomeDefensivoPage = (props) => {
 		switch (name) {
 			case "dinamic":
 				setisOpenProductsByDayDinamic(true);
+				setIsOpenFarmbox(false);
 				setIsOpenProducts(false);
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
@@ -72,6 +76,7 @@ const HomeDefensivoPage = (props) => {
 			case "table":
 				setIsOpenProducts(true);
 				setisOpenProductsByDayDinamic(false);
+				setIsOpenFarmbox(false);
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				break;
@@ -79,10 +84,19 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsProgram(true);
 				setIsOpenProducts(false);
 				setisOpenProductsByDayDinamic(false);
+				setIsOpenFarmbox(false);
 				setIsOpenPlantioPage(false);
 				break;
 			case "plantioPage":
 				setIsOpenPlantioPage(true);
+				setisOpenProductsProgram(false);
+				setIsOpenProducts(false);
+				setisOpenProductsByDayDinamic(false);
+				setIsOpenFarmbox(false);
+				break;
+			case "farmbox":
+				setIsOpenFarmbox(true);
+				setIsOpenPlantioPage(false);
 				setisOpenProductsProgram(false);
 				setIsOpenProducts(false);
 				setisOpenProductsByDayDinamic(false);
@@ -116,6 +130,11 @@ const HomeDefensivoPage = (props) => {
 			title: "Plantio",
 			option: dictComps.plantioPage,
 			selection: isOpenPlantioPage
+		},
+		{
+			title: "Farmbox",
+			option: dictComps.farmboxData,
+			selection: isOpenFarmbox
 		}
 	];
 	return (
@@ -208,6 +227,18 @@ const HomeDefensivoPage = (props) => {
 					)}
 					{!isLoadingHome && !isChangingTable && (
 						<PlantioDonePage isLoadingHome={isLoadingHome} />
+					)}
+				</>
+			)}
+			{isOpenFarmbox && (
+				<>
+					{isChangingTable && (
+						<Box className={classesPlantioDone.container}>
+							<LoaderHomeSkeleton />
+						</Box>
+					)}
+					{!isLoadingHome && !isChangingTable && (
+						<FarmBoxPage isLoadingHome={isLoadingHome} />
 					)}
 				</>
 			)}

@@ -1,7 +1,8 @@
 import { PLANTIO_ACTIONS_TYPES } from "./plantio.types";
 
 const INITIAL_STATE = {
-	plantio: []
+	plantio: [],
+	app: []
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -11,6 +12,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				plantio: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_APP:
+			return {
+				...state,
+				app: payload
 			};
 		default:
 			return state;

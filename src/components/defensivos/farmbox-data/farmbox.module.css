@@ -1,0 +1,93 @@
+.mainDiv {
+    /* background-color: rgb(127,255,212, 0.3); */
+    border-radius: 8px;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: baseline;
+    width: 100%;
+    min-height: 90%;
+    /* border: 1px solid black; */
+    padding: 10px;
+}
+
+.dashboardDiv {
+    /* background-color: rgb(127,255,212, 0.3); */
+    border-radius: 8px;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: baseline;
+    width: 100%;
+    min-height: 90%;
+    /* border: 1px solid black; */
+    padding: 10px;
+}
+
+.appDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.emptyFarm{
+    width: 100%;
+    height: 100%;
+    font-size: 32px;
+    color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.formDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.formDiv > div {
+    border-radius: 8px;
+}
+
+.appNumero {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: center; */
+    align-items: center;
+    width: 100%;
+}
+
+.appNumero > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashLeft{
+    width: 48%;
+}
+
+.dashRight{
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: rgb(255,0,0,0.3);
+}

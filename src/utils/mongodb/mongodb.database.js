@@ -1,4 +1,5 @@
 import axios from "axios";
+
 var data = JSON.stringify({
 	collection: "aplicacoes",
 	database: "farmbox",
@@ -10,13 +11,11 @@ var data = JSON.stringify({
 
 var config = {
 	method: "post",
-	// url: "https://data.mongodb-api.com/app/data-ngbze/endpoint/data/v1/action/find",
-	url: "https://sa-east-1.aws.data.mongodb-api.com/app/data-acjyg/endpoint/data/v1",
+	url: "https://sa-east-1.aws.data.mongodb-api.com/app/data-ksegl/endpoint/data/v1/action/find",
 	headers: {
-		// Authorization: `Bearer ${process.env.REACT_APP_MONGODB_TOKEN}`,
 		"Content-Type": "application/json",
 		"Access-Control-Request-Headers": "*",
-		"api-key": process.env.REACT_APP_MONGODB_TOKEN_DEFENSIVOS
+		apiKey: process.env.REACT_APP_MONGODB_TOKEN_DEFENSIVOS
 	},
 	data: data
 };
