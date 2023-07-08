@@ -96,36 +96,40 @@ const FarmBoxPage = () => {
 
 	return (
 		<div className={classes.mainDiv}>
-			<Box className={classes.formDiv}>
-				<FormControl
-					sx={{
-						m: 1,
-						width: 900,
-						backgroundColor: colors.blueOrigin[800]
-					}}
-				>
-					<InputLabel id="demo-multiple-name-label">Farm</InputLabel>
-					<Select
-						labelId="demo-multiple-name-label"
-						id="demo-multiple-name"
-						multiple
-						value={filtFarm}
-						onChange={handleChange}
-						input={<OutlinedInput label="Farm" />}
-						MenuProps={MenuProps}
+			{!loadingData && onlyFarms.length > 0 && (
+				<Box className={classes.formDiv}>
+					<FormControl
+						sx={{
+							m: 1,
+							width: 900,
+							backgroundColor: colors.blueOrigin[800]
+						}}
 					>
-						{onlyFarms?.map((farm, i) => (
-							<MenuItem
-								key={i}
-								value={farm}
-								//   style={getStyles(name, personName, theme)}
-							>
-								{farm}
-							</MenuItem>
-						))}
-					</Select>
-				</FormControl>
-			</Box>
+						<InputLabel id="demo-multiple-name-label">
+							Farm
+						</InputLabel>
+						<Select
+							labelId="demo-multiple-name-label"
+							id="demo-multiple-name"
+							multiple
+							value={filtFarm}
+							onChange={handleChange}
+							input={<OutlinedInput label="Farm" />}
+							MenuProps={MenuProps}
+						>
+							{onlyFarms?.map((farm, i) => (
+								<MenuItem
+									key={i}
+									value={farm}
+									//   style={getStyles(name, personName, theme)}
+								>
+									{farm}
+								</MenuItem>
+							))}
+						</Select>
+					</FormControl>
+				</Box>
+			)}
 			<div className={classes.dashboardDiv}>
 				{loadingData && (
 					<Box sx={{ width: "100%" }}>
@@ -179,6 +183,10 @@ const FarmBoxPage = () => {
 												Area Aplicada:{" "}
 												{data.areaAplicada}
 											</span>
+											<span>
+												Area a Aplicar:{" "}
+												{data.saldoAplicar}
+											</span>
 
 											{/* {data.parcelas.map((parc, i) => {
 									return (
@@ -202,7 +210,9 @@ const FarmBoxPage = () => {
 					})}
 				</div>
 				<div className={classes.dashRight}>
-					{filteredApps.length > 0 && <p>dados das aplicações</p>}
+					{filteredApps.length > 0 && (
+						<Divider>Resumo Aplicações</Divider>
+					)}
 				</div>
 			</div>
 			{!loadingData && filteredApps.length === 0 && (

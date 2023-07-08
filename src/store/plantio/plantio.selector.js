@@ -24,6 +24,8 @@ export const createDict = (state) => {
 		const percentApp =
 			(parseFloat(areaTotalAplicada) / parseFloat(areaTotalSolicitada)) *
 			100;
+		const saldoAplicar =
+			parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
 
 		const parcelasSolicitadas = data.plantations.map((data) => {
 			const aplicado = data.applied_area === 0 ? false : true;
@@ -46,10 +48,14 @@ export const createDict = (state) => {
 				a.parcela.localeCompare(b.parcela)
 			),
 			area: areaTotalSolicitada,
-			areaAplicada: areaTotalAplicada
+			areaAplicada: areaTotalAplicada,
+			saldoAplicar: saldoAplicar.toFixed(2)
 		};
 	});
-	return newArr.sort((a, b) => a.fazenda.localeCompare(b.fazenda));
+	return newArr.sort(
+		(a, b) =>
+			a.fazenda.localeCompare(b.fazenda) || a.app.localeCompare(b.app)
+	);
 };
 
 export const onlyFarm = (state) => {
