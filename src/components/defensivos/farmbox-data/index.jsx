@@ -22,6 +22,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 import Divider from "@mui/material/Divider";
+import TableDataPage from "./table-data-app";
+import HeaderApp from "./header-app";
+import ResumoDataPage from "./resumo-data-page";
 
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -137,81 +140,41 @@ const FarmBoxPage = () => {
 					</Box>
 				)}
 				<div className={classes.dashLeft}>
-					{filteredApps?.map((data, i) => {
-						const opTipo =
-							data.operacaoTipo === "Operação"
-								? data.operacao
-								: "Sem Operação Informada";
+					{filtFarm?.map((data, i) => {
 						return (
-							<div key={i}>
-								{filteredApps[i]?.fazenda !==
-								filteredApps[i - 1]?.fazenda ? (
-									<Divider>{data.fazenda}</Divider>
-								) : null}
-								<div
-									className={classes.appDiv}
-									style={{
-										backgroundColor: colors.blueOrigin[700]
-									}}
-								>
-									<span>{data.app}</span>
-									<Box className={classes.appNumero}>
-										<Box
-											display="flex"
-											flexDirection="row"
-											justifyContent="center"
-											alignItems="center"
-											sx={{
-												width: "50%",
-												height: "100%",
-												// backgroundColor: "red",
-												fontSize: "12px"
-											}}
-										>
-											{/* <span>{data.app}</span> */}
-											<span>{opTipo}</span>
-											<span>{data.cultura}</span>
-										</Box>
-										<Box
-											// sx={{ width: "50%", backgroundColor: "green" }}
-											sx={{ width: "50%" }}
-										>
-											<span>
-												Area Solicitada: {data.area}
-											</span>
-											<span>
-												Area Aplicada:{" "}
-												{data.areaAplicada}
-											</span>
-											<span>
-												Area a Aplicar:{" "}
-												{data.saldoAplicar}
-											</span>
-
-											{/* {data.parcelas.map((parc, i) => {
-									return (
-										<div key={i}>
-											<span>{parc.parcela}</span>
-											<span>{parc.area}</span>
-											<span>{parc.variedade}</span>
-											<span>
-												{parc.aplicado
-													? "Aplicado"
-													: "Pendente"}
-											</span>
-										</div>
-									);
-								})} */}
-										</Box>
-									</Box>
+							<>
+								<div key={i} style={{ margin: "20px" }}>
+									<Divider>{data}</Divider>
 								</div>
-							</div>
+								<HeaderApp />
+								<div className={classes.mainDivLeft}>
+									{filteredApps.map((app, i) => {
+										if (app.fazenda === data) {
+											return (
+												<TableDataPage
+													colors={colors}
+													key={i}
+													dataF={app}
+												/>
+											);
+										}
+										return <></>;
+									})}
+								</div>
+							</>
 						);
 					})}
 				</div>
 				<div className={classes.dashRight}>
 					{filteredApps.length > 0 && (
-						<Divider>Resumo Aplicações</Divider>
+						<div className={classes.resumoAppPage}>
+							<div className={classes.headerDivApp}>
+								<Divider>Resumo Aplicações</Divider>
+							</div>
+							<div className={classes.bodyDivApp}>
+								<ResumoDataPage />
+							</div>
+						</div>
 					)}
 				</div>
 			</div>

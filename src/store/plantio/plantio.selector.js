@@ -49,7 +49,9 @@ export const createDict = (state) => {
 			),
 			area: areaTotalSolicitada,
 			areaAplicada: areaTotalAplicada,
-			saldoAplicar: saldoAplicar.toFixed(2)
+			saldoAplicar: saldoAplicar.toFixed(2),
+			date: data.date,
+			endDate: data.end_date
 		};
 	});
 	return newArr.sort(

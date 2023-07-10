@@ -26,16 +26,6 @@
     padding: 10px;
 }
 
-.appDiv{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 10px;
-    padding: 10px;
-    width: 100%;
-    border-radius: 8px;
-}
 
 .emptyFarm{
     width: 100%;
@@ -63,30 +53,124 @@
     border-radius: 8px;
 }
 
-.appNumero {
-    display: flex;
-    flex-direction: row;
-    /* justify-content: center; */
-    align-items: center;
-    width: 100%;
-}
 
-.appNumero > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
 
 .dashLeft{
-    width: 48%;
+    width: 50%;
 }
 
 .dashRight{
-    width: 48%;
+    width: 45%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
+}
+
+.appDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    border-radius: 8px;
+}
+
+
+.mainDivLeft {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    justify-content: flex-start;
+}
+
+.progressApp {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.labelDivApp {
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 30px;
+    align-items: end;
+}
+
+
+.labelDivApp p:first-child {
+    /* background-color: red; */
+    flex-grow: 0;
+    min-width: 50px;
+}
+.labelDivApp div:nth-child(2) {
+    /* background-color: green; */
+    flex-grow: 1;
+    display: flex;
+    gap: 10px;
+}
+
+
+.numberDivApp {
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.numberDivApp p, .labelDivApp p {
+    margin: 0px;
+    margin-bottom: 8px;
+}
+
+.mainDivApp {
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px;
+}
+.headerApp{
+    font-size: 1rem;
+    border-radius: 8px;
+    padding: 10px 10px 0px 10px;
+    margin: 5px 5px 0px 5px;
+}
+
+
+img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.dateDiv {
+    width: 50%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+    font-size: 0.75rem;
+    font-style: italic;
+    font-weight: 800;
+}
+
+.resumoAppPage{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.headerDivApp {
+    color: blue;
+}
+
+
+.bodyDivApp {
+    color: green;
 }
