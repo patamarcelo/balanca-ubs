@@ -5,7 +5,7 @@ const baseURL = "https://diamante-quality.up.railway.app/diamante/";
 const baseURLdev = "http://localhost:8000/diamante/";
 
 // NODE JS SERVER
-const baseURLNode = "https://diamante-quality.up.railway.app/diamante/";
+const baseURLNode = "https://ubs-nodeserver.up.railway.app/defensivos/";
 const baseURLdevNode = "http://localhost:5050/defensivos/";
 
 const djangoApi = axios.create({

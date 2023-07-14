@@ -12,6 +12,7 @@ export const createDict = (state) => {
 		const code = data.code;
 		const areaSolicitada = data.plantations.map((data) => data.sought_area);
 		const areaAplicada = data.plantations.map((data) => data.applied_area);
+		const status = data.status;
 
 		const areaTotalSolicitada = areaSolicitada
 			.reduce((a, b) => a + b, 0)
@@ -40,6 +41,7 @@ export const createDict = (state) => {
 		return {
 			fazenda: farm,
 			app: code,
+			status: status,
 			progresso: percentApp.toFixed(2),
 			operacao: operacao,
 			operacaoTipo: operacaoTipo,
@@ -69,4 +71,86 @@ export const onlyFarm = (state) => {
 		return farms;
 	});
 	return [...new Set(onlyfarm.flat())];
+};
+
+export const geralAppDetail = (state) => {
+	const plantio = state.plantio.app;
+
+	const newArr = plantio
+		.filter((data) => data.status === "sought")
+		.map((data) => {
+			const areaSolicitada = data.plantations.map(
+				(data) => data.sought_area
+			);
+			const areaAplicada = data.plantations.map(
+				(data) => data.applied_area
+			);
+
+			const farm = data.plantations[0].plantation.farm_name;
+
+			const areaTotalSolicitada = areaSolicitada
+				.reduce((a, b) => a + b, 0)
+				.toFixed(2);
+
+			const areaTotalAplicada = areaAplicada
+				.reduce((a, b) => a + b, 0)
+				.toFixed(2);
+
+			const saldoAplicar =
+				parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
+
+			const cultura = data.plantations[0].plantation.culture_name;
+
+			return {
+				fazenda: farm,
+				cultura: cultura,
+				area: areaTotalSolicitada,
+				aplicado: areaTotalAplicada,
+				saldo: saldoAplicar.toFixed(2)
+			};
+		});
+
+	const geralApp = newArr.reduce(
+		(result, value) => {
+			const { area, aplicado, saldo } = value;
+
+			result.area += Number(area);
+			result.aplicado += Number(aplicado);
+			result.saldo += Number(saldo);
+
+			return result;
+		},
+		{
+			area: 0,
+			aplicado: 0,
+			saldo: 0
+		}
+	);
+
+	const fazendasApp = newArr.reduce((result, value) => {
+		const { area, aplicado, saldo, fazenda, cultura } = value;
+		if (!result[fazenda]) {
+			result[fazenda] = {
+				area: Number(area),
+				aplicado: Number(aplicado),
+				saldo: Number(saldo)
+			};
+		} else {
+			result[fazenda].area += Number(area);
+			result[fazenda].aplicado += Number(aplicado);
+			result[fazenda].saldo += Number(saldo);
+		}
+
+		if (!result[fazenda][cultura]) {
+			result[fazenda][cultura] = Number(saldo);
+		} else {
+			result[fazenda][cultura] += Number(saldo);
+		}
+		return result;
+	}, {});
+
+	return {
+		geral: geralApp,
+		fazendas: fazendasApp
+	};
 };

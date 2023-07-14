@@ -25,6 +25,9 @@ import Divider from "@mui/material/Divider";
 import TableDataPage from "./table-data-app";
 import HeaderApp from "./header-app";
 import ResumoDataPage from "./resumo-data-page";
+import ResumoFazendasPage from "./resumos-fazendas-page";
+
+import { geralAppDetail } from "../../../store/plantio/plantio.selector";
 
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -37,6 +40,8 @@ const FarmBoxPage = () => {
 	const onlyFarms = useSelector(onlyFarm);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
+	const dataGeral = useSelector(geralAppDetail);
+	const [saldoAplicar, setSaldoAplicar] = useState(0);
 
 	const ITEM_HEIGHT = 48;
 	const ITEM_PADDING_TOP = 8;
@@ -62,6 +67,8 @@ const FarmBoxPage = () => {
 		);
 		setFilteredApps(filterFarm);
 	}, [filtFarm]);
+
+	// console.log(onlyFarms);
 
 	const getTrueApi = useCallback(async () => {
 		try {
@@ -90,12 +97,22 @@ const FarmBoxPage = () => {
 		}
 	}, [getTrueApi, openApp]);
 
+	// useEffect(() => {
+	// 	if (openApp.length > 0) {
+	// 		console.log(dictSelect);
+	// 		console.log(onlyFarms);
+	// 	}
+	// }, [openApp]);
+
 	useEffect(() => {
-		if (openApp.length > 0) {
-			console.log(dictSelect);
-			console.log(onlyFarms);
-		}
-	}, [openApp]);
+		let saldoAplicar = 0;
+		filtFarm.forEach((data, index) => {
+			if (data in dataGeral.fazendas) {
+				saldoAplicar += dataGeral?.fazendas[data]?.saldo;
+			}
+		});
+		setSaldoAplicar(saldoAplicar);
+	}, [filtFarm, dataGeral]);
 
 	return (
 		<div className={classes.mainDiv}>
@@ -120,15 +137,17 @@ const FarmBoxPage = () => {
 							input={<OutlinedInput label="Farm" />}
 							MenuProps={MenuProps}
 						>
-							{onlyFarms?.map((farm, i) => (
-								<MenuItem
-									key={i}
-									value={farm}
-									//   style={getStyles(name, personName, theme)}
-								>
-									{farm}
-								</MenuItem>
-							))}
+							{onlyFarms
+								?.sort((a, b) => a.localeCompare(b))
+								.map((farm, i) => (
+									<MenuItem
+										key={i}
+										value={farm}
+										//   style={getStyles(name, personName, theme)}
+									>
+										{farm}
+									</MenuItem>
+								))}
 						</Select>
 					</FormControl>
 				</Box>
@@ -143,23 +162,32 @@ const FarmBoxPage = () => {
 					{filtFarm?.map((data, i) => {
 						return (
 							<>
-								<div key={i} style={{ margin: "20px" }}>
+								<div
+									key={i}
+									style={{
+										margin: "29px"
+									}}
+								>
 									<Divider>{data}</Divider>
 								</div>
 								<HeaderApp />
 								<div className={classes.mainDivLeft}>
-									{filteredApps.map((app, i) => {
-										if (app.fazenda === data) {
-											return (
-												<TableDataPage
-													colors={colors}
-													key={i}
-													dataF={app}
-												/>
-											);
-										}
-										return <></>;
-									})}
+									{filteredApps
+										.sort((b, a) =>
+											a.status.localeCompare(b.status)
+										)
+										.map((app, i) => {
+											if (app.fazenda === data) {
+												return (
+													<TableDataPage
+														colors={colors}
+														key={i}
+														dataF={app}
+													/>
+												);
+											}
+											return <></>;
+										})}
 								</div>
 							</>
 						);
@@ -169,11 +197,49 @@ const FarmBoxPage = () => {
 					{filteredApps.length > 0 && (
 						<div className={classes.resumoAppPage}>
 							<div className={classes.headerDivApp}>
-								<Divider>Resumo Aplicações</Divider>
+								<Divider>
+									<h3>Resumo Geral</h3>
+								</Divider>
 							</div>
-							<div className={classes.bodyDivApp}>
+							<div
+								className={classes.bodyDivApp}
+								style={
+									{
+										// backgroundColor: colors.blueOrigin[700]
+									}
+								}
+							>
 								<ResumoDataPage />
 							</div>
+							{filtFarm && (
+								<>
+									<Box sx={{ width: "100%" }} mt={3}>
+										<Divider>
+											<h3>
+												Resumo Fazendas -{" "}
+												{saldoAplicar.toLocaleString(
+													"pt-br",
+													{
+														minimumFractionDigits: 2,
+														maximumFractionDigits: 2
+													}
+												)}
+											</h3>
+										</Divider>
+									</Box>
+									<div className={classes.resumoFazendasPage}>
+										{filtFarm
+											?.sort((a, b) => a.localeCompare(b))
+											.map((farm, i) => {
+												return (
+													<ResumoFazendasPage
+														fazenda={farm}
+													/>
+												);
+											})}
+									</div>
+								</>
+							)}
 						</div>
 					)}
 				</div>

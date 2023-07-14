@@ -1,8 +1,4 @@
 import classes from "./farmbox.module.css";
-import LinearProgress, {
-	linearProgressClasses
-} from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
 
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
@@ -11,23 +7,10 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme, barColor }) => ({
-	height: 8,
-	borderRadius: 5,
-	[`&.${linearProgressClasses.colorPrimary}`]: {
-		backgroundColor:
-			theme.palette.grey[theme.palette.mode === "light" ? 200 : 500]
-	},
-	[`& .${linearProgressClasses.bar}`]: {
-		borderRadius: 5,
-		backgroundColor: barColor
-		// backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8"
-	}
-}));
+import ProgressBarPage from "./progress-bar";
 
 const TableDataPage = (props) => {
 	const { dataF } = props;
-	console.log(dataF);
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -69,26 +52,24 @@ const TableDataPage = (props) => {
 			? { color: "red", fontWeight: "bold" }
 			: "";
 	};
-	const barColor = (aplicado, progressRealNumber) => {
-		console.log(aplicado);
-		if (aplicado < 100) {
-			return "rgb(255,255,0,0.7)";
-		}
-
-		if (progressRealNumber > 100) {
-			return "red";
-		}
-		return "rgb(0,128,0,0.9)";
-	};
 
 	return (
 		<div
-			style={{ width: "100%", backgroundColor: colors.blueOrigin[700] }}
+			style={{
+				width: "100%",
+				backgroundColor: colors.blueOrigin[700],
+				border:
+					dataF.status === "sought"
+						? "0.5px solid yellow"
+						: "0.5px solid green"
+			}}
 			className={classes.mainDivApp}
 		>
 			<div className={classes.appDiv}>
 				<div className={classes.labelDivApp}>
-					<p>{dataF.app}</p>
+					<p>
+						{dataF.app.slice(0, 2)} {dataF.app.slice(2)}
+					</p>
 					<div>
 						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 						<img
@@ -103,24 +84,10 @@ const TableDataPage = (props) => {
 					<p>{dataF.saldoAplicar}</p>
 				</div>
 			</div>
-			<div className={classes.progressApp}>
-				<div style={{ width: "90%" }}>
-					<BorderLinearProgress
-						variant="determinate"
-						value={progressNumber}
-						barColor={barColor(progressNumber, progressRealNumber)}
-					/>
-				</div>
-				<div
-					style={{
-						color: colors.primary[100],
-						fontSize: "0.8rem",
-						fontStyle: "italic"
-					}}
-				>
-					{progressRealNumber} %
-				</div>
-			</div>
+			<ProgressBarPage
+				progressNumber={progressNumber}
+				progressRealNumber={progressRealNumber}
+			/>
 			<div
 				className={classes.dateDiv}
 				style={{

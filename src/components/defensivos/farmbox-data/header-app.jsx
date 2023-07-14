@@ -4,9 +4,6 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 const HeaderApp = (props) => {
-	const { dataF } = props;
-	console.log(dataF);
-
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
