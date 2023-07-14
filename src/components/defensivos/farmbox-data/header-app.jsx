@@ -18,6 +18,7 @@ const HeaderApp = (props) => {
 					<p>Area </p>
 					<p>Aplicado</p>
 					<p>Aberto</p>
+					<p>Status</p>
 				</div>
 			</div>
 		</div>

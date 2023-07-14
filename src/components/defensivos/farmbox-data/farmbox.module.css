@@ -99,7 +99,7 @@
     justify-content: flex-start;
     align-items: center;
     gap: 30px;
-    align-items: end;
+    /* background-color: red; */
 }
 
 
@@ -107,6 +107,8 @@
     /* background-color: red; */
     flex-grow: 0;
     min-width: 50px;
+    margin-bottom: 0px;
+    font-weight: 800;
 }
 .labelDivApp div:nth-child(2) {
     /* background-color: green; */
@@ -125,12 +127,17 @@
 
 .numberDivApp p, .labelDivApp p {
     margin: 0px;
-    margin-bottom: 8px;
+    margin-bottom: 0px;
+    font-weight: 400;
+}
+
+.numberDivApp p{
+    min-width: 60px;
 }
 
 .mainDivApp {
     border-radius: 8px;
-    padding: 10px;
+    padding: 5px;
     margin: 5px;
 }
 .headerApp{
@@ -151,10 +158,11 @@ img {
     width: 50%;
     display: flex;
     justify-content: flex-start;
-    gap: 50px;
+    gap: 10px;
     font-size: 0.75rem;
     font-style: italic;
     font-weight: 800;
+    padding-left: 10px;
 }
 
 .resumoAppPage{
@@ -255,4 +263,9 @@ img {
     width: 90%;
     justify-content: space-between;
     align-items: center;
+}
+
+.progressCircularDiv {
+    margin-left: 10px;
+    min-width: 6px;
 }

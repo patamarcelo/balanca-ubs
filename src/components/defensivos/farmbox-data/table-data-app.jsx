@@ -9,6 +9,8 @@ import rice from "../../../utils/assets/icons/rice.png";
 
 import ProgressBarPage from "./progress-bar";
 
+import ProgressCircularPage from "./progress-circular";
+
 const TableDataPage = (props) => {
 	const { dataF } = props;
 
@@ -78,24 +80,41 @@ const TableDataPage = (props) => {
 						/>
 					</div>
 				</div>
+				{/* <div
+					className={classes.dateDiv}
+					style={{
+						color: colors.primary[100]
+					}}
+				>
+					<div>{dataF.date.split("-").reverse().join("/")}</div>
+					<div>{dataF.endDate.split("-").reverse().join("/")}</div>
+				</div> */}
 				<div className={classes.numberDivApp}>
-					<p>{dataF.area}</p>
-					<p>{dataF.areaAplicada}</p>
-					<p>{dataF.saldoAplicar}</p>
+					<p>
+						{Number(dataF.area).toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						})}
+					</p>
+					<p>
+						{Number(dataF.areaAplicada).toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						})}
+					</p>
+					<p>
+						{Number(dataF.saldoAplicar).toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						})}
+					</p>
+					<div className={classes.progressCircularDiv}>
+						<ProgressCircularPage
+							progressNumber={progressNumber}
+							progressRealNumber={progressRealNumber}
+						/>
+					</div>
 				</div>
-			</div>
-			<ProgressBarPage
-				progressNumber={progressNumber}
-				progressRealNumber={progressRealNumber}
-			/>
-			<div
-				className={classes.dateDiv}
-				style={{
-					color: colors.primary[100]
-				}}
-			>
-				<div>{dataF.date.split("-").reverse().join("/")}</div>
-				<div>{dataF.endDate.split("-").reverse().join("/")}</div>
 			</div>
 		</div>
 	);
