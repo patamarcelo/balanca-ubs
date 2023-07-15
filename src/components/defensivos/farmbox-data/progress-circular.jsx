@@ -62,6 +62,7 @@ const ProgressCircularPage = (props) => {
 			/> */}
 			<CircularProgressbarWithChildren
 				value={progressRealNumber}
+				// strokeWidth={50}
 				styles={buildStyles({
 					// Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
 					strokeLinecap: "butt",
