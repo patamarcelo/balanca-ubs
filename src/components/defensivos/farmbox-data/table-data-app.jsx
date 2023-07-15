@@ -72,23 +72,25 @@ const TableDataPage = (props) => {
 					<p>
 						{dataF.app.slice(0, 2)} {dataF.app.slice(2)}
 					</p>
-					<div>
+					<div className={classes.tipoDivApp}>
 						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 						<img
 							src={filteredIcon(dataF?.cultura)}
 							alt={filteredAlt(dataF?.cultura)}
 						/>
 					</div>
+					<div
+						className={classes.dateDiv}
+						style={{
+							color: colors.primary[100]
+						}}
+					>
+						<div>{dataF.date.split("-").reverse().join("/")}</div>
+						<div>
+							{dataF.endDate.split("-").reverse().join("/")}
+						</div>
+					</div>
 				</div>
-				{/* <div
-					className={classes.dateDiv}
-					style={{
-						color: colors.primary[100]
-					}}
-				>
-					<div>{dataF.date.split("-").reverse().join("/")}</div>
-					<div>{dataF.endDate.split("-").reverse().join("/")}</div>
-				</div> */}
 				<div className={classes.numberDivApp}>
 					<p>
 						{Number(dataF.area).toLocaleString("pt-br", {
@@ -96,13 +98,13 @@ const TableDataPage = (props) => {
 							maximumFractionDigits: 2
 						})}
 					</p>
-					<p>
+					<p style={{ textAlign: "center" }}>
 						{Number(dataF.areaAplicada).toLocaleString("pt-br", {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						})}
 					</p>
-					<p>
+					<p style={{ textAlign: "center" }}>
 						{Number(dataF.saldoAplicar).toLocaleString("pt-br", {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
