@@ -82,7 +82,8 @@ const TableDataPage = (props) => {
 					<div
 						className={classes.dateDiv}
 						style={{
-							color: colors.primary[100]
+							color: colors.primary[100],
+							marginLeft: '-20px'
 						}}
 					>
 						<div>{dataF.date.split("-").reverse().join("/")}</div>

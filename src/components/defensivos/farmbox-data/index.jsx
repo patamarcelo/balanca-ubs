@@ -29,6 +29,9 @@ import ResumoFazendasPage from "./resumos-fazendas-page";
 
 import { geralAppDetail } from "../../../store/plantio/plantio.selector";
 
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -42,6 +45,7 @@ const FarmBoxPage = () => {
 	const [filteredApps, setFilteredApps] = useState([]);
 	const dataGeral = useSelector(geralAppDetail);
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
+	const [openAppOnly, setOpenAppOnly] = useState(false);
 
 	const ITEM_HEIGHT = 48;
 	const ITEM_PADDING_TOP = 8;
@@ -53,6 +57,24 @@ const FarmBoxPage = () => {
 			}
 		}
 	};
+
+	const handleCheckOpenApp = () => {
+		setOpenAppOnly(!openAppOnly);
+	};
+
+	useEffect(() => {
+		if (!openAppOnly) {
+			const filterOpen = filteredApps.filter((data) => {
+				return data.status === "sought";
+			});
+			setFilteredApps(filterOpen);
+		} else {
+			const filterFarm = dictSelect.filter((data) =>
+				filtFarm.includes(data.fazenda)
+			);
+			setFilteredApps(filterFarm);
+		}
+	}, [openAppOnly, filteredApps]);
 
 	const handleChange = (event) => {
 		const {
@@ -66,9 +88,7 @@ const FarmBoxPage = () => {
 			filtFarm.includes(data.fazenda)
 		);
 		setFilteredApps(filterFarm);
-	}, [filtFarm]);
-
-	// console.log(onlyFarms);
+	}, [filtFarm, dictSelect]);
 
 	const getTrueApi = useCallback(async () => {
 		try {
@@ -150,6 +170,17 @@ const FarmBoxPage = () => {
 								))}
 						</Select>
 					</FormControl>
+					<FormControlLabel
+						control={
+							<Checkbox
+								onChange={handleCheckOpenApp}
+								color="success"
+								defaultChecked
+							/>
+						}
+						label="Abertas"
+						labelPlacement="end"
+					/>
 				</Box>
 			)}
 			<div className={classes.dashboardDiv}>
