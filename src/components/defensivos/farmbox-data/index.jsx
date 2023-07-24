@@ -62,6 +62,14 @@ const FarmBoxPage = () => {
 		setOpenAppOnly(!openAppOnly);
 	};
 
+	const handleAllFarms = () => {
+		if (filtFarm.length > 0) {
+			setFiltFarm([]);
+		} else {
+			setFiltFarm(onlyFarms);
+		}
+	};
+
 	useEffect(() => {
 		if (!openAppOnly) {
 			const filterOpen = filteredApps.filter((data) => {
@@ -181,6 +189,17 @@ const FarmBoxPage = () => {
 						label="Abertas"
 						labelPlacement="end"
 					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								onChange={handleAllFarms}
+								color="success"
+								defaultUnchecked
+							/>
+						}
+						label="Todas"
+						labelPlacement="end"
+					/>
 				</Box>
 			)}
 			<div className={classes.dashboardDiv}>
@@ -191,21 +210,31 @@ const FarmBoxPage = () => {
 				)}
 				<div className={classes.dashLeft}>
 					{filtFarm?.map((data, i) => {
+						const hasApp = (obj) => obj.fazenda === data;
 						return (
 							<>
-								<div
-									key={i}
-									style={{
-										margin: "29px"
-									}}
-								>
-									<Divider>{data}</Divider>
-								</div>
-								<HeaderApp />
+								{filteredApps.some(hasApp) && (
+									<>
+										<div
+											key={i}
+											style={{
+												margin: "29px"
+											}}
+										>
+											<Divider>{data}</Divider>
+										</div>
+
+										<HeaderApp />
+									</>
+								)}
 								<div className={classes.mainDivLeft}>
 									{filteredApps
 										.sort((b, a) =>
 											a.status.localeCompare(b.status)
+										)
+										.sort(
+											(a, b) =>
+												a.app.slice(2) - b.app.slice(2)
 										)
 										.map((app, i) => {
 											if (app.fazenda === data) {
@@ -234,11 +263,9 @@ const FarmBoxPage = () => {
 							</div>
 							<div
 								className={classes.bodyDivApp}
-								style={
-									{
-										// backgroundColor: colors.blueOrigin[700]
-									}
-								}
+								style={{
+									backgroundColor: colors.blueOrigin[700]
+								}}
 							>
 								<ResumoDataPage />
 							</div>
@@ -258,13 +285,21 @@ const FarmBoxPage = () => {
 											</h3>
 										</Divider>
 									</Box>
-									<div className={classes.resumoFazendasPage}>
+									<div
+										className={classes.resumoFazendasPage}
+										style={{
+											backgroundColor:
+												colors.blueOrigin[700]
+										}}
+									>
 										{filtFarm
 											?.sort((a, b) => a.localeCompare(b))
 											.map((farm, i) => {
 												return (
 													<ResumoFazendasPage
+														colors={colors}
 														fazenda={farm}
+														key={i}
 													/>
 												);
 											})}

@@ -10,7 +10,7 @@ import { Box, Divider } from "@mui/material";
 const ResumoFazendasPage = (props) => {
 	const dataGeral = useSelector(geralAppDetail);
 
-	const { fazenda } = props;
+	const { fazenda, colors } = props;
 
 	const fazPlan = dataGeral.fazendas[fazenda];
 
@@ -55,11 +55,15 @@ const ResumoFazendasPage = (props) => {
 				</div>
 			</div>
 			{fazenda in dataGeral.fazendas ? (
-				<div className={classes.resumoByCultura}>
+				<div
+					className={classes.resumoByCultura}
+					style={{ color: colors.primary[200] }}
+				>
 					{iconDict.map((data, i) => {
 						if (fazPlan[data.cultura] !== undefined) {
 							return (
 								<Box
+									key={i}
 									width="100%"
 									display="flex"
 									justifyContent="start"
