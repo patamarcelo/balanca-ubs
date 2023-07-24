@@ -6,6 +6,7 @@ import NoDataShow from "./no-data";
 
 const DefensivoTable = (props) => {
 	const { data } = props;
+	console.log(data)
 	const newData = data.sort((a, b) =>
 		b["Situação"].localeCompare(a["Situação"])
 	);

@@ -92,7 +92,7 @@ const RetrieveData = () => {
 							if (index === 0) {
 								cellValue = cell?.f;
 							}
-							if (index === 11 && cellValue.length > 1) {
+							if (index === 12 && cellValue.length > 1) {
 								cellValue = cell.f;
 							}
 							newObj[columnsHeader[index]?.label] = cellValue;

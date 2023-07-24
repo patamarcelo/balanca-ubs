@@ -10,8 +10,7 @@ import { Box, Divider } from "@mui/material";
 const ResumoFazendasPage = (props) => {
 	const dataGeral = useSelector(geralAppDetail);
 
-	const { fazenda, colors } = props;
-
+	const { fazenda, colors, divider } = props;
 	const fazPlan = dataGeral.fazendas[fazenda];
 
 	const iconDict = [
@@ -92,10 +91,11 @@ const ResumoFazendasPage = (props) => {
 			) : (
 				<Box mb={3}></Box>
 			)}
-
-			<Box width="100%">
-				<Divider />
-			</Box>
+			{divider && (
+				<Box width="100%">
+					<Divider />
+				</Box>
+			)}
 		</div>
 	);
 };

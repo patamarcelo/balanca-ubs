@@ -295,11 +295,14 @@ const FarmBoxPage = () => {
 										{filtFarm
 											?.sort((a, b) => a.localeCompare(b))
 											.map((farm, i) => {
+												const hasDivider =
+													filtFarm.length - 1 === i;
 												return (
 													<ResumoFazendasPage
 														colors={colors}
 														fazenda={farm}
 														key={i}
+														divider={!hasDivider}
 													/>
 												);
 											})}
