@@ -69,6 +69,7 @@ const ResumoFazendasPage = (props) => {
 									alignItems="center"
 								>
 									<img
+										className={classes.imgFarmDiv}
 										src={filteredIcon(data.cultura)}
 										alt={filteredAlt(data.cultura)}
 									/>

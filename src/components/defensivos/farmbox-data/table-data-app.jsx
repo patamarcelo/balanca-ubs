@@ -75,6 +75,7 @@ const TableDataPage = (props) => {
 					<div className={classes.tipoDivApp}>
 						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 						<img
+							className={classes.imgFarmDiv}
 							src={filteredIcon(dataF?.cultura)}
 							alt={filteredAlt(dataF?.cultura)}
 						/>
@@ -83,7 +84,7 @@ const TableDataPage = (props) => {
 						className={classes.dateDiv}
 						style={{
 							color: colors.primary[100],
-							marginLeft: '-20px'
+							marginLeft: "-20px"
 						}}
 					>
 						<div>{dataF.date.split("-").reverse().join("/")}</div>
