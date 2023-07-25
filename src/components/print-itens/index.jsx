@@ -23,6 +23,7 @@ const PrintLayout = ({ data }) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [printData, setPrintData] = useState([]);
 
+	
 	useEffect(() => {
 		const filterNewData = newData.filter(
 			(filterData) => filterData.id === data.id

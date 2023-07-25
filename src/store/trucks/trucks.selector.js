@@ -66,7 +66,7 @@ export const selectTruckLoadsFormatData = (state) => {
 		return {
 			...data,
 			entrada: formatData,
-			saida: formatDataSaida,
+			saida: formatDataSaida
 		};
 	});
 	return fd;
