@@ -1,6 +1,8 @@
 import classes from "./farmbox.module.css";
 
-import { useTheme } from "@mui/material";
+import { useTheme, Slide } from "@mui/material";
+import Grow from "@mui/material/Grow";
+
 import { tokens } from "../../../theme";
 
 import beans from "../../../utils/assets/icons/beans2.png";
@@ -10,9 +12,14 @@ import rice from "../../../utils/assets/icons/rice.png";
 import ProgressBarPage from "./progress-bar";
 
 import ProgressCircularPage from "./progress-circular";
+import DetailAppData from "./table-data-app-detail";
+import { useState } from "react";
+
+import { useRef } from "react";
 
 const TableDataPage = (props) => {
 	const { dataF } = props;
+	const [showDetail, setShowDetail] = useState(false);
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -55,6 +62,12 @@ const TableDataPage = (props) => {
 			: "";
 	};
 
+	const showDetailApp = () => {
+		setShowDetail(!showDetail);
+	};
+
+	const containerRef = useRef(null);
+
 	return (
 		<div
 			style={{
@@ -66,9 +79,13 @@ const TableDataPage = (props) => {
 						: "0.5px solid green"
 			}}
 			className={classes.mainDivApp}
+			ref={containerRef}
 		>
 			<div className={classes.appDiv}>
-				<div className={classes.labelDivApp}>
+				<div
+					className={classes.labelDivApp}
+					onClick={() => showDetailApp()}
+				>
 					<p>
 						{dataF.app.slice(0, 2)} {dataF.app.slice(2)}
 					</p>
@@ -120,6 +137,17 @@ const TableDataPage = (props) => {
 					</div>
 				</div>
 			</div>
+			<Grow
+				in={showDetail}
+				mountOnEnter
+				unmountOnExit
+				container={containerRef.current}
+				direction="up"
+			>
+				<div className={classes.parcelasDetailDiv}>
+					<DetailAppData data={dataF} />
+				</div>
+			</Grow>
 		</div>
 	);
 };

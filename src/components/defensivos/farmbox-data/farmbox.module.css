@@ -108,6 +108,11 @@
     /* background-color: red; */
 }
 
+.labelDivApp p:first-child:hover{
+    cursor: pointer;
+    color: grey;
+
+}
 
 .labelDivApp p:first-child {
     /* background-color: red; */
@@ -285,4 +290,14 @@
     /* flex-grow: 2; */
     min-width: 230px;
     /* background-color: rebeccapurple; */
+}
+
+.parcelasDetailDiv{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.parcelasDetailDivHide {
+    height: 0;
 }

@@ -70,20 +70,6 @@ const FarmBoxPage = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (!openAppOnly) {
-			const filterOpen = filteredApps.filter((data) => {
-				return data.status === "sought";
-			});
-			setFilteredApps(filterOpen);
-		} else {
-			const filterFarm = dictSelect.filter((data) =>
-				filtFarm.includes(data.fazenda)
-			);
-			setFilteredApps(filterFarm);
-		}
-	}, [openAppOnly, filteredApps]);
-
 	const handleChange = (event) => {
 		const {
 			target: { value }
@@ -147,9 +133,11 @@ const FarmBoxPage = () => {
 
 	return (
 		<div className={classes.mainDiv}>
-			<Button onClick={() => refreshData()} color="success">
-				Atualizar
-			</Button>
+			{!loadingData && (
+				<Button onClick={() => refreshData()} color="success">
+					Atualizar
+				</Button>
+			)}
 			{!loadingData && onlyFarms.length > 0 && (
 				<Box className={classes.formDiv}>
 					<FormControl
@@ -189,7 +177,7 @@ const FarmBoxPage = () => {
 							<Checkbox
 								onChange={handleCheckOpenApp}
 								color="success"
-								defaultChecked
+								defaultchecked
 							/>
 						}
 						label="Abertas"
@@ -200,7 +188,7 @@ const FarmBoxPage = () => {
 							<Checkbox
 								onChange={handleAllFarms}
 								color="success"
-								defaultUnchecked
+								defaultunchecked
 							/>
 						}
 						label="Todas"
@@ -235,6 +223,12 @@ const FarmBoxPage = () => {
 								)}
 								<div className={classes.mainDivLeft}>
 									{filteredApps
+										.filter((data) =>
+											!openAppOnly
+												? data.status === "sought"
+												: data.status === "sought" ||
+												  "finalized"
+										)
 										.sort((b, a) =>
 											a.status.localeCompare(b.status)
 										)

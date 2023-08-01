@@ -38,6 +38,14 @@ export const createDict = (state) => {
 			};
 		});
 
+		const insumosSolicitados = data.inputs.map((data) => {
+			return {
+				insumo: data.input.name,
+				tipo: data.input.input_type_name,
+				quantidade: data.sought_quantity
+			};
+		});
+
 		return {
 			fazenda: farm,
 			app: code,
@@ -48,6 +56,9 @@ export const createDict = (state) => {
 			cultura: cultura,
 			parcelas: parcelasSolicitadas.sort((a, b) =>
 				a.parcela.localeCompare(b.parcela)
+			),
+			insumos: insumosSolicitados.filter(
+				(data) => data.tipo !== "Operação"
 			),
 			area: areaTotalSolicitada,
 			areaAplicada: areaTotalAplicada,
