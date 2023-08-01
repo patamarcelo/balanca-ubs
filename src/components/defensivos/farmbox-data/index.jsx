@@ -1,7 +1,7 @@
 import classes from "./farmbox.module.css";
 import { nodeServer } from "../../../utils/axios/axios.utils";
 import { useEffect, useState, useCallback } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import {
@@ -117,7 +117,7 @@ const FarmBoxPage = () => {
 			setLoadinData(false);
 			// console.log("Finally statement");
 		}
-	}, []);
+	}, [dispatch]);
 
 	useEffect(() => {
 		if (openApp.length === 0) {
@@ -125,6 +125,9 @@ const FarmBoxPage = () => {
 		}
 	}, [getTrueApi, openApp]);
 
+	const refreshData = () => {
+		dispatch(setApp([]));
+	};
 	// useEffect(() => {
 	// 	if (openApp.length > 0) {
 	// 		console.log(dictSelect);
@@ -144,6 +147,9 @@ const FarmBoxPage = () => {
 
 	return (
 		<div className={classes.mainDiv}>
+			<Button onClick={() => refreshData()} color="success">
+				Atualizar
+			</Button>
 			{!loadingData && onlyFarms.length > 0 && (
 				<Box className={classes.formDiv}>
 					<FormControl
