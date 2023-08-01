@@ -42,7 +42,11 @@ export const createDict = (state) => {
 			return {
 				insumo: data.input.name,
 				tipo: data.input.input_type_name,
-				quantidade: data.sought_quantity
+				quantidade: data.sought_quantity,
+				dose:
+					data.sought_dosage_value.toFixed(3) +
+					" " +
+					data.sought_quantity_unit
 			};
 		});
 

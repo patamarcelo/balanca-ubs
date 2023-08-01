@@ -35,7 +35,8 @@ const DetailAppData = ({ data, showData }) => {
 					return (
 						<>
 							<p>
-								{data.insumo} - {data.tipo} - {data.quantidade}
+								{data.dose} - {data.insumo} - {data.tipo} -{" "}
+								{data.quantidade}{" "}
 							</p>
 						</>
 					);
