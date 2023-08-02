@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import Chip from "@mui/material/Chip";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
+import classes from "./farmbox.module.css";
 
 const colorDict = [
 	{
@@ -69,21 +70,30 @@ const IconDetail = ({ color }) => {
 const DetailAppData = ({ data, showData }) => {
 	return (
 		<>
-			<Box>
-				{data.parcelas.map((data, i) => {
-					return (
-						<>
-							<p>
+			<Box
+				display="grid"
+				gridAutoFlow="row"
+				justifyContent="start"
+				flexWrap="wrap"
+				gridAutoRows="0fr"
+				gridTemplateColumns="1fr 1fr 1fr"
+				gridRowGap="0px"
+				width="50%"
+			>
+				{data.parcelas
+					.sort((a, b) => b.aplicado - a.aplicado)
+					.map((data, i) => {
+						return (
+							<Box m={1}>
 								{<IconDetail color={data.aplicado} />}
 								{data.parcela} -{" "}
 								{data.area
 									.toFixed(2)
 									.toString()
 									.replace(".", ",")}
-							</p>
-						</>
-					);
-				})}
+							</Box>
+						);
+					})}
 			</Box>
 			<div>
 				{data.insumos
