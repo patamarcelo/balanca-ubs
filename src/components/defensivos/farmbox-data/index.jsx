@@ -180,7 +180,7 @@ const FarmBoxPage = () => {
 								defaultchecked
 							/>
 						}
-						label="Abertas"
+						label="Finalizadas"
 						labelPlacement="end"
 					/>
 					<FormControlLabel
