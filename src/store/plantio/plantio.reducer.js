@@ -2,7 +2,8 @@ import { PLANTIO_ACTIONS_TYPES } from "./plantio.types";
 
 const INITIAL_STATE = {
 	plantio: [],
-	app: []
+	app: [],
+	safraCiclo: { safra: "2023/2024", ciclo: "1" }
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -17,6 +18,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				app: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_SAFRA_CICLO:
+			return {
+				...state,
+				safraCiclo: payload
 			};
 		default:
 			return state;

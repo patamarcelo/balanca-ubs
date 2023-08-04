@@ -5,11 +5,15 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { useDispatch } from "react-redux";
+import { setSafraCilco } from "../../../store/plantio/plantio.actions";
 
 import classes from "../data-program/data-program.module.css";
 
 const SafraCicloComp = () => {
+	const dispatch = useDispatch();
 	const safraDict = {
 		first: "2022/2023",
 		second: "2023/2024"
@@ -31,6 +35,10 @@ const SafraCicloComp = () => {
 	const handleChangeCiclo = (event) => {
 		setCiclo(event.target.value);
 	};
+
+	useEffect(() => {
+		dispatch(setSafraCilco({ safra, ciclo }));
+	}, [safra, ciclo, dispatch]);
 
 	return (
 		<Box

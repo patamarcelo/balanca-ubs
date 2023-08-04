@@ -8,31 +8,30 @@ import djangoApi from "../../../utils/axios/axios.utils";
 import PlantioDoneTable from "./data-table-plantio-done";
 import LoaderHomeSkeleton from "../home/loader";
 
-const PlantioDonePage = () => {
-	const safraDict = {
-		first: "2022/2023",
-		second: "2023/2024"
-	};
+import { useSelector } from "react-redux";
+import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
-	const cicloDict = {
-		first: "1",
-		second: "2",
-		third: "3"
-	};
+const PlantioDonePage = () => {
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [dataF, setDataF] = useState([]);
-	const [safra, setSafra] = useState(safraDict.second);
-	const [ciclo, setCiclo] = useState(cicloDict.first);
 
 	const [isLoading, setIsLoading] = useState(true);
-
-	const params = JSON.stringify({
-		safra,
-		ciclo
+	const [params, setParams] = useState({
+		safra: safraCiclo.safra,
+		ciclo: safraCiclo.ciclo
 	});
 
 	useEffect(() => {
+		setParams({
+			safra: safraCiclo.safra,
+			ciclo: safraCiclo.ciclo
+		});
+	}, [safraCiclo]);
+
+	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
 			try {
 				await djangoApi
 					.post("plantio/get_plantio_done/", params, {
@@ -46,19 +45,23 @@ const PlantioDonePage = () => {
 							...data,
 							id: i,
 							area_colheita: data.area_colheita
-								.toFixed(2)
-								.toString()
-								.replace(".", ","),
+								? data.area_colheita
+										.toFixed(2)
+										.toString()
+										.replace(".", ",")
+								: "",
 							data_plantio: data.data_plantio
-								.split("-")
-								.reverse()
-								.join("/"),
-							data_plantio_inicio: data["cronograma_programa__0"][
-								"Data Plantio"
-							]
-								.split("-")
-								.reverse()
-								.join("/")
+								? data.data_plantio
+										.split("-")
+										.reverse()
+										.join("/")
+								: "",
+							data_plantio_inicio: data.cronograma_programa
+								? data["cronograma_programa__0"]["Data Plantio"]
+										.split("-")
+										.reverse()
+										.join("/")
+								: ""
 						}));
 						setDataF(newData);
 					})
@@ -69,7 +72,7 @@ const PlantioDonePage = () => {
 				setIsLoading(false);
 			}
 		})();
-	}, []);
+	}, [params]);
 
 	return (
 		<>

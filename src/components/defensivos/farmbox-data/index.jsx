@@ -32,6 +32,8 @@ import { geralAppDetail } from "../../../store/plantio/plantio.selector";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+import { selectCurrentUser } from "../../../store/user/user.selector";
+
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -46,6 +48,8 @@ const FarmBoxPage = () => {
 	const dataGeral = useSelector(geralAppDetail);
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
+
+	const user = useSelector(selectCurrentUser);
 
 	const ITEM_HEIGHT = 48;
 	const ITEM_PADDING_TOP = 8;
@@ -90,7 +94,8 @@ const FarmBoxPage = () => {
 			await nodeServer
 				.get("", {
 					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+						"X-Firebase-AppCheck": user.accessToken
 					}
 				})
 				.then((res) => {

@@ -5,6 +5,9 @@ import { tokens } from "../../../theme";
 
 import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+
 const PlantioDoneTable = (props) => {
 	const { rows, loading } = props;
 	const theme = useTheme();
@@ -38,7 +41,52 @@ const PlantioDoneTable = (props) => {
 		},
 		{ field: "area_colheita", headerName: "Area", flex: 1 },
 		{ field: "safra__safra", headerName: "Safra", flex: 1 },
-		{ field: "ciclo__ciclo", headerName: "Ciclo", flex: 1 }
+		{ field: "ciclo__ciclo", headerName: "Ciclo", flex: 1 },
+		{
+			field: "finalizado_plantio",
+			headerName: "Pla. Finalizado",
+			flex: 1,
+			renderCell: (params) => (
+				<FontAwesomeIcon
+					icon={faCircleCheck}
+					color={
+						params.row.finalizado_plantio
+							? colors.greenAccent[500]
+							: colors.redAccent[500]
+					}
+				/>
+			)
+		},
+		{
+			field: "plantio_descontinuado",
+			headerName: "Descontinuado",
+			flex: 1,
+			renderCell: (params) => (
+				<FontAwesomeIcon
+					icon={faCircleCheck}
+					color={
+						params.row.plantio_descontinuado
+							? colors.greenAccent[500]
+							: colors.redAccent[500]
+					}
+				/>
+			)
+		},
+		{
+			field: "finalizado_colheita",
+			headerName: "Col. Finalizado",
+			flex: 1,
+			renderCell: (params) => (
+				<FontAwesomeIcon
+					icon={faCircleCheck}
+					color={
+						params.row.finalizado_colheita
+							? colors.greenAccent[500]
+							: colors.redAccent[500]
+					}
+				/>
+			)
+		}
 	];
 
 	return (

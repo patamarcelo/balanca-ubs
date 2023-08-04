@@ -2,6 +2,8 @@ export const selectPlantio = (state) => state.plantio.plantio;
 
 export const selectApp = (state) => state.plantio.app;
 
+export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
+
 export const createDict = (state) => {
 	const plantio = state.plantio.app;
 	const newArr = plantio.map((data) => {

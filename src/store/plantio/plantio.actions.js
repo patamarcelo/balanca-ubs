@@ -9,3 +9,7 @@ export const setPlantio = (plantio) => {
 export const setApp = (app) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_APP, app);
 };
+
+export const setSafraCilco = (safraCiclo) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_SAFRA_CICLO, safraCiclo);
+};

@@ -1,4 +1,5 @@
 export const PLANTIO_ACTIONS_TYPES = {
 	SET_PLANTIO: "plantio/SET_PLANTIO",
-	SET_APP: "plantio/SET_APP"
+	SET_APP: "plantio/SET_APP",
+	SET_SAFRA_CICLO: "plantio/SET_SAFRA_CICLO"
 };
