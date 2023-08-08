@@ -7,9 +7,10 @@ import { tokens } from "../../../theme";
 import {
 	selectApp,
 	createDict,
+	createDictFarmBox,
 	onlyFarm
 } from "../../../store/plantio/plantio.selector";
-import { setApp } from "../../../store/plantio/plantio.actions";
+import { setApp, setAppFarmBox } from "../../../store/plantio/plantio.actions";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -33,6 +34,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { selectCurrentUser } from "../../../store/user/user.selector";
+import ModalDataFarmbox from "./farm-box-modal";
 
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -42,6 +44,7 @@ const FarmBoxPage = () => {
 	const dispatch = useDispatch();
 	const openApp = useSelector(selectApp);
 	const dictSelect = useSelector(createDict);
+	// const dictSelectFarm = useSelector(createDictFarmBox);
 	const onlyFarms = useSelector(onlyFarm);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
@@ -92,7 +95,7 @@ const FarmBoxPage = () => {
 		try {
 			setLoadinData(true);
 			await nodeServer
-				.get("", {
+				.get("/", {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
 						"X-Firebase-AppCheck": user.accessToken
@@ -110,15 +113,43 @@ const FarmBoxPage = () => {
 		}
 	}, [dispatch]);
 
+	const getTrueApiFarmData = useCallback(async () => {
+		try {
+			setLoadinData(true);
+			console.log("Pegando dados da API para a tabela do FarmBox");
+			await nodeServer
+				.get("/datadetail", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+						"X-Firebase-AppCheck": user.accessToken
+					}
+				})
+				.then((res) => {
+					dispatch(setAppFarmBox(res.data));
+				})
+				.catch((err) => console.log(err));
+		} catch (err) {
+			console.log("Erro ao consumir a API de dados do FarmBox", err);
+		} finally {
+			setLoadinData(false);
+		}
+	}, [dispatch]);
+
 	useEffect(() => {
 		if (openApp.length === 0) {
 			getTrueApi();
+			getTrueApiFarmData();
 		}
-	}, [getTrueApi, openApp]);
+	}, [getTrueApi, openApp, getTrueApiFarmData]);
 
 	const refreshData = () => {
 		dispatch(setApp([]));
+		dispatch(setAppFarmBox([]));
 	};
+
+	const [open, setOpen] = useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 	// useEffect(() => {
 	// 	if (openApp.length > 0) {
 	// 		console.log(dictSelect);
@@ -139,9 +170,22 @@ const FarmBoxPage = () => {
 	return (
 		<div className={classes.mainDiv}>
 			{!loadingData && (
-				<Button onClick={() => refreshData()} color="success">
-					Atualizar
-				</Button>
+				<Box
+					p={1}
+					sx={{
+						backgroundColor: colors.blueOrigin[800],
+						borderRadius: "8px"
+					}}
+				>
+					<Button onClick={() => refreshData()} color="success">
+						Atualizar
+					</Button>
+
+					<Button onClick={() => handleOpen()} color="success">
+						Gerar Tabela
+					</Button>
+					<ModalDataFarmbox open={open} handleClose={handleClose} />
+				</Box>
 			)}
 			{!loadingData && onlyFarms.length > 0 && (
 				<Box className={classes.formDiv}>

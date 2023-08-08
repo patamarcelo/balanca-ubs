@@ -10,6 +10,10 @@ export const setApp = (app) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_APP, app);
 };
 
+export const setAppFarmBox = (appFarmBox) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_APP_FARMBOX, appFarmBox);
+};
+
 export const setSafraCilco = (safraCiclo) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_SAFRA_CICLO, safraCiclo);
 };

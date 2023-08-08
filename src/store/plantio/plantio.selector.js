@@ -34,9 +34,12 @@ export const createDict = (state) => {
 			const aplicado = data.applied_area === 0 ? false : true;
 			return {
 				parcela: data.plantation.name,
+				id_plantation: data.plantation.id,
 				area: data.plantation.area,
 				variedade: data.plantation.variety_name,
-				aplicado: aplicado
+				cultura: data.plantation.culture_name,
+				aplicado: aplicado,
+				dataPlantio: data.plantation.date
 			};
 		});
 
@@ -53,6 +56,116 @@ export const createDict = (state) => {
 				dose: data.sought_dosage_value.toFixed(3)
 			};
 		});
+
+		const progressos = data.progresses.map((data) => {
+			const areaApliacada = data.area;
+			const plantacoesAplicadas = data.plantations.map((data) => {
+				return {
+					idPlantacao: data.plantation_id,
+					areaAplicadaPlantacao: data.area
+				};
+			});
+			return {
+				areaApliacada: areaApliacada,
+				plantacoesAplicadas
+			};
+		});
+
+		return {
+			fazenda: farm,
+			app: code,
+			status: status,
+			progresso: percentApp.toFixed(2),
+			operacao: operacao,
+			operacaoTipo: operacaoTipo,
+			cultura: cultura,
+			parcelas: parcelasSolicitadas.sort((a, b) =>
+				a.parcela.localeCompare(b.parcela)
+			),
+			insumos: insumosSolicitados.filter(
+				(data) => data.tipo !== "Operação"
+			),
+			area: areaTotalSolicitada,
+			areaAplicada: areaTotalAplicada,
+			saldoAplicar: saldoAplicar.toFixed(2),
+			date: data.date,
+			endDate: data.end_date
+		};
+	});
+	return newArr.sort(
+		(a, b) =>
+			a.fazenda.localeCompare(b.fazenda) || a.app.localeCompare(b.app)
+	);
+};
+
+export const createDictFarmBox = (state) => {
+	const plantio = state.plantio.appFarmBox;
+	const newArr = plantio.map((data) => {
+		const farm = data.plantations[0].plantation.farm_name;
+		const operacao = data.inputs[0].input.name;
+		const operacaoTipo = data.inputs[0].input.input_type_name;
+		const cultura = data.plantations[0].plantation.culture_name;
+		const code = data.code;
+		const areaSolicitada = data.plantations.map((data) => data.sought_area);
+		const areaAplicada = data.plantations.map((data) => data.applied_area);
+		const status = data.status;
+
+		const areaTotalSolicitada = areaSolicitada
+			.reduce((a, b) => a + b, 0)
+			.toFixed(2);
+
+		const areaTotalAplicada = areaAplicada
+			.reduce((a, b) => a + b, 0)
+			.toFixed(2);
+
+		const percentApp =
+			(parseFloat(areaTotalAplicada) / parseFloat(areaTotalSolicitada)) *
+			100;
+		const saldoAplicar =
+			parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
+
+		const parcelasSolicitadas = data.plantations.map((data) => {
+			const aplicado = data.applied_area === 0 ? false : true;
+			return {
+				parcela: data.plantation.name,
+				id_plantation: data.plantation.id,
+				area: data.plantation.area,
+				variedade: data.plantation.variety_name,
+				cultura: data.plantation.culture_name,
+				aplicado: aplicado,
+				dataPlantio: data.plantation.date
+			};
+		});
+
+		const insumosSolicitados = data.inputs.map((data) => {
+			return {
+				insumo: data.input.name,
+				tipo: data.input.input_type_name,
+				quantidade: data.sought_quantity
+					.toFixed(2)
+					.toLocaleString("pt-br", {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+					}),
+				dose: data.sought_dosage_value.toFixed(3)
+			};
+		});
+
+		const progressos = data.progresses.map((data) => {
+			const areaApliacada = data.area;
+			const plantacoesAplicadas = data.plantations.map((data) => {
+				return {
+					idPlantacao: data.plantation_id,
+					areaAplicadaPlantacao: data.area
+				};
+			});
+			return {
+				areaApliacada: areaApliacada,
+				plantacoesAplicadas
+			};
+		});
+		console.log(farm, code);
+		console.log(progressos);
 
 		return {
 			fazenda: farm,

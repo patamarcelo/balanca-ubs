@@ -91,6 +91,7 @@ const DetailAppData = ({ data, showData }) => {
 									.toFixed(2)
 									.toString()
 									.replace(".", ",")}
+								{/* <progress value={20} max={data.area}></progress> */}
 							</Box>
 						);
 					})}
