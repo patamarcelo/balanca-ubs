@@ -113,34 +113,11 @@ const FarmBoxPage = () => {
 		}
 	}, [dispatch]);
 
-	const getTrueApiFarmData = useCallback(async () => {
-		try {
-			setLoadinData(true);
-			console.log("Pegando dados da API para a tabela do FarmBox");
-			await nodeServer
-				.get("/datadetail", {
-					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-						"X-Firebase-AppCheck": user.accessToken
-					}
-				})
-				.then((res) => {
-					dispatch(setAppFarmBox(res.data));
-				})
-				.catch((err) => console.log(err));
-		} catch (err) {
-			console.log("Erro ao consumir a API de dados do FarmBox", err);
-		} finally {
-			setLoadinData(false);
-		}
-	}, [dispatch]);
-
 	useEffect(() => {
 		if (openApp.length === 0) {
 			getTrueApi();
-			getTrueApiFarmData();
 		}
-	}, [getTrueApi, openApp, getTrueApiFarmData]);
+	}, [getTrueApi, openApp]);
 
 	const refreshData = () => {
 		dispatch(setApp([]));
@@ -226,7 +203,6 @@ const FarmBoxPage = () => {
 							<Checkbox
 								onChange={handleCheckOpenApp}
 								color="success"
-								defaultchecked
 							/>
 						}
 						label="Finalizadas"
@@ -237,7 +213,6 @@ const FarmBoxPage = () => {
 							<Checkbox
 								onChange={handleAllFarms}
 								color="success"
-								defaultunchecked
 							/>
 						}
 						label="Todas"

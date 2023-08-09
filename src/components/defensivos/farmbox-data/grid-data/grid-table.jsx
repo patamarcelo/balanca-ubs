@@ -10,42 +10,22 @@ const FarmBoxDataTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const defaultFontSize = "13px";
-
 	const columns = [
-		{ field: "id", headerName: "ID", width: 20 },
-		{ field: "fazendaGrupo", headerName: "Fazenda", width: 180 },
-		{ field: "projeto", headerName: "Projeto", width: 180 },
-		{ field: "parcela", headerName: "Parcela", width: 80 },
-		{ field: "talhaoIdUnico", headerName: "ID Talhao" },
-		{
-			field: "area",
-			headerName: "Area",
-			width: 80
-		},
-		{
-			field: "capacidadePlantioDia",
-			headerName: "Plantio Dia",
-			width: 80
-		},
-		{ field: "ciclo", headerName: "Ciclo", width: 80 },
-		{ field: "safra", headerName: "Safra", width: 80 },
-		{ field: "cultura", headerName: "Cultura", width: 80 },
-		{ field: "variedade", headerName: "Variedade", width: 80 },
-		{ field: "plantioFinalizado", headerName: "Plantio Fin.", width: 80 },
-		{ field: "dataPlantio", headerName: "Data Plantio.", width: 80 },
-		{ field: "dap", headerName: "DAP", width: 80 },
-		{ field: "programa", headerName: "Programa", width: 140 },
-		{ field: "programaStartDate", headerName: "Start Janela", width: 140 },
-		{ field: "programaEndDate", headerName: "Fim Janela", width: 140 },
-		{ field: "estagio", headerName: "Estagio", width: 140 },
-		{ field: "dapAplicacao", headerName: "DAP AP", width: 80 },
-		{ field: "dataPrevista", headerName: "Data Prevista AP", width: 140 },
-		{ field: "aplicado", headerName: "Aplicado ? ", width: 80 }
+		{ headerName: "AP", field: "app", width: 40 },
+		{ headerName: "Operacao", field: "operacao", width: 80 },
+		{ headerName: "Projeto", field: "fazenda", flex: 1 },
+		{ headerName: "Parcela", field: "parcela", width: 20 },
+		{ headerName: "Status", field: "status" },
+		{ headerName: "Area", field: "area" },
+		{ headerName: "Data Inicial", field: "date" },
+		{ headerName: "Data Final", field: "endDate" },
+		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
 	];
 
 	return (
 		<Box
-			height="100%"
+			height="90%"
 			sx={{
 				"& .MuiDataGrid-root": {
 					border: "none"
@@ -82,7 +62,7 @@ const FarmBoxDataTable = (props) => {
 				checkboxSelection
 				loading={loading}
 				components={{ Toolbar: CustomToolbar }}
-				componentsProps={{ toolbar: { title: "Programacoes" } }}
+				componentsProps={{ toolbar: { title: "FarmData" } }}
 			/>
 		</Box>
 	);
