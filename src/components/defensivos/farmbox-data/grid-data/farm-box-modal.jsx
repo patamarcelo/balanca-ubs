@@ -44,7 +44,7 @@ const ModalDataFarmbox = (props) => {
 						variant="h6"
 						component="h2"
 					>
-						TABELA COM OS DADOS DO FARMBOX
+						Dados do Farmbox
 					</Typography>
 					<Typography
 						id="keep-mounted-modal-description"
