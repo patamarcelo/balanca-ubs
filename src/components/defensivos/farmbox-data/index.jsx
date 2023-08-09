@@ -34,7 +34,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { selectCurrentUser } from "../../../store/user/user.selector";
-import ModalDataFarmbox from "./farm-box-modal";
+import ModalDataFarmbox from "./grid-data/farm-box-modal";
 
 const FarmBoxPage = () => {
 	const theme = useTheme();

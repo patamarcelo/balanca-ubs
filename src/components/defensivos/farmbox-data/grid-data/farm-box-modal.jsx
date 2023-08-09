@@ -3,6 +3,10 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import FarmBoxDataTable from "./grid-table";
+
+import { useSelector } from "react-redux";
+import { createDictFarmBox } from "../../../../store/plantio/plantio.selector";
 
 const style = {
 	position: "absolute",
@@ -19,6 +23,11 @@ const style = {
 
 const ModalDataFarmbox = (props) => {
 	const { handleClose, open } = props;
+	const [rows, setRows] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	const dictSelectFarm = useSelector(createDictFarmBox);
+	console.log(dictSelectFarm);
 
 	return (
 		<div>
@@ -41,8 +50,7 @@ const ModalDataFarmbox = (props) => {
 						id="keep-mounted-modal-description"
 						sx={{ mt: 2 }}
 					>
-						Duis mollis, est non commodo luctus, nisi erat porttitor
-						ligula.
+						<FarmBoxDataTable rows={rows} loading={loading} />
 					</Typography>
 				</Box>
 			</Modal>
