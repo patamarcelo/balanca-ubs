@@ -6,16 +6,40 @@ import { tokens } from "../../../../theme";
 import CustomToolbar from "../../../../utils/format-suport/custom-toolbar";
 
 const FarmBoxDataTable = (props) => {
-	const { rows, loading } = props;
+	const { rows, loading, onlyAppNotProducts } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const defaultFontSize = "13px";
-	const columns = [
+	const columnsApp = [
 		{ headerName: "AP", field: "app", width: 40 },
-		{ headerName: "Operacao", field: "operacao", width: 80 },
+		{ headerName: "Operacao", field: "operacao", flex: 1 },
+		{ headerName: "Operacao Tipo", field: "operacaoTipo" },
 		{ headerName: "Projeto", field: "fazenda", flex: 1 },
-		{ headerName: "Parcela", field: "parcela", width: 20 },
+		{ headerName: "Parcela", field: "parcela", width: 90 },
+		{ headerName: "Data Plantio", field: "dataPlantio", width: 90 },
+		{ headerName: "Safra", field: "safra", width: 90 },
+		{ headerName: "Ciclo", field: "ciclo", width: 50 },
 		{ headerName: "Status", field: "status" },
+		{ headerName: "Area", field: "area" },
+		{ headerName: "Data Inicial", field: "date" },
+		{ headerName: "Data Final", field: "endDate" },
+		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
+	];
+
+	const columnsProdutos = [
+		{ headerName: "AP", field: "app", width: 40 },
+		{ headerName: "Operacao", field: "operacao", flex: 1 },
+		{ headerName: "Operacao Tipo", field: "operacaoTipo" },
+		{ headerName: "Projeto", field: "fazenda", flex: 1 },
+		{ headerName: "Parcela", field: "parcela", width: 90 },
+		{ headerName: "Data Plantio", field: "dataPlantio", width: 90 },
+		{ headerName: "Safra", field: "safra", width: 90 },
+		{ headerName: "Ciclo", field: "ciclo", width: 50 },
+		{ headerName: "Status", field: "status" },
+		{ headerName: "Insumo", field: "insumo" },
+		{ headerName: "Tipo", field: "tipo" },
+		{ headerName: "Dose", field: "dose" },
 		{ headerName: "Area", field: "area" },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
@@ -58,7 +82,7 @@ const FarmBoxDataTable = (props) => {
 		>
 			<DataGrid
 				rows={rows}
-				columns={columns}
+				columns={onlyAppNotProducts ? columnsApp : columnsProdutos}
 				checkboxSelection
 				loading={loading}
 				components={{ Toolbar: CustomToolbar }}

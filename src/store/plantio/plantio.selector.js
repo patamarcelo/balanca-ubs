@@ -151,7 +151,9 @@ export const createDictFarmBox = (state) => {
 				variedade: data.plantation.variety_name,
 				cultura: data.plantation.culture_name,
 				aplicado: aplicado,
-				dataPlantio: data.plantation.date
+				dataPlantio: data.plantation.date,
+				safra: data.plantation.harvest_name,
+				ciclo: data.plantation.cycle
 			};
 		});
 

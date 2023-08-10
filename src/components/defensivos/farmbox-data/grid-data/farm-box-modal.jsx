@@ -40,6 +40,8 @@ const ModalDataFarmbox = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [appArray, setAppArray] = useState([]);
 	const [finalArr, setFinalArr] = useState(false);
+	const [onlyAppNotProducts, setOnlyAppNotProducts] = useState(true);
+	const [reloadTable, setReloadTable] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -49,7 +51,6 @@ const ModalDataFarmbox = (props) => {
 	const getTrueApiFarmData = useCallback(async () => {
 		try {
 			setLoading(true);
-			console.log("Pegando dados da API para a tabela do FarmBox");
 			await nodeServer
 				.get("/datadetail", {
 					headers: {
@@ -72,6 +73,17 @@ const ModalDataFarmbox = (props) => {
 		getTrueApiFarmData();
 	}, []);
 
+	const handleOpOrProducts = () => {
+		setOnlyAppNotProducts(!onlyAppNotProducts);
+	};
+
+	useEffect(() => {
+		setReloadTable(true);
+		setTimeout(() => {
+			setReloadTable(false);
+		}, 750);
+	}, [onlyAppNotProducts]);
+
 	const getArray = async () => {
 		setFinalArr(false);
 		try {
@@ -83,6 +95,8 @@ const ModalDataFarmbox = (props) => {
 						parcela: parcela.parcela,
 						variedade: parcela.variedade,
 						cultura: parcela.cultura,
+						safra: parcela.safra,
+						ciclo: parcela.ciclo,
 						dataPlantio: parcela.dataPlantio,
 						idPlantation: parcela.id_plantation,
 						area: parcela.area.toLocaleString("pt-br", {
@@ -92,7 +106,24 @@ const ModalDataFarmbox = (props) => {
 						id: `${data.idCode}${parcela.parcela}`
 					};
 				});
-				return parcelasDict;
+				const appParcelasDict = parcelasDict.map((parc) => {
+					const withInsumos = insumos.map((ins) => {
+						return {
+							...parc,
+							dose: ins.dose,
+							insumo: ins.insumo,
+							tipo: ins.tipo,
+							id: `${parc.id}${ins.dose}${ins.insumo}`
+						};
+					});
+					return withInsumos;
+				});
+
+				if (onlyAppNotProducts) {
+					return parcelasDict;
+				} else {
+					return appParcelasDict.flat();
+				}
 			});
 			setAppArray(newarr.flat());
 		} catch (err) {
@@ -106,7 +137,7 @@ const ModalDataFarmbox = (props) => {
 		if (dictSelectFarm) {
 			getArray();
 		}
-	}, [dictSelectFarm]);
+	}, [dictSelectFarm, onlyAppNotProducts]);
 
 	return (
 		<div>
@@ -118,12 +149,17 @@ const ModalDataFarmbox = (props) => {
 				aria-describedby="keep-mounted-modal-description"
 			>
 				<Box sx={style}>
-					<Typography
+					<Box
 						id="keep-mounted-modal-title"
-						variant="h6"
-						component="h2"
+						display="flex"
+						sx={{
+							"& .MuiChip-colorSecondary": {
+								marginLeft: "auto"
+							}
+						}}
 					>
 						<Chip
+							id="close-btn"
 							label="Farmbox"
 							color="primary"
 							size="medium"
@@ -143,13 +179,40 @@ const ModalDataFarmbox = (props) => {
 								marginLeft: "20px"
 							}}
 						/>
-					</Typography>
+						<Chip
+							label={
+								onlyAppNotProducts ? "Operações" : "Produtos"
+							}
+							color="primary"
+							size="medium"
+							onClick={() => handleOpOrProducts()}
+							sx={{
+								backgroundColor: colors.blueAccent[800],
+								color: colors.primary[100],
+								marginLeft: "20px"
+							}}
+						/>
+						<Chip
+							label={"x"}
+							color="secondary"
+							size="medium"
+							onClick={() => handleClose()}
+							sx={{
+								backgroundColor: "black",
+								color: colors.primary[100]
+							}}
+						/>
+					</Box>
 
-					{!loading && appArray.length > 0 && (
-						<FarmBoxDataTable rows={appArray} loading={!finalArr} />
+					{!loading && appArray.length > 0 && !reloadTable && (
+						<FarmBoxDataTable
+							rows={appArray}
+							loading={!finalArr}
+							onlyAppNotProducts={onlyAppNotProducts}
+						/>
 					)}
 
-					{loading && (
+					{(loading || reloadTable) && (
 						<Box
 							sx={{
 								display: "flex",

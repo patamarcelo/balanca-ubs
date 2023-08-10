@@ -126,7 +126,11 @@ const FarmBoxPage = () => {
 
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	const handleClose = () => {
+		console.log("handle Close");
+		setOpen(false);
+	};
+
 	// useEffect(() => {
 	// 	if (openApp.length > 0) {
 	// 		console.log(dictSelect);
