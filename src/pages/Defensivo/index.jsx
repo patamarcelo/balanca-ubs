@@ -17,13 +17,16 @@ import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { useDispatch } from "react-redux";
-import { setPlantio } from "../../store/plantio/plantio.actions";
+import { useDispatch, useSelector } from "react-redux";
+import { setPlantio, setSafraCilco } from "../../store/plantio/plantio.actions";
+
+import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
 
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [isLoadingHome, setIsLoading] = useState(true);
 
@@ -32,10 +35,26 @@ const DefensivoPage = () => {
 	const [dataDefFalse, setDataDefFalse] = useState([]);
 	const [dataDefTrue, setDataDefTrue] = useState([]);
 
+	const [params, setParams] = useState({
+		safra: safraCiclo.safra,
+		ciclo: safraCiclo.ciclo
+	});
+
+	useEffect(() => {
+		handleRefreshData();
+	}, [safraCiclo]);
+
+	useEffect(() => {
+		setParams({
+			safra: safraCiclo.safra,
+			ciclo: safraCiclo.ciclo
+		});
+	}, [safraCiclo]);
+
 	const getTrueApi = async () => {
 		try {
 			await djangoApi
-				.get("plantio/get_plantio_operacoes_detail/", {
+				.post("plantio/get_plantio_operacoes_detail/", safraCiclo, {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 					}
@@ -55,11 +74,15 @@ const DefensivoPage = () => {
 	const getFalseApi = async () => {
 		try {
 			await djangoApi
-				.get("plantio/get_plantio_operacoes_detail_json_program/", {
-					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+				.post(
+					"plantio/get_plantio_operacoes_detail_json_program/",
+					safraCiclo,
+					{
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
 					}
-				})
+				)
 				.then((res) => {
 					// console.log(res.data);
 					setDataDefTrue(res.data.dados_plantio);
@@ -73,16 +96,20 @@ const DefensivoPage = () => {
 	};
 
 	useEffect(() => {
-		(async () => {
-			try {
-				await getTrueApi();
-				await getFalseApi();
-			} catch (err) {
-				console.log("Erro ao consumir a API", err);
-			} finally {
-				setIsLoading(false);
-			}
-		})();
+		if (safraCiclo.safra.length > 0 && safraCiclo.ciclo.lenght > 0) {
+			(async () => {
+				if (dataDef.length === 0) {
+					try {
+						await getTrueApi();
+						await getFalseApi();
+					} catch (err) {
+						console.log("Erro ao consumir a API", err);
+					} finally {
+						setIsLoading(false);
+					}
+				}
+			})();
+		}
 	}, []);
 
 	const handleRefreshData = async () => {
@@ -156,7 +183,7 @@ const DefensivoPage = () => {
 						isLoadingHome={isLoadingHome}
 					/>
 				)}
-				{isLoadingHome && (
+				{(isLoadingHome || dataDef.length === 0) && (
 					<Box width="100%" height="100%">
 						<Stack direction="row" spacing={2}>
 							<Skeleton

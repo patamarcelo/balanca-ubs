@@ -48,6 +48,22 @@ export const setIsBalancaUserReducer = (user) => {
 	}
 	return boolean;
 };
+
+export const setIsDefensivosUserReducer = (user) => {
+	let boolean = false;
+	if (user?.reloadUserInfo) {
+		const isAdmin = user.reloadUserInfo.customAttributes;
+		if (isAdmin) {
+			const isAdminBool = JSON.parse(isAdmin);
+			if (isAdminBool.isDefensivos) {
+				boolean = true;
+			} else {
+				boolean = false;
+			}
+		}
+	}
+	return boolean;
+};
 export const setUnidadeOpUser = (user) => {
 	let unidadeOp = "";
 	if (user?.reloadUserInfo) {

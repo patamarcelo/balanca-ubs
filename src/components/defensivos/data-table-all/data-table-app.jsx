@@ -12,7 +12,6 @@ const ProgramaTablePage = (props) => {
 	// const defaultFontSize = "13px";
 
 	const columns = [
-		{ field: "id", headerName: "ID", width: 20 },
 		{ field: "fazendaGrupo", headerName: "Fazenda", width: 180 },
 		{ field: "projeto", headerName: "Projeto", width: 180 },
 		{ field: "parcela", headerName: "Parcela", width: 80 },

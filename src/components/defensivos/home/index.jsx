@@ -117,14 +117,14 @@ const HomeDefensivoPage = (props) => {
 			selection: isOpenProducts
 		},
 		{
-			title: "AP Detalhado",
-			option: dictComps.dinamic,
-			selection: isOpenProductsByDayDinamic
-		},
-		{
 			title: "Aplicações",
 			option: dictComps.productsProgram,
 			selection: isOpenProductsProgram
+		},
+		{
+			title: "AP Detalhado",
+			option: dictComps.dinamic,
+			selection: isOpenProductsByDayDinamic
 		},
 		{
 			title: "Plantio",
@@ -141,10 +141,18 @@ const HomeDefensivoPage = (props) => {
 		<Box width="100%" height="100%">
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
 				<Stack spacing={2} direction="row" justifyContent="start">
-					<Box display="flex" justifyContent="start" gap="20px">
+					<Box
+						display="flex"
+						justifyContent="start"
+						gap="20px"
+						height="42px"
+						alignItems="end"
+					>
 						{buttonTable.map((data, i) => {
 							return (
 								<CustomButton
+									size="small"
+									height="30px"
 									key={i}
 									color={
 										data.selection
@@ -160,10 +168,12 @@ const HomeDefensivoPage = (props) => {
 							);
 						})}
 					</Box>
+					<Box>
+						<SafraCicloComp />
+					</Box>
 					{isOpenProductsProgram && (
 						<Box
 							sx={{
-								maxHeight: " 33px",
 								flexGrow: 1,
 								display: "flex",
 								justifyContent: "center",
@@ -184,7 +194,6 @@ const HomeDefensivoPage = (props) => {
 							</div>
 						</Box>
 					)}
-					{isOpenPlantioPage && <SafraCicloComp />}
 				</Stack>
 			</Box>
 			{isOpenProducts && (

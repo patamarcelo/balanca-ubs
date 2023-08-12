@@ -67,7 +67,6 @@ const TableDataPage = (props) => {
 	};
 
 	const containerRef = useRef(null);
-
 	return (
 		<div
 			style={{

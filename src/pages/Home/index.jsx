@@ -48,6 +48,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+import { setSafraCilco } from "../../store/plantio/plantio.actions";
+import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -95,6 +98,14 @@ const HomePage = () => {
 	);
 
 	const [formatUnidade, setFormatUnidade] = useState("");
+
+	const safraCiclo = useSelector(selectSafraCiclo);
+
+	useEffect(() => {
+		if (safraCiclo.safra === "" || safraCiclo.ciclo === "") {
+			dispatch(setSafraCilco({ safra: "2023/2024", ciclo: "1" }));
+		}
+	}, []);
 
 	// useEffect(() => {
 	// 	djangoApi

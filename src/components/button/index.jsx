@@ -1,8 +1,16 @@
 import Button from "@mui/material/Button";
 
 const CustomButton = (props) => {
-	const { title, color, ml, handleOpenModal, isBalanca, size, fontColor } =
-		props;
+	const {
+		title,
+		color,
+		ml,
+		handleOpenModal,
+		isBalanca,
+		size,
+		fontColor,
+		height
+	} = props;
 
 	const fontColorAdj = (fontColor) => {
 		if (fontColor) {
@@ -19,7 +27,8 @@ const CustomButton = (props) => {
 				color: fontColorAdj(fontColor),
 				":hover": {
 					color: "white"
-				}
+				},
+				height
 			}}
 			startIcon={props.children}
 			onClick={handleOpenModal}

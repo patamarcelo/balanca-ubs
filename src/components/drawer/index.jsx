@@ -22,34 +22,16 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { selectUnidadeOpUser } from "../../store/user/user.selector";
+import {
+	selectUnidadeOpUser,
+	selectIsDefensivosUser
+} from "../../store/user/user.selector";
 
 import { useEffect, useState } from "react";
 
-const NAVIGATION = [
-	{ title: "Início", icon: faHouse, to: "/", unidade: "all" },
-	{ title: "Relatório", icon: faChartSimple, to: "/report", unidade: "all" },
-	{
-		title: "Envio Semente",
-		icon: faPaperPlane,
-		to: "/sendseed",
-		unidade: "ubs"
-	},
-	{
-		title: "Ordens",
-		icon: faClipboard,
-		to: "/ordem",
-		unidade: "ubs"
-	},
-	{
-		title: "Defensivos",
-		icon: faCalendarDays,
-		to: "/defensivo",
-		unidade: "ubs"
-	}
-];
-
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
+	const isDefensivosUser = useSelector(selectIsDefensivosUser);
+
 	const navigate = useNavigate();
 
 	const handlerNvaigate = (to) => {
@@ -59,10 +41,45 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const [filteredArr, setFilteredArr] = useState([]);
 
+	const NAVIGATION = [
+		{
+			title: "Início",
+			icon: faHouse,
+			to: "/",
+			unidade: "all",
+			permission: true
+		},
+		{
+			title: "Relatório",
+			icon: faChartSimple,
+			to: "/report",
+			unidade: "all",
+			permission: true
+		},
+		{
+			title: "Envio Semente",
+			icon: faPaperPlane,
+			to: "/sendseed",
+			unidade: "ubs",
+			permission: unidadeOpUser === "ubs" ? true : false
+		},
+		{
+			title: "Ordens",
+			icon: faClipboard,
+			to: "/ordem",
+			unidade: "ubs",
+			permission: unidadeOpUser === "ubs" ? true : false
+		},
+		{
+			title: "Defensivos",
+			icon: faCalendarDays,
+			to: "/defensivo",
+			unidade: "ubs",
+			permission: isDefensivosUser
+		}
+	];
 	useEffect(() => {
-		const newArr = NAVIGATION.filter(
-			(data) => data.unidade === unidadeOpUser || data.unidade === "all"
-		);
+		const newArr = NAVIGATION.filter((data) => data.permission === true);
 		setFilteredArr(newArr);
 	}, []);
 

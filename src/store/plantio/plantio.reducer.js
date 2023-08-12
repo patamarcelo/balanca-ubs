@@ -4,7 +4,7 @@ const INITIAL_STATE = {
 	plantio: [],
 	app: [],
 	appFarmBox: [],
-	safraCiclo: { safra: "2023/2024", ciclo: "1" }
+	safraCiclo: { safra: "", ciclo: "" }
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {

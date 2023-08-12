@@ -139,6 +139,7 @@ const ModalDataFarmbox = (props) => {
 		}
 	}, [dictSelectFarm, onlyAppNotProducts]);
 
+	console.log(appArray);
 	return (
 		<div>
 			<Modal

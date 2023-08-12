@@ -381,6 +381,7 @@ const DataProgramPage = (props) => {
 		<Box
 			className={classes.mainDiv}
 			style={{ backgroundColor: colors.blueOrigin[700] }}
+			mt={3}
 		>
 			<Box
 				className={`${classes.div} ${classes["farm-list-div"]}`}

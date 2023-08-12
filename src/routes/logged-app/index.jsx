@@ -18,7 +18,10 @@ import { Routes, Route } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useSelector } from "react-redux";
-import { selectUnidadeOpUser } from "../../store/user/user.selector";
+import {
+	selectUnidadeOpUser,
+	selectIsDefensivosUser
+} from "../../store/user/user.selector";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -29,6 +32,7 @@ const AuthApp = () => {
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
 
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const isDefensivosUser = useSelector(selectIsDefensivosUser);
 
 	const toggleDrawer = (event) => {
 		if (
@@ -79,7 +83,7 @@ const AuthApp = () => {
 					{unidadeOpUser === "ubs" && (
 						<Route path="/ordem" element={<OrdemPage />} />
 					)}
-					{unidadeOpUser === "ubs" && (
+					{isDefensivosUser && (
 						<Route path="/defensivo" element={<DefensivoPage />} />
 					)}
 				</Routes>

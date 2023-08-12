@@ -4,7 +4,8 @@ import {
 	setIsBalancaUserReducer,
 	setUnidadeOpUser,
 	setToken,
-	setIsVendasUserReducer
+	setIsVendasUserReducer,
+	setIsDefensivosUserReducer
 } from "./user.action";
 
 export const INITIAL_STATE = {
@@ -14,7 +15,8 @@ export const INITIAL_STATE = {
 	isBalanca: false,
 	unidadeOp: "",
 	token: "",
-	isVendas: false
+	isVendas: false,
+	isDefensivos: false
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
@@ -28,6 +30,7 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 			const unidadeOp = setUnidadeOpUser(payload);
 			const token = setToken(payload);
 			const isVendas = setIsVendasUserReducer(payload);
+			const isDefensivos = setIsDefensivosUserReducer(payload);
 			return {
 				...state,
 				currentUser: payload,
@@ -35,7 +38,8 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 				isBalanca: isBalanca,
 				unidadeOp: unidadeOp,
 				token: token,
-				isVendas: isVendas
+				isVendas: isVendas,
+				isDefensivos: isDefensivos
 			};
 		case USER_ACTIONS_TYPES.SET_AUTH_USER:
 			return {

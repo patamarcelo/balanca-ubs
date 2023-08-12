@@ -13,7 +13,6 @@ const DataDefensivoDaysTableDinamic = (props) => {
 	const defaultFontSize = "13px";
 
 	const columns = [
-		{ field: "id", headerName: "ID" },
 		{ field: "fazendaGrupo", headerName: "Fazenda", width: 140 },
 		{ field: "projeto", headerName: "Projeto", width: 140 },
 		{ field: "parcela", headerName: "Parcela", width: 80 },

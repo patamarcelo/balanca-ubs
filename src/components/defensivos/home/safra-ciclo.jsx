@@ -7,13 +7,15 @@ import Select from "@mui/material/Select";
 
 import { useState, useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSafraCilco } from "../../../store/plantio/plantio.actions";
+import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 import classes from "../data-program/data-program.module.css";
 
 const SafraCicloComp = () => {
 	const dispatch = useDispatch();
+	const safraCiclo = useSelector(selectSafraCiclo);
 	const safraDict = {
 		first: "2022/2023",
 		second: "2023/2024"
@@ -25,20 +27,30 @@ const SafraCicloComp = () => {
 		third: "3"
 	};
 
-	const [safra, setSafra] = useState(safraDict.second);
-	const [ciclo, setCiclo] = useState(cicloDict.first);
+	const [safra, setSafra] = useState("");
+	const [ciclo, setCiclo] = useState("");
+	// const [safra, setSafra] = useState(safraDict.second);
+	// const [ciclo, setCiclo] = useState(cicloDict.first);
 
 	const handleChange = (event) => {
 		setSafra(event.target.value);
+		dispatch(
+			setSafraCilco({
+				ciclo: safraCiclo.ciclo,
+				safra: event.target.value
+			})
+		);
 	};
 
 	const handleChangeCiclo = (event) => {
 		setCiclo(event.target.value);
+		dispatch(
+			setSafraCilco({
+				ciclo: event.target.value,
+				safra: safraCiclo.safra
+			})
+		);
 	};
-
-	useEffect(() => {
-		dispatch(setSafraCilco({ safra, ciclo }));
-	}, [safra, ciclo, dispatch]);
 
 	return (
 		<Box
@@ -49,11 +61,11 @@ const SafraCicloComp = () => {
 				justifyContent: "center"
 			}}
 		>
-			<div className={classes["date-picker"]}>
+			<div className={classes["date-picker-safra-ciclo"]}>
 				<FormControl
 					variant="outlined"
 					size="small"
-					sx={{ m: 1, minWidth: 120 }}
+					sx={{ m: 1, minWidth: 80 }}
 				>
 					<InputLabel id="demo-simple-select-standard-label-safra">
 						Safra
@@ -61,7 +73,7 @@ const SafraCicloComp = () => {
 					<Select
 						labelId="demo-simple-select-standard-label-safra"
 						id="demo-simple-select-standard-safra"
-						value={safra}
+						value={safraCiclo.safra}
 						onChange={handleChange}
 						label="Safra"
 					>
@@ -75,7 +87,7 @@ const SafraCicloComp = () => {
 				<FormControl
 					variant="outlined"
 					size="small"
-					sx={{ m: 1, minWidth: 120, marginLeft: "80px" }}
+					sx={{ m: 1, minWidth: 120 }}
 				>
 					<InputLabel id="demo-simple-select-standard-label-ciclo">
 						Ciclo
@@ -83,7 +95,7 @@ const SafraCicloComp = () => {
 					<Select
 						labelId="demo-simple-select-standard-label-ciclo"
 						id="demo-simple-select-standard-ciclo"
-						value={ciclo}
+						value={safraCiclo.ciclo}
 						onChange={handleChangeCiclo}
 						label="Ciclo"
 					>

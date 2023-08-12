@@ -186,6 +186,18 @@
     gap: 30px;
     font-weight: bold;
     margin-top: 5px;
+    /* width: 80%; */
+}
+
+.date-picker-safra-ciclo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 30px;
+    font-weight: bold;
+    margin-top: 15px;
+    /* width: 80%; */
 }
 
 

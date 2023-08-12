@@ -155,7 +155,9 @@ const FarmBoxPage = () => {
 					p={1}
 					sx={{
 						backgroundColor: colors.blueOrigin[800],
-						borderRadius: "8px"
+						borderRadius: "8px",
+						paddingTop: '4px',
+						paddingBottom: '4px',
 					}}
 				>
 					<Button onClick={() => refreshData()} color="success">
