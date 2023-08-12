@@ -16,7 +16,8 @@ import {
 	faUser,
 	faChartSimple,
 	faPrint,
-	faPaperPlane
+	faPaperPlane,
+	faCalendarDays
 } from "@fortawesome/free-solid-svg-icons";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 
@@ -27,7 +28,8 @@ import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
 	selectCurrentUser,
-	selectUnidadeOpUser
+	selectUnidadeOpUser,
+	selectIsDefensivosUser
 } from "../../store/user/user.selector";
 
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -43,6 +45,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	const user = useSelector(selectCurrentUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const isDefensivosUser = useSelector(selectIsDefensivosUser);
 
 	const location = useLocation();
 
@@ -58,6 +61,10 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	const handlerSentSeed = () => {
 		navigate("/sendseed");
+	};
+
+	const handlerDefensivos = () => {
+		navigate("/defensivo");
 	};
 
 	const handlerLogout = () => {
@@ -136,6 +143,16 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						/>
 					</IconButton>
 				)}
+				{isDefensivosUser &&
+					!location.pathname.includes("defensivo") && (
+						<IconButton onClick={handlerDefensivos}>
+							<FontAwesomeIcon
+								icon={faCalendarDays}
+								color={colors.primary[100]}
+								size={isNonMobile ? "sm" : "xs"}
+							/>
+						</IconButton>
+					)}
 				{!location.pathname.includes("sendseed") &&
 					unidadeOpUser === "ubs" && (
 						<IconButton onClick={handlerSentSeed}>
@@ -150,7 +167,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 					<IconButton onClick={handlerNavHome}>
 						<FontAwesomeIcon
 							icon={faHouse}
-							color={colors.yellow[400]}
+							color={colors.primary[100]}
 							size={isNonMobile ? "sm" : "xs"}
 						/>
 					</IconButton>
