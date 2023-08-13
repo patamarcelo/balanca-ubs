@@ -36,6 +36,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 import ModalDataFarmbox from "./grid-data/farm-box-modal";
 
+import IndexModalDataFarmbox from "./index-modal";
+import Fade from "@mui/material/Fade";
+
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -131,6 +134,12 @@ const FarmBoxPage = () => {
 		setOpen(false);
 	};
 
+	const [openFarm, setOpenFarm] = useState(false);
+	const handleOpenFarm = () => setOpenFarm(true);
+	const handleCloseFarm = () => {
+		setOpenFarm(false);
+	};
+
 	// useEffect(() => {
 	// 	if (openApp.length > 0) {
 	// 		console.log(dictSelect);
@@ -156,8 +165,8 @@ const FarmBoxPage = () => {
 					sx={{
 						backgroundColor: colors.blueOrigin[800],
 						borderRadius: "8px",
-						paddingTop: '4px',
-						paddingBottom: '4px',
+						paddingTop: "4px",
+						paddingBottom: "4px"
 					}}
 				>
 					<Button onClick={() => refreshData()} color="success">
@@ -167,187 +176,205 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpen()} color="success">
 						Gerar Tabela
 					</Button>
+					<Button onClick={() => handleOpenFarm()} color="success">
+						Farm Reunião
+					</Button>
 					<ModalDataFarmbox open={open} handleClose={handleClose} />
 				</Box>
 			)}
-			{!loadingData && onlyFarms.length > 0 && (
-				<Box className={classes.formDiv}>
-					<FormControl
-						sx={{
-							m: 1,
-							width: 900,
-							backgroundColor: colors.blueOrigin[800]
-						}}
-					>
-						<InputLabel id="demo-multiple-name-label">
-							Farm
-						</InputLabel>
-						<Select
-							labelId="demo-multiple-name-label"
-							id="demo-multiple-name"
-							multiple
-							value={filtFarm}
-							onChange={handleChange}
-							input={<OutlinedInput label="Farm" />}
-							MenuProps={MenuProps}
-						>
-							{onlyFarms
-								?.sort((a, b) => a.localeCompare(b))
-								.map((farm, i) => (
-									<MenuItem
-										key={i}
-										value={farm}
-										//   style={getStyles(name, personName, theme)}
-									>
-										{farm}
-									</MenuItem>
-								))}
-						</Select>
-					</FormControl>
-					<FormControlLabel
-						control={
-							<Checkbox
-								onChange={handleCheckOpenApp}
-								color="success"
-							/>
-						}
-						label="Finalizadas"
-						labelPlacement="end"
-					/>
-					<FormControlLabel
-						control={
-							<Checkbox
-								onChange={handleAllFarms}
-								color="success"
-							/>
-						}
-						label="Todas"
-						labelPlacement="end"
-					/>
+			{loadingData && (
+				<Box sx={{ width: "100%" }}>
+					<LinearProgress color="success" />
 				</Box>
 			)}
-			<div className={classes.dashboardDiv}>
-				{loadingData && (
-					<Box sx={{ width: "100%" }}>
-						<LinearProgress color="success" />
+
+			<IndexModalDataFarmbox
+				open={openFarm}
+				handleCloseFarm={handleCloseFarm}
+			>
+				{!loadingData && onlyFarms.length > 0 && (
+					<Box className={classes.formDiv}>
+						<FormControl
+							sx={{
+								m: 1,
+								width: 900,
+								backgroundColor: colors.blueOrigin[800]
+							}}
+						>
+							<InputLabel id="demo-multiple-name-label">
+								Farm
+							</InputLabel>
+							<Select
+								labelId="demo-multiple-name-label"
+								id="demo-multiple-name"
+								multiple
+								value={filtFarm}
+								onChange={handleChange}
+								input={<OutlinedInput label="Farm" />}
+								MenuProps={MenuProps}
+							>
+								{onlyFarms
+									?.sort((a, b) => a.localeCompare(b))
+									.map((farm, i) => (
+										<MenuItem
+											key={i}
+											value={farm}
+											//   style={getStyles(name, personName, theme)}
+										>
+											{farm}
+										</MenuItem>
+									))}
+							</Select>
+						</FormControl>
+						<FormControlLabel
+							control={
+								<Checkbox
+									onChange={handleCheckOpenApp}
+									color="success"
+								/>
+							}
+							label="Finalizadas"
+							labelPlacement="end"
+						/>
+						<FormControlLabel
+							control={
+								<Checkbox
+									onChange={handleAllFarms}
+									color="success"
+								/>
+							}
+							label="Todas"
+							labelPlacement="end"
+						/>
 					</Box>
 				)}
-				<div className={classes.dashLeft}>
-					{filtFarm?.map((data, i) => {
-						const hasApp = (obj) => obj.fazenda === data;
-						return (
-							<>
-								{filteredApps.some(hasApp) && (
-									<>
-										<div
-											key={i}
-											style={{
-												margin: "29px"
-											}}
-										>
-											<Divider>{data}</Divider>
-										</div>
-
-										<HeaderApp />
-									</>
-								)}
-								<div className={classes.mainDivLeft}>
-									{filteredApps
-										.filter((data) =>
-											!openAppOnly
-												? data.status === "sought"
-												: data.status === "sought" ||
-												  "finalized"
-										)
-										.sort((b, a) =>
-											a.status.localeCompare(b.status)
-										)
-										.sort(
-											(a, b) =>
-												a.app.slice(2) - b.app.slice(2)
-										)
-										.map((app, i) => {
-											if (app.fazenda === data) {
-												return (
-													<TableDataPage
-														colors={colors}
-														key={i}
-														dataF={app}
-													/>
-												);
-											}
-											return <></>;
-										})}
-								</div>
-							</>
-						);
-					})}
-				</div>
-				<div className={classes.dashRight}>
-					{filteredApps.length > 0 && (
-						<div className={classes.resumoAppPage}>
-							<div className={classes.headerDivApp}>
-								<Divider>
-									<h3>Resumo Geral</h3>
-								</Divider>
-							</div>
-							<div
-								className={classes.bodyDivApp}
-								style={{
-									backgroundColor: colors.blueOrigin[700]
-								}}
-							>
-								<ResumoDataPage />
-							</div>
-							{filtFarm && (
+				<div className={classes.dashboardDiv}>
+					<div className={classes.dashLeft}>
+						{filtFarm?.map((data, i) => {
+							const hasApp = (obj) => obj.fazenda === data;
+							return (
 								<>
-									<Box sx={{ width: "100%" }} mt={3}>
-										<Divider>
-											<h3>
-												Resumo Fazendas -{" "}
-												{saldoAplicar.toLocaleString(
-													"pt-br",
-													{
-														minimumFractionDigits: 2,
-														maximumFractionDigits: 2
-													}
-												)}
-											</h3>
-										</Divider>
-									</Box>
-									<div
-										className={classes.resumoFazendasPage}
-										style={{
-											backgroundColor:
-												colors.blueOrigin[700]
-										}}
-									>
-										{filtFarm
-											?.sort((a, b) => a.localeCompare(b))
-											.map((farm, i) => {
-												const hasDivider =
-													filtFarm.length - 1 === i;
-												return (
-													<ResumoFazendasPage
-														colors={colors}
-														fazenda={farm}
-														key={i}
-														divider={!hasDivider}
-													/>
-												);
+									{filteredApps.some(hasApp) && (
+										<>
+											<div
+												key={i}
+												style={{
+													margin: "29px"
+												}}
+											>
+												<Divider>{data}</Divider>
+											</div>
+
+											<HeaderApp />
+										</>
+									)}
+									<div className={classes.mainDivLeft}>
+										{filteredApps
+											.filter((data) =>
+												!openAppOnly
+													? data.status === "sought"
+													: data.status ===
+															"sought" ||
+													  "finalized"
+											)
+											.sort((b, a) =>
+												a.status.localeCompare(b.status)
+											)
+											.sort(
+												(a, b) =>
+													a.app.slice(2) -
+													b.app.slice(2)
+											)
+											.map((app, i) => {
+												if (app.fazenda === data) {
+													return (
+														<TableDataPage
+															colors={colors}
+															key={i}
+															dataF={app}
+														/>
+													);
+												}
+												return <></>;
 											})}
 									</div>
 								</>
-							)}
-						</div>
-					)}
+							);
+						})}
+					</div>
+					<div className={classes.dashRight}>
+						{filteredApps.length > 0 && (
+							<div className={classes.resumoAppPage}>
+								<div className={classes.headerDivApp}>
+									<Divider>
+										<h3>Resumo Geral</h3>
+									</Divider>
+								</div>
+								<div
+									className={classes.bodyDivApp}
+									style={{
+										backgroundColor: colors.blueOrigin[700]
+									}}
+								>
+									<ResumoDataPage />
+								</div>
+								{filtFarm && (
+									<>
+										<Box sx={{ width: "100%" }} mt={3}>
+											<Divider>
+												<h3>
+													Resumo Fazendas -{" "}
+													{saldoAplicar.toLocaleString(
+														"pt-br",
+														{
+															minimumFractionDigits: 2,
+															maximumFractionDigits: 2
+														}
+													)}
+												</h3>
+											</Divider>
+										</Box>
+										<div
+											className={
+												classes.resumoFazendasPage
+											}
+											style={{
+												backgroundColor:
+													colors.blueOrigin[700]
+											}}
+										>
+											{filtFarm
+												?.sort((a, b) =>
+													a.localeCompare(b)
+												)
+												.map((farm, i) => {
+													const hasDivider =
+														filtFarm.length - 1 ===
+														i;
+													return (
+														<ResumoFazendasPage
+															colors={colors}
+															fazenda={farm}
+															key={i}
+															divider={
+																!hasDivider
+															}
+														/>
+													);
+												})}
+										</div>
+									</>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
-			</div>
-			{!loadingData && filteredApps.length === 0 && (
-				<Box className={classes.emptyFarm}>
-					<span>Selecione uma fazenda</span>
-				</Box>
-			)}
+				{!loadingData && filteredApps.length === 0 && (
+					<Box className={classes.emptyFarm}>
+						<span>Selecione uma fazenda</span>
+					</Box>
+				)}
+			</IndexModalDataFarmbox>
 		</div>
 	);
 };

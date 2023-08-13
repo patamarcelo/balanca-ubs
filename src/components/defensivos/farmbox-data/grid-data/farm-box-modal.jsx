@@ -17,6 +17,8 @@ import { setAppFarmBox } from "../../../../store/plantio/plantio.actions";
 import { selectCurrentUser } from "../../../../store/user/user.selector";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 const style = {
 	position: "absolute",
 	top: "50%",
@@ -154,8 +156,11 @@ const ModalDataFarmbox = (props) => {
 						id="keep-mounted-modal-title"
 						display="flex"
 						sx={{
-							"& .MuiChip-colorSecondary": {
+							"& .fa-cirle": {
 								marginLeft: "auto"
+							},
+							"& .fa-cirle:hover": {
+								opacity: 0.5
 							}
 						}}
 					>
@@ -193,16 +198,20 @@ const ModalDataFarmbox = (props) => {
 								marginLeft: "20px"
 							}}
 						/>
-						<Chip
-							label={"x"}
-							color="secondary"
-							size="medium"
-							onClick={() => handleClose()}
+						<Box
+							className="fa-cirle"
+							display="flex"
+							justifyContent="center"
+							alignItems="center"
 							sx={{
-								backgroundColor: "black",
-								color: colors.primary[100]
+								cursor: "pointer"
 							}}
-						/>
+						>
+							<FontAwesomeIcon
+								icon={faCircleXmark}
+								onClick={() => handleClose()}
+							/>
+						</Box>
 					</Box>
 
 					{!loading && appArray.length > 0 && !reloadTable && (
