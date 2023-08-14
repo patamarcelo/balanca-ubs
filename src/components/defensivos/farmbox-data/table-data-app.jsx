@@ -86,7 +86,12 @@ const TableDataPage = (props) => {
 					onClick={() => showDetailApp()}
 				>
 					<p>
-						{dataF.app.slice(0, 2)} {dataF.app.slice(2)}
+						{dataF.app.includes("L")
+							? dataF.app.slice(0, 3)
+							: dataF.app.slice(0, 2)}{" "}
+						{dataF.app.includes("L")
+							? dataF.app.slice(3)
+							: dataF.app.slice(2)}
 					</p>
 					<div className={classes.tipoDivApp}>
 						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
