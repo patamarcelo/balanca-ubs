@@ -33,7 +33,10 @@ import Fade from "@mui/material/Fade";
 
 import { useSelector } from "react-redux";
 import { selectIsAdminUser } from "../../../store/user/user.selector";
-import { selectPlantio } from "../../../store/plantio/plantio.selector";
+import {
+	selectPlantio,
+	selectSafraCiclo
+} from "../../../store/plantio/plantio.selector";
 
 import EmptyResultPage from "./empty-result";
 
@@ -73,6 +76,7 @@ const DataProgramPage = (props) => {
 
 	const isAdminUser = useSelector(selectIsAdminUser);
 	const plantioRedux = useSelector(selectPlantio);
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -178,7 +182,7 @@ const DataProgramPage = (props) => {
 		(async () => {
 			try {
 				await djangoApi
-					.get("plantio/get_plantio_detail_map/", {
+					.post("plantio/get_plantio_detail_map/", safraCiclo, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}
