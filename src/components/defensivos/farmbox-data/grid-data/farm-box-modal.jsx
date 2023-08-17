@@ -102,6 +102,10 @@ const ModalDataFarmbox = (props) => {
 						dataPlantio: parcela.dataPlantio,
 						idPlantation: parcela.id_plantation,
 						area: parcela.area,
+						areaForm: parcela.area.toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}),
 						id: `${data.idCode}${parcela.parcela}`,
 					};
 				});

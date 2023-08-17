@@ -21,7 +21,7 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Safra", field: "safra", width: 90 },
 		{ headerName: "Ciclo", field: "ciclo", width: 50 },
 		{ headerName: "Status", field: "status" },
-		{ headerName: "Area", field: "area" },
+		{ headerName: "Area", field: "areaForm" },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
 		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
