@@ -29,7 +29,7 @@ const style = {
 	bgcolor: "background.paper",
 	border: "2px solid #000",
 	boxShadow: 24,
-	p: 4
+	p: 4,
 };
 
 const ModalDataFarmbox = (props) => {
@@ -57,8 +57,8 @@ const ModalDataFarmbox = (props) => {
 				.get("/datadetail", {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-						"X-Firebase-AppCheck": user.accessToken
-					}
+						"X-Firebase-AppCheck": user.accessToken,
+					},
 				})
 				.then((res) => {
 					dispatch(setAppFarmBox(res.data));
@@ -101,21 +101,29 @@ const ModalDataFarmbox = (props) => {
 						ciclo: parcela.ciclo,
 						dataPlantio: parcela.dataPlantio,
 						idPlantation: parcela.id_plantation,
-						area: parcela.area.toLocaleString("pt-br", {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-						}),
-						id: `${data.idCode}${parcela.parcela}`
+						area: parcela.area,
+						id: `${data.idCode}${parcela.parcela}`,
 					};
 				});
 				const appParcelasDict = parcelasDict.map((parc) => {
 					const withInsumos = insumos.map((ins) => {
 						return {
 							...parc,
-							dose: ins.dose,
+							quantidade: (ins.dose * parc.area).toLocaleString(
+								"pt-br",
+								{
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2,
+								}
+							),
+							area: parc.area.toLocaleString("pt-br", {
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2,
+							}),
+							dose: ins.dose.replace(".", ","),
 							insumo: ins.insumo,
 							tipo: ins.tipo,
-							id: `${parc.id}${ins.dose}${ins.insumo}`
+							id: `${parc.id}${ins.dose}${ins.insumo}`,
 						};
 					});
 					return withInsumos;
@@ -141,7 +149,7 @@ const ModalDataFarmbox = (props) => {
 		}
 	}, [dictSelectFarm, onlyAppNotProducts]);
 
-	console.log(appArray);
+	// console.log(appArray);
 	return (
 		<div>
 			<Modal
@@ -157,11 +165,11 @@ const ModalDataFarmbox = (props) => {
 						display="flex"
 						sx={{
 							"& .fa-cirle": {
-								marginLeft: "auto"
+								marginLeft: "auto",
 							},
 							"& .fa-cirle:hover": {
-								opacity: 0.5
-							}
+								opacity: 0.5,
+							},
 						}}
 					>
 						<Chip
@@ -171,7 +179,7 @@ const ModalDataFarmbox = (props) => {
 							size="medium"
 							sx={{
 								backgroundColor: colors.greenAccent[800],
-								color: colors.primary[100]
+								color: colors.primary[100],
 							}}
 						/>
 						<Chip
@@ -182,7 +190,7 @@ const ModalDataFarmbox = (props) => {
 							sx={{
 								backgroundColor: colors.blueAccent[800],
 								color: colors.primary[100],
-								marginLeft: "20px"
+								marginLeft: "20px",
 							}}
 						/>
 						<Chip
@@ -195,7 +203,7 @@ const ModalDataFarmbox = (props) => {
 							sx={{
 								backgroundColor: colors.blueAccent[800],
 								color: colors.primary[100],
-								marginLeft: "20px"
+								marginLeft: "20px",
 							}}
 						/>
 						<Box
@@ -204,7 +212,7 @@ const ModalDataFarmbox = (props) => {
 							justifyContent="center"
 							alignItems="center"
 							sx={{
-								cursor: "pointer"
+								cursor: "pointer",
 							}}
 						>
 							<FontAwesomeIcon
@@ -228,7 +236,7 @@ const ModalDataFarmbox = (props) => {
 								display: "flex",
 								justifyContent: "center",
 								alignItems: "center",
-								height: "100%"
+								height: "100%",
 							}}
 						>
 							<CircularProgress
@@ -240,7 +248,7 @@ const ModalDataFarmbox = (props) => {
 											theme.palette.mode === "dark"
 												? 200
 												: 800
-										]
+										],
 								}}
 							/>
 						</Box>

@@ -25,7 +25,7 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
 		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" },
 	];
 
 	const columnsProdutos = [
@@ -43,10 +43,11 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Tipo", field: "tipo" },
 		{ headerName: "Dose", field: "dose" },
 		{ headerName: "Area", field: "area" },
+		{ headerName: "Quantidade", field: "quantidade" },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
 		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" },
 	];
 
 	return (
@@ -54,32 +55,32 @@ const FarmBoxDataTable = (props) => {
 			height="90%"
 			sx={{
 				"& .MuiDataGrid-root": {
-					border: "none"
+					border: "none",
 				},
 				"& .MuiDataGrid-cell": {
 					// borderBottom: "none"
 				},
 				"& .name-column--cell": {
-					color: colors.pink[300]
+					color: colors.pink[300],
 				},
 				"& .MuiDataGrid-columnHeaders": {
 					backgroundColor: colors.blueOrigin[700],
 					borderBottom: "none",
-					height: "90%"
+					height: "90%",
 				},
 				"& .MuiDataGrid-virtualScroller": {
-					backgroundColor: colors.primary[400]
+					backgroundColor: colors.primary[400],
 				},
 				"& .MuiDataGrid-footerContainer": {
 					borderTop: "none",
-					backgroundColor: colors.blueOrigin[700]
+					backgroundColor: colors.blueOrigin[700],
 				},
 				"& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-					color: `${colors.grey[100]} !important`
+					color: `${colors.grey[100]} !important`,
 				},
 				"& .MuiDataGrid-row.Mui-selected": {
-					backgroundColor: `${colors.yellow[900]} !important`
-				}
+					backgroundColor: `${colors.yellow[900]} !important`,
+				},
 			}}
 		>
 			<DataGrid
