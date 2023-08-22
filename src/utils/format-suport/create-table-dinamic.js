@@ -99,33 +99,33 @@ export const createDataTable = (data) => {
 			const dapAplicacao = data.dap;
 			const dataPrevista = data["data prevista"];
 			const aplicado = data.aplicado;
-			if (plantioFinalizado) {
-				const newObj = {
-					id: count,
-					projeto: projeto,
-					parcela: parcela,
-					safra: safra,
-					ciclo: ciclo,
-					cultura: cultura,
-					variedade: variedade,
-					fazendaGrupo: fazendaGrupo,
-					talhaoIdUnico: talhaoIdUnico,
-					plantioFinalizado: plantioFinalizado,
-					area: area,
-					dataPlantio: dataPlantio,
-					dap: dap,
-					programa: programa,
-					programaStartDate: programaStartDate,
-					programaEndDate: programaEndDate,
-					capacidadePlantioDia: capacidadePlantioDia,
-					estagio: estagio,
-					aplicado: aplicado,
-					dapAplicacao: dapAplicacao,
-					dataPrevista: dataPrevista
-				};
-				tableArray.push(newObj);
-				count += 1;
-			}
+			// if (plantioFinalizado) {
+			const newObj = {
+				id: count,
+				projeto: projeto,
+				parcela: parcela,
+				safra: safra,
+				ciclo: ciclo,
+				cultura: cultura,
+				variedade: variedade,
+				fazendaGrupo: fazendaGrupo,
+				talhaoIdUnico: talhaoIdUnico,
+				plantioFinalizado: plantioFinalizado,
+				area: area,
+				dataPlantio: dataPlantio,
+				dap: dap,
+				programa: programa,
+				programaStartDate: programaStartDate,
+				programaEndDate: programaEndDate,
+				capacidadePlantioDia: capacidadePlantioDia,
+				estagio: estagio,
+				aplicado: aplicado,
+				dapAplicacao: dapAplicacao,
+				dataPrevista: dataPrevista
+			};
+			tableArray.push(newObj);
+			count += 1;
+			// }
 		});
 	});
 	return tableArray;
