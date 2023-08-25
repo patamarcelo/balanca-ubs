@@ -103,17 +103,35 @@ const ModalDataFarmbox = (props) => {
 						});
 						return sumTotalApp;
 					});
+					const statusParcelaDetail = (status, processo, area) => {
+						if (status === "finalized") {
+							return "Aplicado";
+						}
+						if (status === "sought") {
+							if (processo >= area) {
+								return "Aplicado";
+							} else {
+								return "Aberto";
+							}
+						}
+					};
 					return {
 						...data,
 						totalSoma: sumTotalApp.toLocaleString("pt-br", {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						}),
+						totalSomaUnform: sumTotalApp,
 						parcela: parcela.parcela,
 						variedade: parcela.variedade,
 						cultura: parcela.cultura,
 						safra: parcela.safra,
 						ciclo: parcela.ciclo,
+						statusParcela: statusParcelaDetail(
+							data.status,
+							sumTotalApp,
+							parcela.area
+						),
 						dataPlantio: parcela.dataPlantio,
 						idPlantation: parcela.id_plantation,
 						area: parcela.area,
@@ -128,13 +146,12 @@ const ModalDataFarmbox = (props) => {
 					const withInsumos = insumos.map((ins) => {
 						return {
 							...parc,
-							quantidade: (ins.dose * parc.area).toLocaleString(
-								"pt-br",
-								{
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
-								}
-							),
+							quantidade: (
+								ins.dose * parc.totalSomaUnform
+							).toLocaleString("pt-br", {
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2
+							}),
 							area: parc.area.toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2
