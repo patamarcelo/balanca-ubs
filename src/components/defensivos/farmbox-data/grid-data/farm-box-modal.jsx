@@ -124,7 +124,6 @@ const ModalDataFarmbox = (props) => {
 						id: `${data.idCode}${parcela.parcela}`
 					};
 				});
-				console.log(parcelasDict);
 				const appParcelasDict = parcelasDict.map((parc) => {
 					const withInsumos = insumos.map((ins) => {
 						return {
