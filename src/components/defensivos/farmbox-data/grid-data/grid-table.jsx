@@ -11,21 +11,22 @@ const FarmBoxDataTable = (props) => {
 	const colors = tokens(theme.palette.mode);
 	// const defaultFontSize = "13px";
 	const columnsApp = [
-		{ headerName: "AP", field: "app", width: 40 },
-		{ headerName: "Operacao", field: "operacao", flex: 1 },
-		{ headerName: "Projeto", field: "fazenda", flex: 1 },
-		{ headerName: "Parcela", field: "parcela", width: 90 },
+		{ headerName: "AP", field: "app", flex: 4 },
+		{ headerName: "Operacao", field: "operacao", flex: 7 },
+		{ headerName: "Projeto", field: "fazenda", flex: 7 },
+		{ headerName: "Parcela", field: "parcela", flex: 3 },
 		{ headerName: "Cultura", field: "cultura", flex: 1 },
-		{ headerName: "Variedade", field: "variedade", flex: 1 },
+		{ headerName: "Variedade", field: "variedade", flex: 6 },
 		{ headerName: "Data Plantio", field: "dataPlantio", width: 90 },
-		{ headerName: "Safra", field: "safra", width: 90 },
-		{ headerName: "Ciclo", field: "ciclo", width: 50 },
-		{ headerName: "Status", field: "status" },
-		{ headerName: "Area", field: "areaForm" },
+		{ headerName: "Safra", field: "safra", flex: 5 },
+		{ headerName: "Ciclo", field: "ciclo", flex: 1 },
+		{ headerName: "Status", field: "status", flex: 5 },
+		{ headerName: "Area", field: "areaForm", flex: 4 },
+		{ headerName: "Progresso", field: "totalSoma", flex: 4 },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
 		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" },
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
 	];
 
 	const columnsProdutos = [
@@ -47,7 +48,7 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
 		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" },
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
 	];
 
 	return (
@@ -55,32 +56,32 @@ const FarmBoxDataTable = (props) => {
 			height="90%"
 			sx={{
 				"& .MuiDataGrid-root": {
-					border: "none",
+					border: "none"
 				},
 				"& .MuiDataGrid-cell": {
 					// borderBottom: "none"
 				},
 				"& .name-column--cell": {
-					color: colors.pink[300],
+					color: colors.pink[300]
 				},
 				"& .MuiDataGrid-columnHeaders": {
 					backgroundColor: colors.blueOrigin[700],
 					borderBottom: "none",
-					height: "90%",
+					height: "90%"
 				},
 				"& .MuiDataGrid-virtualScroller": {
-					backgroundColor: colors.primary[400],
+					backgroundColor: colors.primary[400]
 				},
 				"& .MuiDataGrid-footerContainer": {
 					borderTop: "none",
-					backgroundColor: colors.blueOrigin[700],
+					backgroundColor: colors.blueOrigin[700]
 				},
 				"& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-					color: `${colors.grey[100]} !important`,
+					color: `${colors.grey[100]} !important`
 				},
 				"& .MuiDataGrid-row.Mui-selected": {
-					backgroundColor: `${colors.yellow[900]} !important`,
-				},
+					backgroundColor: `${colors.yellow[900]} !important`
+				}
 			}}
 		>
 			<DataGrid

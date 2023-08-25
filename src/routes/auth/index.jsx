@@ -23,9 +23,13 @@ import background from "../../utils/assets/img/background.png";
 
 import toast from "react-hot-toast";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import "./index.css";
+
+import { setSafraCilco } from "../../store/plantio/plantio.actions";
+import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
 
 const initialValues = {
 	username: "",
@@ -42,6 +46,9 @@ const Auth = () => {
 	const colors = tokens(theme.palette.mode);
 	const navitgate = useNavigate();
 	const dispatch = useDispatch();
+
+	const safraCiclo = useSelector(selectSafraCiclo);
+
 	const [isLoading, setIsLoading] = useState(false);
 
 	const notifySuccess = () => toast.success("Login efetuado com sucesso!!");
@@ -52,16 +59,26 @@ const Auth = () => {
 
 	const isNonMobile = useMediaQuery("(min-width: 700px)");
 
+	const setSafraCiclo = () => {
+		dispatch(setSafraCilco({ safra: "2023/2024", ciclo: "1" }));
+	};
+
+	useEffect(() => {
+		if (safraCiclo.safra === "" || safraCiclo.ciclo === "") {
+			setSafraCiclo();
+		}
+	}, []);
 	const handleFormSubmit = async (values) => {
 		setIsLoading(true);
 		try {
 			const email = values.username;
 			const password = values.password;
 			const user = await authUser(email, password);
+			console.log("logando user");
 
 			if (user) {
-				dispatch(setIsAuthUser(true));
-				dispatch(setUser(user.user));
+				await dispatch(setIsAuthUser(true));
+				await dispatch(setUser(user.user));
 				notifySuccess();
 				navitgate("/");
 			}

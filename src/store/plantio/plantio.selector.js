@@ -185,12 +185,18 @@ export const createDictFarmBox = (state) => {
 			};
 		});
 
+		// console.log(progressos);
+
 		return {
 			fazenda: farm,
 			app: code,
 			idCode,
 			status: status,
-			progresso: percentApp.toFixed(2),
+			progresso: percentApp
+				.toLocaleString("pt-br", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+				}),
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
 			cultura: cultura,
@@ -203,6 +209,7 @@ export const createDictFarmBox = (state) => {
 			area: areaTotalSolicitada,
 			areaAplicada: areaTotalAplicada,
 			saldoAplicar: saldoAplicar.toFixed(2),
+			progressos,
 			date: data.date,
 			endDate: data.end_date,
 			closedDate,
