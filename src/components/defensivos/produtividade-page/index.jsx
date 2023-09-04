@@ -10,6 +10,8 @@ import ListPage from "./list-page";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
+import styles from "./produtividade.module.css";
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
@@ -92,7 +94,8 @@ const ProdutividadePage = () => {
 			<Box
 				sx={{
 					marginLeft: "10px",
-					marginRight: "10px"
+					marginRight: "10px",
+					width: "100%"
 				}}
 			>
 				<Box>
@@ -105,33 +108,52 @@ const ProdutividadePage = () => {
 				<Box
 					sx={{
 						display: "flex",
+						flexDirection: "column",
 						width: "100%",
-						justifyContent: "space-between",
+						justifyContent: "center",
 						alignItems: "center",
 						backgroundColor: colors.blueOrigin[700],
 						padding: "20px",
 						borderRadius: "8px"
 					}}
 				>
-					<Box
-						width={"67%"}
-						display="flex"
-						justifyContent="center"
-						alignItems="center"
-						height="550px"
-						sx={{
-							boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
-							borderRadius: "8px"
-						}}
-					>
-						<MapPage />
-					</Box>
-					<Box width={"30%"}>
-						<ListPage
-							filteredArray={filteredArray}
-							projeto={selectedProject}
-						/>
-					</Box>
+					<div style={{ width: "100%" }}>
+						<Typography
+							variant="h3"
+							color={colors.primary[100]}
+							sx={{
+								textAlign: "center",
+								padding: "5px",
+								fontWeight: "bold",
+								marginBottom: "10px",
+								width: "100%"
+							}}
+							className={styles.titleProdutividade}
+						>
+							{selectedProject}
+						</Typography>
+					</div>
+					<div className={styles.mapListDiv}>
+						<Box
+							width={"67%"}
+							display="flex"
+							justifyContent="center"
+							alignItems="center"
+							height="550px"
+							sx={{
+								boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
+								borderRadius: "8px"
+							}}
+						>
+							<MapPage />
+						</Box>
+						<Box width={"30%"}>
+							<ListPage
+								filteredArray={filteredArray}
+								projeto={selectedProject}
+							/>
+						</Box>
+					</div>
 				</Box>
 			</Box>
 		);

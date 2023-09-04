@@ -1,13 +1,16 @@
 .mainContainer {
  max-height: 550px;
  overflow: auto;
- padding: 10px 5px;
+ gap: 12px;
+ display: flex;
+ flex-direction: column;
+ /* padding: 10px 5px; */
  border-radius: 8px;
  /* border: 1px solid red */
 }
 .innerContainer {
  padding: 8px 15px;
- margin: 10px;
+ /* margin: 10px; */
 }
 
 .cargasData {
@@ -23,4 +26,17 @@
 .titleProdutividade {
     font-weight: bold;
     color: antiquewhite;
+}
+
+.imgIcon {
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+}
+
+.mapListDiv{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

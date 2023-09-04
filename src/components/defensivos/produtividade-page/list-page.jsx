@@ -4,27 +4,45 @@ import styles from "./produtividade.module.css";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
+import beans from "../../../utils/assets/icons/beans2.png";
+import soy from "../../../utils/assets/icons/soy.png";
+import rice from "../../../utils/assets/icons/rice.png";
+
 const ListPage = (props) => {
 	const { filteredArray, projeto } = props;
+
+	const iconDict = [
+		{ cultura: "Feijão", icon: beans, alt: "feijao" },
+		{ cultura: "Arroz", icon: rice, alt: "arroz" },
+		{ cultura: "Soja", icon: soy, alt: "soja" }
+	];
+
+	const filteredAlt = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data.variedade__cultura__cultura
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].alt;
+		}
+		return "";
+	};
+
+	const filteredIcon = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data.variedade__cultura__cultura
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].icon;
+		}
+		return "";
+	};
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	return (
 		<>
-			<Typography
-				variant="h3"
-				color={colors.primary[100]}
-				sx={{
-					textAlign: "center",
-					padding: "5px",
-					fontWeight: "bold",
-					marginBottom: "10px"
-				}}
-				className={styles.titleProdutividade}
-			>
-				{projeto}
-			</Typography>
-
 			<div
 				className={styles.mainContainer}
 				style={{
@@ -52,13 +70,13 @@ const ListPage = (props) => {
 										backgroundColor: colors.blueOrigin[800],
 										borderRadius: "8px",
 										padding: "3px 15px",
-										margin: "10px 5px",
 										display: "flex",
+										margin: "0px 10px",
 										flexDirection: "column",
 										justifyContent: "space-between",
 										alignItems: "center",
 										boxShadow:
-											"rgba(0, 0, 0, 0.65) 0px 2px 2px"
+											"rgba(0, 0, 0, 0.65) 0px 4px 5px"
 									}}
 								>
 									<div
@@ -71,6 +89,11 @@ const ListPage = (props) => {
 									>
 										<span style={{ marginRight: "100px" }}>
 											{data.talhao__id_talhao}
+											<img
+												className={styles.imgIcon}
+												src={filteredIcon(data)}
+												alt={filteredAlt(data)}
+											/>
 										</span>
 										<span className={styles.produtividade}>
 											{data?.produtividade?.toLocaleString(
@@ -95,6 +118,13 @@ const ListPage = (props) => {
 											alignItems: "center"
 										}}
 									>
+										<span
+											style={{
+												minWidth: "40%"
+											}}
+										>
+											{data.variedade__nome_fantasia}
+										</span>
 										<span>
 											{areaConsider?.toLocaleString(
 												"pt-br",
@@ -105,16 +135,7 @@ const ListPage = (props) => {
 											)}{" "}
 											ha
 										</span>
-										<span>
-											{data?.peso_kg?.toLocaleString(
-												"pt-br",
-												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
-												}
-											)}{" "}
-											Kg
-										</span>
+
 										<span>
 											{data?.peso_scs?.toLocaleString(
 												"pt-br",
