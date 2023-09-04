@@ -1,9 +1,26 @@
 .mainContainer {
- /* max-height: 50%; */
+ max-height: 550px;
  overflow: auto;
- border: 1px solid red
+ padding: 10px 5px;
+ border-radius: 8px;
+ /* border: 1px solid red */
 }
 .innerContainer {
- padding: 5px;
+ padding: 8px 15px;
  margin: 10px;
+}
+
+.cargasData {
+    color: grey;
+    font-weight: 600;
+}
+
+.produtividade {
+    font-weight:bold
+}
+
+
+.titleProdutividade {
+    font-weight: bold;
+    color: antiquewhite;
 }

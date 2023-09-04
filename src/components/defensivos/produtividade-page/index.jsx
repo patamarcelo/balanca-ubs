@@ -89,7 +89,12 @@ const ProdutividadePage = () => {
 	}
 	if (filteredArray.length > 0) {
 		return (
-			<Box>
+			<Box
+				sx={{
+					marginLeft: "10px",
+					marginRight: "10px"
+				}}
+			>
 				<Box>
 					<SelectFarm
 						projetos={projetos}
@@ -101,17 +106,31 @@ const ProdutividadePage = () => {
 					sx={{
 						display: "flex",
 						width: "100%",
+						justifyContent: "space-between",
+						alignItems: "center",
 						backgroundColor: colors.blueOrigin[700],
-						padding: "10px",
-						marginLeft: "10px",
-						border: "1px solid white"
+						padding: "20px",
+						borderRadius: "8px"
 					}}
 				>
-					<Box width={"67%"}>
+					<Box
+						width={"67%"}
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+						height="550px"
+						sx={{
+							boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
+							borderRadius: "8px"
+						}}
+					>
 						<MapPage />
 					</Box>
 					<Box width={"30%"}>
-						<ListPage filteredArray={filteredArray} />
+						<ListPage
+							filteredArray={filteredArray}
+							projeto={selectedProject}
+						/>
 					</Box>
 				</Box>
 			</Box>
