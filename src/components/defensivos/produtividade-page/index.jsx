@@ -21,7 +21,7 @@ const ProdutividadePage = () => {
 	const colors = tokens(theme.palette.mode);
 
 	const [produtividade, setProdutividade] = useState([]);
-	const [loadingData, setLoadingData] = useState(false);
+	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
 	const [selectedProject, setSelectedProject] = useState();
 	const [filteredArray, setFilteredArray] = useState([]);
@@ -77,88 +77,107 @@ const ProdutividadePage = () => {
 			</Box>
 		);
 	}
-	if (filteredArray.length === 0) {
-		return (
+	// if (filteredArray.length === 0) {
+	// 	return (
+	// 		<Box>
+	// 			<SelectFarm
+	// 				projetos={projetos}
+	// 				handleChange={handleChangeSelect}
+	// 				value={selectedProject}
+	// 			/>
+	// 			<h1>Selecione uma fazenda</h1>
+	// 		</Box>
+	// 	);
+	// }
+	// if (filteredArray.length > 0) {
+	return (
+		<Box
+			sx={{
+				marginLeft: "10px",
+				marginRight: "10px",
+				width: "100%"
+			}}
+		>
 			<Box>
 				<SelectFarm
 					projetos={projetos}
 					handleChange={handleChangeSelect}
 					value={selectedProject}
 				/>
-				<h1>Selecione uma fazenda</h1>
 			</Box>
-		);
-	}
-	if (filteredArray.length > 0) {
-		return (
 			<Box
 				sx={{
-					marginLeft: "10px",
-					marginRight: "10px",
-					width: "100%"
+					display: "flex",
+					flexDirection: "column",
+					width: "100%",
+					justifyContent: "center",
+					alignItems: "center",
+					backgroundColor: colors.blueOrigin[700],
+					padding: "20px",
+					borderRadius: "8px"
 				}}
 			>
-				<Box>
-					<SelectFarm
-						projetos={projetos}
-						handleChange={handleChangeSelect}
-						value={selectedProject}
-					/>
-				</Box>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "column",
-						width: "100%",
-						justifyContent: "center",
-						alignItems: "center",
-						backgroundColor: colors.blueOrigin[700],
-						padding: "20px",
-						borderRadius: "8px"
-					}}
-				>
-					<div style={{ width: "100%" }}>
-						<Typography
-							variant="h3"
-							color={colors.primary[100]}
-							sx={{
-								textAlign: "center",
-								padding: "5px",
-								fontWeight: "bold",
-								marginBottom: "10px",
-								width: "100%"
-							}}
-							className={styles.titleProdutividade}
-						>
-							{selectedProject}
-						</Typography>
-					</div>
-					<div className={styles.mapListDiv}>
-						<Box
-							width={"67%"}
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							height="550px"
-							sx={{
-								boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
-								borderRadius: "8px"
-							}}
-						>
-							<MapPage />
-						</Box>
-						<Box width={"30%"}>
-							<ListPage
-								filteredArray={filteredArray}
-								projeto={selectedProject}
-							/>
-						</Box>
-					</div>
-				</Box>
+				{filteredArray.length === 0 ? (
+					<Typography
+						variant="h3"
+						color={colors.primary[100]}
+						sx={{
+							textAlign: "center",
+							padding: "5px",
+							fontWeight: "bold",
+							marginBottom: "10px",
+							width: "100%",
+							height: "100%"
+						}}
+						className={styles.titleProdutividade}
+					>
+						Selecione uma Fazenda!!
+					</Typography>
+				) : (
+					<>
+						<div style={{ width: "100%" }}>
+							<Typography
+								variant="h3"
+								color={colors.primary[100]}
+								sx={{
+									textAlign: "center",
+									padding: "5px",
+									fontWeight: "bold",
+									marginBottom: "10px",
+									width: "100%"
+								}}
+								className={styles.titleProdutividade}
+							>
+								{selectedProject}
+							</Typography>
+						</div>
+						<div className={styles.mapListDiv}>
+							<Box
+								width={"67%"}
+								display="flex"
+								justifyContent="center"
+								alignItems="center"
+								height="550px"
+								sx={{
+									boxShadow:
+										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
+									borderRadius: "8px"
+								}}
+							>
+								<MapPage />
+							</Box>
+							<Box width={"30%"}>
+								<ListPage
+									filteredArray={filteredArray}
+									projeto={selectedProject}
+								/>
+							</Box>
+						</div>
+					</>
+				)}
 			</Box>
-		);
-	}
-	return <Box></Box>;
+		</Box>
+	);
 };
 
 export default ProdutividadePage;

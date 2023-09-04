@@ -106,8 +106,16 @@ const ListPage = (props) => {
 											Scs/ha
 										</span>
 									</div>
-									<div style={{ width: "100%" }}>
-										<hr />
+									<div
+										style={{
+											width: "100%",
+											height: "0.5px",
+											backgroundColor: colors.primary[200]
+										}}
+									>
+										{/* <hr
+											style={{ backgroundColor: "grey" }}
+										/> */}
 									</div>
 									<div
 										className={styles.cargasData}
