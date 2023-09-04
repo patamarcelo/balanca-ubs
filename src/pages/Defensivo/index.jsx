@@ -210,6 +210,30 @@ const DefensivoPage = () => {
 								width={90}
 								height={38}
 							/>
+							<Skeleton
+								animation="wave"
+								variant="rounded"
+								width={90}
+								height={38}
+							/>
+							<Skeleton
+								animation="wave"
+								variant="rounded"
+								width={90}
+								height={38}
+							/>
+							<Skeleton
+								animation="wave"
+								variant="rounded"
+								width={70}
+								height={38}
+							/>
+							<Skeleton
+								animation="wave"
+								variant="rounded"
+								width={70}
+								height={38}
+							/>
 						</Stack>
 						<LoaderHomeSkeleton />
 					</Box>

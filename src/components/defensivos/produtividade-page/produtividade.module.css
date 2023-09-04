@@ -1,0 +1,9 @@
+.mainContainer {
+ /* max-height: 50%; */
+ overflow: auto;
+ border: 1px solid red
+}
+.innerContainer {
+ padding: 5px;
+ margin: 10px;
+}

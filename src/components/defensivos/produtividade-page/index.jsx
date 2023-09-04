@@ -4,12 +4,20 @@ import { useEffect, useState } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import SelectFarm from "./select-farm";
+import MapPage from "./map-page";
+import ListPage from "./list-page";
+
+import { useTheme } from "@mui/material";
+import { tokens } from "../../../theme";
 
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
 		ciclo: "1"
 	});
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
 	const [produtividade, setProdutividade] = useState([]);
 	const [loadingData, setLoadingData] = useState(false);
 	const [projetos, setProjetos] = useState([]);
@@ -82,46 +90,30 @@ const ProdutividadePage = () => {
 	if (filteredArray.length > 0) {
 		return (
 			<Box>
-				<SelectFarm
-					projetos={projetos}
-					handleChange={handleChangeSelect}
-					value={selectedProject}
-				/>
-
-				{filteredArray &&
-					filteredArray.map((data, i) => {
-						return (
-							<Box key={i}>
-								<span>{data.talhao__fazenda__nome} - </span>
-								<span>{data.talhao__id_talhao} - </span>
-								<span>{data.area_colheita} - </span>
-								<span>
-									{data?.peso_kg?.toLocaleString("pt-br", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2
-									})}{" "}
-									-{" "}
-								</span>
-								<span>
-									{data?.peso_scs?.toLocaleString("pt-br", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2
-									})}{" "}
-									-{" "}
-								</span>
-								<span>
-									{data?.produtividade?.toLocaleString(
-										"pt-br",
-										{
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2
-										}
-									)}{" "}
-									-{" "}
-								</span>
-							</Box>
-						);
-					})}
+				<Box>
+					<SelectFarm
+						projetos={projetos}
+						handleChange={handleChangeSelect}
+						value={selectedProject}
+					/>
+				</Box>
+				<Box
+					sx={{
+						display: "flex",
+						width: "100%",
+						backgroundColor: colors.blueOrigin[700],
+						padding: "10px",
+						marginLeft: "10px",
+						border: "1px solid white"
+					}}
+				>
+					<Box width={"67%"}>
+						<MapPage />
+					</Box>
+					<Box width={"30%"}>
+						<ListPage filteredArray={filteredArray} />
+					</Box>
+				</Box>
 			</Box>
 		);
 	}
