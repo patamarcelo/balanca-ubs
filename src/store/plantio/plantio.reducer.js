@@ -2,6 +2,7 @@ import { PLANTIO_ACTIONS_TYPES } from "./plantio.types";
 
 const INITIAL_STATE = {
 	plantio: [],
+	plantioMapAll: [],
 	app: [],
 	appFarmBox: [],
 	safraCiclo: { safra: "", ciclo: "" }
@@ -29,6 +30,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				safraCiclo: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_PLANTIO_MAP_ALL:
+			return {
+				...state,
+				plantioMapAll: payload
 			};
 		default:
 			return state;

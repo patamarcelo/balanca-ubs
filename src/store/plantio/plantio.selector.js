@@ -4,6 +4,8 @@ export const selectApp = (state) => state.plantio.app;
 
 export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
 
+export const selecPlantioMapAll = (state) => state.plantio.plantioMapAll;
+
 export const createDict = (state) => {
 	const plantio = state.plantio.app;
 	const newArr = plantio.map((data) => {
@@ -192,11 +194,10 @@ export const createDictFarmBox = (state) => {
 			app: code,
 			idCode,
 			status: status,
-			progresso: percentApp
-				.toLocaleString("pt-br", {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
-				}),
+			progresso: percentApp.toLocaleString("pt-br", {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			}),
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
 			cultura: cultura,

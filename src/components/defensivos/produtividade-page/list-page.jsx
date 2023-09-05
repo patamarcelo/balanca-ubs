@@ -72,7 +72,7 @@ const ListPage = (props) => {
 										padding: "3px 15px",
 										display: "flex",
 										margin: "0px 10px",
-										flexDirection: "column",
+										flexDirection: "row",
 										justifyContent: "space-between",
 										alignItems: "center",
 										boxShadow:
@@ -81,79 +81,91 @@ const ListPage = (props) => {
 								>
 									<div
 										style={{
-											width: "100%",
-											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "center"
+											width: "80%"
+											// backgroundColor: "red"
 										}}
 									>
-										<span style={{ marginRight: "100px" }}>
-											{data.talhao__id_talhao}
-											<img
-												className={styles.imgIcon}
-												src={filteredIcon(data)}
-												alt={filteredAlt(data)}
-											/>
-										</span>
-										<span className={styles.produtividade}>
-											{data?.produtividade?.toLocaleString(
-												"pt-br",
-												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
-												}
-											)}{" "}
-											Scs/ha
-										</span>
-									</div>
-									<div
-										style={{
-											width: "100%",
-											height: "0.5px",
-											backgroundColor: colors.primary[200]
-										}}
-									>
-										{/* <hr
-											style={{ backgroundColor: "grey" }}
-										/> */}
-									</div>
-									<div
-										className={styles.cargasData}
-										style={{
-											width: "100%",
-											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "center"
-										}}
-									>
-										<span
+										<div
 											style={{
-												minWidth: "40%"
+												width: "100%",
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center"
 											}}
 										>
-											{data.variedade__nome_fantasia}
-										</span>
-										<span>
-											{areaConsider?.toLocaleString(
-												"pt-br",
-												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
-												}
-											)}{" "}
-											ha
-										</span>
+											<span
+												style={{ marginRight: "100px" }}
+											>
+												{data.talhao__id_talhao}
+												<img
+													className={styles.imgIcon}
+													src={filteredIcon(data)}
+													alt={filteredAlt(data)}
+												/>
+											</span>
+											<span>
+												{areaConsider?.toLocaleString(
+													"pt-br",
+													{
+														minimumFractionDigits: 2,
+														maximumFractionDigits: 2
+													}
+												)}{" "}
+												ha
+											</span>
+										</div>
+										<div
+											style={{
+												width: "100%",
+												height: "0.5px",
+												backgroundColor:
+													colors.primary[200]
+											}}
+										>
+											{/* <hr
+											style={{ backgroundColor: "grey" }}
+										/> */}
+										</div>
+										<div
+											className={styles.cargasData}
+											style={{
+												width: "100%",
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center"
+											}}
+										>
+											<span
+												style={{
+													minWidth: "40%"
+												}}
+											>
+												{data.variedade__nome_fantasia}
+											</span>
 
-										<span>
-											{data?.peso_scs?.toLocaleString(
-												"pt-br",
-												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
-												}
-											)}{" "}
-											Scs
-										</span>
+											<span>
+												{data?.peso_scs?.toLocaleString(
+													"pt-br",
+													{
+														minimumFractionDigits: 2,
+														maximumFractionDigits: 2
+													}
+												)}{" "}
+												Scs
+											</span>
+										</div>
+									</div>
+
+									<div className={styles.scsDiv}>
+										{data?.produtividade?.toLocaleString(
+											"pt-br",
+											{
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+											}
+										)}{" "}
+										{/* <br /> */}
+										{/* Scs/ha */}
 									</div>
 								</Box>
 							);

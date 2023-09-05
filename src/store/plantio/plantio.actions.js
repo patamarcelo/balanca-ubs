@@ -17,3 +17,10 @@ export const setAppFarmBox = (appFarmBox) => {
 export const setSafraCilco = (safraCiclo) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_SAFRA_CICLO, safraCiclo);
 };
+
+export const setPlantioMapAll = (plantioArray) => {
+	return createAction(
+		PLANTIO_ACTIONS_TYPES.SET_PLANTIO_MAP_ALL,
+		plantioArray
+	);
+};

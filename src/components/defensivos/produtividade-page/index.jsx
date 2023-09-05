@@ -12,6 +12,13 @@ import { tokens } from "../../../theme";
 
 import styles from "./produtividade.module.css";
 
+import { useDispatch, useSelector } from "react-redux";
+import { setPlantioMapAll } from "../../../store/plantio/plantio.actions";
+import {
+	selecPlantioMapAll,
+	selectSafraCiclo
+} from "../../../store/plantio/plantio.selector";
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
@@ -19,12 +26,24 @@ const ProdutividadePage = () => {
 	});
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const dispatch = useDispatch();
+
+	const plantioMapALl = useSelector(selecPlantioMapAll);
+	const safraCiclo = useSelector(selectSafraCiclo);
+	const [filteredPlantioMal, setFilteredPlantioMal] = useState();
 
 	const [produtividade, setProdutividade] = useState([]);
 	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
 	const [selectedProject, setSelectedProject] = useState();
 	const [filteredArray, setFilteredArray] = useState([]);
+
+	useEffect(() => {
+		const filterArr = plantioMapALl.filter(
+			(data) => data.fazenda === selectedProject
+		);
+		setFilteredPlantioMal(filterArr);
+	}, [selectedProject, plantioMapALl]);
 
 	const handleChangeSelect = (event) => {
 		setSelectedProject(event.target.value);
@@ -47,7 +66,7 @@ const ProdutividadePage = () => {
 			setLoadingData(true);
 			try {
 				await djangoApi
-					.post("plantio/get_produtividade_plantio/", params, {
+					.post("plantio/get_produtividade_plantio/", safraCiclo, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}
@@ -58,6 +77,27 @@ const ProdutividadePage = () => {
 					});
 			} catch (err) {
 				console.log(err);
+			} finally {
+				setLoadingData(false);
+			}
+		})();
+	}, []);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				await djangoApi
+					.post("plantio/get_plantio_detail_map/", safraCiclo, {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						dispatch(setPlantioMapAll(res.data.dados_plantio));
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
 			} finally {
 				setLoadingData(false);
 			}
@@ -77,19 +117,6 @@ const ProdutividadePage = () => {
 			</Box>
 		);
 	}
-	// if (filteredArray.length === 0) {
-	// 	return (
-	// 		<Box>
-	// 			<SelectFarm
-	// 				projetos={projetos}
-	// 				handleChange={handleChangeSelect}
-	// 				value={selectedProject}
-	// 			/>
-	// 			<h1>Selecione uma fazenda</h1>
-	// 		</Box>
-	// 	);
-	// }
-	// if (filteredArray.length > 0) {
 	return (
 		<Box
 			sx={{
@@ -140,7 +167,7 @@ const ProdutividadePage = () => {
 								variant="h3"
 								color={colors.primary[100]}
 								sx={{
-									textAlign: "center",
+									textAlign: "left",
 									padding: "5px",
 									fontWeight: "bold",
 									marginBottom: "10px",
@@ -157,14 +184,14 @@ const ProdutividadePage = () => {
 								display="flex"
 								justifyContent="center"
 								alignItems="center"
-								height="550px"
+								height="650px"
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
 									borderRadius: "8px"
 								}}
 							>
-								<MapPage />
+								<MapPage mapArray={filteredPlantioMal} />
 							</Box>
 							<Box width={"30%"}>
 								<ListPage

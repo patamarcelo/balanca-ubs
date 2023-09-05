@@ -34,7 +34,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		fullscreenControl: true,
 		scrollwheel: false,
 		zoom: zoomMap,
-		mapTypeId: 'terrain'
+		mapTypeId: "terrain"
 	};
 
 	useEffect(() => {
