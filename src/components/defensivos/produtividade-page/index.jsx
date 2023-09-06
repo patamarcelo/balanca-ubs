@@ -40,6 +40,8 @@ const ProdutividadePage = () => {
 	const [selectedProject, setSelectedProject] = useState();
 	const [filteredArray, setFilteredArray] = useState([]);
 
+	const [filtCult, setFiltCult] = useState([]);
+
 	useEffect(() => {
 		console.log(selectedProject);
 		const filteredArray = produtividade.filter(
@@ -47,8 +49,18 @@ const ProdutividadePage = () => {
 				data.talhao__fazenda__nome === selectedProject &&
 				data.finalizado_plantio === true
 		);
-		setMapPlantation(filteredArray);
 		console.log(filteredArray);
+		setMapPlantation(filteredArray);
+		const filtCult = filteredArray
+			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
+			.map((data) => {
+				return data.variedade__cultura__cultura;
+			});
+		console.log(
+			setFiltCult(
+				[...new Set(filtCult)].sort((b, a) => a.localeCompare(b))
+			)
+		);
 		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
 		// 	const keyDic = cur.dados
 		// 	if(sum[cur.])
@@ -77,7 +89,9 @@ const ProdutividadePage = () => {
 		const onlyProjetos = produtividade.map((data) => {
 			return data.talhao__fazenda__nome;
 		});
-		setProjetos([...new Set(onlyProjetos)]);
+		setProjetos([
+			...new Set(onlyProjetos.sort((a, b) => a.localeCompare(b)))
+		]);
 	}, [produtividade]);
 
 	useEffect(() => {
@@ -180,7 +194,10 @@ const ProdutividadePage = () => {
 					</Typography>
 				) : (
 					<>
-						<HeaderPage selectedProject={selectedProject} />
+						<HeaderPage
+							selectedProject={selectedProject}
+							filtCult={filtCult}
+						/>
 						<div className={styles.mapListDiv}>
 							<Box
 								width={"67%"}

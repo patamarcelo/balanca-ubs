@@ -3,9 +3,10 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import styles from "./produtividade.module.css";
+import ResumoPage from "./resumo-page";
 
 const HeaderPage = (props) => {
-	const { selectedProject } = props;
+	const { selectedProject, filtCult } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	return (
@@ -30,12 +31,7 @@ const HeaderPage = (props) => {
 					{selectedProject}
 				</Typography>
 			</div>
-			<div className={styles.prodSummary}>
-				<div>SOJA</div>
-				<div>FEIJAO</div>
-				<div>ARROZ</div>
-				<div>QUANTIDADE </div>
-			</div>
+			<ResumoPage filtCult={filtCult} />
 		</div>
 	);
 };

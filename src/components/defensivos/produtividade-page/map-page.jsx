@@ -88,7 +88,6 @@ const MapPage = ({ mapArray, filtData }) => {
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
-			console.log(data);
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
@@ -119,7 +118,7 @@ const MapPage = ({ mapArray, filtData }) => {
 							key={i}
 							options={{
 								fillColor: data.color,
-								fillOpacity: 0.5,
+								fillOpacity: data.color === "white" ? 0.1 : 0.6,
 								strokeColor: data.color,
 								strokeOpacity: 1,
 								strokeWeight: 1,
