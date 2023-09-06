@@ -51,16 +51,34 @@ const ProdutividadePage = () => {
 		);
 		console.log(filteredArray);
 		setMapPlantation(filteredArray);
+
+		const totalResumo = {};
 		const filtCult = filteredArray
 			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
 			.map((data) => {
-				return data.variedade__cultura__cultura;
+				const areaSum = data.finalizado_colheita
+					? data.area_colheita
+					: data.area_parcial;
+				const getArea = areaSum ? areaSum : 0;
+				const pesoSum = data?.peso_kg ? data?.peso_kg : 0;
+				const dataSum = {
+					area: getArea,
+					peso: pesoSum
+				};
+				if (totalResumo[data.variedade__cultura__cultura]) {
+					totalResumo[data.variedade__cultura__cultura].peso +=
+						pesoSum;
+					totalResumo[data.variedade__cultura__cultura].area +=
+						getArea;
+				} else {
+					totalResumo[data.variedade__cultura__cultura] = dataSum;
+				}
+
+				return totalResumo;
 			});
-		console.log(
-			setFiltCult(
-				[...new Set(filtCult)].sort((b, a) => a.localeCompare(b))
-			)
-		);
+
+		console.log(totalResumo);
+		console.log(setFiltCult(totalResumo));
 		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
 		// 	const keyDic = cur.dados
 		// 	if(sum[cur.])
