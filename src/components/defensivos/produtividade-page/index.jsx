@@ -18,6 +18,7 @@ import {
 	selecPlantioMapAll,
 	selectSafraCiclo
 } from "../../../store/plantio/plantio.selector";
+import HeaderPage from "./header-page";
 
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
@@ -31,12 +32,30 @@ const ProdutividadePage = () => {
 	const plantioMapALl = useSelector(selecPlantioMapAll);
 	const safraCiclo = useSelector(selectSafraCiclo);
 	const [filteredPlantioMal, setFilteredPlantioMal] = useState();
+	const [mapPlantation, setMapPlantation] = useState([]);
 
 	const [produtividade, setProdutividade] = useState([]);
 	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
 	const [selectedProject, setSelectedProject] = useState();
 	const [filteredArray, setFilteredArray] = useState([]);
+
+	useEffect(() => {
+		console.log(selectedProject);
+		const filteredArray = produtividade.filter(
+			(data) =>
+				data.talhao__fazenda__nome === selectedProject &&
+				data.finalizado_plantio === true
+		);
+		setMapPlantation(filteredArray);
+		console.log(filteredArray);
+		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
+		// 	const keyDic = cur.dados
+		// 	if(sum[cur.])
+		// 	return sum;
+		// }, {});
+		// console.log(totalFiltered);
+	}, [selectedProject, produtividade]);
 
 	useEffect(() => {
 		const filterArr = plantioMapALl.filter(
@@ -72,7 +91,6 @@ const ProdutividadePage = () => {
 						}
 					})
 					.then((res) => {
-						console.log(res.data.dados_plantio);
 						setProdutividade(res.data.dados_plantio);
 					});
 			} catch (err) {
@@ -162,22 +180,7 @@ const ProdutividadePage = () => {
 					</Typography>
 				) : (
 					<>
-						<div style={{ width: "100%" }}>
-							<Typography
-								variant="h3"
-								color={colors.primary[100]}
-								sx={{
-									textAlign: "left",
-									padding: "5px",
-									fontWeight: "bold",
-									marginBottom: "10px",
-									width: "100%"
-								}}
-								className={styles.titleProdutividade}
-							>
-								{selectedProject}
-							</Typography>
-						</div>
+						<HeaderPage selectedProject={selectedProject} />
 						<div className={styles.mapListDiv}>
 							<Box
 								width={"67%"}
@@ -191,7 +194,10 @@ const ProdutividadePage = () => {
 									borderRadius: "8px"
 								}}
 							>
-								<MapPage mapArray={filteredPlantioMal} />
+								<MapPage
+									mapArray={filteredPlantioMal}
+									filtData={mapPlantation}
+								/>
 							</Box>
 							<Box width={"30%"}>
 								<ListPage

@@ -35,20 +35,20 @@ const MapPage = ({ mapArray, filtData }) => {
 		fullscreenControl: true,
 		scrollwheel: false,
 		zoom: zoomMap,
-		mapTypeId: "terrain"
+		mapTypeId: "satellite"
 	};
 
 	useEffect(() => {
 		if (filtData) {
-			const newArrParcelas = filtData.cronograma.map(
-				(data) => data.parcela
+			const newArrParcelas = filtData.map(
+				(data) => data.talhao__id_talhao
 			);
 			setParcelasApp(newArrParcelas);
 		}
 	}, [filtData]);
 
 	useEffect(() => {
-		const centerId = mapArray[0]?.dados?.map_geo_points_center;
+		const centerId = mapArray[0]?.dados?.projeto_map_centro_id;
 		if (centerId) {
 			setCenter(centerId);
 		} else {
@@ -57,7 +57,7 @@ const MapPage = ({ mapArray, filtData }) => {
 					?.map_geo_poins[0]
 			);
 		}
-		const mapZoom = mapArray[0]?.map_zoom;
+		const mapZoom = mapArray[0]?.dados?.projeto_map_zoom;
 		// console.log(mapZoom)
 		if (mapZoom) {
 			setZoomMap(mapZoom);
@@ -78,7 +78,7 @@ const MapPage = ({ mapArray, filtData }) => {
 			return {
 				path: latLong,
 				color: "white",
-				parcela: data.dados.parcela,
+				parcela: data.parcela,
 				variedadeColor: data.dados.variedade_color,
 				variedadeColorLine: data.dados.variedade_color_line
 			};
@@ -88,6 +88,7 @@ const MapPage = ({ mapArray, filtData }) => {
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
+			console.log(data);
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
@@ -105,7 +106,6 @@ const MapPage = ({ mapArray, filtData }) => {
 		<GoogleMap
 			mapContainerStyle={containerStyle}
 			center={center}
-			mapTypeId={"satellite"}
 			disableDefaultUI={true}
 			options={MapOptions}
 			onLoad={(map) => {
@@ -119,11 +119,11 @@ const MapPage = ({ mapArray, filtData }) => {
 							key={i}
 							options={{
 								fillColor: data.color,
-								fillOpacity: 0.6,
-								strokeColor: "black",
-								strokeOpacity: 0.4,
-								strokeWeight: 0.5,
-								clickable: false,
+								fillOpacity: 0.5,
+								strokeColor: data.color,
+								strokeOpacity: 1,
+								strokeWeight: 1,
+								clickable: true,
 								draggable: false,
 								editable: false,
 								geodesic: false,

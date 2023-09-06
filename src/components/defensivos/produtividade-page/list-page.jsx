@@ -94,7 +94,10 @@ const ListPage = (props) => {
 											}}
 										>
 											<span
-												style={{ marginRight: "100px" }}
+												style={{
+													marginRight: "100px",
+													fontWeight: "bold"
+												}}
 											>
 												{data.talhao__id_talhao}
 												<img
@@ -157,15 +160,24 @@ const ListPage = (props) => {
 									</div>
 
 									<div className={styles.scsDiv}>
-										{data?.produtividade?.toLocaleString(
-											"pt-br",
-											{
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2
-											}
-										)}{" "}
-										{/* <br /> */}
-										{/* Scs/ha */}
+										<div>
+											{data?.produtividade?.toLocaleString(
+												"pt-br",
+												{
+													minimumFractionDigits: 2,
+													maximumFractionDigits: 2
+												}
+											)}
+										</div>
+										<div>
+											<p
+												style={{
+													color: colors.primary[200]
+												}}
+											>
+												Scs/ha
+											</p>
+										</div>
 									</div>
 								</Box>
 							);
