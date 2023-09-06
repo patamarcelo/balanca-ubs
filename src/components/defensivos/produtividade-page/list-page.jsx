@@ -62,6 +62,9 @@ const ListPage = (props) => {
 								data.finalizado_colheita === true
 									? data.area_colheita
 									: data.area_parcial;
+							const colorShadow = data.finalizado_colheita
+								? "rgba(10, 201, 29, 0.65) 0px 2px 3px"
+								: "rgba(0, 0, 0, 0.65) 0px 4px 5px";
 							return (
 								<Box
 									key={i}
@@ -75,8 +78,7 @@ const ListPage = (props) => {
 										flexDirection: "row",
 										justifyContent: "space-between",
 										alignItems: "center",
-										boxShadow:
-											"rgba(0, 0, 0, 0.65) 0px 4px 5px"
+										boxShadow: colorShadow
 									}}
 								>
 									<div

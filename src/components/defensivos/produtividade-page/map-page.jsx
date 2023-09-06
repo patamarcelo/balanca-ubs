@@ -69,6 +69,7 @@ const MapPage = ({ mapArray, filtData }) => {
 	useEffect(() => {
 		const onlyPaths = mapArray.map((data, i) => {
 			let latLong = [];
+			console.log(data);
 			if (data.dados.map_geo_points) {
 				latLong = data.dados.map_geo_points.map((data) => ({
 					lat: Number(data.latitude),
@@ -78,6 +79,9 @@ const MapPage = ({ mapArray, filtData }) => {
 			return {
 				path: latLong,
 				color: "white",
+				finalizadoPlantio: data.dados.finalizado_plantio,
+				finalizadoColheita: data.dados.finalizado_colheita,
+				descontinuado: data.dados.plantio_descontinuado,
 				parcela: data.parcela,
 				variedadeColor: data.dados.variedade_color,
 				variedadeColorLine: data.dados.variedade_color_line
@@ -88,10 +92,15 @@ const MapPage = ({ mapArray, filtData }) => {
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
+			// console.log(data);
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
 			return {
+				finalizadoPlantio: data.finalizadoPlantio,
+				finalizadoColheita: data.finalizadoColheita,
+				descontinuado: data.descontinuado,
+				parcela: data.parcela,
 				path: data.path,
 				color: newColor,
 				variedadeColor: data.variedadeColor,
@@ -100,6 +109,48 @@ const MapPage = ({ mapArray, filtData }) => {
 		});
 		setAppArray(updateColorArray);
 	}, [mapArray, filtData, parcelasApp, paths]);
+
+	const getColorStroke = (data) => {
+		if (
+			data.finalizadoColheita === true &&
+			data.finalizadoPlantio === true
+		) {
+			return {
+				color: data.color,
+				stroke: 0.4,
+				lineColor: data.color,
+				lineStroke: 1
+			};
+		}
+		if (
+			data.finalizadoPlantio === true &&
+			data.finalizadoColheita === false &&
+			data.descontinuado === false
+		) {
+			return {
+				color: data.color,
+				stroke: 0.7,
+				lineColor: "yellow",
+				lineStroke: 0.5
+			};
+		}
+
+		if (data.descontinuado === true) {
+			return {
+				color: "red",
+				stroke: 0.2,
+				lineColor: "red",
+				lineStroke: 1
+			};
+		} else {
+			return {
+				color: "yellow",
+				stroke: 0.2,
+				lineColor: "white",
+				lineStroke: 1
+			};
+		}
+	};
 
 	return isLoaded && center ? (
 		<GoogleMap
@@ -113,15 +164,16 @@ const MapPage = ({ mapArray, filtData }) => {
 		>
 			{appArray &&
 				appArray.map((data, i) => {
+					console.log(data);
 					return (
 						<PolygonF
 							key={i}
 							options={{
-								fillColor: data.color,
-								fillOpacity: data.color === "white" ? 0.1 : 0.6,
-								strokeColor: data.color,
+								fillColor: getColorStroke(data).color,
+								fillOpacity: getColorStroke(data).stroke,
+								strokeColor: getColorStroke(data).lineColor,
 								strokeOpacity: 1,
-								strokeWeight: 1,
+								strokeWeight: getColorStroke(data).lineStroke,
 								clickable: true,
 								draggable: false,
 								editable: false,
