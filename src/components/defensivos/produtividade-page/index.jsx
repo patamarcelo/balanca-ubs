@@ -210,7 +210,7 @@ const ProdutividadePage = () => {
 					width: "100%",
 					justifyContent: "center",
 					alignItems: "center",
-					backgroundColor: colors.blueOrigin[700],
+					backgroundColor: colors.blueOrigin[600],
 					padding: "20px",
 					borderRadius: "8px"
 				}}

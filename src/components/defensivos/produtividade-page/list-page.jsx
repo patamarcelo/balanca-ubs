@@ -47,7 +47,8 @@ const ListPage = (props) => {
 				className={styles.mainContainer}
 				style={{
 					backgroundColor: colors.blueOrigin[700],
-					maxHeight: printPage ? "" : "650px"
+					maxHeight: printPage ? "" : "650px",
+					minHeight: printPage ? "900px" : "650px"
 				}}
 			>
 				{filteredArray &&

@@ -39,6 +39,8 @@ import ModalDataFarmbox from "./grid-data/farm-box-modal";
 import IndexModalDataFarmbox from "./index-modal";
 import Fade from "@mui/material/Fade";
 
+import Switch from "@mui/material/Switch";
+
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -55,6 +57,8 @@ const FarmBoxPage = () => {
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 
+	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
+
 	const user = useSelector(selectCurrentUser);
 
 	const ITEM_HEIGHT = 48;
@@ -66,6 +70,18 @@ const FarmBoxPage = () => {
 				width: 250
 			}
 		}
+	};
+
+	const operationFilter = [
+		"Grade Niveladora 1",
+		"Rolo Compactador",
+		"Colheita de Grãos",
+		"Grade Incorporação",
+		"Grade Intermediária 1"
+	];
+
+	const handlePreaproSolo = (e) => {
+		setFilterPreaproSolo(e.target.checked);
 	};
 
 	const handleCheckOpenApp = () => {
@@ -246,6 +262,12 @@ const FarmBoxPage = () => {
 							label="Todas"
 							labelPlacement="end"
 						/>
+						<Switch
+							checked={filterPreaproSolo}
+							onChange={handlePreaproSolo}
+							inputProps={{ "aria-label": "controlled" }}
+							color="warning"
+						/>
 					</Box>
 				)}
 				<div className={classes.dashboardDiv}>
@@ -277,6 +299,13 @@ const FarmBoxPage = () => {
 															"sought" ||
 													  "finalized"
 											)
+											.filter((data) =>
+												filterPreaproSolo
+													? operationFilter.includes(
+															data.operacao.trim()
+													  )
+													: data.app.length > 0
+											)
 											.sort((b, a) =>
 												a.status.localeCompare(b.status)
 											)
@@ -286,6 +315,7 @@ const FarmBoxPage = () => {
 													b.app.slice(2)
 											)
 											.map((app, i) => {
+												console.log(app);
 												if (app.fazenda === data) {
 													return (
 														<TableDataPage
@@ -356,6 +386,12 @@ const FarmBoxPage = () => {
 															colors={colors}
 															fazenda={farm}
 															key={i}
+															operationFilter={
+																operationFilter
+															}
+															filterPreaproSolo={
+																filterPreaproSolo
+															}
 															divider={
 																!hasDivider
 															}

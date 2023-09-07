@@ -35,7 +35,10 @@ const ResumoPage = (props) => {
 	};
 
 	return (
-		<div className={styles.prodSummary}>
+		<div
+			className={styles.prodSummary}
+			style={{ backgroundColor: colors.blueOrigin[700] }}
+		>
 			{Object.keys(filtCult).map((data, i) => {
 				const peso = filtCult[data].peso;
 				const area = filtCult[data].area;

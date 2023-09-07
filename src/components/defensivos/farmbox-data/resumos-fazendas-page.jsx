@@ -10,9 +10,9 @@ import { Box, Divider } from "@mui/material";
 const ResumoFazendasPage = (props) => {
 	const dataGeral = useSelector(geralAppDetail);
 
-	const { fazenda, colors, divider } = props;
+	const { fazenda, colors, divider, filterPreaproSolo, operationFilter } = props;
 	const fazPlan = dataGeral.fazendas[fazenda];
-
+	console.log(fazPlan)
 	const iconDict = [
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
