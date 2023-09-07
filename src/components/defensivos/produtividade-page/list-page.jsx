@@ -9,7 +9,7 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
 const ListPage = (props) => {
-	const { filteredArray, projeto } = props;
+	const { filteredArray, printPage } = props;
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -46,7 +46,8 @@ const ListPage = (props) => {
 			<div
 				className={styles.mainContainer}
 				style={{
-					backgroundColor: colors.blueOrigin[700]
+					backgroundColor: colors.blueOrigin[700],
+					maxHeight: printPage ? "" : "650px"
 				}}
 			>
 				{filteredArray &&
@@ -54,16 +55,28 @@ const ListPage = (props) => {
 						.filter(
 							(data) =>
 								data.finalizado_plantio === true &&
-								data.peso_kg > 0
+								data.variedade__cultura__cultura !== "Milheto"
 						)
-						.sort((b, a) => a.produtividade - b.produtividade)
+						.sort((b, a) => {
+							const aprodutividade = a.produtividade
+								? a.produtividade
+								: 0;
+							const bProdutividade = b.produtividade
+								? b.produtividade
+								: 0;
+
+							return aprodutividade - bProdutividade;
+						})
 						.map((data, i) => {
+							// console.log(data);
 							const areaConsider =
 								data.finalizado_colheita === true
 									? data.area_colheita
 									: data.area_parcial;
 							const colorShadow = data.finalizado_colheita
 								? "rgba(10, 201, 29, 0.65) 0px 2px 3px"
+								: data.peso_kg > 0
+								? "rgb(224, 238, 34) 0px 2px 3px"
 								: "rgba(0, 0, 0, 0.65) 0px 4px 5px";
 							return (
 								<Box

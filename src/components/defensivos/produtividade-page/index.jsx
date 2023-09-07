@@ -20,11 +20,16 @@ import {
 } from "../../../store/plantio/plantio.selector";
 import HeaderPage from "./header-page";
 
+import Switch from "@mui/material/Switch";
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
 		ciclo: "1"
 	});
+
+	const [printPage, setPrintPage] = useState(false);
+
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
@@ -41,6 +46,11 @@ const ProdutividadePage = () => {
 	const [filteredArray, setFilteredArray] = useState([]);
 
 	const [filtCult, setFiltCult] = useState([]);
+
+	const handlePrintPage = (e) => {
+		console.log(e.target.checked);
+		setPrintPage(e.target.checked);
+	};
 
 	useEffect(() => {
 		console.log(selectedProject);
@@ -175,11 +185,22 @@ const ProdutividadePage = () => {
 				width: "100%"
 			}}
 		>
-			<Box>
+			<Box
+				display="flex"
+				justifyContent="flex-start"
+				alignItems="center"
+				gap="15px"
+			>
 				<SelectFarm
 					projetos={projetos}
 					handleChange={handleChangeSelect}
 					value={selectedProject}
+				/>
+				<Switch
+					checked={printPage}
+					onChange={handlePrintPage}
+					inputProps={{ "aria-label": "controlled" }}
+					color="warning"
 				/>
 			</Box>
 			<Box
@@ -222,7 +243,7 @@ const ProdutividadePage = () => {
 								display="flex"
 								justifyContent="center"
 								alignItems="center"
-								height="650px"
+								height={printPage ? "900px" : "650px"}
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
@@ -236,6 +257,7 @@ const ProdutividadePage = () => {
 							</Box>
 							<Box width={"30%"}>
 								<ListPage
+									printPage={printPage}
 									filteredArray={filteredArray}
 									projeto={selectedProject}
 								/>

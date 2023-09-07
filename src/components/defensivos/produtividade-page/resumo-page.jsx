@@ -42,7 +42,7 @@ const ResumoPage = (props) => {
 				const scs = peso / 60;
 				const prod = scs / area;
 				return (
-					<div className={styles.mainInfoContainer}>
+					<div className={styles.mainInfoContainer} key={i}>
 						<div className={styles.imageInfoContainer}>
 							<img
 								src={filteredIcon(data)}

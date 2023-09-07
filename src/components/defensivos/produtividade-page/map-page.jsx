@@ -14,6 +14,17 @@ const containerStyle = {
 // };
 
 const MapPage = ({ mapArray, filtData }) => {
+	const handleClick = (e) => {
+		console.log(e);
+		const msg = `${e.parcela} - ${e.data.data.area_colheita.toLocaleString(
+			"pt-br",
+			{
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			}
+		)} - ${e.data.data.variedade}`;
+		window.alert(msg);
+	};
 	const { isLoaded } = useJsApiLoader({
 		id: "google-map-script",
 		googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
@@ -68,8 +79,8 @@ const MapPage = ({ mapArray, filtData }) => {
 
 	useEffect(() => {
 		const onlyPaths = mapArray.map((data, i) => {
+			// console.log(data);
 			let latLong = [];
-			console.log(data);
 			if (data.dados.map_geo_points) {
 				latLong = data.dados.map_geo_points.map((data) => ({
 					lat: Number(data.latitude),
@@ -77,6 +88,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				}));
 			}
 			return {
+				data: data.dados,
 				path: latLong,
 				color: "white",
 				finalizadoPlantio: data.dados.finalizado_plantio,
@@ -97,6 +109,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				? data.variedadeColor
 				: "white";
 			return {
+				data: data,
 				finalizadoPlantio: data.finalizadoPlantio,
 				finalizadoColheita: data.finalizadoColheita,
 				descontinuado: data.descontinuado,
@@ -119,7 +132,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				color: data.color,
 				stroke: 0.4,
 				lineColor: data.color,
-				lineStroke: 1
+				lineStroke: 1.5
 			};
 		}
 		if (
@@ -129,7 +142,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		) {
 			return {
 				color: data.color,
-				stroke: 0.7,
+				stroke: 0.8,
 				lineColor: "yellow",
 				lineStroke: 0.5
 			};
@@ -138,14 +151,14 @@ const MapPage = ({ mapArray, filtData }) => {
 		if (data.descontinuado === true) {
 			return {
 				color: "red",
-				stroke: 0.2,
+				stroke: 0.3,
 				lineColor: "red",
 				lineStroke: 1
 			};
 		} else {
 			return {
-				color: "yellow",
-				stroke: 0.2,
+				color: "white",
+				stroke: 0.4,
 				lineColor: "white",
 				lineStroke: 1
 			};
@@ -164,7 +177,6 @@ const MapPage = ({ mapArray, filtData }) => {
 		>
 			{appArray &&
 				appArray.map((data, i) => {
-					console.log(data);
 					return (
 						<PolygonF
 							key={i}
@@ -180,6 +192,7 @@ const MapPage = ({ mapArray, filtData }) => {
 								geodesic: false,
 								zIndex: 1
 							}}
+							onClick={() => handleClick(data)}
 							// onLoad={onLoad}
 							paths={data.path}
 						/>
