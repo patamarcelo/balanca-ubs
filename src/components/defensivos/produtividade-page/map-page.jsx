@@ -2,6 +2,11 @@ import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { PolygonF } from "@react-google-maps/api";
 import { useEffect } from "react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+
+import beans from "../../../utils/assets/icons/beans2.png";
+import soy from "../../../utils/assets/icons/soy.png";
+import rice from "../../../utils/assets/icons/rice.png";
 
 const containerStyle = {
 	width: "100%",
@@ -14,6 +19,30 @@ const containerStyle = {
 // };
 
 const MapPage = ({ mapArray, filtData }) => {
+	const iconDict = [
+		{ cultura: "Feijão", icon: beans, alt: "feijao" },
+		{ cultura: "Arroz", icon: rice, alt: "arroz" },
+		{ cultura: "Soja", icon: soy, alt: "soja" }
+	];
+
+	const filteredIcon = (data) => {
+		const filtered = iconDict.filter((dictD) => dictD.cultura === data);
+
+		if (filtered.length > 0) {
+			return filtered[0].icon;
+		}
+		return "";
+	};
+
+	const filteredAlt = (data) => {
+		const filtered = iconDict.filter((dictD) => dictD.cultura === data);
+
+		if (filtered.length > 0) {
+			return filtered[0].alt;
+		}
+		return "";
+	};
+
 	const handleClick = (e) => {
 		console.log(e);
 		const msg = `${e.parcela} - ${e.data.data.area_colheita.toLocaleString(
@@ -23,7 +52,38 @@ const MapPage = ({ mapArray, filtData }) => {
 				maximumFractionDigits: 2
 			}
 		)} - ${e.data.data.variedade}`;
-		window.alert(msg);
+		toast(
+			(t) => (
+				<>
+					<span style={{ marginTop: "auto", marginBottom: "auto" }}>
+						<img
+							style={{
+								width: "20px",
+								height: "20px",
+								marginRight: "10px"
+							}}
+							src={filteredIcon(e.data.data.cultura)}
+							alt={filteredAlt(e.data.data.cultura)}
+						/>
+					</span>
+					<span style={{ marginTop: "auto", marginBottom: "auto" }}>
+						{msg}
+					</span>
+					<span style={{ marginLeft: "10px" }}>
+						<button
+							style={{ cursor: "pointer" }}
+							onClick={() => toast.dismiss(t.id)}
+						>
+							x
+						</button>
+					</span>
+				</>
+			),
+			{
+				position: "top-center",
+				duration: 20000
+			}
+		);
 	};
 	const { isLoaded } = useJsApiLoader({
 		id: "google-map-script",

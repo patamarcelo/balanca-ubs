@@ -45,6 +45,8 @@ const ProdutividadePage = () => {
 	const [selectedProject, setSelectedProject] = useState();
 	const [filteredArray, setFilteredArray] = useState([]);
 
+	const [resumoByVar, setResumoByVar] = useState();
+
 	const [filtCult, setFiltCult] = useState([]);
 
 	const handlePrintPage = (e) => {
@@ -63,6 +65,7 @@ const ProdutividadePage = () => {
 		setMapPlantation(filteredArray);
 
 		const totalResumo = {};
+		const totalResumoVariedades = {};
 		const filtCult = filteredArray
 			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
 			.map((data) => {
@@ -75,6 +78,14 @@ const ProdutividadePage = () => {
 					area: getArea,
 					peso: pesoSum
 				};
+				const areaSumByVar = {
+					area: data.area_colheita
+				};
+				console.log(data);
+				const nameOfArea =
+					data.variedade__cultura__cultura +
+					"|" +
+					data.variedade__nome_fantasia;
 				if (totalResumo[data.variedade__cultura__cultura]) {
 					totalResumo[data.variedade__cultura__cultura].peso +=
 						pesoSum;
@@ -84,10 +95,17 @@ const ProdutividadePage = () => {
 					totalResumo[data.variedade__cultura__cultura] = dataSum;
 				}
 
+				if (totalResumoVariedades[nameOfArea]) {
+					totalResumoVariedades[nameOfArea].area +=
+						data.area_colheita;
+				} else {
+					totalResumoVariedades[nameOfArea] = areaSumByVar;
+				}
+
 				return totalResumo;
 			});
 
-		console.log(totalResumo);
+		setResumoByVar(totalResumoVariedades);
 		console.log(setFiltCult(totalResumo));
 		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
 		// 	const keyDic = cur.dados
@@ -236,6 +254,7 @@ const ProdutividadePage = () => {
 						<HeaderPage
 							selectedProject={selectedProject}
 							filtCult={filtCult}
+							resumo={resumoByVar}
 						/>
 						<div className={styles.mapListDiv}>
 							<Box

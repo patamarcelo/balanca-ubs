@@ -210,6 +210,16 @@ const FarmBoxPage = () => {
 			>
 				{!loadingData && onlyFarms.length > 0 && (
 					<Box className={classes.formDiv}>
+						<FormControlLabel
+							control={
+								<Checkbox
+									onChange={handleAllFarms}
+									color="success"
+								/>
+							}
+							label="Todas"
+							labelPlacement="end"
+						/>
 						<FormControl
 							sx={{
 								m: 1,
@@ -242,32 +252,20 @@ const FarmBoxPage = () => {
 									))}
 							</Select>
 						</FormControl>
-						<FormControlLabel
-							control={
-								<Checkbox
-									onChange={handleCheckOpenApp}
-									color="success"
-								/>
-							}
-							label="Finalizadas"
-							labelPlacement="end"
-						/>
-						<FormControlLabel
-							control={
-								<Checkbox
-									onChange={handleAllFarms}
-									color="success"
-								/>
-							}
-							label="Todas"
-							labelPlacement="end"
-						/>
-						<Switch
-							checked={filterPreaproSolo}
-							onChange={handlePreaproSolo}
-							inputProps={{ "aria-label": "controlled" }}
-							color="warning"
-						/>
+						<Box display="flex" flexDirection="row">
+							<Switch
+								checked={openAppOnly}
+								onChange={handleCheckOpenApp}
+								inputProps={{ "aria-label": "controlled" }}
+								color="secondary"
+							/>
+							<Switch
+								checked={filterPreaproSolo}
+								onChange={handlePreaproSolo}
+								inputProps={{ "aria-label": "controlled" }}
+								color="warning"
+							/>
+						</Box>
 					</Box>
 				)}
 				<div className={classes.dashboardDiv}>

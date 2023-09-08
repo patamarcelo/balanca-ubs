@@ -76,7 +76,7 @@ const ListPage = (props) => {
 									: data.area_parcial;
 							const colorShadow = data.finalizado_colheita
 								? "rgba(10, 201, 29, 0.65) 0px 2px 3px"
-								: data.peso_kg > 0
+								: data.peso_kg > 0 || areaConsider > 0
 								? "rgb(224, 238, 34) 0px 2px 3px"
 								: "rgba(0, 0, 0, 0.65) 0px 4px 5px";
 							return (
