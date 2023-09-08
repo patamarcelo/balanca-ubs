@@ -43,7 +43,9 @@ const ResumoPage = (props) => {
 				const peso = filtCult[data].peso;
 				const area = filtCult[data].area;
 				const scs = peso / 60;
-				const prod = scs / area;
+				let prod = scs / area;
+				prod = !isNaN(prod) ? prod : 0;
+				console.log(!isNaN(prod));
 				return (
 					<div className={styles.mainInfoContainer} key={i}>
 						<div className={styles.imageInfoContainer}>

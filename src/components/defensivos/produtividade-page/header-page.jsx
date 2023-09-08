@@ -59,7 +59,7 @@ const HeaderPage = (props) => {
 				>
 					{selectedProject}
 				</Typography>
-				<div>
+				<div className={styles.MainConteinerresumoByVar}>
 					{Object.keys(resumo).map((data, i) => {
 						const cultura = data.split("|")[0];
 						const variedade = data.split("|")[1];
