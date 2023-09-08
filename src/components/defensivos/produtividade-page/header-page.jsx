@@ -10,7 +10,7 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
 const HeaderPage = (props) => {
-	const { selectedProject, filtCult, resumo } = props;
+	const { selectedProject, filtCult, resumo, sumTotalSelected } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -91,7 +91,10 @@ const HeaderPage = (props) => {
 					})}
 				</div>
 			</div>
-			<ResumoPage filtCult={filtCult} />
+			<ResumoPage
+				filtCult={filtCult}
+				sumTotalSelected={sumTotalSelected}
+			/>
 		</div>
 	);
 };

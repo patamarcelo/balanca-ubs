@@ -18,7 +18,13 @@ const containerStyle = {
 // 	console.log("polygon: ", polygon);
 // };
 
-const MapPage = ({ mapArray, filtData }) => {
+const MapPage = ({
+	mapArray,
+	filtData,
+	totalSelected,
+	setTotalSelected,
+	handleSUm
+}) => {
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
@@ -44,7 +50,10 @@ const MapPage = ({ mapArray, filtData }) => {
 	};
 
 	const handleClick = (e) => {
-		console.log(e);
+		handleSUm({
+			parcela: e.parcela,
+			area: e.data.data.area_colheita
+		});
 		const msg = `${e.parcela} - ${e.data.data.area_colheita.toLocaleString(
 			"pt-br",
 			{

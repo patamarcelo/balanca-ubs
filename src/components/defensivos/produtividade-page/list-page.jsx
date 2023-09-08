@@ -8,14 +8,43 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
+import { useState, useEffect } from "react";
+
 const ListPage = (props) => {
-	const { filteredArray, printPage } = props;
+	const {
+		filteredArray,
+		printPage,
+		setSumTotalSelected,
+		totalSelected,
+		setTotalSelected,
+		handleSUm
+	} = props;
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" }
 	];
+
+	const findItem = (item) => {
+		const findItem = totalSelected.filter((data) => data.parcela === item);
+		if (findItem.length > 0) {
+			return true;
+		}
+		return false;
+	};
+
+	useEffect(() => {
+		setTotalSelected([]);
+	}, [filteredArray]);
+
+	useEffect(() => {
+		const totalArea = totalSelected.reduce(
+			(sum, curr) => sum + curr.area,
+			0
+		);
+		setSumTotalSelected(totalArea);
+	}, [totalSelected]);
 
 	const filteredAlt = (data) => {
 		const filtered = iconDict.filter(
@@ -92,7 +121,22 @@ const ListPage = (props) => {
 										flexDirection: "row",
 										justifyContent: "space-between",
 										alignItems: "center",
-										boxShadow: colorShadow
+										boxShadow: colorShadow,
+										cursor: "pointer",
+										border: findItem(data.talhao__id_talhao)
+											? "1px solid white"
+											: "",
+										opacity: findItem(
+											data.talhao__id_talhao
+										)
+											? 0.75
+											: 1
+									}}
+									onClick={() => {
+										handleSUm({
+											parcela: data.talhao__id_talhao,
+											area: data.area_colheita
+										});
 									}}
 								>
 									<div
@@ -154,13 +198,27 @@ const ListPage = (props) => {
 												alignItems: "center"
 											}}
 										>
-											<span
-												style={{
-													minWidth: "40%"
-												}}
-											>
-												{data.variedade__nome_fantasia}
-											</span>
+											<div>
+												<span
+													style={{
+														minWidth: "40%",
+														marginRight: "10px"
+													}}
+												>
+													{
+														data.variedade__nome_fantasia
+													}
+												</span>
+												<span>
+													{data.area_colheita.toLocaleString(
+														"pt-br",
+														{
+															minimumFractionDigits: 2,
+															maximumFractionDigits: 2
+														}
+													)}
+												</span>
+											</div>
 
 											<span>
 												{data?.peso_scs?.toLocaleString(

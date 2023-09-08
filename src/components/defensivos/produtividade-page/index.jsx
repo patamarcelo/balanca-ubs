@@ -49,19 +49,36 @@ const ProdutividadePage = () => {
 
 	const [filtCult, setFiltCult] = useState([]);
 
+	const [sumTotalSelected, setSumTotalSelected] = useState(0);
+
+	const [totalSelected, setTotalSelected] = useState([]);
+
+	const handleSUm = (selected) => {
+		const findItem = totalSelected.filter(
+			(data) => data.parcela === selected.parcela
+		);
+		if (findItem.length > 0) {
+			setTotalSelected(
+				totalSelected.filter(
+					(data) => data.parcela !== selected.parcela
+				)
+			);
+		} else {
+			setTotalSelected((prev) => [...prev, selected]);
+		}
+	};
+
 	const handlePrintPage = (e) => {
 		console.log(e.target.checked);
 		setPrintPage(e.target.checked);
 	};
 
 	useEffect(() => {
-		console.log(selectedProject);
 		const filteredArray = produtividade.filter(
 			(data) =>
 				data.talhao__fazenda__nome === selectedProject &&
 				data.finalizado_plantio === true
 		);
-		console.log(filteredArray);
 		setMapPlantation(filteredArray);
 
 		const totalResumo = {};
@@ -81,7 +98,6 @@ const ProdutividadePage = () => {
 				const areaSumByVar = {
 					area: data.area_colheita
 				};
-				console.log(data);
 				const nameOfArea =
 					data.variedade__cultura__cultura +
 					"|" +
@@ -106,7 +122,7 @@ const ProdutividadePage = () => {
 			});
 
 		setResumoByVar(totalResumoVariedades);
-		console.log(setFiltCult(totalResumo));
+		setFiltCult(totalResumo);
 		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
 		// 	const keyDic = cur.dados
 		// 	if(sum[cur.])
@@ -255,6 +271,7 @@ const ProdutividadePage = () => {
 							selectedProject={selectedProject}
 							filtCult={filtCult}
 							resumo={resumoByVar}
+							sumTotalSelected={sumTotalSelected}
 						/>
 						<div className={styles.mapListDiv}>
 							<Box
@@ -272,6 +289,9 @@ const ProdutividadePage = () => {
 								<MapPage
 									mapArray={filteredPlantioMal}
 									filtData={mapPlantation}
+									handleSUm={handleSUm}
+									totalSelected={totalSelected}
+									setTotalSelected={setTotalSelected}
 								/>
 							</Box>
 							<Box width={"30%"}>
@@ -279,6 +299,10 @@ const ProdutividadePage = () => {
 									printPage={printPage}
 									filteredArray={filteredArray}
 									projeto={selectedProject}
+									setSumTotalSelected={setSumTotalSelected}
+									handleSUm={handleSUm}
+									totalSelected={totalSelected}
+									setTotalSelected={setTotalSelected}
 								/>
 							</Box>
 						</div>
