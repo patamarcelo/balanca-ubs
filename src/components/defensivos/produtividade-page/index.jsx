@@ -22,6 +22,8 @@ import HeaderPage from "./header-page";
 
 import Switch from "@mui/material/Switch";
 
+import CircularProgress from "@mui/material/CircularProgress";
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
@@ -225,11 +227,23 @@ const ProdutividadePage = () => {
 				alignItems="center"
 				gap="15px"
 			>
-				<SelectFarm
-					projetos={projetos}
-					handleChange={handleChangeSelect}
-					value={selectedProject}
-				/>
+				{projetos.length > 0 ? (
+					<SelectFarm
+						projetos={projetos}
+						handleChange={handleChangeSelect}
+						value={selectedProject}
+					/>
+				) : (
+					<Box
+						sx={{
+							display: "flex",
+							width: "50px",
+							marginLeft: "30px"
+						}}
+					>
+						<CircularProgress color="secondary" size={20} />
+					</Box>
+				)}
 				<Switch
 					checked={printPage}
 					onChange={handlePrintPage}
