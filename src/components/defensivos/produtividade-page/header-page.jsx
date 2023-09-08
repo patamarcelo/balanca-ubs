@@ -43,7 +43,9 @@ const HeaderPage = (props) => {
 			<div className={styles.headerNameDiv}>
 				<Typography
 					// variant="h3"
-					color={colors.primary[100]}
+					color={
+						theme.palette.mode === "dark" ? "whitesmoke" : "black"
+					}
 					sx={{
 						fontSize: "32px",
 						textAlign: "left",
@@ -64,8 +66,7 @@ const HeaderPage = (props) => {
 						const cultura = data.split("|")[0];
 						const variedade = data.split("|")[1];
 						const area = resumo[data].area;
-						console.log(resumo[data]);
-						console.log(data);
+
 						return (
 							<div
 								key={i}

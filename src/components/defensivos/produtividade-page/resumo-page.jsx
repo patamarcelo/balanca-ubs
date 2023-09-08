@@ -45,7 +45,6 @@ const ResumoPage = (props) => {
 				const scs = peso / 60;
 				let prod = scs / area;
 				prod = !isNaN(prod) ? prod : 0;
-				console.log(!isNaN(prod));
 				return (
 					<div className={styles.mainInfoContainer} key={i}>
 						<div className={styles.imageInfoContainer}>

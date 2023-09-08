@@ -176,7 +176,7 @@ const ListPage = (props) => {
 									</div>
 
 									<div className={styles.scsDiv}>
-										<div>
+										<div style={{ fontWeight: "bold" }}>
 											{data?.produtividade?.toLocaleString(
 												"pt-br",
 												{
