@@ -70,11 +70,9 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const handlerLogout = () => {
 		dispatch(logOffUser());
 		signOutUser();
-		console.log("log out");
 	};
 
 	const print = (e) => {
-		console.log("imprimindo", e);
 		window.print();
 	};
 

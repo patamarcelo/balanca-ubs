@@ -79,10 +79,7 @@ const FormOrdens = (props) => {
 
 	const user = useSelector(selectCurrentUser);
 
-	console.log(unidadeOpUser);
-
 	const handlerSubmitForm = async (values) => {
-		console.log("Valores: ", values);
 		const newOrder = await addOrdemCarrega(
 			values.origem,
 			values.destino,
@@ -99,7 +96,6 @@ const FormOrdens = (props) => {
 			user.email,
 			unidadeOpUser
 		);
-		console.log(newOrder);
 		if (newOrder) {
 			setIsOpen(false);
 			MySwal.fire({
@@ -111,7 +107,6 @@ const FormOrdens = (props) => {
 				// confirmButtonText: 'Finalizar'
 			}).then((result) => {
 				if (result.isConfirmed) {
-					console.log(newOrder);
 				}
 			});
 		}

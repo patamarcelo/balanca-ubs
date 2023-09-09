@@ -34,13 +34,11 @@ const TableOrdensEach = (props) => {
 	const { ordems, setIsOpenModal, setDataModal } = props;
 
 	const handlerNavigatePrint = (data) => {
-		console.log(data);
 		setIsOpenModal(true);
 		setDataModal(data);
 		// navigate("/print", { state: { data: data } });
 	};
 
-	console.log(ordems);
 
 	const dataTableRev = [...ordems].reverse();
 

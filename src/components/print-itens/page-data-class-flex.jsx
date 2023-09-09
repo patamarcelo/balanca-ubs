@@ -9,8 +9,6 @@ const PageDataClassFlex = ({ data }) => {
 
 	const isNonMobile = useMediaQuery("(min-width: 1090px)");
 
-	console.log(data);
-
 	const getDestino = (data) => {
 		if (data.destino) {
 			return data.destino;
