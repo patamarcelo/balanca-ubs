@@ -554,7 +554,7 @@ const ReportTable = (props) => {
 			)
 		},
 		{
-			field: "parcela",
+			field: "parcelasNovas",
 			headerName: "Parcela",
 			width: 130,
 			headerAlign: "center",
