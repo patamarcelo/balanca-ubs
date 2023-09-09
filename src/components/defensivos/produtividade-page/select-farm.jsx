@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 const SelectFarm = (props) => {
 	const { projetos, handleChange, value } = props;
 	return (
-		<FormControl sx={{ m: 1, minWidth: 280 }}>
+		<FormControl sx={{ mb: 1, mt: 2, minWidth: 280 }}>
 			<InputLabel id="demo-simple-select-label">Projeto</InputLabel>
 			<Select
 				labelId="demo-simple-select-label"

@@ -216,8 +216,6 @@ const ProdutividadePage = () => {
 	return (
 		<Box
 			sx={{
-				marginLeft: "10px",
-				marginRight: "10px",
 				width: "100%"
 			}}
 		>
