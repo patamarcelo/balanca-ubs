@@ -1,6 +1,6 @@
 import classes from "./farmbox.module.css";
 
-import { useTheme, Slide } from "@mui/material";
+import { useTheme, Slide, Divider } from "@mui/material";
 import Grow from "@mui/material/Grow";
 
 import { tokens } from "../../../theme";
@@ -109,6 +109,7 @@ const TableDataPage = (props) => {
 						}}
 					>
 						<div>{dataF.date.split("-").reverse().join("/")}</div>
+						<Divider />
 						<div>
 							{dataF.endDate.split("-").reverse().join("/")}
 						</div>
