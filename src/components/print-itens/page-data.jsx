@@ -4,10 +4,9 @@ import Logo from "../../utils/assets/img/logo.jpg";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import PageDataClassFlex from "./page-data-class-flex";
+import { useEffect } from "react";
 
-const PageData = ({ printValue }) => {
-	const data = printValue[0];
-	console.log(data)
+const PageData = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);

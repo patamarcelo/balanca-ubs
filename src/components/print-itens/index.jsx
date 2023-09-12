@@ -11,25 +11,18 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import LoaderPage from "../global/Loader";
 
 import { useSelector } from "react-redux";
-import { selectTruckLoadsFormatData } from "../../store/trucks/trucks.selector";
 
 const PrintLayout = ({ data }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
-	const newData = useSelector(selectTruckLoadsFormatData);
+	const [printValue, setPrintValue] = useState();
 
 	const [isLoading, setIsLoading] = useState(true);
-	const [printData, setPrintData] = useState([]);
 
-	console.log(data)
-	
 	useEffect(() => {
-		const filterNewData = newData.filter(
-			(filterData) => filterData.id === data.id
-		);
-		setPrintData(filterNewData);
+		setPrintValue(data);
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 500);
@@ -67,7 +60,7 @@ const PrintLayout = ({ data }) => {
 						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
 					}}
 				>
-					{isLoading ? (
+					{isLoading || !data ? (
 						<Box
 							width="100%"
 							height="60vh"
@@ -79,7 +72,7 @@ const PrintLayout = ({ data }) => {
 							<LoaderPage isLoading={isLoading} />
 						</Box>
 					) : (
-						<PageData printValue={printData} />
+						<PageData data={printValue} />
 					)}
 				</Box>
 			</Box>
@@ -126,7 +119,7 @@ const PrintLayout = ({ data }) => {
 							<LoaderPage isLoading={isLoading} />
 						</Box>
 					) : (
-						<PageData printValue={printData} />
+						<PageData data={printValue} />
 					)}
 				</Box>
 			</Box>
