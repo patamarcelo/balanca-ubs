@@ -23,6 +23,7 @@ const PrintLayout = ({ data }) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [printData, setPrintData] = useState([]);
 
+	console.log(data)
 	
 	useEffect(() => {
 		const filterNewData = newData.filter(

@@ -7,6 +7,7 @@ import PageDataClassFlex from "./page-data-class-flex";
 
 const PageData = ({ printValue }) => {
 	const data = printValue[0];
+	console.log(data)
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);

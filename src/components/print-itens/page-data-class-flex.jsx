@@ -10,14 +10,14 @@ const PageDataClassFlex = ({ data }) => {
 	const isNonMobile = useMediaQuery("(min-width: 1090px)");
 
 	const getDestino = (data) => {
-		if (data.destino) {
-			return data.destino;
+		if (data?.destino) {
+			return data?.destino;
 		}
-		if (data.fazendaDestino === "Outros") {
-			return data.destino;
+		if (data?.fazendaDestino === "Outros") {
+			return data?.destino;
 		}
-		if (data.fazendaDestino !== "Outros" && data.fazendaDestino !== null) {
-			return data.fazendaDestino;
+		if (data?.fazendaDestino !== "Outros" && data?.fazendaDestino !== null) {
+			return data?.fazendaDestino;
 		}
 		return " - ";
 	};
@@ -25,25 +25,25 @@ const PageDataClassFlex = ({ data }) => {
 	const dictData = [
 		{
 			label: "Umidade",
-			value: data.umidade
+			value: data?.umidade
 				? parseFloat(data.umidade).toFixed(2).replace(".", ",")
-				: data.umidade,
+				: data?.umidade,
 			label2: "Impureza",
-			value2: data.impureza
+			value2: data?.impureza
 				? parseFloat(data.impureza).toFixed(2).replace(".", ",")
-				: data.impureza,
+				: data?.impureza,
 			size: "25%"
 		},
 		{
 			label: "Mercadoria",
-			value: data.mercadoria,
+			value: data?.mercadoria,
 			label2: "Projeto",
-			value2: data.projeto,
+			value2: data?.projeto,
 			size: "40%"
 		},
 		{
 			label: "Origem",
-			value: data.fazendaOrigem ? data.fazendaOrigem : data.origem,
+			value: data?.fazendaOrigem ? data?.fazendaOrigem : data?.origem,
 			label2: "Destino",
 			value2: getDestino(data),
 			size: "35%"

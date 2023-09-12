@@ -97,7 +97,8 @@ export const createDict = (state) => {
 			areaAplicada: areaTotalAplicada,
 			saldoAplicar: saldoAplicar.toFixed(2),
 			date: data.date,
-			endDate: data.end_date
+			endDate: data.end_date,
+			progressos: progressos,
 		};
 	});
 	return newArr.sort(
