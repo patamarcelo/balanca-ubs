@@ -43,6 +43,7 @@ import classes from "./index.module.css";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import Zoom from "@mui/material/Zoom";
+import EmptyField from "./EmptyString";
 
 const editarModal = {
 	title: "Editar Carga",
@@ -217,15 +218,16 @@ const HomeTableTruck = (props) => {
 							)} */}
 						</Box>
 						<Box
-							display="flex"
+							display={!isNonMobile ? "flex" : "grid"}
+							gridTemplateColumns="repeat(7,1fr)"
 							flexDirection={!isNonMobile ? "column" : "row"}
 							alignSelf="stretch"
 							alignItems="center"
 							justifyContent="space-between"
 							sx={{
 								// backgroundColor: 'red',
-								flex: 0.88,
-								maxWidth: "90%"
+								flex: 0.95,
+								maxWidth: "100%"
 							}}
 						>
 							<DateTruck entrada={data.entrada} data={data} />
@@ -233,12 +235,20 @@ const HomeTableTruck = (props) => {
 							<QuantityTruckTara data={data} />
 							<QuantityTruckBruto data={data} />
 							{/* <QuantityTruckHold data={data} /> */}
-							{data.mercadoria && <MercadoriaTruck data={data} />}
-							{(data.origem || data.fazendaOrigem) && (
-								<OrigemTruck data={data} />
+							{data.mercadoria ? (
+								<MercadoriaTruck data={data} />
+							) : (
+								<EmptyField />
 							)}
-							{(data.destino || data.fazendaDestino) && (
+							{data.origem || data.fazendaOrigem ? (
+								<OrigemTruck data={data} />
+							) : (
+								<EmptyField />
+							)}
+							{data.destino || data.fazendaDestino ? (
 								<DestinoTruck data={data} />
+							) : (
+								<EmptyField />
 							)}
 						</Box>
 						<Box display="flex" sx={{ cursor: "pointer" }}>
