@@ -279,7 +279,12 @@ const HomePage = () => {
 						handleOpenModal(dataModalText.carregando);
 					}}
 				>
-					<FontAwesomeIcon icon={faTruckMoving} />
+					<FontAwesomeIcon
+						icon={faTruckMoving}
+						style={{
+							filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+						}}
+					/>
 				</CustomButton>
 
 				<CustomButton
@@ -297,7 +302,12 @@ const HomePage = () => {
 						handleOpenModal(dataModalText.descarregando);
 					}}
 				>
-					<FontAwesomeIcon icon={faTruckMoving} />
+					<FontAwesomeIcon
+						icon={faTruckMoving}
+						style={{
+							filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+						}}
+					/>
 				</CustomButton>
 			</Box>
 			<Box

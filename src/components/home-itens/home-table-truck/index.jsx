@@ -166,7 +166,7 @@ const HomeTableTruck = (props) => {
 							borderRadius: "5px",
 							padding: "10px",
 							"&:hover": {
-								background: colors.blueOrigin[700],
+								background: colors.blueOrigin[700]
 								// cursor: "pointer"
 							}
 						}}
@@ -194,7 +194,10 @@ const HomeTableTruck = (props) => {
 									icon={faTruckMoving}
 									size="3x"
 									className={classesTruck}
-									style={{ cursor: "pointer" }}
+									style={{
+										cursor: "pointer",
+										filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+									}}
 									onClick={() => handlerNavigatePrint(data)}
 								/>
 							</LightTooltip>
@@ -260,6 +263,9 @@ const HomeTableTruck = (props) => {
 							<IconButton
 								// disabled={!isBalanca || !disableInput}
 								aria-label="edit"
+								sx={{
+									filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+								}}
 								onClick={() => {
 									if (!isBalanca) {
 										toast.error(`Usuário Sem Permissão`, {
@@ -279,6 +285,9 @@ const HomeTableTruck = (props) => {
 							<IconButton
 								// disabled={!isBalanca || !disableInput}
 								aria-label="delete"
+								sx={{
+									filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+								}}
 								onClick={() => {
 									if (!isBalanca || !isAdminUser) {
 										toast.error(`Usuário Sem Permissão`, {
