@@ -20,7 +20,8 @@ export const fomartNewDate = (data) => {
 	const day = data.toLocaleString("Default", { day: "2-digit" });
 	const hour = data.toLocaleString("Default", { hour: "2-digit" });
 	const minute = data.toLocaleString("Default", { minute: "2-digit" });
-	return `${day}/${month}/${year} - ${hour}:${minute}`;
+	const format_minute = Number(minute) < 10 ? `0${minute}` : minute;
+	return `${day}/${month}/${year} - ${hour}:${format_minute}`;
 };
 
 export const newDateArr = (dataFor) => {
