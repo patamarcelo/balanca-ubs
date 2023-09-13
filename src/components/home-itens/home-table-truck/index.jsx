@@ -166,7 +166,8 @@ const HomeTableTruck = (props) => {
 							borderRadius: "5px",
 							padding: "10px",
 							"&:hover": {
-								background: colors.blueOrigin[700]
+								background: colors.blueOrigin[900],
+								border: '1px solid black',
 								// cursor: "pointer"
 							}
 						}}
