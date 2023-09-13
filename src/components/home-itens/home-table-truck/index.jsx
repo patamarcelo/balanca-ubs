@@ -174,14 +174,15 @@ const HomeTableTruck = (props) => {
 					>
 						<Box
 							className={classes["changeTruck"]}
-							display="flex"
+							display="grid"
+							gridTemplateColumns="repeat(2, 1fr)"
 							justifyContent="space-around"
 							alignItems="center"
 							flexDirection={!isNonMobile ? "column" : "row"}
 							sx={{
 								// backgroundColor: "red",
 								width: "9%",
-								marginLeft: "25px"
+								marginLeft: "12px"
 							}}
 						>
 							<LightTooltip
