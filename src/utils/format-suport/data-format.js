@@ -14,6 +14,15 @@ export const formatDate = (entrada) => {
 	return "-";
 };
 
+export const fomartNewDate = (data) => {
+	const year = data.toLocaleString("Default", { year: "numeric" });
+	const month = data.toLocaleString("Default", { month: "2-digit" });
+	const day = data.toLocaleString("Default", { day: "2-digit" });
+	const hour = data.toLocaleString("Default", { hour: "2-digit" });
+	const minute = data.toLocaleString("Default", { minute: "2-digit" });
+	return `${day}/${month}/${year} - ${hour}:${minute}`;
+};
+
 export const newDateArr = (dataFor) => {
 	const str = dataFor;
 

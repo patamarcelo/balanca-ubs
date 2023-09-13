@@ -28,7 +28,9 @@ import { useNavigate } from "react-router-dom";
 
 import { selectTruckLoadsFormatData } from "../../../store/trucks/trucks.selector";
 
-import formatDate from "../../../utils/format-suport/data-format";
+import formatDate, {
+	fomartNewDate
+} from "../../../utils/format-suport/data-format";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -149,6 +151,12 @@ export default function FormDialog(props) {
 		event.preventDefault();
 		setIsLoadingSubmit(true);
 
+		let saida = "";
+		if (truckValues.liquido > 0) {
+			const newDate = new Date();
+			saida = fomartNewDate(newDate);
+		}
+
 		try {
 			const newTransData = {
 				...truckValues,
@@ -161,7 +169,8 @@ export default function FormDialog(props) {
 			if (isNumber(truckValues.liquido) > 0) {
 				handlerNavigatePrint(
 					filterTableForm({
-						...truckValues
+						...truckValues,
+						saida: saida
 					})
 				);
 			}
