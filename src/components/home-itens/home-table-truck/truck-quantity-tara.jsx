@@ -5,6 +5,7 @@ const QuantityTruck = (props) => {
 	const { data } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const isDark = theme.palette.mode === 'dark'
 
 	const taraFormated = Number(data.tara).toLocaleString("pt-BR") + " Kg";
 
@@ -37,7 +38,7 @@ const QuantityTruck = (props) => {
 					>
 						Tara do Veículo
 					</Typography>
-					<Typography variant="h6" color={colors.yellow[700]}>
+					<Typography variant="h6" color={isDark ? colors.yellow[700] : colors.yellow[200]}>
 						Aguardando
 					</Typography>
 				</>
