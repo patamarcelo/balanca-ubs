@@ -168,3 +168,33 @@ border-radius: 8px;
     overflow: auto;
     /* margin-bottom: -50px; */
 }
+
+
+.popUpMap{
+    color: black;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 90px;
+    height: 40px;
+}
+
+.popUpMapInfo {
+    width: 90px;
+    flex-direction: row;
+    grid-column: 1 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    font-weight: bold;
+}
+.popUpMapInfoTwo {
+    width: 90px;
+    flex-direction: row;
+    grid-column: 1 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 400;
+    margin-top: 10px;
+}

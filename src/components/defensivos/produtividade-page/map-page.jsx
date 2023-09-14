@@ -1,4 +1,9 @@
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {
+	GoogleMap,
+	useJsApiLoader,
+	Marker,
+	InfoWindowF
+} from "@react-google-maps/api";
 import { PolygonF } from "@react-google-maps/api";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -7,6 +12,8 @@ import toast from "react-hot-toast";
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
+
+import styles from "./produtividade.module.css";
 
 const containerStyle = {
 	width: "100%",
@@ -49,7 +56,14 @@ const MapPage = ({
 		return "";
 	};
 
-	const handleClick = (e) => {
+	const [markerList, setMarkerList] = useState([]);
+
+	const handleClick = (d, e) => {
+		setMarkerList((prev) => [
+			...prev,
+			{ lat: d.latLng.lat(), lng: d.latLng.lng(), data: e }
+		]);
+		console.log(markerList);
 		handleSUm({
 			parcela: e.parcela,
 			area: e.data.data.area_colheita
@@ -61,38 +75,6 @@ const MapPage = ({
 				maximumFractionDigits: 2
 			}
 		)} - ${e.data.data.variedade}`;
-		toast(
-			(t) => (
-				<>
-					<span style={{ marginTop: "auto", marginBottom: "auto" }}>
-						<img
-							style={{
-								width: "20px",
-								height: "20px",
-								marginRight: "10px"
-							}}
-							src={filteredIcon(e.data.data.cultura)}
-							alt={filteredAlt(e.data.data.cultura)}
-						/>
-					</span>
-					<span style={{ marginTop: "auto", marginBottom: "auto" }}>
-						{msg}
-					</span>
-					<span style={{ marginLeft: "10px" }}>
-						<button
-							style={{ cursor: "pointer" }}
-							onClick={() => toast.dismiss(t.id)}
-						>
-							x
-						</button>
-					</span>
-				</>
-			),
-			{
-				position: "top-center",
-				duration: 20000
-			}
-		);
 	};
 	const { isLoaded } = useJsApiLoader({
 		id: "google-map-script",
@@ -261,10 +243,61 @@ const MapPage = ({
 								geodesic: false,
 								zIndex: 1
 							}}
-							onClick={() => handleClick(data)}
+							onClick={(e) => handleClick(e, data)}
 							// onLoad={onLoad}
 							paths={data.path}
 						/>
+					);
+				})}
+
+			{markerList &&
+				markerList.map((data, i) => {
+					return (
+						<InfoWindowF
+							position={{ lat: data.lat, lng: data.lng }}
+							onCloseClick={() => {
+								setMarkerList((prev) =>
+									prev.filter(
+										(dataArray) =>
+											dataArray.data.data.data
+												.plantio_id !==
+											data.data.data.data.plantio_id
+									)
+								);
+								console.log("clic");
+							}}
+						>
+							<div className={styles.popUpMap}>
+								<div className={styles.popUpMapInfo}>
+									<div>{data.data.parcela}</div>
+									<img
+										style={{
+											width: "15px",
+											height: "15px",
+											marginRight: "10px"
+										}}
+										src={filteredIcon(
+											data.data.data.data.cultura
+										)}
+										alt={filteredAlt(
+											data.data.data.data.cultura
+										)}
+									/>
+								</div>
+								<div className={styles.popUpMapInfoTwo}>
+									<div>{data.data.data.data.variedade}</div>
+									<div>
+										{data.data.data.data.area_colheita.toLocaleString(
+											"pt-br",
+											{
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+											}
+										)}
+									</div>
+								</div>
+							</div>
+						</InfoWindowF>
 					);
 				})}
 		</GoogleMap>
