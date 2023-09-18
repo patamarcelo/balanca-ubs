@@ -77,7 +77,8 @@ const FarmBoxPage = () => {
 		"Rolo Compactador",
 		"Colheita de Grãos",
 		"Grade Incorporação",
-		"Grade Intermediária 1"
+		"Grade Intermediária 1",
+		"Grade Preparo"
 	];
 
 	const handlePreaproSolo = (e) => {
