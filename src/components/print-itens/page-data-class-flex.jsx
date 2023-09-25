@@ -16,11 +16,17 @@ const PageDataClassFlex = ({ data }) => {
 		if (data?.fazendaDestino === "Outros") {
 			return data?.destino;
 		}
-		if (data?.fazendaDestino !== "Outros" && data?.fazendaDestino !== null) {
+		if (
+			data?.fazendaDestino !== "Outros" &&
+			data?.fazendaDestino !== null
+		) {
 			return data?.fazendaDestino;
 		}
 		return " - ";
 	};
+
+	const destinoData =
+		data?.fazendaOrigem === "Outros" ? data?.origem : data?.fazendaOrigem;
 
 	const dictData = [
 		{
@@ -43,7 +49,7 @@ const PageDataClassFlex = ({ data }) => {
 		},
 		{
 			label: "Origem",
-			value: data?.fazendaOrigem ? data?.fazendaOrigem : data?.origem,
+			value: destinoData,
 			label2: "Destino",
 			value2: getDestino(data),
 			size: "35%"

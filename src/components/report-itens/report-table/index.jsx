@@ -340,10 +340,10 @@ const ReportTable = (props) => {
 			width: 140,
 			renderCell: (params) => (
 				<Typography sx={{ fontSize: defaultFontSize }}>
-					{params.row.fazendaOrigem
-						? params.row.fazendaOrigem
-						: params.row.origem
+					{params.row.fazendaOrigem === "Outros"
 						? params.row.origem
+						: params.row.fazendaOrigem
+						? params.row.fazendaOrigem
 						: "-"}
 				</Typography>
 			)
@@ -370,10 +370,10 @@ const ReportTable = (props) => {
 			width: 140,
 			renderCell: (params) => (
 				<Typography sx={{ fontSize: defaultFontSize }}>
-					{params.row.fazendaDestino
-						? params.row.fazendaDestino
-						: params.row.destino
+					{params.row.fazendaDestino === "Outros"
 						? params.row.destino
+						: params.row.fazendaDestino
+						? params.row.fazendaDestino
 						: "-"}
 				</Typography>
 			)
