@@ -184,6 +184,19 @@ const HomePage = () => {
 
 	const handleChangeTruck = (e) => {
 		setTruckValues({ ...truckValues, [e.target.name]: e.target.value });
+		if (e.target.name === "tara" || e.target.name === "pesoBruto") {
+			const re = /^[0-9\b]+$/;
+			if (e.target.value === "" || re.test(e.target.value)) {
+				setTruckValues((truckValues) => ({
+					...truckValues
+				}));
+			} else {
+				setTruckValues((truckValues) => ({
+					...truckValues,
+					[e.target.name]: e.target.value.replace(/\D/g, "")
+				}));
+			}
+		}
 		if (e.target.name === "fazendaOrigem") {
 			setTruckValues((truckValues) => ({
 				...truckValues,
