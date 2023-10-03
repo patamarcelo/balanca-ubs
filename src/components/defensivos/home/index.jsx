@@ -10,7 +10,7 @@ import DataProgramPage from "../data-program";
 import PlantioDonePage from "../plantio-done";
 import ProdutividadePage from "../produtividade-page";
 import FarmBoxPage from "../farmbox-data";
-import ProgramasSection from "../../programas/Index";
+import ProgramasSection from "../programas/Index";
 
 import Stack from "@mui/material/Stack";
 import CustomButton from "../../button";

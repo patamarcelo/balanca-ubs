@@ -1,9 +1,9 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { useState, useEffect } from "react";
-import LoaderHomeSkeleton from "..//defensivos/home/loader";
+import LoaderHomeSkeleton from "../home/loader";
 
-import djangoApi from "../../utils/axios/axios.utils";
+import djangoApi from "../../../utils/axios/axios.utils";
 
 import styles from "./programas-styles.module.css";
 
@@ -12,11 +12,13 @@ import {
 	setOperacoes,
 	setEstagios,
 	setProgramas
-} from "../../store/programas/programa.actions";
+} from "../../../store/programas/programa.actions";
 
-import { selectProgramas } from "../../store/programas/programas.selector";
+import { selectProgramas } from "../../../store/programas/programas.selector";
 
-import SelectFarm from "../defensivos/produtividade-page/select-farm";
+import SelectFarm from "../produtividade-page/select-farm";
+
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ProgramasSection = () => {
 	const theme = useTheme();
@@ -24,13 +26,14 @@ const ProgramasSection = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 	const programas = useSelector(selectProgramas);
-	const [selectedPrograma, setSelectedPrograma] = useState('');
-	const [programArray, setSelectedProgramaArray] = useState();
+	const [selectedPrograma, setSelectedPrograma] = useState("");
+	const [programArray, setSelectedProgramaArray] = useState(null);
 
 	useEffect(() => {
 		const onlyName = programas.map((data) => data.nome);
 		setSelectedProgramaArray(onlyName);
-	}, []);
+	}, [programas]);
+
 	const handleChangeSelect = (event) => {
 		setSelectedPrograma(event.target.value);
 	};
@@ -69,12 +72,25 @@ const ProgramasSection = () => {
 
 	return (
 		<>
-			<SelectFarm
-				projetos={programArray}
-				handleChange={handleChangeSelect}
-				value={selectedPrograma}
-				title={"Programas"}
-			/>
+			{programArray ? (
+				<SelectFarm
+					projetos={programArray}
+					handleChange={handleChangeSelect}
+					value={selectedPrograma}
+					title={"Programas"}
+				/>
+			) : (
+				<Box
+					sx={{
+						display: "flex",
+						width: "50px",
+						marginLeft: "30px",
+						margin: "20px"
+					}}
+				>
+					<CircularProgress color="secondary" size={20} />
+				</Box>
+			)}
 			<Box
 				sx={{
 					width: "100%",
