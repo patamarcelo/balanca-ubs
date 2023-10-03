@@ -4,3 +4,43 @@
     width: 100%;
     margin-top: 30px;
 }
+
+.mainProgramContainer {
+    width: 80%;   
+}
+
+.estagioContainer {
+    border: 1.5px solid black;
+    width: 100%;
+    background-color: whitesmoke;
+    padding: 10px 5px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    justify-items: center;
+    border-radius: 8px;
+}
+
+
+.estagioContainer div {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.headerEstagios {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    justify-items: center;
+    /* border: 1px solid black;
+    background-color: whitesmoke; */
+}
+
+.produtosMainContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    justify-content: baseline;
+
+}

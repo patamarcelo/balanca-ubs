@@ -14,11 +14,16 @@ import {
 	setProgramas
 } from "../../../store/programas/programa.actions";
 
-import { selectProgramas } from "../../../store/programas/programas.selector";
+import {
+	selectProgramas,
+	selectEstagios
+} from "../../../store/programas/programas.selector";
 
 import SelectFarm from "../produtividade-page/select-farm";
 
 import CircularProgress from "@mui/material/CircularProgress";
+import HeaderComp from "./header";
+import EstagiosComp from "./estagios";
 
 const ProgramasSection = () => {
 	const theme = useTheme();
@@ -26,8 +31,13 @@ const ProgramasSection = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 	const programas = useSelector(selectProgramas);
+
 	const [selectedPrograma, setSelectedPrograma] = useState("");
 	const [programArray, setSelectedProgramaArray] = useState(null);
+	const [programData, setProgramData] = useState();
+
+	const estagios = useSelector(selectEstagios);
+	const [filteredEstagios, setFilteredEstagios] = useState([]);
 
 	useEffect(() => {
 		const onlyName = programas.map((data) => data.nome);
@@ -36,6 +46,16 @@ const ProgramasSection = () => {
 
 	const handleChangeSelect = (event) => {
 		setSelectedPrograma(event.target.value);
+		const filteredProgram = programas.filter(
+			(data) => data.nome === event.target.value
+		);
+
+		const filtEstagios = estagios.filter(
+			(data) => data.programa__nome === event.target.value
+		);
+		setFilteredEstagios(filtEstagios);
+
+		setProgramData(filteredProgram[0]);
 	};
 
 	useEffect(() => {
@@ -94,15 +114,25 @@ const ProgramasSection = () => {
 			<Box
 				sx={{
 					width: "100%",
-					height: "100%",
+					minHeight: "100%",
 					backgroundColor: colors.primary[100],
 					borderRadius: "8px",
-					padding: "20px"
+					padding: "20px",
+					display: "flex",
+					justifyContent: "center"
 				}}
 			>
-				<Typography variant="h2" color={colors.primary[900]}>
-					Pagina dos programas
-				</Typography>
+				<Box className={styles.mainProgramContainer}>
+					{programData && (
+						<>
+							<HeaderComp data={programData} />
+							<EstagiosComp
+								data={filteredEstagios}
+								program={selectedPrograma}
+							/>
+						</>
+					)}
+				</Box>
 			</Box>
 		</>
 	);
