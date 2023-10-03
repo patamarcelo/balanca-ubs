@@ -10,6 +10,7 @@ import DataProgramPage from "../data-program";
 import PlantioDonePage from "../plantio-done";
 import ProdutividadePage from "../produtividade-page";
 import FarmBoxPage from "../farmbox-data";
+import ProgramasSection from "../../programas/Index";
 
 import Stack from "@mui/material/Stack";
 import CustomButton from "../../button";
@@ -39,6 +40,8 @@ const HomeDefensivoPage = (props) => {
 	const [isChangingTable, setIsChangingTable] = useState(false);
 	const [isProdutividadePage, setIsProdutividadePage] = useState(false);
 
+	const [programasOpen, setProgramasOpen] = useState(false);
+
 	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
@@ -63,7 +66,8 @@ const HomeDefensivoPage = (props) => {
 		productsProgram: "productsProgram",
 		plantioPage: "plantioPage",
 		produtividadePage: "produtividadePage",
-		farmboxData: "farmbox"
+		farmboxData: "farmbox",
+		programas: "programas"
 	};
 
 	const handleSelectComponent = (name) => {
@@ -76,6 +80,7 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				setIsProdutividadePage(false);
+				setProgramasOpen(false);
 				break;
 			case "table":
 				setIsOpenProducts(true);
@@ -84,6 +89,7 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsProgram(false);
 				setIsOpenPlantioPage(false);
 				setIsProdutividadePage(false);
+				setProgramasOpen(false);
 				break;
 			case "productsProgram":
 				setisOpenProductsProgram(true);
@@ -92,6 +98,7 @@ const HomeDefensivoPage = (props) => {
 				setIsOpenFarmbox(false);
 				setIsOpenPlantioPage(false);
 				setIsProdutividadePage(false);
+				setProgramasOpen(false);
 				break;
 			case "plantioPage":
 				setIsOpenPlantioPage(true);
@@ -100,7 +107,7 @@ const HomeDefensivoPage = (props) => {
 				setisOpenProductsByDayDinamic(false);
 				setIsOpenFarmbox(false);
 				setIsProdutividadePage(false);
-
+				setProgramasOpen(false);
 				break;
 			case "produtividadePage":
 				setIsProdutividadePage(true);
@@ -109,9 +116,20 @@ const HomeDefensivoPage = (props) => {
 				setIsOpenProducts(false);
 				setisOpenProductsByDayDinamic(false);
 				setIsOpenFarmbox(false);
+				setProgramasOpen(false);
 				break;
 			case "farmbox":
 				setIsOpenFarmbox(true);
+				setIsOpenPlantioPage(false);
+				setisOpenProductsProgram(false);
+				setIsOpenProducts(false);
+				setisOpenProductsByDayDinamic(false);
+				setIsProdutividadePage(false);
+				setProgramasOpen(false);
+				break;
+			case "programas":
+				setProgramasOpen(true);
+				setIsOpenFarmbox(false);
 				setIsOpenPlantioPage(false);
 				setisOpenProductsProgram(false);
 				setIsOpenProducts(false);
@@ -157,6 +175,11 @@ const HomeDefensivoPage = (props) => {
 			title: "Farmbox",
 			option: dictComps.farmboxData,
 			selection: isOpenFarmbox
+		},
+		{
+			title: "Programas",
+			option: dictComps.programas,
+			selection: programasOpen
 		}
 	];
 	return (
@@ -282,6 +305,18 @@ const HomeDefensivoPage = (props) => {
 					)}
 					{!isLoadingHome && !isChangingTable && (
 						<FarmBoxPage isLoadingHome={isLoadingHome} />
+					)}
+				</>
+			)}
+			{programasOpen && (
+				<>
+					{isChangingTable && (
+						<Box className={classesPlantioDone.container}>
+							<LoaderHomeSkeleton />
+						</Box>
+					)}
+					{!isLoadingHome && !isChangingTable && (
+						<ProgramasSection isLoadingHome={isLoadingHome} />
 					)}
 				</>
 			)}
