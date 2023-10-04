@@ -1,30 +1,15 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
-import { useSelector } from "react-redux";
-import { selectAreas } from "../../../store/programas/programas.selector";
-import Logo from "../../../utils/assets/img/logo.jpg";
 
-import { useState, useEffect } from "react";
+import Logo from "../../../utils/assets/img/logo.jpg";
 
 import styles from "./programas-styles.module.css";
 
 const HeaderComp = (props) => {
-	const { data } = props;
+	const { data, quantidadeTotal } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const quantidades = useSelector(selectAreas);
-	const [quantidadeTotal, setQuantidadeTotal] = useState(0);
 
-	useEffect(() => {
-		if (quantidades) {
-			const filtQuant = quantidades.filter(
-				(dataFilt) => dataFilt.programa__nome === data.nome
-			)[0];
-			if (filtQuant) {
-				setQuantidadeTotal(filtQuant.total);
-			}
-		}
-	}, [quantidades, data.nome]);
 	return (
 		<Box
 			sx={{

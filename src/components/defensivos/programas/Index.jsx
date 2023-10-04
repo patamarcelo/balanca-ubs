@@ -18,7 +18,8 @@ import {
 import {
 	selectProgramas,
 	selectEstagios,
-	selectOperacoes
+	selectOperacoes,
+	selectAreas
 } from "../../../store/programas/programas.selector";
 
 import SelectFarm from "../produtividade-page/select-farm";
@@ -26,6 +27,7 @@ import SelectFarm from "../produtividade-page/select-farm";
 import CircularProgress from "@mui/material/CircularProgress";
 import HeaderComp from "./header";
 import EstagiosComp from "./estagios";
+import ConsolidadosProdutos from "./consolidadosProdutos";
 
 const ProgramasSection = () => {
 	const theme = useTheme();
@@ -44,6 +46,20 @@ const ProgramasSection = () => {
 	const operacoes = useSelector(selectOperacoes);
 	const [filteredOperations, setFilteredOperations] = useState([]);
 
+	const quantidades = useSelector(selectAreas);
+	const [quantidadeTotal, setQuantidadeTotal] = useState(0);
+
+	useEffect(() => {
+		if (quantidades) {
+			const filtQuant = quantidades.filter(
+				(dataFilt) => dataFilt.programa__nome === selectedPrograma
+			)[0];
+			if (filtQuant) {
+				setQuantidadeTotal(filtQuant.total);
+			}
+		}
+	}, [quantidades, selectedPrograma]);
+
 	useEffect(() => {
 		const filteredOperations = operacoes.filter(
 			(data) => data.operacao__programa__nome === selectedPrograma
@@ -52,6 +68,9 @@ const ProgramasSection = () => {
 			const reducerProducts = filteredOperations
 				.sort((a, b) =>
 					a.defensivo__produto.localeCompare(b.defensivo__produto)
+				)
+				.sort((a, b) =>
+					a.defensivo__tipo.localeCompare(b.defensivo__tipo)
 				)
 				.reduce((acc, cur) => {
 					if (!acc[cur.defensivo__produto]) {
@@ -159,53 +178,22 @@ const ProgramasSection = () => {
 				<Box className={styles.mainProgramContainer}>
 					{programData ? (
 						<>
-							<HeaderComp data={programData} />
+							<HeaderComp
+								data={programData}
+								quantidadeTotal={quantidadeTotal}
+							/>
 							<EstagiosComp
 								data={filteredEstagios}
 								program={selectedPrograma}
 							/>
 							<hr />
-							<Box
-								sx={{
-									color: "black",
-									width: "100%",
-									display: "flex",
-									justifyContent: "center",
-									flexDirection: "column",
-									justifySelf: "center"
-								}}
-							>
-								{filteredOperations &&
-									Object.entries(filteredOperations).map(
-										([key, value]) => {
-											return (
-												<div
-													key={key}
-													style={{
-														display: "grid",
-														gridTemplateColumns:
-															"repeat(3, 1fr)",
-														textAlign: "center"
-													}}
-												>
-													<div>{key}</div>
-													<div>
-														{value[
-															"value"
-														].toLocaleString(
-															"pt-br",
-															{
-																minimumFractionDigits: 3,
-																maximumFractionDigits: 3
-															}
-														)}
-													</div>
-													<div>{value["tipo"]}</div>
-												</div>
-											);
-										}
-									)}
-							</Box>
+							{filteredOperations && (
+								<ConsolidadosProdutos
+									filteredOperations={filteredOperations}
+									quantidadeTotal={quantidadeTotal}
+									program={selectedPrograma}
+								/>
+							)}
 						</>
 					) : (
 						<Box

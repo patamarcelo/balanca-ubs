@@ -7,6 +7,10 @@
 
 .mainProgramContainer {
     width: 80%;   
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .estagioContainer {
@@ -104,4 +108,13 @@
 font-weight: 900;
 margin-bottom: 10px;
 align-self: flex-end;
+}
+
+.consolidadoProdutosMainContainer{
+    border-bottom: 0.5px dotted;
+}
+
+.consolidadoProdutosMainContainerHeader{
+    border-bottom: 1px solid;
+    margin-bottom: 10px;
 }
