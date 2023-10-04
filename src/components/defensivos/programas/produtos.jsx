@@ -23,7 +23,9 @@ const ProdutosComp = ({ program, estagio, tipo, calc }) => {
 			const filtQuant = quantidades.filter(
 				(data) => data.programa__nome === program
 			)[0];
-			setQuantidadeTotal(filtQuant.total);
+			if (filtQuant) {
+				setQuantidadeTotal(filtQuant.total);
+			}
 		}
 	}, [quantidades, program]);
 

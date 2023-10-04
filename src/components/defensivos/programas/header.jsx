@@ -21,8 +21,9 @@ const HeaderComp = (props) => {
 			const filtQuant = quantidades.filter(
 				(dataFilt) => dataFilt.programa__nome === data.nome
 			)[0];
-			console.log(filtQuant);
-			setQuantidadeTotal(filtQuant.total);
+			if (filtQuant) {
+				setQuantidadeTotal(filtQuant.total);
+			}
 		}
 	}, [quantidades, data.nome]);
 	return (
