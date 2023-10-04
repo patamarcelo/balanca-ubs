@@ -13,15 +13,29 @@
     border: 1.5px solid black;
     width: 100%;
     background-color: whitesmoke;
-    padding: 10px 5px;
+    /* padding: 10px 5px; */
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     justify-items: center;
     border-radius: 8px;
 }
 
+.estagioTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
+.estagioTitle div:first-child{
+    margin-bottom: -5px;
+}
+.estagioTitle div:last-child{
+    color: grey;
+    font-size: 12px;
+    font-weight: bold;
+}
 .estagioContainer div {
     text-align: center;
     display: flex;
@@ -31,10 +45,17 @@
 .headerEstagios {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     justify-items: center;
+    font-weight: bold;
+    margin-bottom: -5px;
+    font-size: 1rem;
     /* border: 1px solid black;
     background-color: whitesmoke; */
+}
+
+.headerEstagios div{
+    text-transform: uppercase;
 }
 
 .produtosMainContainer {
@@ -42,5 +63,30 @@
     justify-content: center;
     flex-direction: column;
     justify-content: baseline;
+    width: 100%;
+}
 
+.produtosMainContainer div{
+    text-transform: capitalize;
+    border: 0.5px dotted black;
+    /* border-left: 0px; */
+    /* border-right: 0px; */
+    width: 100%;
+    
+}
+
+.produtosMainContainer div:first-child{
+    border-top: 0px;
+    /* border-right: 0px; */
+}
+.produtosMainContainer div:last-child{
+    border-bottom: 0px;
+}
+
+.obsMainContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
 }

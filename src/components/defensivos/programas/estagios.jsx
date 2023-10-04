@@ -6,7 +6,6 @@ const EstagiosComp = ({ data, program }) => {
 	console.log(data);
 	const headerData = [
 		{ title: "Estágio" },
-		{ title: "DAP" },
 		{ title: "Produto" },
 		{ title: "Tipo" },
 		{ title: "Dose Kg/Lt ha" },
@@ -31,12 +30,30 @@ const EstagiosComp = ({ data, program }) => {
 			{data.map((data, i) => {
 				return (
 					<Box className={styles.estagioContainer} key={i}>
-						<div style={{ fontWeight: "bold" }}>{data.estagio}</div>
-						<div>{data.prazo_dap}</div>
+						<div className={styles.estagioTitle}>
+							<div style={{ fontWeight: "bold" }}>
+								{data.estagio}
+							</div>
+							<div>dap: {data.prazo_dap}</div>
+						</div>
 						<ProdutosComp
 							program={program}
 							estagio={data.estagio}
+							tipo={"defensivo__produto"}
 						/>
+						<ProdutosComp
+							program={program}
+							estagio={data.estagio}
+							tipo={"defensivo__tipo"}
+						/>
+						<ProdutosComp
+							program={program}
+							estagio={data.estagio}
+							tipo={"dose"}
+						/>
+						<div className={styles.obsMainContainer}>
+							{data.obs}
+						</div>
 					</Box>
 				);
 			})}
