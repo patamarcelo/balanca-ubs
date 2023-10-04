@@ -115,7 +115,7 @@ const ProgramasSection = () => {
 				sx={{
 					width: "100%",
 					minHeight: "100%",
-					backgroundColor: colors.primary[100],
+					backgroundColor: "#f6f6f6",
 					borderRadius: "8px",
 					padding: "20px",
 					display: "flex",
@@ -123,7 +123,7 @@ const ProgramasSection = () => {
 				}}
 			>
 				<Box className={styles.mainProgramContainer}>
-					{programData && (
+					{programData ? (
 						<>
 							<HeaderComp data={programData} />
 							<EstagiosComp
@@ -131,6 +131,22 @@ const ProgramasSection = () => {
 								program={selectedPrograma}
 							/>
 						</>
+					) : (
+						<Box
+							sx={{
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+								width: "100%"
+							}}
+						>
+							<Typography
+								variant="h1"
+								color={colors.primary[900]}
+							>
+								Selecione um Programa
+							</Typography>
+						</Box>
 					)}
 				</Box>
 			</Box>

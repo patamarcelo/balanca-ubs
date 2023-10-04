@@ -58,13 +58,19 @@ const ProdutosComp = ({ program, estagio, tipo }) => {
 	return (
 		<Box className={styles.produtosMainContainer}>
 			{operacoesFilt.length > 0 &&
-				operacoesFilt.map((data, i) => {
-					return (
-						<>
-							<div key={i}>{transformTipo(tipo, data[tipo])}</div>
-						</>
-					);
-				})}
+				operacoesFilt
+					.sort((a, b) =>
+						a.defensivo__tipo.localeCompare(b.defensivo__tipo)
+					)
+					.map((data, i) => {
+						return (
+							<>
+								<div key={i}>
+									{transformTipo(tipo, data[tipo])}
+								</div>
+							</>
+						);
+					})}
 		</Box>
 	);
 };
