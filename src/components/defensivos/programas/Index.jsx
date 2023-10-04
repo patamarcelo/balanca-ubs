@@ -17,7 +17,8 @@ import {
 
 import {
 	selectProgramas,
-	selectEstagios
+	selectEstagios,
+	selectOperacoes
 } from "../../../store/programas/programas.selector";
 
 import SelectFarm from "../produtividade-page/select-farm";
@@ -39,6 +40,37 @@ const ProgramasSection = () => {
 
 	const estagios = useSelector(selectEstagios);
 	const [filteredEstagios, setFilteredEstagios] = useState([]);
+
+	const operacoes = useSelector(selectOperacoes);
+	const [filteredOperations, setFilteredOperations] = useState([]);
+
+	useEffect(() => {
+		const filteredOperations = operacoes.filter(
+			(data) => data.operacao__programa__nome === selectedPrograma
+		);
+		if (filteredOperations.length > 0) {
+			const reducerProducts = filteredOperations
+				.sort((a, b) =>
+					a.defensivo__produto.localeCompare(b.defensivo__produto)
+				)
+				.reduce((acc, cur) => {
+					if (!acc[cur.defensivo__produto]) {
+						acc[cur.defensivo__produto] = {
+							value: cur.dose,
+							tipo: cur.defensivo__tipo
+						};
+					} else {
+						acc[cur.defensivo__produto] = {
+							value: (acc[cur.defensivo__produto].value +=
+								cur.dose),
+							tipo: cur.defensivo__tipo
+						};
+					}
+					return acc;
+				}, {});
+			setFilteredOperations(reducerProducts);
+		}
+	}, [selectedPrograma, operacoes]);
 
 	useEffect(() => {
 		const onlyName = programas.map((data) => data.nome);
@@ -132,6 +164,48 @@ const ProgramasSection = () => {
 								data={filteredEstagios}
 								program={selectedPrograma}
 							/>
+							<hr />
+							<Box
+								sx={{
+									color: "black",
+									width: "100%",
+									display: "flex",
+									justifyContent: "center",
+									flexDirection: "column",
+									justifySelf: "center"
+								}}
+							>
+								{filteredOperations &&
+									Object.entries(filteredOperations).map(
+										([key, value]) => {
+											return (
+												<div
+													key={key}
+													style={{
+														display: "grid",
+														gridTemplateColumns:
+															"repeat(3, 1fr)",
+														textAlign: "center"
+													}}
+												>
+													<div>{key}</div>
+													<div>
+														{value[
+															"value"
+														].toLocaleString(
+															"pt-br",
+															{
+																minimumFractionDigits: 3,
+																maximumFractionDigits: 3
+															}
+														)}
+													</div>
+													<div>{value["tipo"]}</div>
+												</div>
+											);
+										}
+									)}
+							</Box>
 						</>
 					) : (
 						<Box

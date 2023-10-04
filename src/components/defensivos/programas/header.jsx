@@ -15,7 +15,6 @@ const HeaderComp = (props) => {
 	const quantidades = useSelector(selectAreas);
 	const [quantidadeTotal, setQuantidadeTotal] = useState(0);
 
-	console.log(quantidades);
 	useEffect(() => {
 		if (quantidades) {
 			const filtQuant = quantidades.filter(

@@ -32,7 +32,6 @@ const ProdutosComp = ({ program, estagio, tipo, calc }) => {
 	const transformTipo = (tipo, data, calc) => {
 		if (tipo === "dose" && calc === "quantidade") {
 			const total = quantidadeTotal * data;
-			console.log(total);
 			return total.toLocaleString("pt-br", {
 				minimumFractionDigits: 0,
 				maximumFractionDigits: 0
