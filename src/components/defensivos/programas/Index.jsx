@@ -11,7 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
 	setOperacoes,
 	setEstagios,
-	setProgramas
+	setProgramas,
+	setAreaTotal
 } from "../../../store/programas/programa.actions";
 
 import {
@@ -72,6 +73,7 @@ const ProgramasSection = () => {
 						dispatch(setOperacoes(res.data.dados));
 						dispatch(setEstagios(res.data.estagios));
 						dispatch(setProgramas(res.data.programas));
+						dispatch(setAreaTotal(res.data.area_total));
 					})
 					.catch((err) => console.log(err));
 			} catch (err) {

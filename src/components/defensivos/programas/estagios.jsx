@@ -8,6 +8,7 @@ const EstagiosComp = ({ data, program }) => {
 		{ title: "Produto" },
 		{ title: "Tipo" },
 		{ title: "Dose Kg/Lt ha" },
+		{ title: "Quantidade" },
 		{ title: "Observação" }
 	];
 	return (
@@ -53,6 +54,12 @@ const EstagiosComp = ({ data, program }) => {
 							<ProdutosComp
 								program={program}
 								estagio={data.estagio}
+								tipo={"dose"}
+							/>
+							<ProdutosComp
+								program={program}
+								estagio={data.estagio}
+								calc={"quantidade"}
 								tipo={"dose"}
 							/>
 							<div className={styles.obsMainContainer}>

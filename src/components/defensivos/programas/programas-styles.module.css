@@ -16,7 +16,7 @@
     /* padding: 10px 5px; */
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     justify-items: center;
     border-radius: 8px;
     box-shadow: rgba(0, 0, 0, 0.65) 0px 1px 1px
@@ -47,7 +47,7 @@
 .headerEstagios {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     justify-items: center;
     font-weight: bold;
     margin-bottom: -5px;
@@ -91,4 +91,17 @@
     align-items: center;
     padding-left: 10px;
     padding-right: 10px;
+}
+
+.areaTotalContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.areaTotalContainer h6:first-child{
+font-weight: 900;
+margin-bottom: 10px;
+align-self: flex-end;
 }

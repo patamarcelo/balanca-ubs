@@ -13,3 +13,7 @@ export const setEstagios = (estagios) => {
 export const setProgramas = (programas) => {
 	return createAction(PROGRAMA_ACTIONS_TYPES.SET_PROGRAMAS, programas);
 };
+
+export const setAreaTotal = (areas) => {
+	return createAction(PROGRAMA_ACTIONS_TYPES.SET_AREAS, areas);
+};

@@ -180,6 +180,7 @@
 
 }
 .date-picker {
+    width: 290px;
     display: flex;
     justify-content: space-between;
     flex-direction: row;

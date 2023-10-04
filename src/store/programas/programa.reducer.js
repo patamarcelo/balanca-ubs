@@ -3,7 +3,8 @@ import { PROGRAMA_ACTIONS_TYPES } from "./programa.types";
 const INITIAL_STATE = {
 	operacoes: [],
 	estagios: [],
-	programas: []
+	programas: [],
+	areas: []
 };
 
 export const programaReducer = (state = INITIAL_STATE, action = {}) => {
@@ -23,6 +24,11 @@ export const programaReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				programas: payload
+			};
+		case PROGRAMA_ACTIONS_TYPES.SET_AREAS:
+			return {
+				...state,
+				areas: payload
 			};
 		default:
 			return state;
