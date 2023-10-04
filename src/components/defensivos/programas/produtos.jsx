@@ -38,7 +38,6 @@ const ProdutosComp = ({ program, estagio, tipo }) => {
 					data.operacao__estagio === estagio
 				);
 			});
-			console.log(filtOperacoes);
 			setOperacoesFiltradas(filtOperacoes);
 		}
 	}, []);
