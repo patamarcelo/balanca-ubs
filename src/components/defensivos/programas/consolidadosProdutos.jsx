@@ -25,10 +25,10 @@ const ConsolidadosProdutos = (props) => {
 					boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px"
 				}}
 			>
-				<Typography variant="h2" color={"white"}>
+				<Typography variant="h2" color={"white"} sx={{marginBottom: '-5px'}}>
 					Insumos Consolidados
 				</Typography>
-				<Typography variant="h6" color={"white"}>
+				<Typography variant="h6" color={colors.primary[100]}>
 					{program}
 				</Typography>
 			</Box>
@@ -40,7 +40,7 @@ const ConsolidadosProdutos = (props) => {
 					justifyContent: "center",
 					flexDirection: "column",
 					justifySelf: "center",
-					boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
+					boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
 					borderRadius: "8px",
 					padding: "10px",
 					backgroundColor: "white"
@@ -55,7 +55,7 @@ const ConsolidadosProdutos = (props) => {
 						fontWeight: "bold"
 					}}
 				>
-					<div>Insumo</div>
+					<div style={{textAlign: 'left'}}>Insumo</div>
 					<div>Quantidade Total</div>
 					<div>Tipo</div>
 				</div>

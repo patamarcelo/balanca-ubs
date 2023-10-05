@@ -114,6 +114,20 @@ align-self: flex-end;
     border-bottom: 0.5px dotted;
 }
 
+.consolidadoProdutosMainContainer div:first-child{
+    /* border-bottom: 0.5px dotted; */
+    text-align: left;
+}
+.consolidadoProdutosMainContainer div:nth-child(2){
+    /* border-bottom: 0.5px dotted; */
+    text-align: right;
+    margin-right: 40%;
+}
+.consolidadoProdutosMainContainer div:last-child{
+    /* border-bottom: 0.5px dotted; */
+    /* text-align: right; */
+}
+
 .consolidadoProdutosMainContainerHeader{
     border-bottom: 1px solid;
     margin-bottom: 10px;
