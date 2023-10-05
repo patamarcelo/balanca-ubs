@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 import styles from "./programas-styles.module.css";
 
-const ProdutosComp = ({ program, estagio, tipo, calc }) => {
+const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 	const operacoes = useSelector(selectOperacoes);
 	const quantidades = useSelector(selectAreas);
 	const theme = useTheme();
@@ -78,7 +78,7 @@ const ProdutosComp = ({ program, estagio, tipo, calc }) => {
 	}, [program, estagio, operacoes]);
 
 	return (
-		<Box className={styles.produtosMainContainer}>
+		<Box className={[styles.produtosMainContainer, styles[classes]]}>
 			{operacoesFilt.length > 0 &&
 				operacoesFilt
 					.sort((a, b) =>
@@ -86,11 +86,9 @@ const ProdutosComp = ({ program, estagio, tipo, calc }) => {
 					)
 					.map((data, i) => {
 						return (
-							<>
-								<div key={i}>
-									{transformTipo(tipo, data[tipo], calc)}
-								</div>
-							</>
+							<div key={i}>
+								{transformTipo(tipo, data[tipo], calc)}
+							</div>
 						);
 					})}
 		</Box>

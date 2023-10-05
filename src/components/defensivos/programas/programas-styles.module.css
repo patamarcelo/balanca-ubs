@@ -73,13 +73,19 @@
 }
 
 .produtosMainContainer div{
-    text-transform: capitalize;
+    text-transform: lowercase;
     border: 0.5px dotted black;
     /* border-left: 0px; */
     /* border-right: 0px; */
     width: 100%;
+    display: inline-block;
     
 }
+.produtosMainContainer div::first-letter{
+    text-transform: uppercase;
+}
+
+
 
 .produtosMainContainer div:first-child{
     border-top: 0px;
@@ -131,4 +137,26 @@ align-self: flex-end;
 .consolidadoProdutosMainContainerHeader{
     border-bottom: 1px solid;
     margin-bottom: 10px;
+}
+
+.consolidadoProdutosMainContainer{
+    text-transform: lowercase;
+    display: inline-block;
+}
+
+.consolidadoProdutosMainContainer div::first-letter{
+    text-transform: capitalize;
+}
+
+
+
+.quantidadeTotal div{
+    text-align: right;
+    padding-right: 40%;
+}
+
+.produtos div{
+    text-align: left;
+    padding-left: 5%;
+    /* font-weight: 600; */
 }

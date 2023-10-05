@@ -45,22 +45,26 @@ const EstagiosComp = ({ data, program }) => {
 								program={program}
 								estagio={data.estagio}
 								tipo={"defensivo__produto"}
+								classes={"produtos"}
 							/>
 							<ProdutosComp
 								program={program}
 								estagio={data.estagio}
 								tipo={"defensivo__tipo"}
+								classes={"tipo"}
 							/>
 							<ProdutosComp
 								program={program}
 								estagio={data.estagio}
 								tipo={"dose"}
+								classes={"dose"}
 							/>
 							<ProdutosComp
 								program={program}
 								estagio={data.estagio}
 								calc={"quantidade"}
 								tipo={"dose"}
+								classes={"quantidadeTotal"}
 							/>
 							<div className={styles.obsMainContainer}>
 								{data.obs}
