@@ -205,9 +205,7 @@ export const createDictFarmBox = (state) => {
 			parcelas: parcelasSolicitadas.sort((a, b) =>
 				a.parcela.localeCompare(b.parcela)
 			),
-			insumos: insumosSolicitados.filter(
-				(data) => data.tipo !== "Operação"
-			),
+			insumos: insumosSolicitados,
 			area: areaTotalSolicitada,
 			areaAplicada: areaTotalAplicada,
 			saldoAplicar: saldoAplicar.toFixed(2),

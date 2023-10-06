@@ -771,6 +771,9 @@ const DataProgramPage = (props) => {
 															"parcelas-div-header"
 														]
 													}
+													style={{
+														borderBottom: `0.5px dotted ${colors.primary[100]}`
+													}}
 												>
 													<div
 														style={{
@@ -791,6 +794,11 @@ const DataProgramPage = (props) => {
 														style={{
 															marginRight: "30px"
 														}}
+														className={
+															classes[
+																"cultura-div"
+															]
+														}
 													>
 														Cultura
 													</div>

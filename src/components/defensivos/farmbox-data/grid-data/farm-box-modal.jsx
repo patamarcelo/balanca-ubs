@@ -146,6 +146,12 @@ const ModalDataFarmbox = (props) => {
 					const withInsumos = insumos.map((ins) => {
 						return {
 							...parc,
+							quantidadeSolicitada: (
+								ins.dose * parc.area
+							).toLocaleString("pt-br", {
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2
+							}),
 							quantidade: (
 								ins.dose * parc.totalSomaUnform
 							).toLocaleString("pt-br", {
