@@ -40,7 +40,12 @@ import IndexModalDataFarmbox from "./index-modal";
 import Fade from "@mui/material/Fade";
 
 import Switch from "@mui/material/Switch";
+import {
+	getNextDays,
+	getNextWeekDays
+} from "../../../utils/format-suport/data-format";
 
+const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -53,9 +58,10 @@ const FarmBoxPage = () => {
 	const onlyFarms = useSelector(onlyFarm);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
-	const dataGeral = useSelector(geralAppDetail);
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
+	const [showFutureApps, setShowFutureApps] = useState(false);
+	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
 
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
 
@@ -87,6 +93,10 @@ const FarmBoxPage = () => {
 
 	const handleCheckOpenApp = () => {
 		setOpenAppOnly(!openAppOnly);
+	};
+
+	const handleFutureAp = () => {
+		setShowFutureApps(!showFutureApps);
 	};
 
 	const handleAllFarms = () => {
@@ -172,7 +182,7 @@ const FarmBoxPage = () => {
 			}
 		});
 		setSaldoAplicar(saldoAplicar);
-	}, [filtFarm, dataGeral]);
+	}, [filtFarm, showFutureApps]);
 
 	return (
 		<div className={classes.mainDiv}>
@@ -266,6 +276,12 @@ const FarmBoxPage = () => {
 								inputProps={{ "aria-label": "controlled" }}
 								color="warning"
 							/>
+							<Switch
+								checked={showFutureApps}
+								onChange={handleFutureAp}
+								inputProps={{ "aria-label": "controlled" }}
+								color="warning"
+							/>
 						</Box>
 					</Box>
 				)}
@@ -304,6 +320,13 @@ const FarmBoxPage = () => {
 															data.operacao.trim()
 													  )
 													: data.app.length > 0
+											)
+											.filter((data) =>
+												!showFutureApps
+													? new Date(data.date) <
+													  getNextWeekDays()
+													: new Date(data.date) <
+													  new Date("2031-10-17")
 											)
 											.sort((b, a) =>
 												a.status.localeCompare(b.status)
@@ -345,7 +368,7 @@ const FarmBoxPage = () => {
 										backgroundColor: colors.blueOrigin[700]
 									}}
 								>
-									<ResumoDataPage />
+									<ResumoDataPage daysFilter={daysFilter} />
 								</div>
 								{filtFarm && (
 									<>
@@ -393,6 +416,12 @@ const FarmBoxPage = () => {
 															}
 															divider={
 																!hasDivider
+															}
+															showFutureApps={
+																showFutureApps
+															}
+															daysFilter={
+																daysFilter
 															}
 														/>
 													);

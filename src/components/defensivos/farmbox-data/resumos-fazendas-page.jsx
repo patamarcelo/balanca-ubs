@@ -8,9 +8,16 @@ import rice from "../../../utils/assets/icons/rice.png";
 import { Box, Divider } from "@mui/material";
 
 const ResumoFazendasPage = (props) => {
-	const dataGeral = useSelector(geralAppDetail);
-
-	const { fazenda, colors, divider, filterPreaproSolo, operationFilter } = props;
+	const {
+		fazenda,
+		colors,
+		divider,
+		filterPreaproSolo,
+		operationFilter,
+		showFutureApps,
+		daysFilter
+	} = props;
+	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
 	const fazPlan = dataGeral.fazendas[fazenda];
 	const iconDict = [
 		{ cultura: "Soja", icon: soy, alt: "soja" },

@@ -764,7 +764,7 @@ const DataProgramPage = (props) => {
 												classes["parcelas-resumo-div"]
 											}
 										>
-											<div style={{ gap: "5px" }}>
+											<div style={{ gap: "8px" }}>
 												<div
 													className={
 														classes[

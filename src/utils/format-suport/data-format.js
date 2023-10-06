@@ -43,4 +43,34 @@ export const displayDate = (date) => {
 	return date.split("-").reverse().join("/");
 };
 
+export const getNextDays = (days) => {
+	const nextDays = new Date();
+	return nextDays.setDate(nextDays.getDate() + days);
+};
+
+export const getNextWeekDays = () => {
+	function getWeekBegin() {
+		var now = new Date();
+		var next = new Date(
+			now.getFullYear(),
+			now.getMonth(),
+			now.getDate() + (7 - now.getDay())
+		);
+		return next;
+	}
+	var firstDay = getWeekBegin();
+	console.log("First day: " + firstDay);
+	var lastDay = firstDay.setDate(firstDay.getDate() + 6);
+	const nexSatDay = new Date(lastDay);
+	console.log(nexSatDay);
+	const day =
+		nexSatDay.getDate() < 10
+			? `0${nexSatDay.getDate()}`
+			: nexSatDay.getDate();
+	const month = nexSatDay.getMonth() + 1;
+	const year = nexSatDay.getFullYear();
+	const formatDate = new Date(`${year}-${month}-${day}`);
+	return formatDate;
+};
+
 export default formatDate;

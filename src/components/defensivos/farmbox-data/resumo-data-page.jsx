@@ -9,10 +9,11 @@ import { geralAppDetail } from "../../../store/plantio/plantio.selector";
 
 import ProgressBarPage from "./progress-bar";
 
-const ResumoDataPage = () => {
+const ResumoDataPage = (props) => {
+	const { showFutureAps, daysFilter } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const dataGeral = useSelector(geralAppDetail);
+	const dataGeral = useSelector(geralAppDetail(showFutureAps, daysFilter));
 	const progressNumber =
 		(dataGeral.geral.aplicado / dataGeral.geral.area) * 100;
 

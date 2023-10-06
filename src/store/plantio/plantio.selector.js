@@ -1,3 +1,5 @@
+import { getNextDays } from "../../utils/format-suport/data-format";
+
 export const selectPlantio = (state) => state.plantio.plantio;
 
 export const selectApp = (state) => state.plantio.app;
@@ -96,7 +98,7 @@ export const createDict = (state) => {
 			saldoAplicar: saldoAplicar.toFixed(2),
 			date: data.date,
 			endDate: data.end_date,
-			progressos: progressos,
+			progressos: progressos
 		};
 	});
 	return newArr.sort(
@@ -234,11 +236,16 @@ export const onlyFarm = (state) => {
 	return [...new Set(onlyfarm.flat())];
 };
 
-export const geralAppDetail = (state) => {
+export const geralAppDetail = (showFutureApps, days) => (state) => {
 	const plantio = state.plantio.app;
 
 	const newArr = plantio
 		.filter((data) => data.status === "sought")
+		.filter((data) =>
+			!showFutureApps
+				? new Date(data.date) < getNextDays(days)
+				: new Date(data.date) < new Date("2031-10-17")
+		)
 		.map((data) => {
 			const areaSolicitada = data.plantations.map(
 				(data) => data.sought_area
