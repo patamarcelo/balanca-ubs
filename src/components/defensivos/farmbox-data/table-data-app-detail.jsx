@@ -44,10 +44,8 @@ const colorDict = [
 ];
 
 const getColorChip = (data) => {
-	console.log(data);
 	const folt = colorDict.filter((tipo) => tipo.tipo === data);
 	if (folt.length > 0) {
-		console.log(folt[0].color);
 		return folt[0].color;
 	} else {
 		return "rgb(255,255,255,0.1)";

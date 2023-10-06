@@ -87,7 +87,7 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 					.map((data, i) => {
 						return (
 							<div key={i}>
-								{transformTipo(tipo, data[tipo], calc)}
+								{transformTipo(tipo, data[tipo], calc).split('_').slice(0,2).join(" ")}
 							</div>
 						);
 					})}

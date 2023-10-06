@@ -765,6 +765,52 @@ const DataProgramPage = (props) => {
 											}
 										>
 											<div style={{ gap: "5px" }}>
+												<div
+													className={
+														classes[
+															"parcelas-div-header"
+														]
+													}
+												>
+													<div
+														style={{
+															marginRight: "20px"
+														}}
+													>
+														Parcela
+													</div>
+													<div>Plantio</div>
+													<div
+														style={{
+															marginRight: "20px"
+														}}
+													>
+														Dap
+													</div>
+													<div
+														style={{
+															marginRight: "30px"
+														}}
+													>
+														Cultura
+													</div>
+													<div>Variedade</div>
+													<div
+														style={{
+															marginLeft: "30px"
+														}}
+													>
+														Prev.
+													</div>
+													<div
+														style={{
+															marginLeft: "20px"
+														}}
+													>
+														DAP AP
+													</div>
+													<div>Area</div>
+												</div>
 												{data.cronograma
 													.sort((a, b) =>
 														!filtData

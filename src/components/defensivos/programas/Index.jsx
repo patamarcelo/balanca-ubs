@@ -168,7 +168,7 @@ const ProgramasSection = () => {
 				sx={{
 					width: "100%",
 					minHeight: "100%",
-					backgroundColor: "#f6f6f6",
+					backgroundColor: "#F5F6FA",
 					borderRadius: "8px",
 					padding: "20px",
 					display: "flex",

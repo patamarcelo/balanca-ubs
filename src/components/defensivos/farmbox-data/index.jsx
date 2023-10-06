@@ -308,13 +308,13 @@ const FarmBoxPage = () => {
 											.sort((b, a) =>
 												a.status.localeCompare(b.status)
 											)
-											.sort(
-												(a, b) =>
-													a.app.slice(2) -
-													b.app.slice(2)
-											)
+											.sort((a, b) => {
+												return (
+													new Date(a.date) -
+													new Date(b.date)
+												);
+											})
 											.map((app, i) => {
-												console.log(app);
 												if (app.fazenda === data) {
 													return (
 														<TableDataPage
