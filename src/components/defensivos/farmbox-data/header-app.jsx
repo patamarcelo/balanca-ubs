@@ -11,7 +11,7 @@ const HeaderApp = (props) => {
 		<div style={{ width: "100%" }} className={classes.headerApp}>
 			<div className={classes.appDiv}>
 				<div className={classes.labelDivApp}>
-					<p>Nª</p>
+					<p>Nº</p>
 					<p>Operação</p>
 				</div>
 				<div className={classes.numberDivApp}>

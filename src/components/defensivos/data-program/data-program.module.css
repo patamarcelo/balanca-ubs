@@ -180,7 +180,8 @@
     grid-template-columns: repeat(8, 1fr);
     align-items: center;
     margin-bottom: 5px;
-    font-weight: 100;
+    font-weight: bold;
+    font-style: italic;
     /* border-bottom: 1px solid black; */
     gap: 10px;
 }

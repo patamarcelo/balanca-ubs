@@ -208,6 +208,7 @@ const ProgramasSection = () => {
 			<Box
 				sx={{
 					width: "100%",
+					minWidth: "1080px",
 					minHeight: "100%",
 					backgroundColor: "#F5F6FA",
 					borderRadius: "8px",
