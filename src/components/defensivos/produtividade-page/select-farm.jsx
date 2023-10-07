@@ -4,16 +4,25 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 const SelectFarm = (props) => {
-	const { projetos, handleChange, value, title } = props;
+	const {
+		projetos,
+		handleChange,
+		value,
+		title,
+		multiple = false,
+		width,
+		ml
+	} = props;
 	return (
-		<FormControl sx={{ mb: 1, mt: 2, minWidth: 280 }}>
+		<FormControl sx={{ mb: 1, mt: 2, minWidth: width, marginLeft: ml }}>
 			<InputLabel id="demo-simple-select-label">{title}</InputLabel>
 			<Select
 				labelId="demo-simple-select-label"
 				id="demo-simple-select"
 				value={value}
-				label="Age"
+				label={title}
 				onChange={handleChange}
+				multiple={multiple}
 			>
 				{projetos.map((data, i) => {
 					return (

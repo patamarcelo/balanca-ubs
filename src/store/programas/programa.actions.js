@@ -17,3 +17,13 @@ export const setProgramas = (programas) => {
 export const setAreaTotal = (areas) => {
 	return createAction(PROGRAMA_ACTIONS_TYPES.SET_AREAS, areas);
 };
+
+export const setFilteredOperationsAction = (payload) => {
+	let newarr = payload.arr;
+	if (payload.inputs.length > 0) {
+		newarr = payload.arr.filter((data) => {
+			return payload.inputs.includes(data.defensivo__tipo);
+		});
+	}
+	return createAction(PROGRAMA_ACTIONS_TYPES.SET_OPERACOES, newarr);
+};

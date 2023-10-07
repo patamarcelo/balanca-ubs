@@ -12,7 +12,8 @@ import {
 	setOperacoes,
 	setEstagios,
 	setProgramas,
-	setAreaTotal
+	setAreaTotal,
+	setFilteredOperationsAction
 } from "../../../store/programas/programa.actions";
 
 import {
@@ -44,10 +45,16 @@ const ProgramasSection = () => {
 	const [filteredEstagios, setFilteredEstagios] = useState([]);
 
 	const operacoes = useSelector(selectOperacoes);
+	const [filteredOpForTYpes, setFilteredOpForTYpes] = useState([]);
 	const [filteredOperations, setFilteredOperations] = useState([]);
 
 	const quantidades = useSelector(selectAreas);
 	const [quantidadeTotal, setQuantidadeTotal] = useState(0);
+
+	const [selectedTypes, setSelectedTypes] = useState([]);
+	const [selectedTypesInput, setSelectedTypesInput] = useState([]);
+
+	console.log(filteredOpForTYpes);
 
 	useEffect(() => {
 		if (quantidades) {
@@ -61,7 +68,7 @@ const ProgramasSection = () => {
 	}, [quantidades, selectedPrograma]);
 
 	useEffect(() => {
-		const filteredOperations = operacoes.filter(
+		const filteredOperations = filteredOpForTYpes.filter(
 			(data) => data.operacao__programa__nome === selectedPrograma
 		);
 		if (filteredOperations.length > 0) {
@@ -89,7 +96,7 @@ const ProgramasSection = () => {
 				}, {});
 			setFilteredOperations(reducerProducts);
 		}
-	}, [selectedPrograma, operacoes]);
+	}, [selectedPrograma, filteredOpForTYpes, selectedTypesInput]);
 
 	useEffect(() => {
 		const onlyName = programas.map((data) => data.nome);
@@ -111,6 +118,20 @@ const ProgramasSection = () => {
 	};
 
 	useEffect(() => {
+		if (selectedPrograma) {
+			const filteredType = Object.keys(filteredOperations).map((data) => {
+				return filteredOperations[data].tipo;
+			});
+			const removeDubble = [...new Set([...filteredType])];
+			setSelectedTypes(removeDubble);
+		}
+	}, [selectedPrograma, filteredOperations]);
+
+	const handleTypeSelect = (e) => {
+		setSelectedTypesInput(e.target.value);
+	};
+
+	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
 			try {
@@ -122,6 +143,7 @@ const ProgramasSection = () => {
 					})
 					.then((res) => {
 						dispatch(setOperacoes(res.data.dados));
+						setFilteredOpForTYpes(res.data.dados);
 						dispatch(setEstagios(res.data.estagios));
 						dispatch(setProgramas(res.data.programas));
 						dispatch(setAreaTotal(res.data.area_total));
@@ -134,6 +156,11 @@ const ProgramasSection = () => {
 			}
 		})();
 	}, []);
+
+	useEffect(() => {
+		const newob = { arr: filteredOpForTYpes, inputs: selectedTypesInput };
+		dispatch(setFilteredOperationsAction(newob));
+	}, [selectedTypesInput, dispatch, filteredOpForTYpes]);
 
 	if (isLoading) {
 		return (
@@ -151,6 +178,7 @@ const ProgramasSection = () => {
 					handleChange={handleChangeSelect}
 					value={selectedPrograma}
 					title={"Programas"}
+					width={280}
 				/>
 			) : (
 				<Box
@@ -163,6 +191,19 @@ const ProgramasSection = () => {
 				>
 					<CircularProgress color="secondary" size={20} />
 				</Box>
+			)}
+			{selectedPrograma ? (
+				<SelectFarm
+					projetos={selectedTypes}
+					handleChange={handleTypeSelect}
+					value={selectedTypesInput}
+					title={"Tipos"}
+					multiple={true}
+					width={200}
+					ml={4}
+				/>
+			) : (
+				<></>
 			)}
 			<Box
 				sx={{

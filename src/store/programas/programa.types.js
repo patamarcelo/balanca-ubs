@@ -3,4 +3,5 @@ export const PROGRAMA_ACTIONS_TYPES = {
 	SET_PROGRAMAS: "programa/SET_PROGRAMAS",
 	SET_ESTAGIOS: "programa/SET_ESTAGIOS",
 	SET_AREAS: "programa/SET_AREAS",
+	SET_FILTER_OP: "programa/SET_FILTER_OP"
 };
