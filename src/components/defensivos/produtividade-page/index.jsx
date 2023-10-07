@@ -44,7 +44,7 @@ const ProdutividadePage = () => {
 	const [produtividade, setProdutividade] = useState([]);
 	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
-	const [selectedProject, setSelectedProject] = useState('');
+	const [selectedProject, setSelectedProject] = useState("");
 	const [filteredArray, setFilteredArray] = useState([]);
 
 	const [resumoByVar, setResumoByVar] = useState();
@@ -231,6 +231,7 @@ const ProdutividadePage = () => {
 						handleChange={handleChangeSelect}
 						value={selectedProject}
 						title={"Projeto"}
+						width={200}
 					/>
 				) : (
 					<Box
