@@ -110,47 +110,51 @@ const MapPage = ({
 	}, [filtData]);
 
 	useEffect(() => {
-		const centerId = mapArray[0]?.dados?.projeto_map_centro_id;
-		if (centerId) {
-			setCenter(centerId);
-		} else {
-			setCenter(
-				mapArray[Number(mapArray.length / 2).toFixed(0)]
-					?.map_geo_poins[0]
-			);
-		}
-		const mapZoom = mapArray[0]?.dados?.projeto_map_zoom;
-		// console.log(mapZoom)
-		if (mapZoom) {
-			setZoomMap(mapZoom);
-		} else {
-			setZoomMap(13.6);
+		if (mapArray.length > 0) {
+			const centerId = mapArray[0]?.dados?.projeto_map_centro_id;
+			if (centerId) {
+				setCenter(centerId);
+			} else {
+				setCenter(
+					mapArray[Number(mapArray.length / 2).toFixed(0)]?.dados
+						?.map_geo_points[0]
+				);
+			}
+			const mapZoom = mapArray[0]?.dados?.projeto_map_zoom;
+			// console.log(mapZoom)
+			if (mapZoom) {
+				setZoomMap(mapZoom);
+			} else {
+				setZoomMap(13.6);
+			}
 		}
 	}, [mapArray]);
 
 	useEffect(() => {
-		const onlyPaths = mapArray.map((data, i) => {
-			// console.log(data);
-			let latLong = [];
-			if (data.dados.map_geo_points) {
-				latLong = data.dados.map_geo_points.map((data) => ({
-					lat: Number(data.latitude),
-					lng: Number(data.longitude)
-				}));
-			}
-			return {
-				data: data.dados,
-				path: latLong,
-				color: "white",
-				finalizadoPlantio: data.dados.finalizado_plantio,
-				finalizadoColheita: data.dados.finalizado_colheita,
-				descontinuado: data.dados.plantio_descontinuado,
-				parcela: data.parcela,
-				variedadeColor: data.dados.variedade_color,
-				variedadeColorLine: data.dados.variedade_color_line
-			};
-		});
-		setPaths(onlyPaths);
+		if (mapArray) {
+			const onlyPaths = mapArray.map((data, i) => {
+				// console.log(data);
+				let latLong = [];
+				if (data.dados.map_geo_points) {
+					latLong = data.dados.map_geo_points.map((data) => ({
+						lat: Number(data.latitude),
+						lng: Number(data.longitude)
+					}));
+				}
+				return {
+					data: data.dados,
+					path: latLong,
+					color: "white",
+					finalizadoPlantio: data.dados.finalizado_plantio,
+					finalizadoColheita: data.dados.finalizado_colheita,
+					descontinuado: data.dados.plantio_descontinuado,
+					parcela: data.parcela,
+					variedadeColor: data.dados.variedade_color,
+					variedadeColorLine: data.dados.variedade_color_line
+				};
+			});
+			setPaths(onlyPaths);
+		}
 	}, [mapArray]);
 
 	useEffect(() => {
