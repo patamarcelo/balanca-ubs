@@ -59,6 +59,7 @@ const FarmBoxPage = () => {
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
+	const [allFarmsSet, setAllFarmsSet] = useState(false);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
@@ -101,8 +102,10 @@ const FarmBoxPage = () => {
 
 	const handleAllFarms = () => {
 		if (filtFarm.length > 0) {
+			setAllFarmsSet(false);
 			setFiltFarm([]);
 		} else {
+			setAllFarmsSet(true);
 			setFiltFarm(onlyFarms);
 		}
 	};
@@ -221,15 +224,11 @@ const FarmBoxPage = () => {
 			>
 				{!loadingData && onlyFarms.length > 0 && (
 					<Box className={classes.formDiv}>
-						<FormControlLabel
-							control={
-								<Checkbox
-									onChange={handleAllFarms}
-									color="success"
-								/>
-							}
-							label="Todas"
-							labelPlacement="end"
+						<Switch
+							checked={allFarmsSet}
+							onChange={handleAllFarms}
+							inputProps={{ "aria-label": "controlled" }}
+							color="secondary"
 						/>
 						<FormControl
 							sx={{
@@ -270,12 +269,12 @@ const FarmBoxPage = () => {
 								inputProps={{ "aria-label": "controlled" }}
 								color="secondary"
 							/>
-							<Switch
+							{/* <Switch
 								checked={filterPreaproSolo}
 								onChange={handlePreaproSolo}
 								inputProps={{ "aria-label": "controlled" }}
 								color="warning"
-							/>
+							/> */}
 							<Switch
 								checked={showFutureApps}
 								onChange={handleFutureAp}

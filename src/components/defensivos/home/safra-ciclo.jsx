@@ -87,7 +87,7 @@ const SafraCicloComp = () => {
 				<FormControl
 					variant="outlined"
 					size="small"
-					sx={{ m: 1, minWidth: 120 }}
+					sx={{ m: 1, minWidth: 80 }}
 				>
 					<InputLabel id="demo-simple-select-standard-label-ciclo">
 						Ciclo
