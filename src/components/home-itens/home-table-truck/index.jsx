@@ -161,7 +161,7 @@ const HomeTableTruck = (props) => {
 						sx={{
 							width: isNonMobile ? "98%" : "95%",
 							backgroundColor: colors.blueOrigin[800],
-							// border: `0.1px solid ${colors.primary[100]}`,
+							border: theme.palette.mode === 'dark' ? "" : `0.1px solid ${colors.primary[100]}`,
 							boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
 							borderRadius: "5px",
 							padding: "10px",

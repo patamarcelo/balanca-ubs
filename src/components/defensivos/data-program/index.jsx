@@ -450,8 +450,6 @@ const DataProgramPage = (props) => {
 					>
 						<div>
 							<span style={{ fontStyle: "italic" }}>
-								{initialDateForm &&
-									displayDate(initialDateForm)}{" "}
 								até{" "}
 								{finalDateForm && displayDate(finalDateForm)}
 							</span>
@@ -584,7 +582,14 @@ const DataProgramPage = (props) => {
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];
 							return (
-								<div key={i}>
+								<div
+									key={i}
+									style={{
+										boxShadow:
+											"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
+										borderRadius: "8px"
+									}}
+								>
 									<div
 										key={i}
 										style={{

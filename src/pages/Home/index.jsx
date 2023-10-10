@@ -328,7 +328,6 @@ const HomePage = () => {
 				justifyContent={isNonMobile ? "start" : "center"}
 				className={isNonMobile ? "tabs" : ""}
 				sx={{
-					// border: "1px solid white",
 					marginBottom: isNonMobile ? "-22px" : "-5px",
 					marginLeft: isNonMobile ?? "15px",
 					borderRadius: !isNonMobile ?? "8px",
@@ -395,12 +394,13 @@ const HomePage = () => {
 													: "#22343F",
 											color:
 												selectedUnitOp === data.title
-													? "white"
+													? colors.primary[100]
 													: "#667279",
 											padding: "5px 25px 5px 15px",
 											cursor: "pointer",
 											textTransform: "capitalize",
 											borderRadius: "4px",
+											border: "0.5px solid black",
 											boxShadow:
 												selectedUnitOp === data.title &&
 												`rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset`
@@ -428,7 +428,11 @@ const HomePage = () => {
 					overflow: "auto",
 					position: "relative",
 					height: isNonMobile ? "90%" : "80%",
-					zIndex: 2
+					zIndex: 2,
+					border:
+						theme.palette.mode === "dark"
+							? ""
+							: `0.1px solid ${colors.primary[100]}`
 				}}
 			>
 				<Box

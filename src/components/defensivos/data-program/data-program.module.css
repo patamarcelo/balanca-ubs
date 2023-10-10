@@ -95,7 +95,7 @@
 
 .geral-program-div {
     width: 100%;
-    gap: 8px;
+    gap: 12px;
     margin-top: 10px !important;
 }
 
@@ -159,7 +159,9 @@
 
 }
 
-
+.parcelas-resumo-div:last-child{
+    margin-bottom: 10px;
+}
 .parcelas-detail-div {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
