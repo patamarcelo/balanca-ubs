@@ -48,6 +48,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+import { formatDate } from "../../store/trucks/trucks.selector";
+
 const dataModalText = {
 	carregando: {
 		title: "Carregando",
@@ -154,6 +156,15 @@ const HomePage = () => {
 
 	const handleOpenModal = async (obj, data) => {
 		if (obj.title === "Editar Carga") {
+			//otimizantion for APP
+			// if (!data.entrada) {
+			// 	const dateNew = new Date();
+			// 	const forTime = {
+			// 		nanoseconds: 0,
+			// 		seconds: dateNew.getTime() / 1000
+			// 	};
+			// 	data.entrada = forTime;
+			// }
 			await setTruckValues(data);
 			setDataModal({
 				title: obj.title,

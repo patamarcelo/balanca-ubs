@@ -73,11 +73,11 @@ const ModalFormFields = (props) => {
 			const culturaSelected =
 				dataParcelas["dados"][truckValues.fazendaOrigem][
 					truckValues.parcelasNovas[0]
-				].cultura;
+				]?.cultura;
 			const variedadeSelected =
 				dataParcelas["dados"][truckValues.fazendaOrigem][
 					truckValues.parcelasNovas[0]
-				].variedade;
+				]?.variedade;
 			truckValues.mercadoria = variedadeSelected;
 			truckValues.cultura = culturaSelected;
 		}

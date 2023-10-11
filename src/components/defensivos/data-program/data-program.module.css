@@ -138,6 +138,7 @@
 }
 .estagio-div-ipad{
     min-width: 38%;
+    font-weight: bold;
 }
 
 .estagio-div p{
@@ -266,11 +267,13 @@
 .div-produtos-aplicar-produto {
     white-space: nowrap;
     justify-content: end;
+    font-weight: bold;
 }
 
 .div-produtos-aplicar-quantidade{
     font-style: italic;
     margin-right: 60px;
+    /* font-weight: 600; */
 }
 
 
