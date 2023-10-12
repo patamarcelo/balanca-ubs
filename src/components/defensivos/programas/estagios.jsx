@@ -13,6 +13,7 @@ const EstagiosComp = ({ data, program }) => {
 	];
 	return (
 		<Box
+			className={styles.gridLayoutEstagios}
 			sx={{
 				color: "black",
 				display: "flex",
@@ -35,7 +36,7 @@ const EstagiosComp = ({ data, program }) => {
 						<Box
 							className={[
 								`${styles["estagioContainer"]}
-								${i === 11 && "pageBreak"}`
+								${i === 6 && "pageBreak"}`
 							]}
 							key={i}
 						>

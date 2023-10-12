@@ -4,7 +4,11 @@
 		visibility: hidden;
 	}
 
-    
+    html, body {
+		height: initial !important;
+		overflow: initial !important;
+		-webkit-print-color-adjust: exact;
+	}
 
 	#printDivProgram * {
 		visibility: visible;
@@ -47,3 +51,8 @@
 }
 
 
+
+@page {
+	size: auto;
+	margin: 20mm;
+  }

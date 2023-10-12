@@ -1,9 +1,7 @@
 
 @media print {
-    #printDivProgram {
-        display: auto;
-        width: 100%;
-        height: 100%; 
+    .estagioContainer{
+        margin: 5px
     }
 }
 

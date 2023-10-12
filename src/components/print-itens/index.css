@@ -2,6 +2,7 @@
 	body * {
 		visibility: hidden;
 		zoom: 0.985;
+		top: -70px;
 	}
 
 	
