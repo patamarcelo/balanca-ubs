@@ -214,6 +214,12 @@ const HomePage = () => {
 				parcelasNovas: []
 			}));
 		}
+		if (e.target.name === "placa") {
+			setTruckValues((truckValues) => ({
+				...truckValues,
+				placa: e.target.value.replace(/[^a-z0-9]/gi, "").toUpperCase()
+			}));
+		}
 	};
 
 	const handleBlurTruck = (e) => {

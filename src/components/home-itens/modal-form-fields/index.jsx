@@ -266,7 +266,8 @@ const ModalFormFields = (props) => {
 							inputProps={{
 								// maxLength: 13,
 								step: "0",
-								min: "0"
+								min: "0",
+								maxLength: input.maxlength
 							}}
 							placeholder={input.placeholder}
 							sx={{

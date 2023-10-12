@@ -31,7 +31,8 @@ export const TRUCK = [
 		label: "Placa",
 		name: "placa",
 		placeholder: "Placa",
-		type: "text"
+		type: "text",
+		maxlength: "7"
 	},
 	{
 		label: "Motorista",
