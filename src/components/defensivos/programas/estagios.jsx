@@ -19,7 +19,8 @@ const EstagiosComp = ({ data, program }) => {
 				flexDirection: "column",
 				justifyContent: "center",
 				alignItems: "center",
-				gap: "5px"
+				gap: "5px",
+				width: "100%"
 			}}
 		>
 			<Box className={styles.headerEstagios}>
@@ -31,7 +32,13 @@ const EstagiosComp = ({ data, program }) => {
 				.sort((a, b) => a.prazo_dap - b.prazo_dap)
 				.map((data, i) => {
 					return (
-						<Box className={styles.estagioContainer} key={i}>
+						<Box
+							className={[
+								`${styles["estagioContainer"]}
+								${i === 11 && "pageBreak"}`
+							]}
+							key={i}
+						>
 							<div className={styles.estagioTitle}>
 								<div style={{ fontWeight: "bold" }}>
 									{data.estagio}

@@ -1,7 +1,10 @@
 @media print {
 	body * {
 		visibility: hidden;
+		zoom: 0.985;
 	}
+
+	
 
 	#printablediv,
 	#printablediv * {
@@ -48,8 +51,7 @@
 	}
 
 	.print-container {
-		max-width: 925px;
-		width: 100%;
+		max-width: 150% !important;
 		display: flex;
 		flex-direction: column;
 	}

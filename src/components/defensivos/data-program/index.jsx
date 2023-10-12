@@ -643,7 +643,12 @@ const DataProgramPage = (props) => {
 											/>
 											<p
 												style={{
-													color: colors.primary[200]
+													color:
+														theme.palette.mode ===
+														"light"
+															? "grey"
+															: colors
+																	.primary[300]
 												}}
 											>
 												{programa}
@@ -651,7 +656,12 @@ const DataProgramPage = (props) => {
 											<p>{estagio}</p>
 											<p
 												style={{
-													color: colors.primary[200]
+													color:
+														theme.palette.mode ===
+														"light"
+															? "grey"
+															: colors
+																	.primary[300]
 												}}
 											>
 												Area Total: {data.total}

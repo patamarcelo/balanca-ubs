@@ -30,6 +30,12 @@ import HeaderComp from "./header";
 import EstagiosComp from "./estagios";
 import ConsolidadosProdutos from "./consolidadosProdutos";
 
+import "./programa-print.css";
+
+import IconButton from "@mui/material/IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPrint } from "@fortawesome/free-solid-svg-icons";
+
 const ProgramasSection = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -220,14 +226,26 @@ const ProgramasSection = () => {
 				<Box className={styles.mainProgramContainer}>
 					{programData ? (
 						<>
-							<HeaderComp
-								data={programData}
-								quantidadeTotal={quantidadeTotal}
-							/>
-							<EstagiosComp
-								data={filteredEstagios}
-								program={selectedPrograma}
-							/>
+							<Box sx={{ alignSelf: "end" }}>
+								<IconButton onClick={() => window.print()}>
+									<FontAwesomeIcon
+										icon={faPrint}
+										color={colors.blueAccent[500]}
+										size={"sm"}
+									/>
+								</IconButton>
+							</Box>
+
+							<div id="printDivProgram">
+								<HeaderComp
+									data={programData}
+									quantidadeTotal={quantidadeTotal}
+								/>
+								<EstagiosComp
+									data={filteredEstagios}
+									program={selectedPrograma}
+								/>
+							</div>
 							<hr />
 							{filteredOperations && (
 								<ConsolidadosProdutos
