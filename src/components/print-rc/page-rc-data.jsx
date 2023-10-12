@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Logo from "../../utils/assets/img/logo.jpg";
+import Logo from "../../utils/assets/img/logo2.jpg";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
@@ -96,7 +96,7 @@ const PageRcData = ({ printValue }) => {
 					alignItems="space-between"
 					height="100%"
 				>
-					<Box>
+					<Box mt={3}>
 						<img src={Logo} alt="logo" />
 					</Box>
 					<Box>

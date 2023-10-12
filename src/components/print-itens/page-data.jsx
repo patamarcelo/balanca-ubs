@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Logo from "../../utils/assets/img/logo.jpg";
+import Logo from "../../utils/assets/img/logo2.jpg";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import PageDataClassFlex from "./page-data-class-flex";
@@ -56,9 +56,12 @@ const PageData = ({ data }) => {
 			<Box
 				display="flex"
 				justifyContent="start"
+				mt={3}
+				mb={5}
+				ml={-1}
 				sx={{
-					width: "100%",
-					height: "100px"
+					width: "30px",
+					height: "30px"
 				}}
 			>
 				<img src={Logo} alt="logo" />
