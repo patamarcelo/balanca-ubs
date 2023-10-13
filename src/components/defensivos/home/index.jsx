@@ -182,6 +182,44 @@ const HomeDefensivoPage = (props) => {
 			selection: programasOpen
 		}
 	];
+
+	const STATUS_COMP = [
+		{
+			status: isOpenProducts,
+			comp: <DataDefensivoPage isLoadingHome={isLoadingHome} />
+		},
+		{
+			status: isOpenProductsByDayDinamic,
+			comp: <DataDefensivoPageDinamic isLoadingHome={isLoadingHome} />
+		},
+		{
+			status: isOpenProductsProgram,
+			comp: (
+				<DataProgramPage
+					handleRefreshData={handleRefreshData}
+					initialDateForm={initialDateForm}
+					finalDateForm={finalDateForm}
+					isLoadingHome={isLoadingHome}
+				/>
+			)
+		},
+		{
+			status: isOpenPlantioPage,
+			comp: <PlantioDonePage isLoadingHome={isLoadingHome} />
+		},
+		{
+			status: isProdutividadePage,
+			comp: <ProdutividadePage isLoadingHome={isLoadingHome} />
+		},
+		{
+			status: isOpenFarmbox,
+			comp: <FarmBoxPage isLoadingHome={isLoadingHome} />
+		},
+		{
+			status: programasOpen,
+			comp: <ProgramasSection isLoadingHome={isLoadingHome} />
+		}
+	];
 	return (
 		<Box width="100%" height="100%">
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
@@ -241,7 +279,7 @@ const HomeDefensivoPage = (props) => {
 					)}
 				</Stack>
 			</Box>
-			{isOpenProducts && (
+			{/* {isOpenProducts && (
 				<>
 					{isChangingTable && <LoaderHomeSkeleton />}
 					{!isLoadingHome && !isChangingTable && (
@@ -319,7 +357,22 @@ const HomeDefensivoPage = (props) => {
 						<ProgramasSection isLoadingHome={isLoadingHome} />
 					)}
 				</>
-			)}
+			)} */}
+
+			{STATUS_COMP.map((data, i) => {
+				return (
+					data.status && (
+						<>
+							{isChangingTable && (
+								<Box className={classesPlantioDone.container}>
+									<LoaderHomeSkeleton />
+								</Box>
+							)}
+							{!isLoadingHome && !isChangingTable && data.comp}
+						</>
+					)
+				);
+			})}
 		</Box>
 	);
 };

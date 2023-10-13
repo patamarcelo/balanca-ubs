@@ -343,3 +343,16 @@
     justify-content: center;
     align-items: center;
 }
+
+
+
+@media print{
+    .printableGeralProgramaDiv, 
+    .printableGeralProgramaDiv *{
+        visibility: visible;
+        zoom: 0.95;
+    }
+}
+
+
+

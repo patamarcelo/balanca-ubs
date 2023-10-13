@@ -313,8 +313,9 @@ const DataProgramPage = (props) => {
 		const filtArray = filtParcelas
 			.flat()
 			.sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp))
-			.sort((a, b) => a.dapApp - b.dapApp);
-
+			.sort((a, b) => a.dapApp - b.dapApp)
+			.sort((a, b) => a.variedade.localeCompare(b.variedade));
+		console.log(filtArray);
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
 			const dapApp = curr.dapApp;
@@ -427,7 +428,13 @@ const DataProgramPage = (props) => {
 					);
 				})}
 			</Box>
-			<Box className={classes["box-program"]} mt={2}>
+			<Box
+				className={[
+					classes["box-program"],
+					classes["printableGeralProgramaDiv"]
+				]}
+				mt={2}
+			>
 				<Box
 					className={classes["fazenda-div"]}
 					style={{ backgroundColor: colors.blueOrigin[800] }}
