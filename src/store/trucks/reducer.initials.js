@@ -69,18 +69,18 @@ export const TRUCK_OBS = [
 		type: "text"
 	},
 	{
-		label: "Destino - Outros",
-		name: "destino",
-		placeholder: "Destino - Outros",
-		// required: true,
-		type: "text"
-	},
-	{
 		label: "Parcela",
 		name: "parcela",
 		placeholder: "Parcela",
 		type: "text",
 		helperText: "Coloque as parcelas separadas por vírgula: A01,A02"
+	},
+	{
+		label: "Destino - Outros",
+		name: "destino",
+		placeholder: "Destino - Outros",
+		// required: true,
+		type: "text"
 	},
 	{
 		label: "Cultura",
@@ -175,6 +175,7 @@ export const FAZENDA_ORIGEM = [
 	{ id: 6, local: "Projeto Tuiuiu", user: "diamante" },
 	{ id: 46, local: "Diamante", user: "diamante" },
 	{ id: 45, local: "UBS", user: "ubs" },
+	{ id: 55, local: "Confinamento", user: "outros" },
 	{ id: "D3", local: "Fazenda Biguá", user: "outros" },
 	{ id: "D4", local: "Fazendão", user: "outros" },
 	{ id: "D9", local: "Uniraça", user: "outros" },
