@@ -315,7 +315,6 @@ const DataProgramPage = (props) => {
 			.sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp))
 			.sort((a, b) => a.dapApp - b.dapApp)
 			.sort((a, b) => a.variedade.localeCompare(b.variedade));
-		console.log(filtArray);
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
 			const dapApp = curr.dapApp;
