@@ -24,3 +24,7 @@ export const setPlantioMapAll = (plantioArray) => {
 		plantioArray
 	);
 };
+
+export const setPluvi = (pluviArray) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_PLUVI, pluviArray);
+};

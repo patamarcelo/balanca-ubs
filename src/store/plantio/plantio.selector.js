@@ -8,6 +8,22 @@ export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
 
 export const selecPlantioMapAll = (state) => state.plantio.plantioMapAll;
 
+export const selecPluvi = (state) => state.plantio.pluvi;
+
+export const selecPluviFormat = (state) => {
+	const data = state.plantio.pluvi;
+	const formData = data.map((data) => {
+		return {
+			fazenda: data.pluviometer.farm.name,
+			fazendaId: data.pluviometer.farm.id,
+			date: data.date.split("T")[0],
+			value: data.quantity
+		};
+	});
+	console.log(formData);
+	return formData;
+};
+
 export const createDict = (state) => {
 	const plantio = state.plantio.app;
 	const newArr = plantio.map((data) => {

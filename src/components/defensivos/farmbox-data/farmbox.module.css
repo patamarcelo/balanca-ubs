@@ -305,3 +305,50 @@
 .parcelasDetailDivHide {
     height: 0;
 }
+
+
+ .pluviNumber{
+    font-size: 14px;
+    text-align: center;
+}
+
+.pluviHeader{
+    font-size: 16px;
+    padding-left: 12px;
+}
+
+.headerDate {
+    text-align: center;
+    font-size: 18px;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+.headerTitle {
+    /* text-align: center; */
+    font-size: 18px;
+    padding-bottom: 10px;
+    font-weight: bold;
+    padding-left: 12px;
+}
+
+.pluviZero {
+    color: red;
+    font-weight: bold;
+}
+
+.pluviGood {
+    color: whitesmoke;
+    font-weight: bold;
+}
+
+
+.rowTablePluvi:nth-child(odd) {
+    background-color: rgba(128, 128, 128, 0.3) !important;
+}
+
+.rowTablePluvi:hover {
+    background-color: rgba(245, 245, 245, 0.8) !important;
+}
+.rowTablePluvi:hover span, .rowTablePluvi:hover .pluviGood  {
+    color: black;
+}

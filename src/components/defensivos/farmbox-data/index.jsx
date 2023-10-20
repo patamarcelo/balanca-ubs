@@ -10,7 +10,11 @@ import {
 	createDictFarmBox,
 	onlyFarm
 } from "../../../store/plantio/plantio.selector";
-import { setApp, setAppFarmBox } from "../../../store/plantio/plantio.actions";
+import {
+	setApp,
+	setAppFarmBox,
+	setPluvi
+} from "../../../store/plantio/plantio.actions";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -44,6 +48,7 @@ import {
 	getNextDays,
 	getNextWeekDays
 } from "../../../utils/format-suport/data-format";
+import PluviDataComp from "./pluvi-data";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
@@ -186,6 +191,34 @@ const FarmBoxPage = () => {
 		});
 		setSaldoAplicar(saldoAplicar);
 	}, [filtFarm, showFutureApps]);
+
+	// handle data grom nodeServer ----- pluviometria
+
+	const getPluviData = useCallback(async () => {
+		try {
+			// setLoadinData(true);
+			await nodeServer
+				.get("/pluviometria", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+						"X-Firebase-AppCheck": user.accessToken
+					}
+				})
+				.then((res) => {
+					dispatch(setPluvi(res.data.result));
+				})
+				.catch((err) => console.log(err));
+		} catch (err) {
+			console.log("Erro ao consumir a API", err);
+		} finally {
+			// setLoadinData(false);
+			console.log("Finally statement");
+		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		getPluviData();
+	}, []);
 
 	return (
 		<div className={classes.mainDiv}>
@@ -435,6 +468,7 @@ const FarmBoxPage = () => {
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<span>Selecione uma fazenda</span>
+						<PluviDataComp />
 					</Box>
 				)}
 			</IndexModalDataFarmbox>
