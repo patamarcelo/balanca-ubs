@@ -9,11 +9,11 @@ import { useState, useEffect } from "react";
 
 const BiologicoTable = (props) => {
 	const [checked, setChecked] = useState(false);
-	const { data } = props;
+	const { data, dateFilt } = props;
 	const newData = data.sort((a, b) =>
 		b["Situação"]?.localeCompare(a["Situação"])
 	);
-	console.log(newData);
+
 	const [filteredData, setFilteredData] = useState([]);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -135,52 +135,70 @@ const BiologicoTable = (props) => {
 					</tr>
 				</thead>
 				<tbody>
-					{filteredData.map((data, i) => {
-						if (data["Data Envio"].length > 4) {
-							var sendData = data["Data Envio"]
-								.split("(")[1]
-								.split(")")[0];
-							const mapData = sendData
-								.split(",")
-								.map((data) => Number(data));
-							let fDate = new Date(...mapData);
-							const ffDate = fDate.toLocaleDateString("pt-BR", {
-								year: "numeric",
-								month: "2-digit",
-								day: "2-digit"
-							});
-							// var envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
-							var envDateFormat = ffDate;
-						} else {
-							envDateFormat = " - ";
-						}
-						const fontColor =
-							data["Situação"] === "Pendente"
-								? "solicitacao-pendente"
-								: "solicitacao-atendida";
-						return (
-							<tr key={i} className={fontColor}>
-								<th className="data-format">
-									{data["BIOLÓGICOS Data Solicitação"]}
-								</th>
-								<th>{data["Solicitação"]}</th>
-								<th>{data["Estágio"]}</th>
-								<th>{data.Produto}</th>
-								<th>
-									{data.Quantidade.toLocaleString("pt-br", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2
-									})}
-								</th>
-								<th>{data.Cultura}</th>
-								<th>{data.Destino}</th>
-								<th>{data.Projeto}</th>
-								<th className="data-format">{envDateFormat}</th>
-								<th>{data.OBS}</th>
-								<th>{data["Situação"]}</th>
-							</tr>
-						);
-					})}
+					{filteredData
+						.filter((data) => {
+							const newDateF = new Date(
+								data["BIOLÓGICOS Data Solicitação"]
+									.split("/")
+									.reverse()
+									.join("-")
+							);
+							return newDateF > dateFilt;
+						})
+						.map((data, i) => {
+							if (data["Data Envio"].length > 4) {
+								var sendData = data["Data Envio"]
+									.split("(")[1]
+									.split(")")[0];
+								const mapData = sendData
+									.split(",")
+									.map((data) => Number(data));
+								let fDate = new Date(...mapData);
+								const ffDate = fDate.toLocaleDateString(
+									"pt-BR",
+									{
+										year: "numeric",
+										month: "2-digit",
+										day: "2-digit"
+									}
+								);
+								// var envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+								var envDateFormat = ffDate;
+							} else {
+								envDateFormat = " - ";
+							}
+							const fontColor =
+								data["Situação"] === "Pendente"
+									? "solicitacao-pendente"
+									: "solicitacao-atendida";
+							return (
+								<tr key={i} className={fontColor}>
+									<th className="data-format">
+										{data["BIOLÓGICOS Data Solicitação"]}
+									</th>
+									<th>{data["Solicitação"]}</th>
+									<th>{data["Estágio"]}</th>
+									<th>{data.Produto}</th>
+									<th>
+										{data.Quantidade.toLocaleString(
+											"pt-br",
+											{
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+											}
+										)}
+									</th>
+									<th>{data.Cultura}</th>
+									<th>{data.Destino}</th>
+									<th>{data.Projeto}</th>
+									<th className="data-format">
+										{envDateFormat}
+									</th>
+									<th>{data.OBS}</th>
+									<th>{data["Situação"]}</th>
+								</tr>
+							);
+						})}
 				</tbody>
 			</table>
 		</Box>

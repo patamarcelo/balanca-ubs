@@ -339,7 +339,7 @@ const RetrieveData = () => {
 				/>
 
 				{dataBioArr && dataBioArr.length > 0 && (
-					<BiologicoTable data={dataBioArr} />
+					<BiologicoTable data={dataBioArr} dateFilt={value} />
 				)}
 			</Box>
 		</Box>
