@@ -83,6 +83,26 @@ const PluviDataComp = () => {
 									data.date === indexDate
 							);
 							console.log(filteredValueObj.length);
+							if (filteredValueObj.length > 1) {
+								console.log(
+									"objetos filtados: ",
+									filteredValueObj
+								);
+								const divideBy = filteredValueObj.length;
+								const value = filteredValueObj.reduce(
+									(acc, curr) => {
+										acc += curr.value;
+										return acc;
+									},
+									0
+								);
+
+								const finalValue = value / divideBy;
+								return `${finalValue.toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								})} mm`;
+							}
 							if (filteredValueObj.length > 0) {
 								const value = filteredValueObj[0].value;
 								return `${value} mm`;
