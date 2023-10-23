@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import SementeTable from "./semente";
 import DefensivoTable from "./defensivo";
+import BiologicoTable from "./biologico";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
@@ -24,8 +25,19 @@ const RetrieveData = () => {
 	const query3 = "sheet=Extrato";
 	const url1 = `${url}${ssid}${query1}&${query2}&${query3}`;
 
+	const url_bio = "https://docs.google.com/spreadsheets/d/";
+	const ssid_bio = "1xeRBIY_c7qdP1R5Bg2AjvSNmrNDJ-pSPuNEznenFxMI";
+	const query1_bio = `/gviz/tq?`;
+	const query2_bio = "tqx=out:json";
+	const query3_bio = "sheet=Biologico";
+	const url1_bio = `${url_bio}${ssid_bio}${query1_bio}&${query2_bio}&${query3_bio}`;
+
 	const [dataArr, setDataArr] = useState([]);
 	const [filteredArr, setFilteredArr] = useState([]);
+
+	const [dataBioArr, setDataBioArr] = useState([]);
+	const [filteredBioArr, setFilteredBioArr] = useState([]);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [isdone, setIsDone] = useState(true);
 
@@ -149,9 +161,87 @@ const RetrieveData = () => {
 			setIsLoading(false);
 		}
 	};
+	const getDataBio = async () => {
+		try {
+			await fetch(url1_bio)
+				.then((data) => data.text())
+				.then((data) => {
+					const temp = data.substring(47).slice(0, -2);
+					const json = JSON.parse(temp);
+					const columnsHeader = json.table.cols;
+					let newDict = [];
+					json.table.rows.forEach((row, index) => {
+						let newObj = {};
+						row.c.forEach((cell, index) => {
+							let cellValue = cell === null ? "-" : cell.v;
+							if (index === 0) {
+								cellValue = cell?.f;
+							}
+							if (index === 16 && cellValue.length > 1) {
+								cellValue = cell.f;
+							}
+							newObj[columnsHeader[index]?.label] = cellValue;
+						});
+						newDict.push(newObj);
+					});
+					const filteredData = newDict.filter((data) => {
+						// console.log(data);
+						const diaNovo = new Date();
+						// const ontem = "12/02/2023";
+						const hoje = diaNovo
+							.toLocaleString("PT-br")
+							.split(" ")[0];
+						if (
+							data["Data Solicitação"] !== undefined &&
+							data["Data Envio"] !== undefined &&
+							data["Data Envio"].length > 4
+						) {
+							var sendData = data["Data Envio"]
+								.split("(")[1]
+								.split(")")[0];
+							const mapData = sendData
+								.split(",")
+								.map((data) => Number(data));
+							let fDate = new Date(...mapData);
+							var ffDate = fDate.toLocaleDateString("pt-BR", {
+								year: "numeric",
+								month: "2-digit",
+								day: "2-digit"
+							});
+						} else {
+							ffDate = "01/01/2222";
+						}
+
+						const [day, month, year] = hoje.split("/");
+						const formatDateHoje = [year, month, day].join("-");
+
+						const [ffday, ffmonth, ffyear] = ffDate.split("/");
+						const formatDateffDate = [ffyear, ffmonth, ffday].join(
+							"-"
+						);
+
+						return (
+							data["Situação"] === "Pendente" ||
+							new Date(formatDateffDate) >=
+								new Date(formatDateHoje)
+						);
+					});
+					setFilteredBioArr(filteredData);
+					setDataBioArr(newDict);
+				});
+		} catch (err) {
+			console.log("Erro ao pegar os dados ", err);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	useEffect(() => {
 		getData();
+	}, []);
+
+	useEffect(() => {
+		getDataBio();
 	}, []);
 
 	if (isLoading) {
@@ -247,6 +337,10 @@ const RetrieveData = () => {
 							data["Solicitação"].toLowerCase() !== "semente"
 					)}
 				/>
+
+				{dataBioArr && dataBioArr.length > 0 && (
+					<BiologicoTable data={dataBioArr} />
+				)}
 			</Box>
 		</Box>
 	);
