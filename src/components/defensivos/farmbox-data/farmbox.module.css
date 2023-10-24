@@ -323,6 +323,16 @@
     padding-bottom: 10px;
     font-weight: bold;
 }
+
+.headerDate p:last-child {
+    margin: 0;
+    font-size: 0.7rem;
+    font-style: italic;
+    
+}
+.headerDate p {
+    margin: 0;
+}
 .headerTitle {
     /* text-align: center; */
     font-size: 18px;

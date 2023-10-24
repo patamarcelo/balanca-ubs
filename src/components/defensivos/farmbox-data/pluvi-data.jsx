@@ -14,13 +14,27 @@ const PluviDataComp = () => {
 	const [lastFiveDays, setlastFiveDays] = useState();
 	const pluviData = useSelector(selecPluviFormat);
 
+	const days = [
+		"Domingo",
+		"Segunda-Feira",
+		"Terça-Feira",
+		"Quarta-Feira",
+		"Quinta-Feira",
+		"Sexta-Feira",
+		"Sábado"
+	];
+
 	const getLastFiveDays = () => {
 		let fiveDays = [];
 		const today = new Date();
 		for (let i = 0; i < 5; i++) {
 			const getDay = new Date(new Date().setDate(today.getDate() - i));
 			const formatDay = getDay.toISOString().split("T")[0];
-			fiveDays.push(formatDay);
+			const newDay = {
+				date: formatDay,
+				number: days[getDay.getDay()]
+			};
+			fiveDays.push(newDay);
 		}
 		return fiveDays.reverse();
 	};
@@ -60,11 +74,14 @@ const PluviDataComp = () => {
 				<div className={styles.headerTitle}>Fazenda</div>
 				{lastFiveDays &&
 					lastFiveDays.map((data, i) => {
-						const [year, month, day] = data.split("-");
+						const [year, month, day] = data.date.split("-");
 						const formatData = `${day}/${month}/${year}`;
 						return (
 							<div className={styles.headerDate} key={i}>
-								{formatData}
+								<p>{formatData}</p>
+								<p style={{ color: colors.primary[200] }}>
+									{data.number}
+								</p>
 							</div>
 						);
 					})}
@@ -99,13 +116,16 @@ const PluviDataComp = () => {
 
 								const finalValue = value / divideBy;
 								return `${finalValue.toLocaleString("pt-br", {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
+									minimumFractionDigits: 1,
+									maximumFractionDigits: 1
 								})} mm`;
 							}
 							if (filteredValueObj.length > 0) {
 								const value = filteredValueObj[0].value;
-								return `${value} mm`;
+								return `${value.toLocaleString("pt-br", {
+									minimumFractionDigits: 1,
+									maximumFractionDigits: 1
+								})} mm`;
 							}
 							return "Sem Apontamento";
 						};
@@ -114,7 +134,8 @@ const PluviDataComp = () => {
 								sx={{
 									display: "grid",
 									gridTemplateColumns: "repeat(6,1fr)",
-									width: "10"
+									width: "10",
+									padding: "3px 0px"
 								}}
 								className={styles.rowTablePluvi}
 							>
@@ -124,7 +145,7 @@ const PluviDataComp = () => {
 								{lastFiveDays.map((lastDays, i) => {
 									const valuePluvi = getPluviValue(
 										data.name,
-										lastFiveDays[i]
+										lastFiveDays[i].date
 									);
 									const classesUsed = `${
 										styles.pluviNumber

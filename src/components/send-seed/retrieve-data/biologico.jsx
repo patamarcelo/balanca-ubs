@@ -143,7 +143,11 @@ const BiologicoTable = (props) => {
 									.reverse()
 									.join("-")
 							);
-							return newDateF > dateFilt;
+							if (dateFilt) {
+								return newDateF > dateFilt;
+							} else {
+								return data;
+							}
 						})
 						.map((data, i) => {
 							if (data["Data Envio"].length > 4) {
