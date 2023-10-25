@@ -31,6 +31,11 @@ import "./index.css";
 import { setSafraCilco } from "../../store/plantio/plantio.actions";
 import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
 
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+
 const initialValues = {
 	username: "",
 	password: ""
@@ -94,6 +99,14 @@ const Auth = () => {
 		username: yup.string().email("Email Inválido").required("Obrigatório"),
 		password: yup.string().min(5, "Muito Curto").required("Obrigatório")
 	});
+
+	const [showPassword, setShowPassword] = useState(true);
+
+	const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+	const handleMouseDownPassword = (e) => {
+		e.preventDefault();
+	};
 
 	return (
 		<Box
@@ -205,7 +218,12 @@ const Auth = () => {
 											key={index}
 											fullWidth
 											variant="filled"
-											type={value.type}
+											type={
+												value.name === "password" &&
+												!showPassword
+													? "text"
+													: value.type
+											}
 											label={value.label}
 											onBlur={(e) => {
 												handleBlur(e);
@@ -243,6 +261,27 @@ const Auth = () => {
 												getIn(touched, value.name) &&
 												getIn(errors, value.name)
 											}
+											InputProps={{
+												endAdornment: value.type ===
+													"password" && (
+													<IconButton
+														aria-label="toggle password visibility"
+														onClick={
+															handleClickShowPassword
+														}
+														onMouseDown={
+															handleMouseDownPassword
+														}
+														edge="end"
+													>
+														{showPassword ? (
+															<VisibilityOff />
+														) : (
+															<Visibility />
+														)}
+													</IconButton>
+												)
+											}}
 										/>
 									);
 								})}
