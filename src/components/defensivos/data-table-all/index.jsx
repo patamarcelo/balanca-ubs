@@ -61,7 +61,12 @@ const DataDefensivoPage = (props) => {
 				</Box>
 			)}
 			{!isLoadingHome && plantioRedux && (
-				<ProgramaTablePage loading={isLoadingHome} rows={tableData} />
+				<>
+					<ProgramaTablePage
+						loading={isLoadingHome}
+						rows={tableData}
+					/>
+				</>
 			)}
 		</Box>
 	);

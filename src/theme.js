@@ -128,6 +128,9 @@ export const tokens = (mode) => ({
 					700: "#222222",
 					800: "#161616",
 					900: "#0b0b0b"
+				},
+				textColor: {
+					100: "whitesmoke"
 				}
 		  }
 		: {
@@ -252,6 +255,9 @@ export const tokens = (mode) => ({
 					700: "#888888",
 					800: "#afafaf",
 					900: "#d7d7d7"
+				},
+				textColor: {
+					100: "black"
 				}
 		  })
 });

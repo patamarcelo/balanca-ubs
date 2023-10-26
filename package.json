@@ -24,6 +24,7 @@
     "@nivo/core": "^0.80.0",
     "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
+    "@nivo/sunburst": "^0.83.0",
     "@react-google-maps/api": "^2.18.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

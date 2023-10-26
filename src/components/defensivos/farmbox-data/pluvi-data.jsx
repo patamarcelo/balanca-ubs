@@ -46,7 +46,8 @@ const PluviDataComp = () => {
 
 	return (
 		<Box
-			mt={4}
+			mt={2}
+			mb={2}
 			p={2}
 			sx={{
 				backgroundColor: colors.blueOrigin[800],
@@ -57,7 +58,7 @@ const PluviDataComp = () => {
 			<Typography
 				variant="h3"
 				color={colors.primary[100]}
-				m={2}
+				mb={4}
 				sx={{ textAlign: "center", fontWeight: "bold" }}
 			>
 				Pluviometria
@@ -93,6 +94,7 @@ const PluviDataComp = () => {
 				FarmsFarmBoxData.filter((data) => data.show === true)
 					.sort((a, b) => a.name.localeCompare(b.name))
 					.map((data, i) => {
+						let pluviNumberData = 0;
 						const getPluviValue = (farmName, indexDate) => {
 							const filteredValueObj = pluviData.filter(
 								(data) =>
@@ -115,6 +117,7 @@ const PluviDataComp = () => {
 								);
 
 								const finalValue = value / divideBy;
+								pluviNumberData = finalValue;
 								return `${finalValue.toLocaleString("pt-br", {
 									minimumFractionDigits: 1,
 									maximumFractionDigits: 1
@@ -122,6 +125,7 @@ const PluviDataComp = () => {
 							}
 							if (filteredValueObj.length > 0) {
 								const value = filteredValueObj[0].value;
+								pluviNumberData = value;
 								return `${value.toLocaleString("pt-br", {
 									minimumFractionDigits: 1,
 									maximumFractionDigits: 1
@@ -153,6 +157,9 @@ const PluviDataComp = () => {
 										valuePluvi.length > 10
 											? styles.pluviZero
 											: styles.pluviGood
+									} ${
+										pluviNumberData > 0 &&
+										styles.pluviNotZero
 									}`;
 									return (
 										<div className={classesUsed} key={i}>

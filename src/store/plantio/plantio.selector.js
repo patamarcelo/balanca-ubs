@@ -2,6 +2,76 @@ import { getNextDays } from "../../utils/format-suport/data-format";
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
+export const selecPlantioCharts = (state) => {
+	const data = state.plantio.plantio;
+	const totalPlantado = data
+		.filter((data) => data.dados.plantio_finalizado === true)
+		.reduce((acc, curr) => curr.dados.area_colheita + acc, 0);
+	const totalAberto = data
+		.filter((data) => data.dados.plantio_finalizado === false)
+		.reduce((acc, curr) => curr.dados.area_colheita + acc, 0);
+	const dataConsoli = [
+		{
+			id: "Plantado",
+			label: "Plantado",
+			value: totalPlantado.toFixed(2),
+			color: "#e8a838",
+			formattedValue: totalPlantado.toFixed(2) + " Ha",
+			percen: (totalPlantado / (totalAberto + totalPlantado)) * 100
+		},
+		{
+			id: "Planejado",
+			label: "Planejado",
+			value: totalAberto.toFixed(2),
+			color: "hsl(123, 70%, 50%)",
+			percen: (totalAberto / (totalAberto + totalPlantado)) * 100
+		}
+	];
+
+	return dataConsoli;
+};
+
+export const selectPlantioVarsChart = (state) => {
+	const data = state.plantio.plantio.filter(
+		(data) => data.dados.plantio_finalizado === true
+	);
+	const resumeData = data.reduce((acc, curr) => {
+		if (
+			acc.filter((data) => data.id === curr.dados.variedade).length === 0
+		) {
+			const objToAdd = {
+				id: curr.dados.variedade,
+				area: curr.dados.area_colheita,
+				cultura: curr.dados.cultura
+			};
+			acc.push(objToAdd);
+		} else {
+			const findIndexOf = (e) => e.id === curr.dados.variedade;
+			const getIndex = acc.findIndex(findIndexOf);
+			acc[getIndex]["area"] += curr.dados.area_colheita;
+		}
+
+		return acc;
+	}, []);
+
+	const resumeDataCult = data.reduce((acc, curr) => {
+		if (!acc[curr.dados.cultura]) {
+			acc[curr.dados.cultura] = curr.dados.area_colheita;
+		} else {
+			acc[curr.dados.cultura] += curr.dados.area_colheita;
+		}
+
+		return acc;
+	}, {});
+
+	const formObj = Object.entries(resumeDataCult);
+	const result = formObj.map((data) => {
+		return { id: data[0], label: data[0], value: data[1] };
+	});
+
+	return { result: result, data: resumeData };
+};
+
 export const selectApp = (state) => state.plantio.app;
 
 export const selectSafraCiclo = (state) => state.plantio.safraCiclo;

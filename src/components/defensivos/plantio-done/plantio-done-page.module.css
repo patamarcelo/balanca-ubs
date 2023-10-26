@@ -4,3 +4,18 @@
     width: 100%;
     margin-top: 30px;
 }
+
+.varChoices{
+    padding: 3px 10px ;
+    background-color: rgb(254,254,254,0.2);
+    border-radius: 8px;
+}
+
+.varChoices:hover{
+    background-color: rgb(254,254,254,0.5);   
+}
+
+.varChoiceActive{
+    background-color: rgb(254,254,254,0.9);   
+    color: black
+}
