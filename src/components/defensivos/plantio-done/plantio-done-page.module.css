@@ -12,10 +12,10 @@
 }
 
 .varChoices:hover{
-    background-color: rgb(254,254,254,0.5);   
+    background-color: rgb(254,254,254,0.2);   
 }
 
 .varChoiceActive{
-    background-color: rgb(254,254,254,0.9);   
+    background-color: rgb(254,254,254,0.9) !important;   
     color: black
 }

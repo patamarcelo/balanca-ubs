@@ -2,8 +2,118 @@ import { getNextDays } from "../../utils/format-suport/data-format";
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
-export const selecPlantioCharts = (state) => {
-	const data = state.plantio.plantio;
+export const selectPlantioDoneResume = (filterVar) => (state) => {
+	let data = [];
+	if (filterVar === "Todas") {
+		data = state.plantio.plantio;
+	} else {
+		data = state.plantio.plantio.filter(
+			(data) => data.dados.cultura === filterVar
+		);
+	}
+	const filterByFarm = data.reduce((acc, curr) => {
+		if (curr.dados.plantio_finalizado === true) {
+			if (
+				acc.filter(
+					(data) =>
+						data.status === "plantado" &&
+						data.cultura === curr.dados.cultura &&
+						data.fazenda === curr.fazenda
+				).length === 0
+			) {
+				const objToAdd = {
+					fazenda: curr.fazenda,
+					area: curr.dados.area_colheita,
+					cultura: curr.dados.cultura,
+					status: "plantado"
+				};
+				acc.push(objToAdd);
+			} else {
+				const findIndexOf = (e) =>
+					e.cultura === curr.dados.cultura &&
+					e.status === "plantado" &&
+					e.fazenda === curr.fazenda;
+				const getIndex = acc.findIndex(findIndexOf);
+				acc[getIndex]["area"] += curr.dados.area_colheita;
+			}
+		} else {
+			if (
+				acc.filter(
+					(data) =>
+						data.status === "planejado" &&
+						data.cultura === curr.dados.cultura &&
+						data.fazenda === curr.fazenda
+				).length === 0
+			) {
+				const objToAdd = {
+					fazenda: curr.fazenda,
+					area: curr.dados.area_colheita,
+					cultura: curr.dados.cultura,
+					status: "planejado"
+				};
+				acc.push(objToAdd);
+			} else {
+				const findIndexOf = (e) =>
+					e.cultura === curr.dados.cultura &&
+					e.status === "planejado" &&
+					e.fazenda === curr.fazenda;
+				const getIndex = acc.findIndex(findIndexOf);
+				acc[getIndex]["area"] += curr.dados.area_colheita;
+			}
+		}
+
+		return acc;
+	}, []);
+
+	const onlyPlantedFarm = filterByFarm
+		.filter((data) => data.status === "plantado")
+		.reduce(
+			(acc, curr) => {
+				if (
+					acc.filter((data) => data.fazenda === curr.fazenda)
+						.length === 0
+				) {
+					const objToAdd = {
+						fazenda: curr.fazenda,
+						area: curr.area
+					};
+					acc.push(objToAdd);
+				} else {
+					const findIndexOf = (e) => e.fazenda === curr.fazenda;
+					const getIndex = acc.findIndex(findIndexOf);
+					acc[getIndex]["area"] += curr.area;
+				}
+
+				return acc;
+			},
+
+			[]
+		);
+
+	const totalPlan = data.reduce((acc, curr) => {
+		if (!acc[curr.fazenda]) {
+			acc[curr.fazenda] = curr.dados.area_colheita;
+		} else {
+			acc[curr.fazenda] += curr.dados.area_colheita;
+		}
+		return acc;
+	}, {});
+	return {
+		allFarm: filterByFarm,
+		planted: onlyPlantedFarm,
+		totalPlan: totalPlan
+	};
+};
+
+export const selecPlantioCharts = (filterVar) => (state) => {
+	let data = [];
+	if (filterVar === "Todas") {
+		data = state.plantio.plantio;
+	} else {
+		data = state.plantio.plantio.filter(
+			(data) => data.dados.cultura === filterVar
+		);
+	}
 	const totalPlantado = data
 		.filter((data) => data.dados.plantio_finalizado === true)
 		.reduce((acc, curr) => curr.dados.area_colheita + acc, 0);

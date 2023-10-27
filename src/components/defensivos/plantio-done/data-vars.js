@@ -3,3 +3,22 @@ export const data = [
 	{ id: "Arroz", label: "Arroz", value: 8000, color: "#FBBF70" },
 	{ id: "Soja", label: "Soja", value: 5700, color: "#33CD32" }
 ];
+
+export const resume = [
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 },
+	{ fazenda: "Benção de deus", area: 1250.2 }
+];

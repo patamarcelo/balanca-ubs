@@ -16,7 +16,7 @@ const MyResponsiveSunburst = (props) => {
 		<Box
 			sx={{
 				width: "100%",
-				height: "450px",
+				height: "400px",
 				textAlign: "center",
 				position: "relative"
 			}}

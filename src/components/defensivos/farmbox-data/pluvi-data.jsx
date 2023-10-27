@@ -101,12 +101,7 @@ const PluviDataComp = () => {
 									data.fazenda === farmName &&
 									data.date === indexDate
 							);
-							console.log(filteredValueObj.length);
 							if (filteredValueObj.length > 1) {
-								console.log(
-									"objetos filtados: ",
-									filteredValueObj
-								);
 								const divideBy = filteredValueObj.length;
 								const value = filteredValueObj.reduce(
 									(acc, curr) => {
@@ -131,6 +126,7 @@ const PluviDataComp = () => {
 									maximumFractionDigits: 1
 								})} mm`;
 							}
+							console.log(pluviNumberData);
 							return "Sem Apontamento";
 						};
 						return (

@@ -342,10 +342,6 @@
     align-self: center;
 }
 
-.pluviZero {
-    color: red;
-    font-weight: bold;
-}
 
 .pluviGood {
     color: whitesmoke;
@@ -356,6 +352,10 @@
     color: yellow;
 }
 
+.pluviZero {
+    color: red;
+    font-weight: bold;
+}
 
 .rowTablePluvi:nth-child(odd) {
     background-color: rgba(128, 128, 128, 0.3) !important;

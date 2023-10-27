@@ -71,7 +71,7 @@ const MyResponsiveChartVars = (props) => {
 
 	useEffect(() => {
 		const filtCult = data.map((data) => data.cultura);
-		const Add = [...filtCult, "Todas"];
+		const Add = ["Todas", ...filtCult];
 		setFiltCult([...new Set(Add)]);
 	}, []);
 
@@ -79,7 +79,7 @@ const MyResponsiveChartVars = (props) => {
 		<Box
 			sx={{
 				width: "100%",
-				height: "450px",
+				height: "400px",
 				textAlign: "center",
 				position: "relative"
 			}}
