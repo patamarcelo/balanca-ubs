@@ -112,6 +112,7 @@ const PlantioDonePage = () => {
 								display: "flex",
 								// flexDirection: "column",
 								justifyContent: "space-around",
+								flexDirection: "column",
 								alignItems: "center",
 								overflow: "auto",
 								overflowY: "hidden"
@@ -119,56 +120,78 @@ const PlantioDonePage = () => {
 						>
 							<Box
 								sx={{
-									alignSelf: "baseline",
-									justifySelf: "baseline",
-									paddingTop: "10px",
-									gap: "10px",
 									display: "flex",
-									flexDirection: "column"
+									width: "100%",
+									justifyContent: "flex-start",
+									marginLeft: "10px"
 								}}
 							>
-								{filtCult &&
-									filtCult.map((data, i) => {
-										return (
-											<Box
-												key={i}
-												onClick={() => {
-													handleFilter(data);
-												}}
-												sx={{
-													cursor: "pointer"
-												}}
-												className={`${
-													classes.varChoices
-												} ${
-													selectCult === data &&
-													classes.varChoiceActive
-												}`}
-											>
-												{data}
-											</Box>
-										);
-									})}
+								<Box
+									sx={{
+										alignSelf: "baseline",
+										justifySelf: "baseline",
+										paddingTop: "10px",
+										gap: "10px",
+										display: "flex",
+										flexDirection: "row"
+									}}
+								>
+									{filtCult &&
+										filtCult.map((data, i) => {
+											return (
+												<Box
+													key={i}
+													onClick={() => {
+														handleFilter(data);
+													}}
+													sx={{
+														cursor: "pointer"
+													}}
+													className={`${
+														classes.varChoices
+													} ${
+														selectCult === data &&
+														classes.varChoiceActive
+													}`}
+												>
+													{data}
+												</Box>
+											);
+										})}
+								</Box>
 							</Box>
-							<Box sx={{ height: "400px", width: "400px" }}>
-								<MyResponsivePie
-									colors={colors}
-									data={plantioChart}
-								/>
-							</Box>
-							<Box sx={{ height: "400px", width: "400px" }}>
-								<MyResponsiveSunburst
-									colors={colors}
-									data={plantioChartVars["result"]}
-								/>
-							</Box>
-							<Box sx={{ height: "400px", width: "400px" }}>
-								<MyResponsiveChartVars
-									colors={colors}
-									setFiltCult={setFiltCult}
-									data={plantioChartVars["data"]}
-									cultFilt={selectCult}
-								/>
+							<Box
+								sx={{
+									width: "100%",
+									borderRadius: "12px",
+									display: "flex",
+									// flexDirection: "column",
+									justifyContent: "space-between",
+									alignItems: "center",
+									overflow: "auto",
+									overflowY: "hidden"
+								}}
+							>
+								<Box sx={{ height: "400px", width: "400px" }}>
+									<MyResponsivePie
+										colors={colors}
+										data={plantioChart}
+									/>
+								</Box>
+								<Box sx={{ height: "400px", width: "400px" }}>
+									<MyResponsiveSunburst
+										colors={colors}
+										data={plantioChartVars["result"]}
+									/>
+								</Box>
+								<Box sx={{ height: "400px", width: "400px" }}>
+									<MyResponsiveChartVars
+										colors={colors}
+										setFiltCult={setFiltCult}
+										data={plantioChartVars["data"]}
+										cultFilt={selectCult}
+									/>
+								</Box>
 							</Box>
 						</Box>
 						<PlantioDoneTable loading={isLoading} rows={dataF} />
