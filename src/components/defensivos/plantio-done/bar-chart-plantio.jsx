@@ -24,24 +24,29 @@ const MyResponsiveBar = (props) => {
 	useEffect(() => {
 		const chartFiltArr = onlyPlanted.reduce((acc, curr) => {
 			if (
-				acc.filter((data) => data.fazenda === curr.fazenda).length === 0
+				acc.filter(
+					(data) =>
+						data.fazenda.replace("Projeto", "") ===
+						curr.fazenda.replace("Projeto", "")
+				).length === 0
 			) {
 				const name = curr.cultura;
 				const objToAdd = {
 					fazenda: curr.fazenda.replace("Projeto", ""),
 					country: curr.fazenda.replace("Projeto", ""),
-					status: curr.status,
-					color: colorObj[curr.cultura]
+					status: curr.status
 				};
-				const nameColor = `color${curr.cultura}`;
+				const nameColor = `${curr.cultura}Color`;
 				objToAdd[nameColor] = colorObj[curr.cultura];
 				objToAdd[name] = curr.area.toFixed(2);
 				acc.push(objToAdd);
 			} else {
-				const findIndexOf = (e) => e.fazenda === curr.fazenda;
+				const findIndexOf = (e) =>
+					e.fazenda.replace("Projeto", "") ===
+					curr.fazenda.replace("Projeto", "");
 				const getIndex = acc.findIndex(findIndexOf);
 				acc[getIndex][curr.cultura] = curr.area;
-				const nameColor = `color${curr.cultura}`;
+				const nameColor = `${curr.cultura}Color`;
 				acc[getIndex][nameColor] = colorObj[curr.cultura];
 			}
 			return acc;
@@ -50,6 +55,7 @@ const MyResponsiveBar = (props) => {
 			a.fazenda.localeCompare(b.fazenda)
 		);
 		setdataChartFilt(sortedArr);
+		console.log(sortedArr);
 	}, [onlyPlanted]);
 
 	const theme = {
@@ -164,23 +170,23 @@ const MyResponsiveBar = (props) => {
 		<Box
 			sx={{
 				width: "100%",
-				height: "400px",
-				paddingLeft: "40px"
+				height: "400px"
+				// paddingLeft: "40px"
 			}}
 		>
 			<ResponsiveBar
 				data={dataChartFilt}
 				keys={filtCult.slice(1)}
 				indexBy="country"
-				margin={{ top: 50, right: 50, bottom: 50, left: 120 }}
+				margin={{ top: 50, right: 100, bottom: 50, left: 100 }}
 				padding={0.3}
 				valueScale={{ type: "linear" }}
 				indexScale={{ type: "band", round: true }}
 				// colors={{ scheme: "nivo" }}
 				theme={theme}
-				colors={(d) => {
-					return d.data.color;
-				}}
+				// colorBy="index"
+				colors={({ id, data }) => data[`${id}Color`]}
+				valueFormat=" >-0,.2~f"
 				borderColor={{
 					from: "color",
 					modifiers: [["darker", 1.6]]
@@ -209,34 +215,33 @@ const MyResponsiveBar = (props) => {
 						});
 					}
 				}}
-				labelSkipWidth={12}
-				labelSkipHeight={1}
+				labelSkipWidth={0}
 				labelTextColor={"white"}
-				legends={[]}
-				// legends={[
-				// 	{
-				// 		dataFrom: "keys",
-				// 		anchor: "bottom-right",
-				// 		direction: "column",
-				// 		justify: false,
-				// 		translateX: 120,
-				// 		translateY: 0,
-				// 		itemsSpacing: 2,
-				// 		itemWidth: 100,
-				// 		itemHeight: 20,
-				// 		itemDirection: "left-to-right",
-				// 		itemOpacity: 0.85,
-				// 		symbolSize: 20,
-				// 		effects: [
-				// 			{
-				// 				on: "hover",
-				// 				style: {
-				// 					itemOpacity: 1
-				// 				}
-				// 			}
-				// 		]
-				// 	}
-				// ]}
+				// legends={[]}
+				legends={[
+					{
+						dataFrom: "keys",
+						anchor: "bottom-right",
+						direction: "column",
+						justify: false,
+						translateX: 120,
+						translateY: 0,
+						itemsSpacing: 2,
+						itemWidth: 100,
+						itemHeight: 20,
+						itemDirection: "left-to-right",
+						itemOpacity: 0.85,
+						symbolSize: 20,
+						effects: [
+							{
+								on: "hover",
+								style: {
+									itemOpacity: 1
+								}
+							}
+						]
+					}
+				]}
 				role="application"
 				ariaLabel="Projetos"
 				barAriaLabel={(e) =>
@@ -246,6 +251,31 @@ const MyResponsiveBar = (props) => {
 					" in country: " +
 					e.indexValue
 				}
+				tooltip={(point) => {
+					return (
+						<div
+							style={{
+								fontSize: "12px",
+								backgroundColor: colors.primary[900],
+								color: "whitesmoke",
+								padding: "10px",
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "center",
+								alignItems: "center"
+							}}
+						>
+							<p>{point.data.fazenda}</p>
+							<p>{point.id}</p>
+							<p>
+								{point.value.toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								})}
+							</p>
+						</div>
+					);
+				}}
 			/>
 		</Box>
 	);
