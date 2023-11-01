@@ -104,7 +104,15 @@ const DetailAppData = ({ data, showData }) => {
 						return (
 							<>
 								<p key={i}>
-									<b>{data.dose}</b>{" "}
+									<b>
+										{parseFloat(data.dose).toLocaleString(
+											"pt-br",
+											{
+												minimumFractionDigits: 3,
+												maximumFractionDigits: 3
+											}
+										)}
+									</b>{" "}
 									<Chip
 										label={
 											tipo.includes("Óleo Mineral")
@@ -120,7 +128,14 @@ const DetailAppData = ({ data, showData }) => {
 										}}
 										size="small"
 									/>
-									{data.insumo} - {data.quantidade}{" "}
+									{data.insumo} -{" "}
+									{parseFloat(data.quantidade).toLocaleString(
+										"pt-br",
+										{
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2
+										}
+									)}
 								</p>
 							</>
 						);
