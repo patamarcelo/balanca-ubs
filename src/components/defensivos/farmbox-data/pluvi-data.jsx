@@ -126,7 +126,6 @@ const PluviDataComp = () => {
 									maximumFractionDigits: 1
 								})} mm`;
 							}
-							console.log(pluviNumberData);
 							return "Sem Apontamento";
 						};
 						return (
@@ -137,6 +136,7 @@ const PluviDataComp = () => {
 									width: "10",
 									padding: "3px 0px"
 								}}
+								key={i}
 								className={styles.rowTablePluvi}
 							>
 								<span className={styles.pluviHeader}>

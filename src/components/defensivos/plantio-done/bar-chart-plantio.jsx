@@ -55,7 +55,6 @@ const MyResponsiveBar = (props) => {
 			a.fazenda.localeCompare(b.fazenda)
 		);
 		setdataChartFilt(sortedArr);
-		console.log(sortedArr);
 	}, [onlyPlanted]);
 
 	const theme = {

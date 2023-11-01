@@ -54,7 +54,7 @@ const PlantioDonePage = () => {
 		borderRadius: 5,
 		[`&.${linearProgressClasses.colorPrimary}`]: {
 			backgroundColor:
-				colors.primary[theme.palette.mode === "light" ? 900 : 200]
+				colors.primary[theme.palette.mode === "light" ? 900 : 100]
 		},
 		[`& .${linearProgressClasses.bar}`]: {
 			borderRadius: 5,
@@ -321,16 +321,35 @@ const PlantioDonePage = () => {
 															""
 														)}
 													</span>
-													<span>
-														{data.area.toLocaleString(
-															"pt-br",
-															{
-																minimumFractionDigits: 2,
-																maximumFractionDigits: 2
-															}
-														)}{" "}
-														Ha
-													</span>
+													{data.area === percent ? (
+														<span>
+															{data.area.toLocaleString(
+																"pt-br",
+																{
+																	minimumFractionDigits: 2,
+																	maximumFractionDigits: 2
+																}
+															)}{" "}
+														</span>
+													) : (
+														<span>
+															{data.area.toLocaleString(
+																"pt-br",
+																{
+																	minimumFractionDigits: 2,
+																	maximumFractionDigits: 2
+																}
+															)}{" "}
+															/{" "}
+															{percent.toLocaleString(
+																"pt-br",
+																{
+																	minimumFractionDigits: 2,
+																	maximumFractionDigits: 2
+																}
+															)}{" "}
+														</span>
+													)}
 												</Box>
 												<Box
 													sx={{
@@ -369,10 +388,10 @@ const PlantioDonePage = () => {
 														{final.toLocaleString(
 															"pt-br",
 															{
-																minimumFractionDigits: 2,
-																maximumFractionDigits: 2
+																minimumFractionDigits: 0,
+																maximumFractionDigits: 0
 															}
-														)}
+														)}{" "}
 														%
 													</Box>
 												</Box>

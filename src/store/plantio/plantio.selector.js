@@ -341,18 +341,49 @@ export const createDictFarmBox = (state) => {
 		const saldoAplicar =
 			parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
 
-		const parcelasSolicitadas = data.plantations.map((data) => {
-			const aplicado = data.applied_area === 0 ? false : true;
+		const parcelasSolicitadas = data.plantations.map((dataMap) => {
+			const aplicado = dataMap.applied_area === 0 ? false : true;
+			const appInitial = data.progresses.map((progData) =>
+				progData.plantations.map((dataP) => {
+					return {
+						date: progData.date,
+						farmInit: dataP.plantation_id,
+						areaInit: dataP.area
+					};
+				})
+			);
+			let filteredApp = [];
+			if (appInitial.length > 0) {
+				filteredApp = appInitial
+					.flat()
+					.filter(
+						(data) =>
+							data.farmInit === dataMap.plantation.id &&
+							data.areaInit > 0
+					)
+					.sort((a, b) => a.date - b.date);
+			}
+			const getDates = () => {
+				if (filteredApp.length > 0) {
+					return filteredApp.map((data) => ({
+						...data,
+						date: data.date.split("T")[0]
+					}));
+				}
+				return [{ date: " - " }];
+			};
 			return {
-				parcela: data.plantation.name,
-				id_plantation: data.plantation.id,
-				area: data.plantation.area,
-				variedade: data.plantation.variety_name,
-				cultura: data.plantation.culture_name,
+				parcela: dataMap.plantation.name,
+				id_plantation: dataMap.plantation.id,
+				area: dataMap.plantation.area,
+				variedade: dataMap.plantation.variety_name,
+				cultura: dataMap.plantation.culture_name,
 				aplicado: aplicado,
-				dataPlantio: data.plantation.date,
-				safra: data.plantation.harvest_name,
-				ciclo: data.plantation.cycle
+				dataPlantio: dataMap.plantation.date,
+				safra: dataMap.plantation.harvest_name,
+				ciclo: dataMap.plantation.cycle,
+				initialAppDateAplicada: getDates()[0]["date"],
+				finalAppDateAplicada: getDates().at(-1)["date"]
 			};
 		});
 

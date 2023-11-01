@@ -25,8 +25,8 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Progresso", field: "totalSoma", flex: 4 },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
-		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
+		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicadaParc" },
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicadaParc" }
 	];
 
 	const columnsProdutos = [
@@ -48,8 +48,11 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Quantidade Aplicada", field: "quantidade" },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
-		{ headerName: "Inicio Aplicacao", field: "initialAppDateAplicada" },
-		{ headerName: "Final Aplicacao", field: "finalAppDateAplicada" }
+		{
+			headerName: "Inicio Aplicacao",
+			field: "initialAppDateAplicadaParc"
+		},
+		{ headerName: "Final Aplicacao", field: "finalAppDateAplicadaParc" }
 	];
 
 	return (
