@@ -95,26 +95,41 @@ const DefensivoPage = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (safraCiclo.safra.length > 0 && safraCiclo.ciclo.lenght > 0) {
-			(async () => {
-				if (dataDef.length === 0) {
-					try {
-						await getTrueApi();
-						await getFalseApi();
-					} catch (err) {
-						console.log("Erro ao consumir a API", err);
-					} finally {
-						setIsLoading(false);
-					}
-				}
-			})();
-		}
-	}, []);
+	// useEffect(() => {
+	// 	if (safraCiclo.safra.length > 0 && safraCiclo.ciclo.length > 0) {
+	// 		(async () => {
+	// 			if (dataDef.length === 0) {
+	// 				try {
+	// 					const allPromise = Promise.all([
+	// 						getTrueApi(),
+	// 						getFalseApi()
+	// 					]);
+	// 					let time1 = performance.now();
+	// 					console.log("gerando dados");
+	// 					await allPromise
+	// 						.then((data) => {
+	// 							console.log(data);
+	// 						})
+	// 						.catch((err) => console.log("promise Error", err));
+
+	// 					// await getTrueApi();
+	// 					// await getFalseApi();
+	// 					let time2 = performance.now();
+	// 					console.log(time2 - time1);
+	// 				} catch (err) {
+	// 					console.log("Erro ao consumir a API", err);
+	// 				} finally {
+	// 					setIsLoading(false);
+	// 				}
+	// 			}
+	// 		})();
+	// 	}
+	// }, []);
 
 	const handleRefreshData = async () => {
 		setIsLoading(true);
 		try {
+			console.log("refresh data");
 			await getTrueApi();
 			await getFalseApi();
 		} catch (err) {
