@@ -188,6 +188,85 @@ export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
 
 export const selecPlantioMapAll = (state) => state.plantio.plantioMapAll;
 
+export const selecCalendarArray = (state) => {
+	const data = state.plantio.plantioCalendarDone;
+	const newArr = data.map((data) => {
+		let newName = null;
+		if (data.variedade__cultura__cultura === "Feijão") {
+			newName = data.variedade__variedade.split(" ").slice(1).join(" ");
+		} else {
+			newName = data.variedade__cultura__cultura;
+		}
+		return { ...data, newName: newName };
+	});
+	const reduCArr = newArr.reduce((acc, curr) => {
+		const filterProps = acc.filter(
+			(data) =>
+				data.cultura === curr.newName &&
+				data.fazenda === curr.talhao__fazenda__nome &&
+				data.month === curr.month &&
+				data.year === curr.year
+		);
+		if (filterProps.length === 0) {
+			const objToAdd = {
+				cultura: curr.newName,
+				fazenda: curr.talhao__fazenda__nome,
+				month: curr.month,
+				year: curr.year,
+				ciclo: curr.ciclo__ciclo,
+				area: curr.area_total
+			};
+			acc.push(objToAdd);
+		} else {
+			const findIndexOf = (data) =>
+				data.cultura === curr.newName &&
+				data.fazenda === curr.talhao__fazenda__nome &&
+				data.month === curr.month &&
+				data.year === curr.year;
+			const getIndex = acc.findIndex(findIndexOf);
+			acc[getIndex]["area"] += curr.area_total;
+		}
+		return acc;
+	}, []);
+
+	const headerTable = reduCArr.reduce((acc, curr) => {
+		const filtOpt = acc.filter(
+			(data) =>
+				data.cultura === curr.cultura &&
+				data.month === curr.month &&
+				data.year === curr.year
+		);
+		if (filtOpt.length === 0) {
+			const objToAdd = {
+				cultura: curr.cultura,
+				month: curr.month,
+				year: curr.year,
+				area: curr.area
+			};
+			acc.push(objToAdd);
+		} else {
+			const findIndexOf = (data) =>
+				data.cultura === curr.cultura &&
+				data.month === curr.month &&
+				data.year === curr.year;
+			const getIndex = acc.findIndex(findIndexOf);
+			acc[getIndex]["area"] += curr.area;
+		}
+		return acc;
+	}, []);
+	const onlyFarm = reduCArr.map((data) => data.fazenda);
+	const onlyFarmUniq = [...new Set(onlyFarm)];
+	console.log("headerT", headerTable);
+
+	return {
+		headerTable,
+		table: reduCArr,
+		farms: onlyFarmUniq.sort((a, b) =>
+			a.replace("Projeto", "").localeCompare(b.replace("Projeto", ""))
+		)
+	};
+};
+
 export const selecPluvi = (state) => state.plantio.pluvi;
 
 export const selecPluviFormat = (state) => {
@@ -200,7 +279,6 @@ export const selecPluviFormat = (state) => {
 			value: data.quantity
 		};
 	});
-	console.log(formData);
 	return formData;
 };
 

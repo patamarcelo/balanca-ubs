@@ -19,3 +19,37 @@
     background-color: rgb(254,254,254,0.9) !important;   
     color: black
 }
+
+.projetoTile{
+    min-width: 200px !important;
+    background-color: black;
+}
+
+.calendarTable tr, td {
+    text-align: center;
+}
+
+.calendarTable th{
+    min-width: 120px;
+}
+.calendarTable th{
+    min-width: 120px;
+}
+
+.calendarTable tbody tr:nth-child(odd), tfoot tr:nth-child(odd){
+    background-color: rgb(258,258,258,0.1);
+}
+
+
+.calendarTable tbody tr:hover, tfoot tr:hover{
+    background-color: rgb(258,258,258,0.4);
+    color: black;
+}
+.calendarTable tr>th:first-child,tr>td:first-child {
+    position: sticky;
+    left: 0;
+  }
+
+  .calendarTable tr>td:first-child{
+    background-color: rgb(11,70,109,0.7)
+ }

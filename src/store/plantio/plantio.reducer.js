@@ -6,7 +6,8 @@ const INITIAL_STATE = {
 	app: [],
 	appFarmBox: [],
 	safraCiclo: { safra: "", ciclo: "" },
-	pluvi: []
+	pluvi: [],
+	plantioCalendarDone: []
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -41,6 +42,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				pluvi: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_CALENDAR_DONE:
+			return {
+				...state,
+				plantioCalendarDone: payload
 			};
 		default:
 			return state;

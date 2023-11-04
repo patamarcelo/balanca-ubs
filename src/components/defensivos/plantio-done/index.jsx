@@ -10,13 +10,18 @@ import PlantioDoneTable from "./data-table-plantio-done";
 import LoaderHomeSkeleton from "../home/loader";
 
 import { useSelector } from "react-redux";
-import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
+import {
+	selecCalendarArray,
+	selectSafraCiclo
+} from "../../../store/plantio/plantio.selector";
 
 import {
 	selecPlantioCharts,
 	selectPlantioVarsChart,
 	selectPlantioDoneResume
 } from "../../../store/plantio/plantio.selector";
+
+import { setPlantioCalendarDone } from "../../../store/plantio/plantio.actions";
 
 import MyResponsivePie from "../plantio-done/pie-chart";
 import MyResponsiveSunburst from "./pie-chart-vars";
@@ -28,10 +33,13 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 
+import { useDispatch } from "react-redux";
+import CalendarDonePage from "./plantio-done-calendar";
+
 const PlantioDonePage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-
+	const dispatch = useDispatch();
 	const safraCiclo = useSelector(selectSafraCiclo);
 	const [selectCult, setSelectCult] = useState("Todas");
 	const plantioChart = useSelector(selecPlantioCharts(selectCult));
@@ -118,6 +126,28 @@ const PlantioDonePage = () => {
 			}
 		})();
 	}, [params]);
+
+	useEffect(() => {
+		(async () => {
+			setIsLoading(true);
+			try {
+				await djangoApi
+					.post("plantio/get_plantio_calendar_done/", params, {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						dispatch(setPlantioCalendarDone(res.data.data));
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+			} finally {
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
 	return (
 		<>
@@ -401,6 +431,7 @@ const PlantioDonePage = () => {
 							</Box>
 						</Box>
 
+						<CalendarDonePage />
 						<PlantioDoneTable loading={isLoading} rows={dataF} />
 					</>
 				)}

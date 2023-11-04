@@ -28,3 +28,7 @@ export const setPlantioMapAll = (plantioArray) => {
 export const setPluvi = (pluviArray) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_PLUVI, pluviArray);
 };
+
+export const setPlantioCalendarDone = (calendarArray) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_CALENDAR_DONE, calendarArray);
+};

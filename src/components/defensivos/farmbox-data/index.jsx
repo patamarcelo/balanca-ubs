@@ -50,6 +50,7 @@ import {
 } from "../../../utils/format-suport/data-format";
 import PluviDataComp from "./pluvi-data";
 
+import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -68,6 +69,8 @@ const FarmBoxPage = () => {
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
+
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
 
@@ -130,6 +133,7 @@ const FarmBoxPage = () => {
 	}, [filtFarm, dictSelect]);
 
 	const getTrueApi = useCallback(async () => {
+		console.warn("executando API");
 		try {
 			setLoadinData(true);
 			await nodeServer
@@ -137,6 +141,9 @@ const FarmBoxPage = () => {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
 						"X-Firebase-AppCheck": user.accessToken
+					},
+					params: {
+						safraCiclo
 					}
 				})
 				.then((res) => {
@@ -158,6 +165,7 @@ const FarmBoxPage = () => {
 	}, [getTrueApi, openApp]);
 
 	const refreshData = () => {
+		console.log("refreshing data");
 		dispatch(setApp([]));
 		dispatch(setAppFarmBox([]));
 	};
