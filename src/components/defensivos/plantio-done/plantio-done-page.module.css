@@ -40,6 +40,18 @@
     background-color: rgb(258,258,258,0.1);
 }
 
+.calendarTable tbody tr td, thead tr th, tfoot tr td{
+    border-right: 1px solid black;
+}
+.calendarTable tbody tr td, thead tr th{
+    color: whitesmoke;
+
+}
+.calendarTable tfoot tr td{
+    border-top: 1px solid black;
+    font-weight: bold;
+}
+
 
 .calendarTable tbody tr:hover, tfoot tr:hover{
     background-color: rgb(258,258,258,0.4);
@@ -51,5 +63,5 @@
   }
 
   .calendarTable tr>td:first-child{
-    background-color: rgb(11,70,109,0.7)
+    background-color: rgb(11,70,109,0.9)
  }

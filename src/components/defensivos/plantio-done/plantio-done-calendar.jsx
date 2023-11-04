@@ -21,6 +21,14 @@ const MONTHS = [
 	"Novembro",
 	"Dezembro"
 ];
+
+const COLORS_TABLE = {
+	Caupi: "rgb(119,63,27, 0.3)",
+	"de Ouro": "rgb(119,63,27, 0.4)",
+	"Mungo Verde": "rgb(119,63,27, 0.5)",
+	Soja: "rgb(51,205,50, 0.5)",
+	Arroz: "rgb(251,192,115, 0.5)"
+};
 const CalendarDonePage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -38,7 +46,7 @@ const CalendarDonePage = (props) => {
 		>
 			<Table
 				striped
-				bordered
+				// bordered
 				hover
 				variant="dark"
 				className={styles.calendarTable}
@@ -48,9 +56,19 @@ const CalendarDonePage = (props) => {
 						<th className={styles.projetoTile}>Projeto</th>
 						{calendarDone.headerTable.map((data, i) => {
 							return (
-								<th key={i}>
-									<p>{data.cultura}</p>
-									<p>{MONTHS[data.month - 1]}</p>
+								<th
+									key={i}
+									style={{
+										backgroundColor:
+											COLORS_TABLE[data.cultura]
+									}}
+								>
+									<p style={{ marginBottom: 0 }}>
+										{data.cultura}
+									</p>
+									<p style={{ marginTop: 2 }}>
+										{MONTHS[data.month - 1]}
+									</p>
 								</th>
 							);
 						})}
@@ -62,7 +80,7 @@ const CalendarDonePage = (props) => {
 						return (
 							<tr key={i}>
 								<td>{data.replace("Projeto", "")}</td>
-								{calendarDone.headerTable.map((header) => {
+								{calendarDone.headerTable.map((header, iH) => {
 									const filtCal = calendarDone.table.filter(
 										(dataFilt) => {
 											return (
@@ -86,7 +104,15 @@ const CalendarDonePage = (props) => {
 											cultura === header.cultura
 										) {
 											return (
-												<td>
+												<td
+													key={iH}
+													style={{
+														backgroundColor:
+															COLORS_TABLE[
+																cultura
+															]
+													}}
+												>
 													{area?.toLocaleString(
 														"pt-br",
 														{
@@ -97,9 +123,31 @@ const CalendarDonePage = (props) => {
 												</td>
 											);
 										}
-										return <td>-</td>;
+										return (
+											<td
+												key={iH}
+												style={{
+													backgroundColor:
+														COLORS_TABLE[cultura]
+												}}
+											>
+												-
+											</td>
+										);
 									} else {
-										return <td>-</td>;
+										return (
+											<td
+												key={iH}
+												style={{
+													backgroundColor:
+														COLORS_TABLE[
+															header.cultura
+														]
+												}}
+											>
+												-
+											</td>
+										);
 									}
 								})}
 							</tr>
@@ -110,8 +158,15 @@ const CalendarDonePage = (props) => {
 					<tr>
 						<td>Totais</td>
 						{calendarDone.headerTable.map((data, i) => {
+							console.log(data.cultura);
 							return (
-								<td key={i}>
+								<td
+									key={i}
+									style={{
+										backgroundColor:
+											COLORS_TABLE[data.cultura]
+									}}
+								>
 									{data.area.toLocaleString("pt-br", {
 										minimumFractionDigits: 2,
 										maximumFractionDigits: 2
