@@ -92,6 +92,7 @@ const PlantioDoneTable = (props) => {
 	return (
 		<Box
 			height="92%"
+			pb={1}
 			sx={{
 				"& .MuiDataGrid-root": {
 					border: "none"

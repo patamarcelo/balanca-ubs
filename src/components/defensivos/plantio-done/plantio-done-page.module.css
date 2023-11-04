@@ -29,9 +29,7 @@
     text-align: center;
 }
 
-.calendarTable th{
-    min-width: 120px;
-}
+
 .calendarTable th{
     min-width: 120px;
 }
@@ -45,6 +43,7 @@
 }
 .calendarTable tbody tr td, thead tr th{
     color: whitesmoke;
+    font-weight: bold;
 
 }
 .calendarTable tfoot tr td{
@@ -60,8 +59,15 @@
 .calendarTable tr>th:first-child,tr>td:first-child {
     position: sticky;
     left: 0;
-  }
+}
 
-  .calendarTable tr>td:first-child{
-    background-color: rgb(11,70,109,0.9)
- }
+  /* .calendarTable tr>td:first-child{
+    padding-left: 30px;
+    text-align: left;
+ } */
+.calendarTable tr:nth-child(odd)>td:first-child{
+    background-color: rgb(11,70,109,1)
+}
+.calendarTable tr:nth-child(even)>td:first-child{
+    background-color: rgb(11,70,99,0.9)
+}  

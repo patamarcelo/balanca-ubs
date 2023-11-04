@@ -23,11 +23,11 @@ const MONTHS = [
 ];
 
 const COLORS_TABLE = {
-	Caupi: "rgb(119,63,27, 0.3)",
-	"de Ouro": "rgb(119,63,27, 0.4)",
-	"Mungo Verde": "rgb(119,63,27, 0.5)",
-	Soja: "rgb(51,205,50, 0.5)",
-	Arroz: "rgb(251,192,115, 0.5)"
+	Caupi: "rgb(119,63,27, 0.7)",
+	"de Ouro": "rgb(119,63,27, 0.5)",
+	"Mungo Verde": "rgb(119,63,27, 0.3)",
+	Soja: "rgb(51,205,50, 0.7)",
+	Arroz: "rgb(251,192,115, 0.7)"
 };
 const CalendarDonePage = (props) => {
 	const theme = useTheme();
@@ -64,7 +64,9 @@ const CalendarDonePage = (props) => {
 									}}
 								>
 									<p style={{ marginBottom: 0 }}>
-										{data.cultura}
+										{data.cultura === "de Ouro"
+											? "Pingo " + data.cultura
+											: data.cultura}
 									</p>
 									<p style={{ marginTop: 2 }}>
 										{MONTHS[data.month - 1]}
@@ -88,6 +90,7 @@ const CalendarDonePage = (props) => {
 													header.cultura &&
 												dataFilt.month ===
 													header.month &&
+												dataFilt.year === header.year &&
 												dataFilt.fazenda === farmFilt
 											);
 										}
@@ -98,10 +101,12 @@ const CalendarDonePage = (props) => {
 										const farm = obj.fazenda;
 										const month = obj.month;
 										const cultura = obj.cultura;
+										const year = obj.year;
 										if (
 											farm === data &&
 											month === header.month &&
-											cultura === header.cultura
+											cultura === header.cultura &&
+											year === header.year
 										) {
 											return (
 												<td
