@@ -35,6 +35,7 @@ import "./programa-print.css";
 import IconButton from "@mui/material/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
+import PrintVersion from "./print-version";
 
 const ProgramasSection = () => {
 	const theme = useTheme();
@@ -60,7 +61,13 @@ const ProgramasSection = () => {
 	const [selectedTypes, setSelectedTypes] = useState([]);
 	const [selectedTypesInput, setSelectedTypesInput] = useState([]);
 
-	console.log(filteredOpForTYpes);
+	const [version, setVersion] = useState("");
+
+	// useEffect(() => {
+	// 	if (programData) {
+	// 		setVersion(programData.versao);
+	// 	}
+	// }, [programData]);
 
 	useEffect(() => {
 		if (quantidades) {
@@ -121,6 +128,7 @@ const ProgramasSection = () => {
 		setFilteredEstagios(filtEstagios);
 
 		setProgramData(filteredProgram[0]);
+		setVersion(filteredProgram[0]["versao"]);
 	};
 
 	useEffect(() => {
@@ -226,6 +234,22 @@ const ProgramasSection = () => {
 				<Box className={styles.mainProgramContainer}>
 					{programData ? (
 						<>
+							<Box
+								sx={{ justifyContent: "start", width: "100%" }}
+							>
+								<label style={{ color: "black" }}>
+									Versão
+									<input
+										type="text"
+										value={version}
+										style={{ marginLeft: "5px" }}
+										placeholder="Versão para impressão"
+										onChange={(e) =>
+											setVersion(e.target.value)
+										}
+									/>
+								</label>
+							</Box>
 							<Box sx={{ alignSelf: "end" }}>
 								<IconButton onClick={() => window.print()}>
 									<FontAwesomeIcon
@@ -235,8 +259,11 @@ const ProgramasSection = () => {
 									/>
 								</IconButton>
 							</Box>
-
 							<div id="printDivProgram">
+								<PrintVersion
+									programData={programData}
+									version={version}
+								/>
 								<HeaderComp
 									data={programData}
 									quantidadeTotal={quantidadeTotal}
@@ -246,6 +273,10 @@ const ProgramasSection = () => {
 									program={selectedPrograma}
 								/>
 							</div>
+							<PrintVersion
+								programData={programData}
+								version={version}
+							/>
 							<hr />
 							{filteredOperations && (
 								<ConsolidadosProdutos

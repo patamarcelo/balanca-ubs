@@ -133,7 +133,6 @@ const FarmBoxPage = () => {
 	}, [filtFarm, dictSelect]);
 
 	const getTrueApi = useCallback(async () => {
-		console.warn("executando API");
 		try {
 			setLoadinData(true);
 			await nodeServer
