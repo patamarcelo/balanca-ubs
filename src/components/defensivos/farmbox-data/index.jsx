@@ -164,7 +164,7 @@ const FarmBoxPage = () => {
 	}, [getTrueApi, openApp]);
 
 	const refreshData = () => {
-		console.log("refreshing data");
+		console.log("refreshing");
 		dispatch(setApp([]));
 		dispatch(setAppFarmBox([]));
 	};
