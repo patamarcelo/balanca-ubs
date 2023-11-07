@@ -259,7 +259,7 @@ const ProgramasSection = () => {
 									/>
 								</IconButton>
 							</Box>
-							<div id="printDivProgram">
+							<Box id="printDivProgram">
 								<PrintVersion
 									programData={programData}
 									version={version}
@@ -272,11 +272,11 @@ const ProgramasSection = () => {
 									data={filteredEstagios}
 									program={selectedPrograma}
 								/>
-							</div>
-							<PrintVersion
-								programData={programData}
-								version={version}
-							/>
+								<PrintVersion
+									programData={programData}
+									version={version}
+								/>
+							</Box>
 							<hr />
 							{filteredOperations && (
 								<ConsolidadosProdutos

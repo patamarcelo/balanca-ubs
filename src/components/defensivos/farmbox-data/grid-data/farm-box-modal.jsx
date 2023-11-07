@@ -90,7 +90,7 @@ const ModalDataFarmbox = (props) => {
 		setFinalArr(false);
 		try {
 			const newarr = await dictSelectFarm.map((data) => {
-				const { parcelas, insumos, progressos } = data;
+				const { parcelas, insumos, progressos, areaSolicitada } = data;
 				const parcelasDict = parcelas.map((parcela) => {
 					let sumTotalApp = 0;
 					const totalApplicado = progressos.map((prog) => {
@@ -115,6 +115,10 @@ const ModalDataFarmbox = (props) => {
 							}
 						}
 					};
+
+					const areaSought = areaSolicitada.filter(
+						(data) => data.idFarm === parcela.id_plantation
+					)[0]["area"];
 					return {
 						...data,
 						totalSoma: sumTotalApp.toLocaleString("pt-br", {
@@ -134,7 +138,14 @@ const ModalDataFarmbox = (props) => {
 						),
 						dataPlantio: parcela.dataPlantio,
 						idPlantation: parcela.id_plantation,
-						area: parcela.area,
+						area: parcela.area.toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}),
+						areaSought: areaSought.toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}),
 						initialAppDateAplicadaParc:
 							parcela.initialAppDateAplicada,
 						finalAppDateAplicadaParc: parcela.finalAppDateAplicada,

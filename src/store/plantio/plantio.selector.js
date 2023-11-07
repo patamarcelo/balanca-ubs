@@ -397,6 +397,10 @@ export const createDictFarmBox = (state) => {
 		const idCode = data.id;
 
 		const areaSolicitada = data.plantations.map((data) => data.sought_area);
+		const areaSolicitadas = data.plantations.map((data) => ({
+			area: data.sought_area,
+			idFarm: data.plantation.id
+		}));
 		const areaAplicada = data.plantations.map((data) => data.applied_area);
 		const status = data.status;
 		const closedDate = data?.closed_date?.split("T")[0];
@@ -404,7 +408,6 @@ export const createDictFarmBox = (state) => {
 			data?.first_movimentation_date?.split("T")[0];
 		const finalAppDateAplicada =
 			data?.last_movimentation_date?.split("T")[0];
-
 		const areaTotalSolicitada = areaSolicitada
 			.reduce((a, b) => a + b, 0)
 			.toFixed(2);
@@ -507,6 +510,7 @@ export const createDictFarmBox = (state) => {
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
 			cultura: cultura,
+			areaSolicitada: areaSolicitadas,
 			parcelas: parcelasSolicitadas.sort((a, b) =>
 				a.parcela.localeCompare(b.parcela)
 			),

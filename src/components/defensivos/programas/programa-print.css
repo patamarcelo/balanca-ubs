@@ -1,41 +1,39 @@
-
+#printDivProgram{
+	height: 100%;
+}
 @media print{
 	body * {
 		visibility: hidden;
+		
 	}
 
-    html, body {
-		height: initial !important;
+    html, body ,#wrapper {
+		/* height: initial !important; */
 		overflow: initial !important;
 		-webkit-print-color-adjust: exact;
 	}
 
-	#printDivProgram * {
+	#printDivProgram *,#printDivProgram {
 		visibility: visible;
-        top: -100px;
+		
+
 	}
-    
-    .pageBreak{
-        page-break-after: always;
-        /* color: red; */
-    }
 
 	#printDivProgram:first-child{
         width: 50%;
     }
 	#printDivProgram {
-		/* margin-top: 20px; */
-        position: fixed;
+
+		position:absolute;
         top: 50px;
         margin: 50px;
 		display: flex;
 		flex-direction: column;
-		/* justify-content: start; */
 		width: 90%;
-		height: auto;
 		align-items: center;
 		box-shadow: none !important;
 		background-color: transparent !important;
+		
 	}
     
 	

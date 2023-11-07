@@ -163,7 +163,6 @@ const CalendarDonePage = (props) => {
 					<tr>
 						<td>Totais</td>
 						{calendarDone.headerTable.map((data, i) => {
-							console.log(data.cultura);
 							return (
 								<td
 									key={i}
