@@ -1,11 +1,16 @@
 import {
 	GoogleMap,
 	useJsApiLoader,
+	MarkerF,
 	Marker,
-	InfoWindowF
+	InfoWindowF,
+	InfoWindow,
+	OverlayView,
+	InfoBox,
+	InfoBoxF
 } from "@react-google-maps/api";
 import { PolygonF } from "@react-google-maps/api";
-import { useEffect } from "react";
+import { Children, useEffect } from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -14,6 +19,15 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
 import styles from "./produtividade.module.css";
+
+const svgMarker = {
+	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+	fillColor: "blue",
+	fillOpacity: 0.6,
+	strokeWeight: 0,
+	rotation: 0,
+	scale: 2
+};
 
 const containerStyle = {
 	width: "100%",
@@ -24,6 +38,12 @@ const containerStyle = {
 // const onLoad = (polygon) => {
 // 	console.log("polygon: ", polygon);
 // };
+
+const Label = ({ data }) => (
+	<div>
+		<p>{data}</p>
+	</div>
+);
 
 const MapPage = ({
 	mapArray,
@@ -220,6 +240,10 @@ const MapPage = ({
 		}
 	};
 
+	const multilineText = `First line of text
+Second line of text
+Third line of text`;
+
 	return isLoaded && center ? (
 		<GoogleMap
 			mapContainerStyle={containerStyle}
@@ -231,77 +255,112 @@ const MapPage = ({
 			}}
 		>
 			{appArray &&
-				appArray.map((data, i) => {
+				appArray.map((dataF, i) => {
+					console.log(dataF);
+					const area = dataF.data.data.area_colheita.toLocaleString(
+						"pt-br",
+						{
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}
+					);
+					const variedade = dataF.data.data.variedade;
+					const finalizado =
+						dataF.finalizadoPlantio && !dataF.descontinuado;
+					const label = `${dataF.parcela} \n ${area} ha`;
+					// const label = `${dataF.parcela} \n marce`;
+					const newLabel = {
+						text: finalizado ? label : "",
+						color: "white",
+						className: styles["marker-label"]
+					};
 					return (
-						<PolygonF
-							key={i}
-							options={{
-								fillColor: getColorStroke(data).color,
-								fillOpacity: getColorStroke(data).stroke,
-								strokeColor: getColorStroke(data).lineColor,
-								strokeOpacity: 1,
-								strokeWeight: getColorStroke(data).lineStroke,
-								clickable: true,
-								draggable: false,
-								editable: false,
-								geodesic: false,
-								zIndex: 1
-							}}
-							onClick={(e) => handleClick(e, data)}
-							// onLoad={onLoad}
-							paths={data.path}
-						/>
+						<>
+							<PolygonF
+								key={i}
+								options={{
+									fillColor: getColorStroke(dataF).color,
+									fillOpacity: getColorStroke(dataF).stroke,
+									strokeColor:
+										getColorStroke(dataF).lineColor,
+									strokeOpacity: 1,
+									strokeWeight:
+										getColorStroke(dataF).lineStroke,
+									clickable: true,
+									draggable: false,
+									editable: false,
+									geodesic: false,
+									zIndex: 1
+								}}
+								onClick={(e) => handleClick(e, dataF)}
+								// onLoad={onLoad}
+								paths={dataF.path}
+							/>
+							<Marker
+								optimized={true}
+								label={finalizado ? newLabel : ""}
+								icon={"."}
+								InfoWindowShown={true}
+								position={dataF.data.data.map_geo_points_center}
+							></Marker>
+						</>
 					);
 				})}
 
 			{markerList &&
 				markerList.map((data, i) => {
+					console.log(data.lat, data.lng);
 					return (
-						<InfoWindowF
-							position={{ lat: data.lat, lng: data.lng }}
-							onCloseClick={() => {
-								setMarkerList((prev) =>
-									prev.filter(
-										(dataArray) =>
-											dataArray.data.data.data
-												.plantio_id !==
-											data.data.data.data.plantio_id
-									)
-								);
-								console.log("clic");
-							}}
-						>
-							<div className={styles.popUpMap}>
-								<div className={styles.popUpMapInfo}>
-									<div>{data.data.parcela}</div>
-									<img
-										style={{
-											width: "15px",
-											height: "15px",
-											marginRight: "10px"
-										}}
-										src={filteredIcon(
-											data.data.data.data.cultura
-										)}
-										alt={filteredAlt(
-											data.data.data.data.cultura
-										)}
-									/>
-								</div>
-								<div className={styles.popUpMapInfoTwo}>
-									<div>{data.data.data.data.variedade}</div>
-									<div>
-										{data.data.data.data.area_colheita.toLocaleString(
-											"pt-br",
-											{
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2
-											}
-										)}
+						<>
+							<InfoWindowF
+								open={true}
+								position={{ lat: data.lat, lng: data.lng }}
+								onCloseClick={() => {
+									setMarkerList((prev) =>
+										prev.filter(
+											(dataArray) =>
+												dataArray.data.data.data
+													.plantio_id !==
+												data.data.data.data.plantio_id
+										)
+									);
+									console.log("clic");
+								}}
+							>
+								<div className={styles.popUpMap}>
+									<div className={styles.popUpMapInfo}>
+										<div>{data.data.parcela}</div>
+										<img
+											style={{
+												width: "15px",
+												height: "15px",
+												marginRight: "10px"
+											}}
+											src={filteredIcon(
+												data.data.data.data.cultura
+											)}
+											alt={filteredAlt(
+												data.data.data.data.cultura
+											)}
+										/>
+									</div>
+									<div className={styles.popUpMapInfoTwo}>
+										<div>
+											{data.data.data.data.variedade}
+										</div>
+										<div>
+											{data.data.data.data.area_colheita.toLocaleString(
+												"pt-br",
+												{
+													minimumFractionDigits: 2,
+													maximumFractionDigits: 2
+												}
+											)}
+										</div>
 									</div>
 								</div>
-							</div>
-						</InfoWindowF>
+							</InfoWindowF>
+						</>
 					);
 				})}
 		</GoogleMap>

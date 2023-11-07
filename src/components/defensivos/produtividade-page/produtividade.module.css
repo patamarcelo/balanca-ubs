@@ -198,3 +198,12 @@ border-radius: 8px;
     font-weight: 400;
     margin-top: 10px;
 }
+
+.marker-label {
+    white-space: pre-line !important;
+    font-size: 0.6rem !important;
+}
+
+.marker-label::first-line{
+    font-size: 0.9rem !important;
+}
