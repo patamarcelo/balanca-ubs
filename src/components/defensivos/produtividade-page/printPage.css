@@ -1,0 +1,50 @@
+
+
+@media print{
+	body * {
+		visibility: hidden;
+		
+	}
+
+    html, body ,#wrapper {
+		/* height: initial !important; */
+		overflow: initial !important;
+		-webkit-print-color-adjust: exact;
+	}
+
+	#printableMapPage *,#printableMapPage {
+		visibility: visible;
+		
+
+	}
+
+    #printableMapPage div:first-child{
+        width: 70%;
+    }
+    #printableMapPage div:last-child{
+        width: 30%;
+    }
+	#printableMapPage {
+		position:absolute;
+        top: 50px;
+        margin: 50px;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		align-items: center;
+		box-shadow: none !important;
+		background-color: transparent !important;
+		
+	}
+    
+	
+    
+	
+}
+
+
+
+@page {
+	size: auto;
+	margin: 20mm;
+  }

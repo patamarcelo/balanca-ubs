@@ -35,22 +35,13 @@ const containerStyle = {
 	borderRadius: "8px"
 };
 
-// const onLoad = (polygon) => {
-// 	console.log("polygon: ", polygon);
-// };
-
-const Label = ({ data }) => (
-	<div>
-		<p>{data}</p>
-	</div>
-);
-
 const MapPage = ({
 	mapArray,
 	filtData,
 	totalSelected,
 	setTotalSelected,
-	handleSUm
+	handleSUm,
+	printPage
 }) => {
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -225,9 +216,9 @@ const MapPage = ({
 
 		if (data.descontinuado === true) {
 			return {
-				color: "red",
+				color: printPage ? "white" : "red",
 				stroke: 0.3,
-				lineColor: "red",
+				lineColor: printPage ? "white" : "red",
 				lineStroke: 1
 			};
 		} else {
@@ -256,7 +247,6 @@ Third line of text`;
 		>
 			{appArray &&
 				appArray.map((dataF, i) => {
-					console.log(dataF);
 					const area = dataF.data.data.area_colheita.toLocaleString(
 						"pt-br",
 						{
@@ -270,8 +260,8 @@ Third line of text`;
 					const label = `${dataF.parcela} \n ${area} ha`;
 					// const label = `${dataF.parcela} \n marce`;
 					const newLabel = {
-						text: finalizado ? label : "",
-						color: "white",
+						text: finalizado ? label : label,
+						color: finalizado ? "white" : "black",
 						className: styles["marker-label"]
 					};
 					return (
@@ -298,7 +288,7 @@ Third line of text`;
 							/>
 							<Marker
 								optimized={true}
-								label={finalizado ? newLabel : ""}
+								label={finalizado ? newLabel : newLabel}
 								icon={"."}
 								InfoWindowShown={true}
 								position={dataF.data.data.map_geo_points_center}

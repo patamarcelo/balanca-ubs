@@ -205,10 +205,6 @@ const ModalDataFarmbox = (props) => {
 		}
 	}, [dictSelectFarm, onlyAppNotProducts]);
 
-	console.log(reloadTable);
-	console.log(loading);
-	console.log(appArray);
-
 	return (
 		<div>
 			<Modal

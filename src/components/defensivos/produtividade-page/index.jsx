@@ -6,6 +6,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import SelectFarm from "./select-farm";
 import MapPage from "./map-page";
 import ListPage from "./list-page";
+import ListPrintPage from "./list-print-page";
 
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
@@ -23,6 +24,7 @@ import HeaderPage from "./header-page";
 import Switch from "@mui/material/Switch";
 
 import CircularProgress from "@mui/material/CircularProgress";
+import "./printPage.css";
 
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
@@ -30,7 +32,7 @@ const ProdutividadePage = () => {
 		ciclo: "1"
 	});
 
-	const [printPage, setPrintPage] = useState(false);
+	const [printPage, setPrintPage] = useState(true);
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -287,13 +289,16 @@ const ProdutividadePage = () => {
 							resumo={resumoByVar}
 							sumTotalSelected={sumTotalSelected}
 						/>
-						<div className={styles.mapListDiv}>
+						<div
+							className={styles.mapListDiv}
+							id="printableMapPage"
+						>
 							<Box
-								width={"67%"}
+								width={"100%"}
 								display="flex"
 								justifyContent="center"
 								alignItems="center"
-								height={printPage ? "900px" : "650px"}
+								height={"1300px"}
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
@@ -301,6 +306,7 @@ const ProdutividadePage = () => {
 								}}
 							>
 								<MapPage
+									printPage={printPage}
 									mapArray={filteredPlantioMal}
 									filtData={mapPlantation}
 									handleSUm={handleSUm}
@@ -308,17 +314,37 @@ const ProdutividadePage = () => {
 									setTotalSelected={setTotalSelected}
 								/>
 							</Box>
-							<Box width={"30%"}>
-								<ListPage
-									printPage={printPage}
-									filteredArray={filteredArray}
-									projeto={selectedProject}
-									setSumTotalSelected={setSumTotalSelected}
-									handleSUm={handleSUm}
-									totalSelected={totalSelected}
-									setTotalSelected={setTotalSelected}
-								/>
-							</Box>
+							{printPage ? (
+								<Box width={"20%"} ml={2}>
+									<ListPrintPage
+										resumo={resumoByVar}
+										sumTotalSelected={sumTotalSelected}
+										printPage={printPage}
+										filteredArray={filteredArray}
+										projeto={selectedProject}
+										setSumTotalSelected={
+											setSumTotalSelected
+										}
+										handleSUm={handleSUm}
+										totalSelected={totalSelected}
+										setTotalSelected={setTotalSelected}
+									/>
+								</Box>
+							) : (
+								<Box width={"30%"} ml={2}>
+									<ListPage
+										printPage={printPage}
+										filteredArray={filteredArray}
+										projeto={selectedProject}
+										setSumTotalSelected={
+											setSumTotalSelected
+										}
+										handleSUm={handleSUm}
+										totalSelected={totalSelected}
+										setTotalSelected={setTotalSelected}
+									/>
+								</Box>
+							)}
 						</div>
 					</>
 				)}
