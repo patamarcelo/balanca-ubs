@@ -305,9 +305,9 @@ const ProdutividadePage = () => {
 							<Box
 								width={"100%"}
 								display="flex"
-								justifyContent="center"
-								alignItems="center"
-								height={bigMap ? "1500px" : "1300px"}
+								// justifyContent="center"
+								minHeight={bigMap ? "1500px" : "980px"}
+								alignItems={"stretch"}
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
