@@ -61,7 +61,13 @@ const HeaderPage = (props) => {
 				>
 					{selectedProject}
 				</Typography>
-				<div className={styles.MainConteinerresumoByVar}>
+				{/* <div
+					className={styles.MainConteinerresumoByVar}
+					style={{
+						backgroundColor: colors.blueOrigin[800],
+						padding: "10px 20px 10px 10px"
+					}}
+				>
 					{Object.keys(resumo).map((data, i) => {
 						const cultura = data.split("|")[0];
 						const variedade = data.split("|")[1];
@@ -78,7 +84,7 @@ const HeaderPage = (props) => {
 									src={filteredIcon(cultura)}
 									alt={filteredAlt(cultura)}
 								/>
-								<span>{variedade}</span>
+								<span>{variedade} |</span>
 								<span>
 									{area.toLocaleString("pt-br", {
 										minimumFractionDigits: 2,
@@ -89,7 +95,7 @@ const HeaderPage = (props) => {
 							</div>
 						);
 					})}
-				</div>
+				</div> */}
 			</div>
 			<ResumoPage
 				filtCult={filtCult}

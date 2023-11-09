@@ -39,7 +39,8 @@ const ResumoPage = (props) => {
 			style={{
 				display: "flex",
 				flexDirection: "column",
-				marginBottom: sumTotalSelected > 0 ? "5px" : "20px"
+				// marginBottom: sumTotalSelected > 0 ? "5px" : "5px",
+				padding: "10px 0px 10px 10px"
 			}}
 		>
 			<div

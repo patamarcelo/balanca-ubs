@@ -270,7 +270,7 @@ const ProdutividadePage = () => {
 					justifyContent: "center",
 					alignItems: "center",
 					backgroundColor: colors.blueOrigin[600],
-					padding: "20px 5px 5px 5px",
+					padding: "0px 5px 5px 5px",
 					borderRadius: "8px"
 				}}
 			>
