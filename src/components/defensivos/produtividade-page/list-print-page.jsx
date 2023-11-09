@@ -55,13 +55,14 @@ const ListPrintPage = (props) => {
 	}, [totalArea, totalAreaPlantada]);
 
 	return (
-		<Box sx={{ height: "1300px", overflow: "auto" }}>
+		// <Box sx={{ height: "1300px", overflow: "auto" }}>
+		<Box>
 			<TableContainer component={Paper}>
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Parcela</TableCell>
-							<TableCell>Área</TableCell>
+							<TableCell align="center">Área</TableCell>
 							<TableCell align="center">Variedade</TableCell>
 						</TableRow>
 					</TableHead>
@@ -72,6 +73,7 @@ const ListPrintPage = (props) => {
 									b.talhao__id_talhao
 								)
 							)
+							.filter((data) => data.finalizado_plantio === true)
 							.map((row, i) => {
 								const variedade =
 									row.finalizado_plantio &&

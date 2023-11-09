@@ -33,6 +33,7 @@ const ProdutividadePage = () => {
 	});
 
 	const [printPage, setPrintPage] = useState(true);
+	const [bigMap, setBigMap] = useState(false);
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -73,8 +74,10 @@ const ProdutividadePage = () => {
 	};
 
 	const handlePrintPage = (e) => {
-		console.log(e.target.checked);
 		setPrintPage(e.target.checked);
+	};
+	const handleBigMap = (e) => {
+		setBigMap(e.target.checked);
 	};
 
 	useEffect(() => {
@@ -218,7 +221,7 @@ const ProdutividadePage = () => {
 	return (
 		<Box
 			sx={{
-				width: "100%"
+				width: bigMap ? "150%" : "100%"
 			}}
 		>
 			<Box
@@ -252,6 +255,12 @@ const ProdutividadePage = () => {
 					inputProps={{ "aria-label": "controlled" }}
 					color="warning"
 				/>
+				<Switch
+					checked={bigMap}
+					onChange={handleBigMap}
+					inputProps={{ "aria-label": "controlled" }}
+					color="success"
+				/>
 			</Box>
 			<Box
 				sx={{
@@ -261,7 +270,7 @@ const ProdutividadePage = () => {
 					justifyContent: "center",
 					alignItems: "center",
 					backgroundColor: colors.blueOrigin[600],
-					padding: "20px",
+					padding: "20px 5px 5px 5px",
 					borderRadius: "8px"
 				}}
 			>
@@ -298,7 +307,7 @@ const ProdutividadePage = () => {
 								display="flex"
 								justifyContent="center"
 								alignItems="center"
-								height={"1300px"}
+								height={bigMap ? "1500px" : "1300px"}
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
@@ -315,7 +324,7 @@ const ProdutividadePage = () => {
 								/>
 							</Box>
 							{printPage ? (
-								<Box width={"20%"} ml={2}>
+								<Box width={"20%"} ml={1}>
 									<ListPrintPage
 										resumo={resumoByVar}
 										sumTotalSelected={sumTotalSelected}
@@ -331,7 +340,7 @@ const ProdutividadePage = () => {
 									/>
 								</Box>
 							) : (
-								<Box width={"30%"} ml={2}>
+								<Box width={"30%"} ml={1}>
 									<ListPage
 										printPage={printPage}
 										filteredArray={filteredArray}

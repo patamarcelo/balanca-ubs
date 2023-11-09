@@ -76,7 +76,7 @@ const ListPage = (props) => {
 				className={styles.mainContainer}
 				style={{
 					// backgroundColor: colors.blueOrigin[700],
-					maxHeight: printPage ? "" : "1200px",
+					maxHeight: printPage ? "" : "1300px",
 					minHeight: printPage ? "900px" : "1200px"
 				}}
 			>
