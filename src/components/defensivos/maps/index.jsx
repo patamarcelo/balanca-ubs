@@ -43,15 +43,15 @@ const MapPage = ({ mapArray, filtData }) => {
 	}, [filtData]);
 
 	useEffect(() => {
-		const centerId = mapArray[0]?.map_centro_id;
-		if (centerId) {
-			setCenter(centerId);
-		} else {
-			setCenter(
-				mapArray[Number(mapArray.length / 2).toFixed(0)]
-					?.map_geo_poins[0]
-			);
-		}
+		// const centerId = mapArray[0]?.map_centro_id;
+		// if (centerId) {
+		// 	setCenter(centerId);
+		// } else {
+		// 	setCenter(
+		// 		mapArray[Number(mapArray.length / 2).toFixed(0)]
+		// 			?.map_geo_poins[0]
+		// 	);
+		// }
 		const mapZoom = mapArray[0]?.map_zoom;
 		// console.log(mapZoom)
 		if (mapZoom) {
@@ -62,7 +62,13 @@ const MapPage = ({ mapArray, filtData }) => {
 	}, [mapArray]);
 
 	useEffect(() => {
+		let latArr = [];
+		let lngArr = [];
 		const onlyPaths = mapArray.map((data, i) => {
+			data.map_geo_poins.forEach((element) => {
+				latArr.push(Number(element.lat));
+				lngArr.push(Number(element.lng));
+			});
 			return {
 				path: data.map_geo_poins,
 				color: "white",
@@ -71,6 +77,15 @@ const MapPage = ({ mapArray, filtData }) => {
 				variedadeColorLine: data.variedadeColorLine
 			};
 		});
+		const getCenterLat = latArr.sort((a, b) => b - a);
+		const calCenterlat =
+			(getCenterLat[0] + getCenterLat[getCenterLat.length - 1]) / 2;
+
+		const getCenterLng = lngArr.sort((a, b) => b - a);
+		const calCenterlng =
+			(getCenterLng[0] + getCenterLng[getCenterLng.length - 1]) / 2;
+		const centerDict = { lat: calCenterlat, lng: calCenterlng };
+		setCenter(centerDict);
 		setPaths(onlyPaths);
 	}, [mapArray]);
 

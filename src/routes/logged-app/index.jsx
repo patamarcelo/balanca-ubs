@@ -68,7 +68,7 @@ const AuthApp = () => {
 					height: "100%",
 					backgroundColor:
 						location.pathname === "/print"
-							? "rgb(237, 234, 222) !important"
+							? "lightgrey !important"
 							: ""
 				}}
 			>

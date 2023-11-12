@@ -123,14 +123,14 @@ const MapPage = ({
 	useEffect(() => {
 		if (mapArray.length > 0) {
 			const centerId = mapArray[0]?.dados?.projeto_map_centro_id;
-			if (centerId) {
-				setCenter(centerId);
-			} else {
-				setCenter(
-					mapArray[Number(mapArray.length / 2).toFixed(0)]?.dados
-						?.map_geo_points[0]
-				);
-			}
+			// if (centerId) {
+			// 	setCenter(centerId);
+			// } else {
+			// 	setCenter(
+			// 		mapArray[Number(mapArray.length / 2).toFixed(0)]?.dados
+			// 			?.map_geo_points[0]
+			// 	);
+			// }
 			const mapZoom = mapArray[0]?.dados?.projeto_map_zoom;
 			// console.log(mapZoom)
 			if (mapZoom) {
@@ -143,14 +143,20 @@ const MapPage = ({
 
 	useEffect(() => {
 		if (mapArray) {
+			let latArr = [];
+			let lngArr = [];
 			const onlyPaths = mapArray.map((data, i) => {
 				// console.log(data);
 				let latLong = [];
 				if (data.dados.map_geo_points) {
-					latLong = data.dados.map_geo_points.map((data) => ({
-						lat: Number(data.latitude),
-						lng: Number(data.longitude)
-					}));
+					latLong = data.dados.map_geo_points.map((data) => {
+						latArr.push(Number(data.latitude));
+						lngArr.push(Number(data.longitude));
+						return {
+							lat: Number(data.latitude),
+							lng: Number(data.longitude)
+						};
+					});
 				}
 				return {
 					data: data.dados,
@@ -164,6 +170,15 @@ const MapPage = ({
 					variedadeColorLine: data.dados.variedade_color_line
 				};
 			});
+			const getCenterLat = latArr.sort((a, b) => b - a);
+			const calCenterlat =
+				(getCenterLat[0] + getCenterLat[getCenterLat.length - 1]) / 2;
+
+			const getCenterLng = lngArr.sort((a, b) => b - a);
+			const calCenterlng =
+				(getCenterLng[0] + getCenterLng[getCenterLng.length - 1]) / 2;
+			const centerDict = { lat: calCenterlat, lng: calCenterlng };
+			setCenter(centerDict);
 			setPaths(onlyPaths);
 		}
 	}, [mapArray]);
