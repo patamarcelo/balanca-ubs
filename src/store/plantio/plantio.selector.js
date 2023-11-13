@@ -188,8 +188,16 @@ export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
 
 export const selecPlantioMapAll = (state) => state.plantio.plantioMapAll;
 
-export const selecCalendarArray = (state) => {
-	const data = state.plantio.plantioCalendarDone;
+export const selecCalendarArray = (filterVar) => (state) => {
+	let data = [];
+	if (filterVar === "Todas") {
+		data = state.plantio.plantioCalendarDone;
+	} else {
+		data = state.plantio.plantioCalendarDone.filter(
+			(data) => data.variedade__cultura__cultura === filterVar
+		);
+	}
+	// const data = state.plantio.plantioCalendarDone;
 	const newArr = data.map((data) => {
 		let newName = null;
 		if (data.variedade__cultura__cultura === "Feijão") {
@@ -256,10 +264,14 @@ export const selecCalendarArray = (state) => {
 	}, []);
 	const onlyFarm = reduCArr.map((data) => data.fazenda);
 	const onlyFarmUniq = [...new Set(onlyFarm)];
-	console.log("headerT", headerTable);
+	const totalValue = headerTable.reduce((acc, curr) => (acc += curr.area), 0);
+	const addTotalHeader = [
+		...headerTable,
+		{ cultura: "Totais", month: 0, area: totalValue, year: 23 }
+	];
 
 	return {
-		headerTable,
+		headerTable: addTotalHeader,
 		table: reduCArr,
 		farms: onlyFarmUniq.sort((a, b) =>
 			a.replace("Projeto", "").localeCompare(b.replace("Projeto", ""))

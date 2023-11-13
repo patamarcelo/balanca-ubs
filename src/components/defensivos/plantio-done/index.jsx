@@ -431,7 +431,7 @@ const PlantioDonePage = () => {
 							</Box>
 						</Box>
 
-						<CalendarDonePage />
+						<CalendarDonePage cultFilt={selectCult} />
 						<PlantioDoneTable loading={isLoading} rows={dataF} />
 					</>
 				)}

@@ -32,7 +32,8 @@ const COLORS_TABLE = {
 const CalendarDonePage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	const calendarDone = useSelector(selecCalendarArray);
+	const { cultFilt } = props;
+	const calendarDone = useSelector(selecCalendarArray(cultFilt));
 
 	return (
 		<Box
@@ -83,6 +84,13 @@ const CalendarDonePage = (props) => {
 							<tr key={i}>
 								<td>{data.replace("Projeto", "")}</td>
 								{calendarDone.headerTable.map((header, iH) => {
+									const totalArr = calendarDone.table.filter(
+										(dataCal) => dataCal.fazenda === data
+									);
+									const totalValue = totalArr.reduce(
+										(acc, curr) => (acc += curr.area),
+										0
+									);
 									const filtCal = calendarDone.table.filter(
 										(dataFilt) => {
 											return (
@@ -150,7 +158,15 @@ const CalendarDonePage = (props) => {
 														]
 												}}
 											>
-												-
+												{header.cultura === "Totais"
+													? totalValue.toLocaleString(
+															"pt-br",
+															{
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+															}
+													  )
+													: " - "}
 											</td>
 										);
 									}
