@@ -19,6 +19,7 @@ const ResumoFazendasPage = (props) => {
 	} = props;
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
 	const fazPlan = dataGeral.fazendas[fazenda];
+	console.log("fazpla", fazPlan);
 	const iconDict = [
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },

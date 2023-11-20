@@ -15,6 +15,7 @@ import Chip from "@mui/material/Chip";
 import { nodeServer } from "../../../../utils/axios/axios.utils";
 import { setAppFarmBox } from "../../../../store/plantio/plantio.actions";
 import { selectCurrentUser } from "../../../../store/user/user.selector";
+import { selectSafraCiclo } from "../../../../store/plantio/plantio.selector";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,20 +45,55 @@ const ModalDataFarmbox = (props) => {
 	const [finalArr, setFinalArr] = useState(false);
 	const [onlyAppNotProducts, setOnlyAppNotProducts] = useState(true);
 	const [reloadTable, setReloadTable] = useState(false);
+	const [refreshData, setRefreshData] = useState(false);
 
 	const dispatch = useDispatch();
 
 	const dictSelectFarm = useSelector(createDictFarmBox);
 	const user = useSelector(selectCurrentUser);
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const getTrueApiFarmData = useCallback(async () => {
+		if (dictSelectFarm.length === 0 || refreshData) {
+			try {
+				setLoading(true);
+				setRefreshData(false);
+				console.warn("pegando dados DataDetail");
+				await nodeServer
+					.get("/datadetail", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+							"X-Firebase-AppCheck": user.accessToken
+						},
+						params: {
+							safraCiclo
+						}
+					})
+					.then((res) => {
+						dispatch(setAppFarmBox(res.data));
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API de dados do FarmBox", err);
+			} finally {
+				console.warn("Finalizando Consumo API DataDetail");
+				setLoading(false);
+			}
+		}
+	}, [dispatch]);
+
+	const getTrueApiFarmDataRefresh = async () => {
 		try {
 			setLoading(true);
+			console.warn("pegando dados DataDetail");
 			await nodeServer
 				.get("/datadetail", {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
 						"X-Firebase-AppCheck": user.accessToken
+					},
+					params: {
+						safraCiclo
 					}
 				})
 				.then((res) => {
@@ -67,27 +103,29 @@ const ModalDataFarmbox = (props) => {
 		} catch (err) {
 			console.log("Erro ao consumir a API de dados do FarmBox", err);
 		} finally {
+			console.warn("Finalizando Consumo API DataDetail");
 			setLoading(false);
+			setRefreshData(false);
 		}
-	}, [dispatch]);
+	};
 
 	useEffect(() => {
 		getTrueApiFarmData();
 	}, []);
 
+	useEffect(() => {
+		if (refreshData) {
+			getTrueApiFarmData();
+		}
+	}, [refreshData]);
+
 	const handleOpOrProducts = () => {
 		setOnlyAppNotProducts(!onlyAppNotProducts);
 	};
 
-	useEffect(() => {
-		setReloadTable(true);
-		setTimeout(() => {
-			setReloadTable(false);
-		}, 750);
-	}, [onlyAppNotProducts]);
-
 	const getArray = async () => {
 		setFinalArr(false);
+		console.log("Começando o Loop");
 		try {
 			const newarr = await dictSelectFarm.map((data) => {
 				const { parcelas, insumos, progressos, areaSolicitada } = data;
@@ -195,15 +233,27 @@ const ModalDataFarmbox = (props) => {
 		} catch (err) {
 			console.log("erro ao formar o Array do Grid Farmbox", err);
 		} finally {
+			console.log("Finalizando o reduce");
 			setFinalArr(true);
 		}
 	};
 
 	useEffect(() => {
-		if (dictSelectFarm) {
+		console.log(appArray);
+	}, [appArray]);
+
+	useEffect(() => {
+		if (dictSelectFarm.length > 0) {
+			console.log("dictSelect Farm: ", dictSelectFarm);
 			getArray();
 		}
 	}, [dictSelectFarm, onlyAppNotProducts]);
+
+	const handleRefreshData = () => {
+		console.log("Refresh table");
+		setRefreshData(true);
+		getTrueApiFarmDataRefresh();
+	};
 
 	return (
 		<div>
@@ -241,7 +291,7 @@ const ModalDataFarmbox = (props) => {
 							label="Atualizar"
 							color="primary"
 							size="medium"
-							onClick={() => getTrueApiFarmData()}
+							onClick={handleRefreshData}
 							sx={{
 								backgroundColor: colors.blueAccent[800],
 								color: colors.primary[100],
@@ -285,7 +335,7 @@ const ModalDataFarmbox = (props) => {
 						/>
 					)}
 
-					{(loading || reloadTable) && (
+					{loading && (
 						<Box
 							sx={{
 								display: "flex",

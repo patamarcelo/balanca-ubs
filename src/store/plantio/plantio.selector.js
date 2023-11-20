@@ -189,6 +189,10 @@ export const selectSafraCiclo = (state) => state.plantio.safraCiclo;
 export const selecPlantioMapAll = (state) => state.plantio.plantioMapAll;
 
 export const selecCalendarArray = (filterVar) => (state) => {
+	const onlyFilteredFarm = state.plantio.plantioCalendarDone.map(
+		(data) => data.talhao__fazenda__nome
+	);
+	const dupFarm = [...new Set(onlyFilteredFarm)];
 	let data = [];
 	if (filterVar === "Todas") {
 		data = state.plantio.plantioCalendarDone;
@@ -262,8 +266,6 @@ export const selecCalendarArray = (filterVar) => (state) => {
 		}
 		return acc;
 	}, []);
-	const onlyFarm = reduCArr.map((data) => data.fazenda);
-	const onlyFarmUniq = [...new Set(onlyFarm)];
 	const totalValue = headerTable.reduce((acc, curr) => (acc += curr.area), 0);
 	const addTotalHeader = [
 		...headerTable,
@@ -273,7 +275,7 @@ export const selecCalendarArray = (filterVar) => (state) => {
 	return {
 		headerTable: addTotalHeader,
 		table: reduCArr,
-		farms: onlyFarmUniq.sort((a, b) =>
+		farms: dupFarm.sort((a, b) =>
 			a.replace("Projeto", "").localeCompare(b.replace("Projeto", ""))
 		)
 	};
@@ -560,6 +562,10 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 
 	const newArr = plantio
 		.filter((data) => data.status === "sought")
+		.filter(
+			(data) =>
+				data?.inputs[0]?.input?.name?.trim() !== "Colheita de Grãos"
+		)
 		.filter((data) =>
 			!showFutureApps
 				? new Date(data.date) < getNextDays(days)

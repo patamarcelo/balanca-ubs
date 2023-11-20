@@ -132,7 +132,37 @@ const FarmBoxPage = () => {
 		setFilteredApps(filterFarm);
 	}, [filtFarm, dictSelect]);
 
-	const getTrueApi = useCallback(async () => {
+	// useEffect(() => {
+	// 	const getTrueApi = async () => {
+	// 		try {
+	// 			setLoadinData(true);
+	// 			await nodeServer
+	// 				.get("/", {
+	// 					headers: {
+	// 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+	// 						"X-Firebase-AppCheck": user.accessToken
+	// 					},
+	// 					params: {
+	// 						safraCiclo
+	// 					}
+	// 				})
+	// 				.then((res) => {
+	// 					dispatch(setApp(res.data));
+	// 				})
+	// 				.catch((err) => console.log(err));
+	// 		} catch (err) {
+	// 			console.log("Erro ao consumir a API", err);
+	// 		} finally {
+	// 			setLoadinData(false);
+	// 			// console.log("Finally statement");
+	// 		}
+	// 	};
+	// 	if (openApp.length === 0) {
+	// 		getTrueApi();
+	// 	}
+	// }, [dispatch, openApp]);
+
+	const getTrueApi = async () => {
 		try {
 			setLoadinData(true);
 			await nodeServer
@@ -155,18 +185,13 @@ const FarmBoxPage = () => {
 			setLoadinData(false);
 			// console.log("Finally statement");
 		}
-	}, [dispatch]);
-
-	useEffect(() => {
-		if (openApp.length === 0) {
-			getTrueApi();
-		}
-	}, [getTrueApi, openApp]);
+	};
 
 	const refreshData = () => {
 		console.log("refreshing");
 		dispatch(setApp([]));
 		dispatch(setAppFarmBox([]));
+		getTrueApi();
 	};
 
 	const [open, setOpen] = useState(false);

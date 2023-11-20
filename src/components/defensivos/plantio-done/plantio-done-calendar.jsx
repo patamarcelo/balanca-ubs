@@ -40,7 +40,7 @@ const CalendarDonePage = (props) => {
 			mt={4}
 			mb={4}
 			sx={{
-				width: "100%",
+				// width: "100%",
 				overflow: "auto"
 				// backgroundColor: "white"
 			}}

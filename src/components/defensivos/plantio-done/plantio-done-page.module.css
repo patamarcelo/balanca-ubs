@@ -28,7 +28,9 @@
 .calendarTable tr, td {
     text-align: center;
 }
+.calendarTable {
 
+    width: auto !important;}
 
 .calendarTable th{
     min-width: 120px;
