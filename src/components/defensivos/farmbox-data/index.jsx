@@ -130,7 +130,7 @@ const FarmBoxPage = () => {
 			filtFarm.includes(data.fazenda)
 		);
 		setFilteredApps(filterFarm);
-	}, [filtFarm, dictSelect]);
+	}, [filtFarm, dictSelect, openApp]);
 
 	// useEffect(() => {
 	// 	const getTrueApi = async () => {
