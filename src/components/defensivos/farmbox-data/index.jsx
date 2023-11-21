@@ -132,36 +132,6 @@ const FarmBoxPage = () => {
 		setFilteredApps(filterFarm);
 	}, [filtFarm, dictSelect, openApp]);
 
-	// useEffect(() => {
-	// 	const getTrueApi = async () => {
-	// 		try {
-	// 			setLoadinData(true);
-	// 			await nodeServer
-	// 				.get("/", {
-	// 					headers: {
-	// 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-	// 						"X-Firebase-AppCheck": user.accessToken
-	// 					},
-	// 					params: {
-	// 						safraCiclo
-	// 					}
-	// 				})
-	// 				.then((res) => {
-	// 					dispatch(setApp(res.data));
-	// 				})
-	// 				.catch((err) => console.log(err));
-	// 		} catch (err) {
-	// 			console.log("Erro ao consumir a API", err);
-	// 		} finally {
-	// 			setLoadinData(false);
-	// 			// console.log("Finally statement");
-	// 		}
-	// 	};
-	// 	if (openApp.length === 0) {
-	// 		getTrueApi();
-	// 	}
-	// }, [dispatch, openApp]);
-
 	const getTrueApi = async () => {
 		try {
 			setLoadinData(true);
@@ -183,7 +153,6 @@ const FarmBoxPage = () => {
 			console.log("Erro ao consumir a API", err);
 		} finally {
 			setLoadinData(false);
-			// console.log("Finally statement");
 		}
 	};
 

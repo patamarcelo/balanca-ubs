@@ -15,7 +15,7 @@ const HeaderApp = (props) => {
 					<p>Operação</p>
 				</div>
 				<div className={classes.numberDivApp}>
-					<p>Area </p>
+					<p>Área </p>
 					<p>Aplicado</p>
 					<p>Aberto</p>
 					<p>Status</p>
