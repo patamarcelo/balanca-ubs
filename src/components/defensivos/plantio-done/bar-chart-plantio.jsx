@@ -215,7 +215,11 @@ const MyResponsiveBar = (props) => {
 					}
 				}}
 				labelSkipWidth={0}
-				labelTextColor={"white"}
+				labelTextColor={(data) =>
+					data.label.split("-")[0].trim() === "Feijão"
+						? "white"
+						: "black"
+				}
 				// legends={[]}
 				legends={[
 					{
