@@ -38,7 +38,7 @@ const HeaderComp = (props) => {
 			<Typography
 				variant="h2"
 				color={"white"}
-				sx={{ alignSelf: "center" }}
+				sx={{ alignSelf: "center", fontFamily: "Times New Roman " }}
 			>
 				{data.nome_fantasia}
 			</Typography>

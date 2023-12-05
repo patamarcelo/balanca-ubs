@@ -37,6 +37,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import PrintVersion from "./print-version";
 
+import JsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import moment from "moment";
+
 const ProgramasSection = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -63,6 +67,40 @@ const ProgramasSection = () => {
 
 	const [version, setVersion] = useState("");
 
+	const generatePDF = () => {
+		const pdf = new JsPDF("portrait", "pt", "a4", false);
+		// var source = document.querySelector("#printDivProgram");
+
+		// report.html(document.querySelector("#printDivProgram")).then(() => {
+		// 	report.save("Programa.pdf");
+		// });
+
+		const formatDate = "YYYY.MM.DD";
+		const today = new Date();
+		const dateNameFilte = moment(today).format(formatDate);
+
+		const saveFile = version
+			? `${dateNameFilte} - ${programData.nome_fantasia} - Versão ${version}`
+			: `${dateNameFilte} - ${programData.nome_fantasia}`;
+
+		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
+		let srcWidth = document.getElementById("printDivProgram").scrollWidth;
+		let margin = 18; // narrow margin - 1.27 cm (36);
+		let scale = (pWidth - margin * 2) / srcWidth;
+		// let pdf = new jsPDF('p', 'pt', 'a4');
+		pdf.html(document.getElementById("printDivProgram"), {
+			x: margin,
+			y: margin,
+			html2canvas: {
+				scale: scale
+			}
+			// callback: function () {
+			// 	window.open(pdf.output("bloburl"));
+			// }
+		}).then(() => {
+			pdf.save(`${saveFile}.pdf`);
+		});
+	};
 	// useEffect(() => {
 	// 	if (programData) {
 	// 		setVersion(programData.versao);
@@ -251,7 +289,8 @@ const ProgramasSection = () => {
 								</label>
 							</Box>
 							<Box sx={{ alignSelf: "end" }}>
-								<IconButton onClick={() => window.print()}>
+								<IconButton onClick={generatePDF}>
+									{/* <IconButton onClick={() => window.print()}> */}
 									<FontAwesomeIcon
 										icon={faPrint}
 										color={colors.blueAccent[500]}
@@ -259,11 +298,18 @@ const ProgramasSection = () => {
 									/>
 								</IconButton>
 							</Box>
-							<Box id="printDivProgram">
-								<PrintVersion
-									programData={programData}
-									version={version}
-								/>
+							<Box
+								id="printDivProgram"
+								sx={{
+									fontFamily: "Times New Roman !important"
+								}}
+							>
+								{version && (
+									<PrintVersion
+										programData={programData}
+										version={version}
+									/>
+								)}
 								<HeaderComp
 									data={programData}
 									quantidadeTotal={quantidadeTotal}
@@ -272,10 +318,12 @@ const ProgramasSection = () => {
 									data={filteredEstagios}
 									program={selectedPrograma}
 								/>
-								<PrintVersion
-									programData={programData}
-									version={version}
-								/>
+								{version && (
+									<PrintVersion
+										programData={programData}
+										version={version}
+									/>
+								)}
 							</Box>
 							<hr />
 							{filteredOperations && (

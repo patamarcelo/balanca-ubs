@@ -67,9 +67,9 @@
     background-color: whitesmoke; */
 }
 
-.headerEstagios div{
+/* .headerEstagios div{
     text-transform: uppercase;
-}
+} */
 
 .produtosMainContainer {
     display: flex;
@@ -80,7 +80,7 @@
 }
 
 .produtosMainContainer div{
-    text-transform: lowercase;
+    /* text-transform: lowercase; */
     border: 0.5px dotted black;
     /* border-left: 0px; */
     /* border-right: 0px; */
@@ -88,9 +88,9 @@
     display: inline-block;
     
 }
-.produtosMainContainer div::first-letter{
+/* .produtosMainContainer div::first-letter{
     text-transform: uppercase;
-}
+} */
 
 
 
