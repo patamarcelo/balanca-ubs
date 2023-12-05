@@ -1,11 +1,11 @@
-import { Box, Typography, Button, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setSafraCilco } from "../../../store/plantio/plantio.actions";

@@ -117,7 +117,7 @@ const ListPage = (props) => {
 										borderRadius: "8px",
 										padding: "3px 15px",
 										display: "flex",
-										margin: "0px 10px",
+										margin: "0px 0px 0px 10px",
 										flexDirection: "row",
 										justifyContent: "space-between",
 										alignItems: "center",
