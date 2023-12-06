@@ -38,7 +38,6 @@ import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import PrintVersion from "./print-version";
 
 import JsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import moment from "moment";
 
 const ProgramasSection = () => {
@@ -74,6 +73,29 @@ const ProgramasSection = () => {
 		// report.html(document.querySelector("#printDivProgram")).then(() => {
 		// 	report.save("Programa.pdf");
 		// });
+		// Calculate the height of the content
+		const contentHeight =
+			document.querySelector("#printDivProgram").offsetHeight;
+
+		// Set the maximum height of each page (adjust as needed)
+		const maxHeightPerPage = 1200; // For example, assuming each page can hold up to 800px of content
+
+		// Calculate the number of pages needed
+		const totalPages = Math.ceil(contentHeight / maxHeightPerPage);
+		console.log("total pages: ", totalPages);
+
+		// Generate the PDF
+		// const pdf = new jsPDF();
+
+		// Loop through the pages
+		// for (let i = 0; i < totalPages; i++) {
+		// 	if (i > 0) {
+		// 		pdf.addPage(); // Add a new page for subsequent pages
+		// 	}
+
+		// 	// Render the content of the current page
+		// 	pdf.fromHTML(document.body, 15, 15, { pagesplit: true });
+		// }
 
 		const formatDate = "YYYY.MM.DD";
 		const today = new Date();
@@ -87,10 +109,11 @@ const ProgramasSection = () => {
 		let srcWidth = document.getElementById("printDivProgram").scrollWidth;
 		let margin = 18; // narrow margin - 1.27 cm (36);
 		let scale = (pWidth - margin * 2) / srcWidth;
-		// let pdf = new jsPDF('p', 'pt', 'a4');
+
 		pdf.html(document.getElementById("printDivProgram"), {
 			x: margin,
 			y: margin,
+			autoPaging: "text",
 			html2canvas: {
 				scale: scale
 			}

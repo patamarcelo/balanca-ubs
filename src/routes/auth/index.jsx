@@ -65,7 +65,7 @@ const Auth = () => {
 	const isNonMobile = useMediaQuery("(min-width: 700px)");
 
 	const setSafraCiclo = () => {
-		dispatch(setSafraCilco({ safra: "2023/2024", ciclo: "2" }));
+		dispatch(setSafraCilco({ safra: "2023/2024", ciclo: "3" }));
 	};
 
 	useEffect(() => {

@@ -36,9 +36,14 @@ const EstagiosComp = ({ data, program }) => {
 						<Box
 							className={[
 								`${styles["estagioContainer"]}
-								${i === 6 && "pageBreak"}`
+								${i === 6 && "pageBreak"} pageBreakContainer`
 							]}
 							key={i}
+							sx={{
+								pageBreakInside: "avoid",
+								pageBreakBefore: "always",
+								pageBreakAfter: "always"
+							}}
 						>
 							<div className={styles.estagioTitle}>
 								<div style={{ fontWeight: "bold" }}>

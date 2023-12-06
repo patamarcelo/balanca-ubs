@@ -26,6 +26,8 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
+import { faPrint } from "@fortawesome/free-solid-svg-icons";
+
 import MapPage from "../maps";
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -39,6 +41,10 @@ import {
 } from "../../../store/plantio/plantio.selector";
 
 import EmptyResultPage from "./empty-result";
+
+import JsPDF from "jspdf";
+import moment from "moment";
+import html2canvas from "html2canvas";
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -381,6 +387,39 @@ const DataProgramPage = (props) => {
 		setObjResumValues(filtArr);
 	}, [objList]);
 
+	const generatePDF = () => {
+		const pdf = new JsPDF("portrait", "pt", "a4", false);
+		const formatDate = "YYYY.MM.DD";
+		const today = new Date();
+		const dateNameFilte = moment(today).format(formatDate);
+		const saveFile = dateNameFilte + " - " + farmSelected;
+
+		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
+		let srcWidth = document.getElementById(
+			"printableGeralProgramaDiv"
+		).scrollWidth;
+		let margin = 18; // narrow margin - 1.27 cm (36);
+		let scale = (pWidth - margin * 2) / srcWidth;
+		// let pdf = new jsPDF('p', 'pt', 'a4');
+		pdf.html(document.getElementById("printableGeralProgramaDiv"), {
+			x: margin,
+			y: margin,
+			autoPaging: "text",
+			html2canvas: {
+				scale: scale,
+				allowTaint: true,
+				useCORS: true
+			}
+		}).then(() => {
+			pdf.save(`${saveFile}.pdf`);
+		});
+	};
+
+	const formatArea = areaFiltTotal.toLocaleString("pt-br", {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+	});
+
 	return (
 		<Box
 			className={classes.mainDiv}
@@ -426,12 +465,23 @@ const DataProgramPage = (props) => {
 						</Box>
 					);
 				})}
+				<Box sx={{ marginLeft: "auto" }}>
+					<IconButton onClick={generatePDF}>
+						{/* <IconButton onClick={() => window.print()}> */}
+						<FontAwesomeIcon
+							icon={faPrint}
+							color={colors.blueAccent[500]}
+							size={"sm"}
+						/>
+					</IconButton>
+				</Box>
 			</Box>
 			<Box
 				className={[
 					classes["box-program"],
 					classes["printableGeralProgramaDiv"]
 				]}
+				id="printableGeralProgramaDiv"
 				mt={2}
 			>
 				<Box
@@ -454,13 +504,13 @@ const DataProgramPage = (props) => {
 							fontWeight: "bold"
 						}}
 					>
-						<div>
+						<div style={{ fontFamily: "Times New Roman" }}>
 							<span style={{ fontStyle: "italic" }}>
 								até{" "}
 								{finalDateForm && displayDate(finalDateForm)}
 							</span>
 						</div>
-						<div>
+						<div style={{ fontFamily: "Times New Roman" }}>
 							{farmSelected}
 							<FontAwesomeIcon
 								icon={!onlyOpenApp ? faCheckDouble : faClock}
@@ -566,15 +616,9 @@ const DataProgramPage = (props) => {
 						</div>
 						<div>
 							{areaFiltTotal > 0 && (
-								<>
-									&nbsp;&nbsp;&nbsp; Área:{" "}
-									<span style={{ fontStyle: "italic" }}>
-										{areaFiltTotal.toLocaleString("pt-br", {
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2
-										})}
-									</span>
-								</>
+								<div style={{ fontFamily: "Times New Roman" }}>
+									&nbsp;&nbsp;&nbsp; Área:&nbsp; {formatArea}
+								</div>
 							)}
 						</div>
 					</Typography>

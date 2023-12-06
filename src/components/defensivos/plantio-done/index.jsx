@@ -292,8 +292,8 @@ const PlantioDonePage = () => {
 									height: "400px",
 									width: "25%",
 									display: "grid",
-									gridTemplateColumns: "95%",
-									justifyContent: "center",
+									gridTemplateColumns: "98%",
+									justifyContent: "end",
 									alignContent: "start",
 									overflow: "auto",
 									gap: "5px",
@@ -325,7 +325,8 @@ const PlantioDonePage = () => {
 														colors.blueOrigin[700],
 													color: colors
 														.blueOrigin[200],
-													fontWeight: "bold"
+													fontWeight: "bold",
+													borderRadius: "7px"
 												}}
 											>
 												<Box

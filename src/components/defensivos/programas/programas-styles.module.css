@@ -1,7 +1,8 @@
 
 @media print {
     .estagioContainer{
-        margin: 5px
+        margin: 5px;
+        page-break-inside: avoid;
     }
 }
 
@@ -30,9 +31,14 @@
     grid-template-columns: repeat(6, 1fr);
     justify-items: center;
     border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.65) 0px 1px 1px
+    box-shadow: rgba(0, 0, 0, 0.65) 0px 1px 1px;
+    /* page-break-inside: avoid !important; */
     
 }
+
+/* .estagioContainer > div  {
+    page-break-inside: avoid;
+} */
 
 .estagioTitle{
     display: flex;
