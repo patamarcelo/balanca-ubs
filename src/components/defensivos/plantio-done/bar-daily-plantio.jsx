@@ -1,5 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
@@ -127,15 +127,24 @@ const DailyChartBar = (props) => {
 
 	const [formatData, setFormatData] = useState([]);
 	const [onlyFarms, setOnlyFarms] = useState([]);
+	const [selectedFilter, setSelectedFilter] = useState("Fazenda");
 	useEffect(() => {
 		if (dataByDay) {
 			const formData = dataByDay.reduce((acc, curr) => {
 				const dataP = curr.data_plantio;
 				const areaTotal = curr.area_total;
-				const fazenda = curr.talhao__fazenda__fazenda__nome.replace(
-					"Fazenda",
-					""
-				);
+				let fazenda = "";
+				if (selectedFilter === "Fazenda") {
+					fazenda = curr.talhao__fazenda__fazenda__nome.replace(
+						selectedFilter,
+						""
+					);
+				} else {
+					fazenda = fazenda = curr.talhao__fazenda__nome.replace(
+						selectedFilter,
+						""
+					);
+				}
 				if (acc.filter((data) => data.country === dataP).length === 0) {
 					const objToAdd = {};
 					objToAdd.country = dataP;
@@ -150,14 +159,22 @@ const DailyChartBar = (props) => {
 				return acc;
 			}, []);
 			setFormatData(formData);
-			const filteredFarms = dataByDay.map((farms) =>
-				farms.talhao__fazenda__fazenda__nome.replace("Fazenda", "")
-			);
+			let filteredFarms = "";
+			if (selectedFilter === "Fazenda") {
+				filteredFarms = dataByDay.map((farms) =>
+					farms.talhao__fazenda__fazenda__nome.replace(
+						selectedFilter,
+						""
+					)
+				);
+			} else {
+				filteredFarms = dataByDay.map((farms) =>
+					farms.talhao__fazenda__nome.replace(selectedFilter, "")
+				);
+			}
 			setOnlyFarms([...new Set([...filteredFarms])]);
-			console.log(formatData);
-			console.log(onlyFarms);
 		}
-	}, [dataByDay]);
+	}, [dataByDay, selectedFilter]);
 
 	const theme = {
 		// background: "#ffffff",
@@ -268,6 +285,14 @@ const DailyChartBar = (props) => {
 			tableCellValue: {}
 		}
 	};
+	const optFilter = [
+		{ title: "Fazenda", opt: "Fazenda" },
+		{ title: "Projeto", opt: "Projeto" }
+	];
+
+	const handlerFilter = (data) => {
+		setSelectedFilter(data);
+	};
 	if (formatData && onlyFarms) {
 		return (
 			<Box
@@ -279,13 +304,64 @@ const DailyChartBar = (props) => {
 					borderRadius: "12px",
 					display: "flex",
 					justifyContent: "space-between",
-					flexDirection: "row",
+					flexDirection: "column",
 					alignItems: "center",
 					marginTop: "5px",
 					border: "1px solid black",
 					gap: "5px"
 				}}
 			>
+				<Box
+					sx={{
+						display: "flex",
+						alignSelf: "self-start",
+						padding: "10px",
+						justifyContent: "space-between",
+						gap: "10px",
+						width: "100px"
+						// backgroundColor: "red"
+					}}
+				>
+					{optFilter.map((data, i) => {
+						return (
+							<Box
+								onClick={() => handlerFilter(data.title)}
+								sx={{
+									cursor: "pointer",
+									backgroundColor:
+										selectedFilter === data.title
+											? "white"
+											: "black",
+									color:
+										selectedFilter === data.title
+											? "black"
+											: "white",
+									"&:hover": {
+										opacity: "0.7"
+									},
+									padding: "4px 8px",
+									borderRadius: "12px"
+								}}
+							>
+								<Typography
+									variant="h6"
+									// color={colors.textColor[100]}
+								>
+									{data.title}
+								</Typography>
+							</Box>
+						);
+					})}
+				</Box>
+				<Box mt={0}>
+					<Typography
+						variant="h3"
+						color={colors.textColor[100]}
+						fontWeight={"bold"}
+					>
+						Plantio diário por {selectedFilter}
+					</Typography>
+				</Box>
 				<Box
 					sx={{
 						height: "500px",
@@ -301,7 +377,7 @@ const DailyChartBar = (props) => {
 						padding={0.3}
 						valueScale={{ type: "linear" }}
 						indexScale={{ type: "band", round: true }}
-						colors={{ scheme: "paired" }}
+						colors={{ scheme: "set3" }}
 						theme={theme}
 						// enableLabel={false}
 						// layout="horizontal"
