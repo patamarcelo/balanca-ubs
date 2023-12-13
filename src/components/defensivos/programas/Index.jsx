@@ -68,12 +68,7 @@ const ProgramasSection = () => {
 
 	const generatePDF = () => {
 		const pdf = new JsPDF("portrait", "pt", "a4", false);
-		// var source = document.querySelector("#printDivProgram");
 
-		// report.html(document.querySelector("#printDivProgram")).then(() => {
-		// 	report.save("Programa.pdf");
-		// });
-		// Calculate the height of the content
 		const contentHeight =
 			document.querySelector("#printDivProgram").offsetHeight;
 
@@ -83,19 +78,6 @@ const ProgramasSection = () => {
 		// Calculate the number of pages needed
 		const totalPages = Math.ceil(contentHeight / maxHeightPerPage);
 		console.log("total pages: ", totalPages);
-
-		// Generate the PDF
-		// const pdf = new jsPDF();
-
-		// Loop through the pages
-		// for (let i = 0; i < totalPages; i++) {
-		// 	if (i > 0) {
-		// 		pdf.addPage(); // Add a new page for subsequent pages
-		// 	}
-
-		// 	// Render the content of the current page
-		// 	pdf.fromHTML(document.body, 15, 15, { pagesplit: true });
-		// }
 
 		const formatDate = "YYYY.MM.DD";
 		const today = new Date();
@@ -113,9 +95,12 @@ const ProgramasSection = () => {
 		pdf.html(document.getElementById("printDivProgram"), {
 			x: margin,
 			y: margin,
+			margin: [25, 0, 25, 0],
 			autoPaging: "text",
 			html2canvas: {
-				scale: scale
+				scale: scale,
+				allowTaint: true,
+				useCORS: true
 			}
 			// callback: function () {
 			// 	window.open(pdf.output("bloburl"));

@@ -27,6 +27,7 @@ import MyResponsivePie from "../plantio-done/pie-chart";
 import MyResponsiveSunburst from "./pie-chart-vars";
 import MyResponsiveChartVars from "./pie-chart-cultiv";
 import MyResponsiveBar from "./bar-chart-plantio";
+import DailyChartBar from "./bar-daily-plantio";
 
 import LinearProgress, {
 	linearProgressClasses
@@ -49,6 +50,7 @@ const PlantioDonePage = () => {
 	);
 
 	const [dataF, setDataF] = useState([]);
+	const [dataByDay, setDataByDay] = useState([]);
 	const [filtCult, setFiltCult] = useState([]);
 
 	const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +95,8 @@ const PlantioDonePage = () => {
 						}
 					})
 					.then((res) => {
-						// console.log(res.data);
+						// console.log("by day ");
+						setDataByDay(res.data.plantio_by_day);
 						const newData = res.data.data.map((data, i) => ({
 							...data,
 							id: i,
@@ -431,6 +434,7 @@ const PlantioDonePage = () => {
 									})}
 							</Box>
 						</Box>
+						{dataByDay && <DailyChartBar dataByDay={dataByDay} />}
 
 						<CalendarDonePage cultFilt={selectCult} />
 						<PlantioDoneTable loading={isLoading} rows={dataF} />

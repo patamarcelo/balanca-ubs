@@ -8,6 +8,7 @@ import { tokens } from "../../../theme";
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
+import question from "../../../utils/assets/icons/question.png";
 
 import ProgressBarPage from "./progress-bar";
 
@@ -27,7 +28,8 @@ const TableDataPage = (props) => {
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
-		{ cultura: "Soja", icon: soy, alt: "soja" }
+		{ cultura: "Soja", icon: soy, alt: "soja" },
+		{ cultura: undefined, icon: question, alt: "?" }
 	];
 
 	const filteredIcon = (data) => {
@@ -36,7 +38,8 @@ const TableDataPage = (props) => {
 		if (filtered.length > 0) {
 			return filtered[0].icon;
 		}
-		return "";
+		return iconDict[3].icon;
+		// return "";
 	};
 
 	const filteredAlt = (data) => {
@@ -45,7 +48,7 @@ const TableDataPage = (props) => {
 		if (filtered.length > 0) {
 			return filtered[0].alt;
 		}
-		return "";
+		return iconDict[3].alt;
 	};
 
 	const progressNumber =

@@ -38,16 +38,21 @@ const MyResponsiveSunburst = (props) => {
 				arcLinkLabelsColor={{ from: "color" }}
 				enableArcLabels={true}
 				arcLabelsSkipAngle={10}
+				arcLabelsTextColor={(data) =>
+					data.label.split("-")[0].trim() === "Feijão"
+						? "white"
+						: "black"
+				}
 				arcLabel={(d) =>
 					parseFloat(d.value).toLocaleString("pt-br", {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2
 					})
 				}
-				arcLabelsTextColor={{
-					from: "white",
-					modifiers: [["darker", 1]]
-				}}
+				// arcLabelsTextColor={{
+				// 	from: "white",
+				// 	modifiers: [["darker", 1]]
+				// }}
 				tooltip={(point) => {
 					return (
 						<div

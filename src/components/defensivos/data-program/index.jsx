@@ -387,32 +387,35 @@ const DataProgramPage = (props) => {
 		setObjResumValues(filtArr);
 	}, [objList]);
 
-	const generatePDF = () => {
-		const pdf = new JsPDF("portrait", "pt", "a4", false);
-		const formatDate = "YYYY.MM.DD";
-		const today = new Date();
-		const dateNameFilte = moment(today).format(formatDate);
-		const saveFile = dateNameFilte + " - " + farmSelected;
+	const formatName = () => {
+		const saveFile = farmSelected;
+		return saveFile;
+	};
 
+	const generatePDF = async () => {
+		const pdf = new JsPDF("portrait", "pt", "a4", false);
 		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
 		let srcWidth = document.getElementById(
 			"printableGeralProgramaDiv"
 		).scrollWidth;
 		let margin = 18; // narrow margin - 1.27 cm (36);
 		let scale = (pWidth - margin * 2) / srcWidth;
-		// let pdf = new jsPDF('p', 'pt', 'a4');
-		pdf.html(document.getElementById("printableGeralProgramaDiv"), {
-			x: margin,
-			y: margin,
-			autoPaging: "text",
-			html2canvas: {
-				scale: scale,
-				allowTaint: true,
-				useCORS: true
-			}
-		}).then(() => {
-			pdf.save(`${saveFile}.pdf`);
-		});
+		await pdf
+			.html(document.getElementById("printableGeralProgramaDiv"), {
+				x: margin,
+				y: margin,
+				margin: [20, 0, 20, 0],
+				autoPaging: "text",
+				html2canvas: {
+					logging: true,
+					scale: scale,
+					allowTaint: true,
+					useCORS: true
+				}
+			})
+			.then(() => {
+				pdf.save(`${formatName()}.pdf`);
+			});
 	};
 
 	const formatArea = areaFiltTotal.toLocaleString("pt-br", {

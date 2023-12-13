@@ -113,16 +113,18 @@ const MyResponsiveChartVars = (props) => {
 				arcLinkLabelsColor={{ from: "color" }}
 				enableArcLabels={true}
 				arcLabelsSkipAngle={10}
-				arcLabel={(d) =>
-					parseFloat(d.value).toLocaleString("pt-br", {
+				arcLabel={(d) => {
+					console.log(d);
+					return parseFloat(d.value).toLocaleString("pt-br", {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2
-					})
-				}
-				arcLabelsTextColor={{
-					from: "white",
-					modifiers: [["darker", 1]]
+					});
 				}}
+				arcLabelsTextColor={(data) =>
+					data.data.cultura.split("-")[0].trim() === "Feijão"
+						? "white"
+						: "black"
+				}
 				tooltip={(point) => {
 					return (
 						<div

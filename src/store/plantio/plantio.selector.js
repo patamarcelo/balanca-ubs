@@ -622,6 +622,7 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 
 	const fazendasApp = newArr.reduce((result, value) => {
 		const { area, aplicado, saldo, fazenda, cultura } = value;
+		const formCult = cultura ? cultura : "SemCultura";
 		if (!result[fazenda]) {
 			result[fazenda] = {
 				area: Number(area),
@@ -634,10 +635,10 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 			result[fazenda].saldo += Number(saldo);
 		}
 
-		if (!result[fazenda][cultura]) {
-			result[fazenda][cultura] = Number(saldo);
+		if (!result[fazenda][formCult]) {
+			result[fazenda][formCult] = Number(saldo);
 		} else {
-			result[fazenda][cultura] += Number(saldo);
+			result[fazenda][formCult] += Number(saldo);
 		}
 		return result;
 	}, {});

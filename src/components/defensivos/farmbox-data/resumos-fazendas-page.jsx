@@ -5,6 +5,7 @@ import classes from "./farmbox.module.css";
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
+import question from "../../../utils/assets/icons/question.png";
 import { Box, Divider } from "@mui/material";
 
 const ResumoFazendasPage = (props) => {
@@ -23,7 +24,8 @@ const ResumoFazendasPage = (props) => {
 	const iconDict = [
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
-		{ cultura: "Arroz", icon: rice, alt: "arroz" }
+		{ cultura: "Arroz", icon: rice, alt: "arroz" },
+		{ cultura: "SemCultura", icon: question, alt: "?" }
 	];
 
 	const filteredIcon = (data) => {
@@ -32,7 +34,8 @@ const ResumoFazendasPage = (props) => {
 		if (filtered.length > 0) {
 			return filtered[0].icon;
 		}
-		return "";
+		return iconDict[3].icon;
+		// return "";
 	};
 
 	const filteredAlt = (data) => {
@@ -41,7 +44,8 @@ const ResumoFazendasPage = (props) => {
 		if (filtered.length > 0) {
 			return filtered[0].alt;
 		}
-		return "";
+		return iconDict[3].alt;
+		// return "";
 	};
 
 	return (

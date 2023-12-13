@@ -83,12 +83,23 @@ const DetailAppData = ({ data, showData }) => {
 					.map((data, i) => {
 						return (
 							<Box m={1}>
-								{<IconDetail color={data.aplicado} />}
-								{data.parcela} -{" "}
-								{data.area
-									.toFixed(2)
-									.toString()
-									.replace(".", ",")}
+								{/* {<IconDetail color={data.aplicado} />} */}
+								<span
+									style={{
+										backgroundColor: data.aplicado
+											? "rgba(0,250,0, 0.6)"
+											: "rgba(238,75,43, 0.6)",
+										padding: "3px 10px",
+										borderRadius: "12px",
+										fontWeight: "bold"
+									}}
+								>
+									{data.parcela} -{" "}
+									{data.area
+										.toFixed(2)
+										.toString()
+										.replace(".", ",")}
+								</span>
 								{/* <progress value={20} max={data.area}></progress> */}
 							</Box>
 						);
