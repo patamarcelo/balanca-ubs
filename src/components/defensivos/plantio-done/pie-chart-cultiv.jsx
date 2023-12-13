@@ -114,7 +114,6 @@ const MyResponsiveChartVars = (props) => {
 				enableArcLabels={true}
 				arcLabelsSkipAngle={10}
 				arcLabel={(d) => {
-					console.log(d);
 					return parseFloat(d.value).toLocaleString("pt-br", {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2

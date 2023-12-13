@@ -434,7 +434,12 @@ const PlantioDonePage = () => {
 									})}
 							</Box>
 						</Box>
-						{dataByDay && <DailyChartBar dataByDay={dataByDay} />}
+						{dataByDay && (
+							<DailyChartBar
+								dataByDay={dataByDay}
+								filtCult={selectCult}
+							/>
+						)}
 
 						<CalendarDonePage cultFilt={selectCult} />
 						<PlantioDoneTable loading={isLoading} rows={dataF} />

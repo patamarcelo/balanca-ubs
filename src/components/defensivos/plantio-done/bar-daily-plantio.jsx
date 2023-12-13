@@ -119,9 +119,7 @@ const data = [
 	}
 ];
 const DailyChartBar = (props) => {
-	const { dataByDay } = props;
-	console.log(dataByDay);
-	// console.table(dataByDay);
+	const { dataByDay, filtCult } = props;
 	const themeP = useTheme();
 	const colors = tokens(themeP.palette.mode);
 
@@ -130,7 +128,14 @@ const DailyChartBar = (props) => {
 	const [selectedFilter, setSelectedFilter] = useState("Fazenda");
 	useEffect(() => {
 		if (dataByDay) {
-			const formData = dataByDay.reduce((acc, curr) => {
+			const dataToReduce =
+				filtCult === "Todas"
+					? dataByDay
+					: dataByDay.filter(
+							(data) =>
+								data.variedade__cultura__cultura === filtCult
+					  );
+			const formData = dataToReduce.reduce((acc, curr) => {
 				const dataP = curr.data_plantio;
 				const areaTotal = curr.area_total;
 				let fazenda = "";
@@ -161,20 +166,20 @@ const DailyChartBar = (props) => {
 			setFormatData(formData);
 			let filteredFarms = "";
 			if (selectedFilter === "Fazenda") {
-				filteredFarms = dataByDay.map((farms) =>
+				filteredFarms = dataToReduce.map((farms) =>
 					farms.talhao__fazenda__fazenda__nome.replace(
 						selectedFilter,
 						""
 					)
 				);
 			} else {
-				filteredFarms = dataByDay.map((farms) =>
+				filteredFarms = dataToReduce.map((farms) =>
 					farms.talhao__fazenda__nome.replace(selectedFilter, "")
 				);
 			}
 			setOnlyFarms([...new Set([...filteredFarms])]);
 		}
-	}, [dataByDay, selectedFilter]);
+	}, [dataByDay, selectedFilter, filtCult]);
 
 	const theme = {
 		// background: "#ffffff",
@@ -476,7 +481,6 @@ const DailyChartBar = (props) => {
 						role="application"
 						ariaLabel="Nivo bar chart demo"
 						barAriaLabel={(e) => {
-							console.log(e);
 							const text = e.id + " - " + e.value;
 							return text;
 						}}
