@@ -126,6 +126,10 @@ const DailyChartBar = (props) => {
 	const [formatData, setFormatData] = useState([]);
 	const [onlyFarms, setOnlyFarms] = useState([]);
 	const [selectedFilter, setSelectedFilter] = useState("Fazenda");
+
+	const [chartInsideData, setchartInsideData] = useState([]);
+	const [farmFilter, setfarmFilter] = useState([]);
+
 	useEffect(() => {
 		if (dataByDay) {
 			const dataToReduce =
@@ -297,7 +301,40 @@ const DailyChartBar = (props) => {
 
 	const handlerFilter = (data) => {
 		setSelectedFilter(data);
+		setfarmFilter([]);
 	};
+
+	const handlerDataChart = (data) => {
+		setchartInsideData(formatData);
+		const farmFinder = farmFilter.filter((farms) => farms === data.id);
+		if (farmFinder.length > 0) {
+			setfarmFilter(farmFilter.filter((farms) => farms !== data.id));
+		} else {
+			setOnlyFarms((prev) => prev.filter((farm) => farm !== data.id));
+			setfarmFilter((prev) => [...prev, data.id]);
+		}
+	};
+
+	useEffect(() => {
+		console.log(farmFilter);
+		// setchartInsideData(formatData);
+		const filtArr = chartInsideData.map((data) => {
+			if (farmFilter.length > 0) {
+				farmFilter.forEach((farms) => {
+					if (data.hasOwnProperty(farms)) {
+						delete data[farms];
+					} else {
+						// console.log("aqui: ", data);
+						// console.log("aqui: ", farms);
+					}
+					// console.log(data.hasOwnProperty(farms));
+				});
+			}
+			return data;
+		});
+		setchartInsideData(filtArr);
+	}, [farmFilter]);
+
 	if (formatData && onlyFarms) {
 		return (
 			<Box
@@ -378,7 +415,7 @@ const DailyChartBar = (props) => {
 						data={formatData}
 						keys={onlyFarms}
 						indexBy="country"
-						margin={{ top: 50, right: 140, bottom: 50, left: 60 }}
+						margin={{ top: 50, right: 20, bottom: 50, left: 60 }}
 						padding={0.3}
 						valueScale={{ type: "linear" }}
 						indexScale={{ type: "band", round: true }}
@@ -457,22 +494,25 @@ const DailyChartBar = (props) => {
 						legends={[
 							{
 								dataFrom: "keys",
-								anchor: "bottom-right",
-								direction: "column",
+								anchor: "top",
+								direction: "row",
 								justify: false,
-								translateX: 120,
-								translateY: 0,
-								itemsSpacing: 2,
+								translateX: 0,
+								translateY: -30,
+								itemsSpacing: 20,
 								itemWidth: 100,
 								itemHeight: 20,
 								itemDirection: "left-to-right",
-								itemOpacity: 0.85,
-								symbolSize: 20,
+								itemOpacity: 1,
+								symbolSize: 10,
+								onClick: (data) => {
+									handlerDataChart(data);
+								},
 								effects: [
 									{
 										on: "hover",
 										style: {
-											itemOpacity: 1
+											itemOpacity: 0.5
 										}
 									}
 								]

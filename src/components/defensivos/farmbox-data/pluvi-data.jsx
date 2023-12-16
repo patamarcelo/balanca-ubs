@@ -27,7 +27,8 @@ const PluviDataComp = () => {
 	const getLastFiveDays = () => {
 		let fiveDays = [];
 		const today = new Date();
-		for (let i = 0; i < 5; i++) {
+		//i = 0 and i < 5 give me from today, //i = 1 and i < 6 give me from yesterday 
+		for (let i = 1; i < 6; i++) {
 			const getDay = new Date(new Date().setDate(today.getDate() - i));
 			const formatDay = getDay.toISOString().split("T")[0];
 			const newDay = {
