@@ -25,7 +25,8 @@ const ListPrintPage = (props) => {
 		totalSelected,
 		setTotalSelected,
 		handleSUm,
-		resumo
+		resumo,
+		filtPlantioDone
 	} = props;
 	const [totalArea, setTotalArea] = useState(0);
 	const [totalAreaPlantada, setTotalAreaPlantada] = useState(0);
@@ -73,7 +74,13 @@ const ListPrintPage = (props) => {
 									b.talhao__id_talhao
 								)
 							)
-							.filter((data) => data.finalizado_plantio === true)
+							.filter((data) => {
+								if (filtPlantioDone === false) {
+									return data.finalizado_plantio === true;
+								} else {
+									return data;
+								}
+							})
 							.map((row, i) => {
 								const variedade =
 									row.finalizado_plantio &&

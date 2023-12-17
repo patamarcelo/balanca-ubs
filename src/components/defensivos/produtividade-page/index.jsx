@@ -50,6 +50,8 @@ const ProdutividadePage = () => {
 	const [selectedProject, setSelectedProject] = useState("");
 	const [filteredArray, setFilteredArray] = useState([]);
 
+	const [filtPlantioDone, setFiltPlantioDone] = useState(false);
+
 	const [resumoByVar, setResumoByVar] = useState();
 
 	const [filtCult, setFiltCult] = useState([]);
@@ -78,6 +80,10 @@ const ProdutividadePage = () => {
 	};
 	const handleBigMap = (e) => {
 		setBigMap(e.target.checked);
+	};
+
+	const handleListShowData = (e) => {
+		setFiltPlantioDone(e.target.checked);
 	};
 
 	useEffect(() => {
@@ -261,6 +267,12 @@ const ProdutividadePage = () => {
 					inputProps={{ "aria-label": "controlled" }}
 					color="success"
 				/>
+				<Switch
+					checked={filtPlantioDone}
+					onChange={handleListShowData}
+					inputProps={{ "aria-label": "controlled" }}
+					color="success"
+				/>
 			</Box>
 			<Box
 				sx={{
@@ -337,6 +349,7 @@ const ProdutividadePage = () => {
 										handleSUm={handleSUm}
 										totalSelected={totalSelected}
 										setTotalSelected={setTotalSelected}
+										filtPlantioDone={filtPlantioDone}
 									/>
 								</Box>
 							) : (
