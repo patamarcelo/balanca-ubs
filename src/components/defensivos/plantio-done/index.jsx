@@ -305,6 +305,20 @@ const PlantioDonePage = () => {
 							>
 								{plantioBarChartVars["planted"]
 									.sort((a, b) => b.area - a.area)
+									.sort((a, b) => {
+										const areaA =
+											plantioBarChartVars["totalPlan"][
+												a.fazenda
+											];
+										const areaB =
+											plantioBarChartVars["totalPlan"][
+												b.fazenda
+											];
+										const finalA = a.area / areaA;
+										const finalB = b.area / areaB;
+
+										return finalB - finalA;
+									})
 									.map((data, i) => {
 										const percent =
 											plantioBarChartVars["totalPlan"][

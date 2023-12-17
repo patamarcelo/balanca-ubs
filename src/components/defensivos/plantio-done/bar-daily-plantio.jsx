@@ -162,7 +162,11 @@ const DailyChartBar = (props) => {
 				} else {
 					const findIndexOf = (e) => e.country === dataP;
 					const getIndex = acc.findIndex(findIndexOf);
-					acc[getIndex][fazenda] = areaTotal;
+					if (acc[getIndex].hasOwnProperty(fazenda)) {
+						acc[getIndex][fazenda] += areaTotal;
+					} else {
+						acc[getIndex][fazenda] = areaTotal;
+					}
 				}
 
 				return acc;
@@ -333,6 +337,7 @@ const DailyChartBar = (props) => {
 			return data;
 		});
 		setchartInsideData(filtArr);
+		console.table(formatData);
 	}, [farmFilter]);
 
 	if (formatData && onlyFarms) {
