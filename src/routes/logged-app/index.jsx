@@ -11,6 +11,7 @@ import SendSeed from "../../pages/SendSeed";
 import OrdemPage from "../../pages/Ordens";
 import PrintRCPage from "../../pages/Print-RC";
 import DefensivoPage from "../../pages/Defensivo";
+import VisitasPage from "../../pages/Visitas";
 
 import { useLocation } from "react-router-dom";
 
@@ -85,6 +86,9 @@ const AuthApp = () => {
 					)}
 					{isDefensivosUser && (
 						<Route path="/defensivo" element={<DefensivoPage />} />
+					)}
+					{isDefensivosUser && (
+						<Route path="/visitas" element={<VisitasPage />} />
 					)}
 				</Routes>
 			</Box>

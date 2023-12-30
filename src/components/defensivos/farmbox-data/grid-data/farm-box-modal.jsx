@@ -199,7 +199,7 @@ const ModalDataFarmbox = (props) => {
 						return {
 							...parc,
 							quantidadeSolicitada: (
-								ins.dose * parc.area
+								parseFloat(ins.dose) * parseFloat(parc.area)
 							).toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2
