@@ -84,7 +84,7 @@ const ResumoFazendasPage = (props) => {
 										src={filteredIcon(data.cultura)}
 										alt={filteredAlt(data.cultura)}
 									/>
-									<p style={{ marginLeft: "6px" }}>
+									<p style={{ marginLeft: "2px" }}>
 										{fazPlan[data.cultura].toLocaleString(
 											"pt-br",
 											{

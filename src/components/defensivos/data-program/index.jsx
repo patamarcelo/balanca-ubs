@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { useState, useEffect, useCallback } from "react";
 import classes from "./data-program.module.css";
@@ -18,9 +18,11 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+
 import Zoom from "@mui/material/Zoom";
 // import CustomButton from "../../button";
-import IconButton from "@mui/material/IconButton";
 
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
@@ -83,6 +85,8 @@ const DataProgramPage = (props) => {
 	const isAdminUser = useSelector(selectIsAdminUser);
 	const plantioRedux = useSelector(selectPlantio);
 	const safraCiclo = useSelector(selectSafraCiclo);
+
+	const [hidenAppsArr, setHidenAppsArr] = useState([]);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -418,10 +422,27 @@ const DataProgramPage = (props) => {
 			});
 	};
 
-	const formatArea = areaFiltTotal.toLocaleString("pt-br", {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-	});
+	const hiddenApps = (appNameToHdie, totalArea) => {
+		const formatArea = parseFloat(
+			totalArea.replace(".", "").replace(",", ".")
+		);
+		if (hidenAppsArr.includes(appNameToHdie)) {
+			const excludeApp = hidenAppsArr.filter(
+				(data) => data !== appNameToHdie
+			);
+			setHidenAppsArr(excludeApp);
+			const newArea = parseFloat(areaFiltTotal) + formatArea;
+			setAreaFiltTotal(newArea);
+		} else {
+			setHidenAppsArr((prev) => [...prev, appNameToHdie]);
+			const newArea = parseFloat(areaFiltTotal) - formatArea;
+			setAreaFiltTotal(newArea);
+		}
+	};
+
+	useEffect(() => {
+		setHidenAppsArr([]);
+	}, [farmSelected]);
 
 	return (
 		<Box
@@ -620,444 +641,498 @@ const DataProgramPage = (props) => {
 						<div>
 							{areaFiltTotal > 0 && (
 								<div style={{ fontFamily: "Times New Roman" }}>
-									&nbsp;&nbsp;&nbsp; Área:&nbsp; {formatArea}
+									&nbsp;&nbsp;&nbsp; Área:&nbsp;{" "}
+									{areaFiltTotal.toLocaleString("pt-br", {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2
+									})}
 								</div>
 							)}
 						</div>
 					</Typography>
 				</Box>
-
 				{objResumValues.length === 0 && <EmptyResultPage />}
+
 				<Box className={classes["geral-program-div"]}>
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {
 							const data = dat.data;
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];
+							const hiddenAppName =
+								dat.data.estagio + farmSelected;
 							return (
-								<div
-									key={i}
-									style={{
-										boxShadow:
-											"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
-										borderRadius: "8px"
-									}}
-								>
+								<>
+									<IconButton
+										onClick={() =>
+											hiddenApps(
+												hiddenAppName,
+												data.total
+											)
+										}
+										aria-label="delete"
+										color="warning"
+										sx={{
+											alignSelf: "start",
+											borderRadius: "12px"
+										}}
+									>
+										<DeleteIcon />
+										<Typography
+											variant="h6"
+											color={colors.textColor[100]}
+										>
+											{estagio}
+										</Typography>
+									</IconButton>
 									<div
 										key={i}
 										style={{
-											backgroundColor:
-												colors.blueOrigin[800],
-											border:
-												theme.palette.mode ===
-													"light" && "1px solid black"
+											boxShadow:
+												"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
+											borderRadius: "8px",
+											opacity: hidenAppsArr.includes(
+												hiddenAppName
+											)
+												? "0"
+												: "1",
+											display: hidenAppsArr.includes(
+												hiddenAppName
+											)
+												? "none"
+												: "flex"
 										}}
-										className={
-											classes[
-												`${
-													!isCellPhone
-														? "detail-parcela-div-mobile"
-														: "detail-parcela-div"
-												}`
-											]
-										}
+										className={classes["mainProgramAllDiv"]}
 									>
 										<div
+											key={i}
+											style={{
+												backgroundColor:
+													colors.blueOrigin[800],
+												border:
+													theme.palette.mode ===
+														"light" &&
+													"1px solid black"
+											}}
 											className={
-												!isNonIpad
-													? classes[
-															"estagio-div-ipad"
-													  ]
-													: classes["estagio-div"]
+												classes[
+													`${
+														!isCellPhone
+															? "detail-parcela-div-mobile"
+															: "detail-parcela-div"
+													}`
+												]
 											}
 										>
-											<FontAwesomeIcon
-												icon={
-													!showProducts
-														? faEyeSlash
-														: faEye
+											<div
+												className={
+													!isNonIpad
+														? classes[
+																"estagio-div-ipad"
+														  ]
+														: classes["estagio-div"]
 												}
-												color={
-													!showProducts
-														? colors.redAccent[500]
-														: colors
-																.greenAccent[500]
-												}
-												size="sm"
-												style={{
-													marginTop: "20px",
-													cursor: "pointer"
-												}}
-												onClick={() =>
-													setShoeProducts(
+											>
+												<FontAwesomeIcon
+													icon={
 														!showProducts
-													)
-												}
-											/>
-											<p
-												style={{
-													color:
-														theme.palette.mode ===
-														"light"
-															? "grey"
-															: colors
-																	.primary[300]
-												}}
-											>
-												{programa}
-											</p>
-											<p>{estagio}</p>
-											<p
-												style={{
-													color:
-														theme.palette.mode ===
-														"light"
-															? "grey"
-															: colors
-																	.primary[300]
-												}}
-											>
-												Area Total: {data.total}
-											</p>
-											<Zoom
-												in={showProducts}
-												style={{
-													transitionDelay:
-														showProducts
-															? "300ms"
-															: "0ms"
-												}}
-											>
-												<div
-													className={
-														classes[
-															"div-produtos-aplicar-outside"
-														]
+															? faEyeSlash
+															: faEye
 													}
-												>
-													{dat.totais
-														.sort((a, b) =>
-															a.produto.localeCompare(
-																b.produto
-															)
+													color={
+														!showProducts
+															? colors
+																	.redAccent[500]
+															: colors
+																	.greenAccent[500]
+													}
+													size="sm"
+													style={{
+														marginTop: "20px",
+														cursor: "pointer"
+													}}
+													onClick={() =>
+														setShoeProducts(
+															!showProducts
 														)
-														.map((dataP, i) => {
-															const quantidade =
-																Number(
-																	dataP.qty
-																).toLocaleString(
-																	"pt-br",
-																	{
-																		maximumFractionDigits: 2,
-																		minimumFractionDigits: 2
-																	}
+													}
+												/>
+												<p
+													style={{
+														color:
+															theme.palette
+																.mode ===
+															"light"
+																? "grey"
+																: colors
+																		.primary[300]
+													}}
+												>
+													{programa}
+												</p>
+												<p>{estagio}</p>
+												<p
+													style={{
+														color:
+															theme.palette
+																.mode ===
+															"light"
+																? "grey"
+																: colors
+																		.primary[300]
+													}}
+												>
+													Area Total: {data.total}
+												</p>
+												<Zoom
+													in={showProducts}
+													style={{
+														transitionDelay:
+															showProducts
+																? "300ms"
+																: "0ms"
+													}}
+												>
+													<div
+														className={
+															classes[
+																"div-produtos-aplicar-outside"
+															]
+														}
+													>
+														{dat.totais
+															.sort((a, b) =>
+																a.produto.localeCompare(
+																	b.produto
+																)
+															)
+															.map((dataP, i) => {
+																const quantidade =
+																	Number(
+																		dataP.qty
+																	).toLocaleString(
+																		"pt-br",
+																		{
+																			maximumFractionDigits: 2,
+																			minimumFractionDigits: 2
+																		}
+																	);
+																return (
+																	<div
+																		key={i}
+																		style={{
+																			height: "100%",
+																			transition:
+																				"height 3s",
+																			display:
+																				showProducts
+																					? ""
+																					: "none"
+																		}}
+																	>
+																		<div
+																			className={
+																				classes[
+																					"div-produtos-aplicar"
+																				]
+																			}
+																		>
+																			<div
+																				style={{
+																					color:
+																						theme
+																							.palette
+																							.mode ===
+																						"light"
+																							? "grey"
+																							: colors
+																									.primary[300]
+																				}}
+																				className={
+																					classes[
+																						"div-produtos-aplicar-produto"
+																					]
+																				}
+																			>
+																				{`${dataP.dose.toLocaleString(
+																					"pt-br",
+																					{
+																						minimumFractionDigits: 3,
+																						maximumFractionDigits: 3
+																					}
+																				)} - ` +
+																					dataP.produto}
+																			</div>
+																			<div
+																				style={{
+																					color:
+																						theme
+																							.palette
+																							.mode ===
+																						"light"
+																							? "black"
+																							: colors
+																									.primary[100]
+																				}}
+																				className={
+																					classes[
+																						"div-produtos-aplicar-quantidade"
+																					]
+																				}
+																			>
+																				{" "}
+																				{
+																					quantidade
+																				}
+																			</div>
+																		</div>
+																	</div>
+																);
+															})}
+													</div>
+												</Zoom>
+											</div>
+											<div
+												className={
+													classes[
+														"parcelas-resumo-div"
+													]
+												}
+											>
+												<div style={{ gap: "8px" }}>
+													<div
+														className={
+															classes[
+																"parcelas-div-header"
+															]
+														}
+														style={{
+															borderBottom: `0.5px dotted ${colors.primary[100]}`
+														}}
+													>
+														<div
+															style={{
+																marginRight:
+																	"20px"
+															}}
+														>
+															Parcela
+														</div>
+														<div>Plantio</div>
+														<div
+															style={{
+																marginRight:
+																	"20px"
+															}}
+														>
+															Dap
+														</div>
+														<div
+															style={{
+																marginRight:
+																	"30px"
+															}}
+															className={
+																classes[
+																	"cultura-div"
+																]
+															}
+														>
+															Cultura
+														</div>
+														<div>Variedade</div>
+														<div
+															style={{
+																marginLeft:
+																	"30px"
+															}}
+														>
+															Prev.
+														</div>
+														<div
+															style={{
+																marginLeft:
+																	"20px"
+															}}
+														>
+															DAP AP
+														</div>
+														<div>Area</div>
+													</div>
+													{data.cronograma
+														.sort((a, b) =>
+															!filtData
+																? new Date(
+																		a.dataPrevApp
+																  ) -
+																  new Date(
+																		b.dataPrevApp
+																  )
+																: a.parcela.localeCompare(
+																		b.parcela
+																  )
+														)
+														.map((data, i) => {
+															const dataId =
+																data.plantioId;
+															const setEstagio =
+																data.estagio.split(
+																	"|"
+																)[0];
+
+															const checkSelected =
+																updateApp.some(
+																	(data) =>
+																		data.id ===
+																			dataId &&
+																		data.estagio ===
+																			estagio
 																);
 															return (
 																<div
 																	key={i}
-																	style={{
-																		height: "100%",
-																		transition:
-																			"height 3s",
-																		display:
-																			showProducts
-																				? ""
-																				: "none"
-																	}}
+																	className={`${
+																		classes[
+																			"parcelas-detail-div"
+																		]
+																	}
+																	${checkSelected && classes["parcelas-resumo-div-selected"]}
+																}
+																	`}
 																>
 																	<div
 																		className={
 																			classes[
-																				"div-produtos-aplicar"
+																				"parcela-div"
 																			]
 																		}
 																	>
 																		<div
-																			style={{
-																				color:
-																					theme
-																						.palette
-																						.mode ===
-																					"light"
-																						? "grey"
-																						: colors
-																								.primary[300]
-																			}}
 																			className={
 																				classes[
-																					"div-produtos-aplicar-produto"
+																					"parcela-icon-div"
 																				]
 																			}
-																		>
-																			{`${dataP.dose.toLocaleString(
-																				"pt-br",
-																				{
-																					minimumFractionDigits: 3,
-																					maximumFractionDigits: 3
-																				}
-																			)} - ` +
-																				dataP.produto}
-																		</div>
-																		<div
-																			style={{
-																				color:
-																					theme
-																						.palette
-																						.mode ===
-																					"light"
-																						? "black"
-																						: colors
-																								.primary[100]
-																			}}
-																			className={
-																				classes[
-																					"div-produtos-aplicar-quantidade"
-																				]
+																			onClick={() =>
+																				handleSetApp(
+																					dataId,
+																					setEstagio
+																				)
 																			}
 																		>
-																			{" "}
-																			{
-																				quantidade
-																			}
+																			<img
+																				src={filteredIcon(
+																					data
+																				)}
+																				alt={filteredAlt(
+																					data
+																				)}
+																				style={{
+																					filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+																				}}
+																			/>
 																		</div>
+																		{
+																			data.parcela
+																		}
+																	</div>
+																	<div
+																		style={{
+																			color: colors
+																				.greenAccent[300]
+																		}}
+																	>
+																		{displayDate(
+																			data.dataPlantio
+																		)}
+																	</div>
+																	<div>
+																		{data.dap <
+																		10
+																			? "0" +
+																			  data.dap
+																			: data.dap}
+																	</div>
+																	<div
+																		className={
+																			classes[
+																				"cultura-div"
+																			]
+																		}
+																	>
+																		{
+																			data.cultura
+																		}
+																	</div>
+																	<div
+																		className={
+																			classes[
+																				"variedade-div"
+																			]
+																		}
+																	>
+																		{
+																			data.variedade
+																		}
+																	</div>
+																	<div>
+																		{displayDate(
+																			data.dataPrevApp
+																		)}
+																	</div>
+																	<div>
+																		{
+																			data.dapApp
+																		}
+																	</div>
+																	<div
+																		style={{
+																			color: colors
+																				.primary[200]
+																		}}
+																		className={
+																			classes[
+																				"area-div"
+																			]
+																		}
+																	>
+																		{data.area
+																			.toFixed(
+																				2
+																			)
+																			.replace(
+																				".",
+																				","
+																			)}
 																	</div>
 																</div>
 															);
 														})}
 												</div>
-											</Zoom>
-										</div>
-										<div
-											className={
-												classes["parcelas-resumo-div"]
-											}
-										>
-											<div style={{ gap: "8px" }}>
-												<div
-													className={
-														classes[
-															"parcelas-div-header"
-														]
-													}
-													style={{
-														borderBottom: `0.5px dotted ${colors.primary[100]}`
-													}}
-												>
-													<div
-														style={{
-															marginRight: "20px"
-														}}
-													>
-														Parcela
-													</div>
-													<div>Plantio</div>
-													<div
-														style={{
-															marginRight: "20px"
-														}}
-													>
-														Dap
-													</div>
-													<div
-														style={{
-															marginRight: "30px"
-														}}
-														className={
-															classes[
-																"cultura-div"
-															]
-														}
-													>
-														Cultura
-													</div>
-													<div>Variedade</div>
-													<div
-														style={{
-															marginLeft: "30px"
-														}}
-													>
-														Prev.
-													</div>
-													<div
-														style={{
-															marginLeft: "20px"
-														}}
-													>
-														DAP AP
-													</div>
-													<div>Area</div>
-												</div>
-												{data.cronograma
-													.sort((a, b) =>
-														!filtData
-															? new Date(
-																	a.dataPrevApp
-															  ) -
-															  new Date(
-																	b.dataPrevApp
-															  )
-															: a.parcela.localeCompare(
-																	b.parcela
-															  )
-													)
-													.map((data, i) => {
-														const dataId =
-															data.plantioId;
-														const setEstagio =
-															data.estagio.split(
-																"|"
-															)[0];
-
-														const checkSelected =
-															updateApp.some(
-																(data) =>
-																	data.id ===
-																		dataId &&
-																	data.estagio ===
-																		estagio
-															);
-														return (
-															<div
-																key={i}
-																className={`${
-																	classes[
-																		"parcelas-detail-div"
-																	]
-																}
-																	${checkSelected && classes["parcelas-resumo-div-selected"]}
-																}
-																	`}
-															>
-																<div
-																	className={
-																		classes[
-																			"parcela-div"
-																		]
-																	}
-																>
-																	<div
-																		className={
-																			classes[
-																				"parcela-icon-div"
-																			]
-																		}
-																		onClick={() =>
-																			handleSetApp(
-																				dataId,
-																				setEstagio
-																			)
-																		}
-																	>
-																		<img
-																			src={filteredIcon(
-																				data
-																			)}
-																			alt={filteredAlt(
-																				data
-																			)}
-																			style={{
-																				filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-																			}}
-																		/>
-																	</div>
-																	{
-																		data.parcela
-																	}
-																</div>
-																<div
-																	style={{
-																		color: colors
-																			.greenAccent[300]
-																	}}
-																>
-																	{displayDate(
-																		data.dataPlantio
-																	)}
-																</div>
-																<div>
-																	{data.dap <
-																	10
-																		? "0" +
-																		  data.dap
-																		: data.dap}
-																</div>
-																<div
-																	className={
-																		classes[
-																			"cultura-div"
-																		]
-																	}
-																>
-																	{
-																		data.cultura
-																	}
-																</div>
-																<div
-																	className={
-																		classes[
-																			"variedade-div"
-																		]
-																	}
-																>
-																	{
-																		data.variedade
-																	}
-																</div>
-																<div>
-																	{displayDate(
-																		data.dataPrevApp
-																	)}
-																</div>
-																<div>
-																	{
-																		data.dapApp
-																	}
-																</div>
-																<div
-																	style={{
-																		color: colors
-																			.primary[200]
-																	}}
-																	className={
-																		classes[
-																			"area-div"
-																		]
-																	}
-																>
-																	{data.area
-																		.toFixed(
-																			2
-																		)
-																		.replace(
-																			".",
-																			","
-																		)}
-																</div>
-															</div>
-														);
-													})}
 											</div>
 										</div>
+										{showMapps && (
+											<Box
+												sx={{
+													display: "flex",
+													justifyContent: "center",
+													alignItems: "center",
+													borderRadius: "8px",
+													backgroundColor:
+														colors.blueOrigin[800]
+												}}
+												className={
+													classes["geral-map-div"]
+												}
+											>
+												<MapPage
+													mapArray={mapArray}
+													filtData={data}
+												/>
+											</Box>
+										)}
 									</div>
-									{showMapps && (
-										<Box
-											sx={{
-												display: "flex",
-												justifyContent: "center",
-												alignItems: "center",
-												borderRadius: "8px",
-												backgroundColor:
-													colors.blueOrigin[800]
-											}}
-											className={classes["geral-map-div"]}
-										>
-											<MapPage
-												mapArray={mapArray}
-												filtData={data}
-											/>
-										</Box>
-									)}
-								</div>
+								</>
 							);
 						})}
 				</Box>
