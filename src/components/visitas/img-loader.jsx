@@ -23,7 +23,7 @@ const ImageLoader = ({ data }) => {
 					objectFit: "cover",
 					marginLeft: "auto",
 					transition: "width 0.5s",
-					borderRadius: "12px"
+					borderRadius: "5px"
 				}}
 			/>
 		</>

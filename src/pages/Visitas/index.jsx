@@ -11,12 +11,16 @@ import { displayDate } from "../../utils/format-suport/data-format";
 import Skeleton from "@mui/material/Skeleton";
 import SkeletonCard from "./skeleton-card";
 
+import { useNavigate } from "react-router-dom";
+
 const VisitasPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [isLoading, setisLoading] = useState(true);
 	const [visitasArr, setVisitasArr] = useState([]);
 	const [formatDataArr, setformatDataArr] = useState([]);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getData = async () => {
@@ -55,14 +59,21 @@ const VisitasPage = () => {
 	}, [visitasArr]);
 
 	const handlerNavigation = (data) => {
-		console.log(data);
+		navigate(`/visitas/${data.id}`);
+		console.log(data.id);
 	};
 
 	if (isLoading) {
 		return (
-			<Box width={"60%"} mt={4}>
-				<SkeletonCard />
-				<SkeletonCard />
+			<Box width={"60%"}>
+				<Typography
+					variant="h2"
+					color={colors.textColor[100]}
+					mb={1}
+					// sx={{ textAlign: "center" }}
+				>
+					Visitas
+				</Typography>
 				<SkeletonCard />
 				<SkeletonCard />
 				<SkeletonCard />
