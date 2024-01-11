@@ -1,26 +1,199 @@
 import { Typography, Box, useTheme, Button } from "@mui/material";
 import { tokens } from "../../theme";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+
+import CircularProgress from "@mui/material/CircularProgress";
+
+import djangoApi from "../../utils/axios/axios.utils";
+import ImageLoaderRegistros from "../../components/visitas/img-loaderr-registros";
+import SkeletonCard from "../Visitas/skeleton-card";
+
+import { displayDate } from "../../utils/format-suport/data-format";
 
 const VisitaIDPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
 	const params = useParams();
 	const navigate = useNavigate();
+	const { state } = useLocation();
 	const { visitaId } = params;
+	console.log(state);
+	const [isLoading, setisLoading] = useState(true);
+	const [visitasArr, setVisitasArr] = useState([]);
+	const [formatDataArr, setformatDataArr] = useState([]);
+
+	useEffect(() => {
+		console.log(visitasArr);
+	}, [visitasArr]);
+
+	const getData = useCallback(async () => {
+		const body = {
+			idfilter: visitaId
+		};
+		try {
+			await djangoApi
+				.post("registrosvisita/get_registro_visita/", body, {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					console.log(res.data);
+					// setVisitasArr(res.data);
+				})
+				.catch((err) => console.log(err));
+		} catch (err) {
+			console.log("erro ao consumir a API", err);
+		} finally {
+			// setisLoading(false);
+		}
+	}, [visitaId]);
+
+	useEffect(() => {
+		getData();
+	}, [getData]);
+
+	useEffect(() => {
+		const body = {
+			idfilter: visitaId
+		};
+		const getData = async () => {
+			try {
+				await djangoApi
+					.post("registrosvisita/get_registro_visita_url/", body, {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						console.log(res.data);
+						setVisitasArr(res.data.data);
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("erro ao consumir a API", err);
+			} finally {
+				setisLoading(false);
+			}
+		};
+		getData();
+	}, []);
+
 	return (
-		<Box>
+		<Box
+			width={"100%"}
+			textAlign={"center"}
+			backgroundColor="rgb(245,245,245)"
+			sx={{
+				display: "flex",
+				alignItems: "center",
+				flexDirection: "column",
+				height: "100vh"
+			}}
+		>
 			<Button
 				title="Voltar"
+				color="warning"
 				onClick={() => navigate(-1)}
 				variant="contained"
+				sx={{
+					alignSelf: "self-start",
+					margin: "5px"
+				}}
 			>
 				Voltar
 			</Button>
-			<Typography variant="h2" color={colors.textColor[100]}>
-				Visita ID Page
-				<p>Page ID: {visitaId}</p>
-			</Typography>
+
+			<Box
+				width={"80%"}
+				sx={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "10px"
+				}}
+			>
+				<Box display="flex" justifyContent="space-between">
+					<Typography
+						color={"blue"}
+						sx={{ fontWeight: "bold" }}
+						variant="h4"
+						alignSelf={"flex-start"}
+					>
+						{state.data.fazenda_title}{" "}
+					</Typography>
+					<Typography
+						color={"black"}
+						sx={{ fontWeight: "bold" }}
+						variant="h6"
+						alignSelf={"flex-end"}
+					>
+						{displayDate(state.data.data)}{" "}
+					</Typography>
+				</Box>
+				{isLoading && (
+					<Box width={"60%"}>
+						<SkeletonCard />
+						<SkeletonCard />
+						<SkeletonCard />
+					</Box>
+				)}
+				{visitasArr &&
+					visitasArr.map((data, i) => {
+						return (
+							<Box
+								sx={{
+									display: "grid",
+									gridTemplateColumns: "repeat(2, 1fr)",
+									alignItems: "center",
+									justifyContent: "space-between",
+									border: "1px solid black",
+									borderRadius: "12px",
+									padding: "8px",
+									backgroundColor: "white",
+									boxShadow:
+										"rgba(0, 0, 0, 0.35) 0px 5px 15px"
+								}}
+							>
+								<ImageLoaderRegistros data={data} />
+								<Typography variant="h6" color={"black"}>
+									{data.obs}
+								</Typography>
+							</Box>
+						);
+					})}
+
+				{visitasArr && (
+					<Box
+						sx={{
+							backgroundColor: "white",
+							borderRadius: "12px",
+							border: "1px solid black",
+							textAlign: "left"
+						}}
+						mb={5}
+					>
+						<Typography
+							color={colors.textColor[200]}
+							sx={{
+								padding: "10px",
+								fontWeight: "bold"
+							}}
+						>
+							Observações gerais:
+						</Typography>
+						<Typography
+							color={"black"}
+							sx={{
+								padding: "10px"
+							}}
+						>
+							{state.data.observacoes_gerais}
+						</Typography>
+					</Box>
+				)}
+			</Box>
 		</Box>
 	);
 };

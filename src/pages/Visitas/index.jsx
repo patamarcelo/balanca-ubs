@@ -59,7 +59,7 @@ const VisitasPage = () => {
 	}, [visitasArr]);
 
 	const handlerNavigation = (data) => {
-		navigate(`/visitas/${data.id}`);
+		navigate(`/visitas/${data.id}`, { state: { data } });
 		console.log(data.id);
 	};
 

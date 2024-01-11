@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
-const ImageLoader = ({ data }) => {
+const ImageLoaderRegistros = ({ data }) => {
 	const [isLoading, setisLoading] = useState(true);
-	console.log(data.registros);
 
 	return (
 		<>
@@ -15,20 +14,21 @@ const ImageLoader = ({ data }) => {
 				/>
 			)}
 			<img
-				src={data.registros.image_url}
-				alt={data.registros.image_title}
+				src={data.image_url}
+				alt={data.image_title}
 				onLoad={() => setisLoading(false)}
 				style={{
-					width: isLoading ? "0px" : "200px",
-					height: isLoading ? "0px" : "200px",
+					width: isLoading ? "0px" : "360px",
+					height: isLoading ? "0px" : "360px",
 					objectFit: "cover",
-					marginLeft: "auto",
+					margin: "4px",
 					transition: "width 0.5s",
-					borderRadius: "5px"
+					borderRadius: "8px",
+					border: "0.5px solid black"
 				}}
 			/>
 		</>
 	);
 };
 
-export default ImageLoader;
+export default ImageLoaderRegistros;
