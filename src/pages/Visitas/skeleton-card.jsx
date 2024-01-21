@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import { tokens } from "../../theme";
 
-const SkeletonCard = () => {
+const SkeletonCard = ({ row }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 

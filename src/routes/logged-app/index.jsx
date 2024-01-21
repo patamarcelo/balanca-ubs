@@ -71,6 +71,8 @@ const AuthApp = () => {
 					backgroundColor:
 						location.pathname === "/print"
 							? "lightgrey !important"
+							: location.pathname.includes("visitas/")
+							? "whitesmoke"
 							: ""
 				}}
 			>

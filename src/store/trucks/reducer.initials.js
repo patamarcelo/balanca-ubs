@@ -153,7 +153,7 @@ export const TRUCK_SHEETS = [
 export const FAZENDA_ORIGEM = [
 	{ id: 35, local: "Projeto 5 Estrelas", user: "5Estrelas" },
 	{ id: 31, local: "Projeto Benção de Deus", user: "bencaoDeDeus" },
-	// { id: 42, local: "Projeto Biguá" , user: "bigua"},
+	{ id: 42, local: "Projeto Biguá", user: "bigua" },
 	{ id: 43, local: "Projeto Cacíque", user: "campoGuapo" },
 	{ id: 32, local: "Projeto Campo Guapo", user: "campoGuapo" },
 	{ id: 5, local: "Projeto Capivara", user: "diamante" },
@@ -166,7 +166,7 @@ export const FAZENDA_ORIGEM = [
 	{ id: 12, local: "Projeto Eldorado", user: "lagoVerde" },
 	{ id: 40, local: "Projeto Novo Acordo", user: "novoAcordo" },
 	{ id: 1, local: "Projeto Ouro Verde", user: "ouroVerde" },
-	// { id: 16, local: "Projeto Pau Brasil" , user: ""},
+	{ id: 16, local: "Projeto Pau Brasil", user: "" },
 	{ id: 10, local: "Projeto Praia Alta", user: "diamante" },
 	{ id: 2, local: "Projeto Safira", user: "campoGuapo" },
 	{ id: 11, local: "Projeto Santa Maria", user: "santaMaria" },

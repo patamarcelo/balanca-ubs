@@ -107,7 +107,7 @@ const VisitaIDPage = () => {
 			</Button>
 
 			<Box
-				width={"80%"}
+				width={"70%"}
 				sx={{
 					display: "flex",
 					flexDirection: "column",
@@ -133,10 +133,10 @@ const VisitaIDPage = () => {
 					</Typography>
 				</Box>
 				{isLoading && (
-					<Box width={"60%"}>
-						<SkeletonCard />
-						<SkeletonCard />
-						<SkeletonCard />
+					<Box width={"100%"}>
+						<SkeletonCard row="reverse" />
+						<SkeletonCard row="reverse" />
+						<SkeletonCard row="reverse" />
 					</Box>
 				)}
 				{visitasArr &&
@@ -165,33 +165,70 @@ const VisitaIDPage = () => {
 					})}
 
 				{visitasArr && (
-					<Box
-						sx={{
-							backgroundColor: "white",
-							borderRadius: "12px",
-							border: "1px solid black",
-							textAlign: "left"
-						}}
-						mb={5}
-					>
-						<Typography
-							color={colors.textColor[200]}
+					<>
+						<Box
 							sx={{
-								padding: "10px",
-								fontWeight: "bold"
+								backgroundColor: "white",
+								borderRadius: "12px",
+								border: "1px solid black",
+								textAlign: "left"
+							}}
+							mb={5}
+						>
+							<Typography
+								color={"black"}
+								sx={{
+									padding: "10px",
+									fontWeight: "bold",
+									minHeight: "100px"
+								}}
+							>
+								Observações gerais:
+							</Typography>
+							<Typography
+								color={"black"}
+								sx={{
+									padding: "10px"
+								}}
+							>
+								{state.data.observacoes_gerais}
+							</Typography>
+						</Box>
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "row",
+								justifyContent: "space-between",
+								padding: "10px 0px",
+								marginBottom: "100px"
 							}}
 						>
-							Observações gerais:
-						</Typography>
-						<Typography
-							color={"black"}
-							sx={{
-								padding: "10px"
-							}}
-						>
-							{state.data.observacoes_gerais}
-						</Typography>
-					</Box>
+							<Box sx={{ width: "250px" }}>
+								<div
+									style={{
+										width: "100%",
+										backgroundColor: "grey",
+										height: "1px"
+									}}
+								/>
+								<Typography variant="h5" color={"black"}>
+									{state.data.resp_visita}
+								</Typography>
+							</Box>
+							<Box sx={{ width: "250px" }}>
+								<div
+									style={{
+										width: "100%",
+										backgroundColor: "grey",
+										height: "1px"
+									}}
+								/>
+								<Typography variant="h5" color={"black"}>
+									{state.data.resp_fazenda}
+								</Typography>
+							</Box>
+						</Box>
+					</>
 				)}
 			</Box>
 		</Box>
