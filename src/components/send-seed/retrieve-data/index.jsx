@@ -53,19 +53,28 @@ const RetrieveData = () => {
 		});
 		const [formmonth, formday, formyear] = formDate.split("/");
 		const formatFormDateHoje = [formyear, formmonth, formday].join("-");
+		console.log("nova Data", formatFormDateHoje);
 
 		const filteredData = dataArr.filter((data) => {
-			if (data["Data Envio"].length > 4) {
-				var sendData = data["Data Envio"].split("(")[1].split(")")[0];
-				const mapData = sendData.split(",").map((data) => Number(data));
-				let fDate = new Date(...mapData);
+			if (data["Data Solicitação"].length > 4) {
+				// var sendData = data["Data Envio"].split("(")[1].split(")")[0];
+
+				// const mapData = sendData.split(",").map((data) => Number(data));
+				// let fDate = new Date(...mapData);
+				const fDate = new Date(
+					data["Data Solicitação"].split("/").reverse().join("-")
+				);
 				var ffDate = fDate.toLocaleDateString("en-US", {
 					year: "numeric",
 					month: "2-digit",
 					day: "2-digit"
 				});
-				const [ffmonth, ffday, ffyear] = ffDate.split("/");
-				formatFfDateHoje = [ffyear, ffmonth, ffday].join("-");
+				console.log(ffDate);
+				// const [ffmonth, ffday, ffyear] = ffDate.split("/");
+				// formatFfDateHoje = [ffyear, ffmonth, ffday].join("-");
+				formatFfDateHoje = new Date(
+					data["Data Solicitação"].split("/").reverse().join("-")
+				);
 			} else {
 				formatFfDateHoje = "2222/01/01";
 			}
@@ -296,7 +305,7 @@ const RetrieveData = () => {
 				>
 					<DesktopDatePicker
 						label="Data de Início"
-						inputFormat="MM/DD/YYYY"
+						inputFormat="DD/MM/YYYY"
 						value={value}
 						onChange={handleChange}
 						renderInput={(params) => (
