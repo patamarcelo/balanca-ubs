@@ -44,6 +44,7 @@ const RetrieveData = () => {
 	const [value, setValue] = useState("");
 
 	const handleChange = (newValue) => {
+		console.log(newValue);
 		const date = new Date(newValue);
 		let formatFfDateHoje = "";
 		const formDate = date?.toLocaleDateString("en-US", {
@@ -53,7 +54,6 @@ const RetrieveData = () => {
 		});
 		const [formmonth, formday, formyear] = formDate.split("/");
 		const formatFormDateHoje = [formyear, formmonth, formday].join("-");
-		console.log("nova Data", formatFormDateHoje);
 
 		const filteredData = dataArr.filter((data) => {
 			if (data["Data Solicitação"].length > 4) {
@@ -69,7 +69,6 @@ const RetrieveData = () => {
 					month: "2-digit",
 					day: "2-digit"
 				});
-				console.log(ffDate);
 				// const [ffmonth, ffday, ffyear] = ffDate.split("/");
 				// formatFfDateHoje = [ffyear, ffmonth, ffday].join("-");
 				formatFfDateHoje = new Date(
@@ -92,10 +91,11 @@ const RetrieveData = () => {
 	// }, [value]);
 
 	useEffect(() => {
-		const diaNovo = new Date();
-		const hoje = diaNovo.toLocaleString("pt-BR").split(" ")[0];
-		setValue(hoje);
-	}, []);
+		if (dataArr) {
+			const diaNovo = new Date();
+			handleChange(diaNovo);
+		}
+	}, [dataArr]);
 
 	const getData = async () => {
 		try {
