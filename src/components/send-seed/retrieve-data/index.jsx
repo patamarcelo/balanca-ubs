@@ -47,6 +47,7 @@ const RetrieveData = () => {
 		console.log(newValue);
 		const date = new Date(newValue);
 		let formatFfDateHoje = "";
+		let formatEnvioDate = "";
 		const formDate = date?.toLocaleDateString("en-US", {
 			year: "numeric",
 			month: "2-digit",
@@ -57,20 +58,17 @@ const RetrieveData = () => {
 
 		const filteredData = dataArr.filter((data) => {
 			if (data["Data Solicitação"].length > 4) {
-				// var sendData = data["Data Envio"].split("(")[1].split(")")[0];
+				if (data["Data Envio"].length > 4) {
+					var sendData = data["Data Envio"]
+						.split("(")[1]
+						.split(")")[0];
 
-				// const mapData = sendData.split(",").map((data) => Number(data));
-				// let fDate = new Date(...mapData);
-				const fDate = new Date(
-					data["Data Solicitação"].split("/").reverse().join("-")
-				);
-				var ffDate = fDate.toLocaleDateString("en-US", {
-					year: "numeric",
-					month: "2-digit",
-					day: "2-digit"
-				});
-				// const [ffmonth, ffday, ffyear] = ffDate.split("/");
-				// formatFfDateHoje = [ffyear, ffmonth, ffday].join("-");
+					const mapData = sendData
+						.split(",")
+						.map((data) => Number(data));
+					formatEnvioDate = new Date(...mapData);
+				}
+
 				formatFfDateHoje = new Date(
 					data["Data Solicitação"].split("/").reverse().join("-")
 				);
@@ -79,7 +77,8 @@ const RetrieveData = () => {
 			}
 			return (
 				data["Situação"] === "Pendente" ||
-				new Date(formatFfDateHoje) >= new Date(formatFormDateHoje)
+				new Date(formatFfDateHoje) >= new Date(formatFormDateHoje) ||
+				new Date(formatEnvioDate) >= new Date(formatFormDateHoje)
 			);
 		});
 		setFilteredArr(filteredData);
