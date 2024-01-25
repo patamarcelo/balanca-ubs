@@ -81,7 +81,7 @@ const VisitasPage = () => {
 		);
 	}
 	return (
-		<Box width={"60%"}>
+		<Box width={"60%"} height={"100%"} mb={4}>
 			<Typography
 				variant="h2"
 				color={colors.textColor[100]}
@@ -97,6 +97,7 @@ const VisitasPage = () => {
 					flexDirection: "column",
 					width: "100%"
 				}}
+				// mb={4}
 			>
 				{formatDataArr &&
 					formatDataArr.map((data, i) => {

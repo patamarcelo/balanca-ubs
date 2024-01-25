@@ -171,7 +171,8 @@ const VisitaIDPage = () => {
 								backgroundColor: "white",
 								borderRadius: "12px",
 								border: "1px solid black",
-								textAlign: "left"
+								textAlign: "left",
+								minHeight: "100px"
 							}}
 							mb={5}
 						>
@@ -179,8 +180,7 @@ const VisitaIDPage = () => {
 								color={"black"}
 								sx={{
 									padding: "10px",
-									fontWeight: "bold",
-									minHeight: "100px"
+									fontWeight: "bold"
 								}}
 							>
 								Observações gerais:

@@ -700,7 +700,7 @@ const DataProgramPage = (props) => {
 												hiddenAppName
 											)
 												? "none"
-												: "flex"
+												: "block"
 										}}
 										className={classes["mainProgramAllDiv"]}
 									>
