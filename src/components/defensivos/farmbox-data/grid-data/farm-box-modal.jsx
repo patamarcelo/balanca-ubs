@@ -142,6 +142,10 @@ const ModalDataFarmbox = (props) => {
 						return sumTotalApp;
 					});
 					const statusParcelaDetail = (status, processo, area) => {
+						console.log(processo)
+						if (status ==="finalized" && processo === 0){
+							return 'Não Aplicado'
+						}
 						if (status === "finalized") {
 							return "Aplicado";
 						}
