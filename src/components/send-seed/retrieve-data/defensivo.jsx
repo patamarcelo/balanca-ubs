@@ -102,7 +102,7 @@ const DefensivoTable = (props) => {
 								month: "2-digit",
 								day: "2-digit"
 							});
-							var envDateFormat = `${ffDate} - ${fDate.toLocaleTimeString()}`;
+							var envDateFormat = `${ffDate}`;
 						} else {
 							envDateFormat = " - ";
 						}
