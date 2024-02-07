@@ -60,7 +60,7 @@ const DataProgramPage = (props) => {
 	const [filteredList, setFilteredList] = useState([]);
 	const [farmSelected, setFarmSelected] = useState("");
 
-	const [showProducts, setShoeProducts] = useState(false);
+	const [showProducts, setShoeProducts] = useState(true);
 	const isNonIpad = useMediaQuery("(min-width: 1404px)");
 	const isCellPhone = useMediaQuery("(min-width: 850px)");
 
@@ -997,6 +997,7 @@ const DataProgramPage = (props) => {
 																		]
 																	}
 																	${checkSelected && classes["parcelas-resumo-div-selected"]}
+																	${data.aplicado && classes["parcelas-resumo-div-aplicado"]}
 																}
 																	`}
 																>

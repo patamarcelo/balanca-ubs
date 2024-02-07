@@ -112,9 +112,9 @@ const RetrieveData = () => {
 							if (index === 0) {
 								cellValue = cell?.f;
 							}
-							if (index === 13 && cellValue.length > 1) {
-								cellValue = cell.f;
-							}
+							// if (index === 16 && cellValue.length > 1) {
+							// 	cellValue = cell.f;
+							// }
 							newObj[columnsHeader[index]?.label] = cellValue;
 						});
 						newDict.push(newObj);
@@ -185,7 +185,7 @@ const RetrieveData = () => {
 							if (index === 0) {
 								cellValue = cell?.f;
 							}
-							if (index === 16 && cellValue.length > 1) {
+							if (index === 18 && cellValue.length > 1) {
 								cellValue = cell.f;
 							}
 							newObj[columnsHeader[index]?.label] = cellValue;
@@ -193,7 +193,7 @@ const RetrieveData = () => {
 						newDict.push(newObj);
 					});
 					const filteredData = newDict.filter((data) => {
-						// console.log(data);
+						console.log(data);
 						const diaNovo = new Date();
 						// const ontem = "12/02/2023";
 						const hoje = diaNovo
