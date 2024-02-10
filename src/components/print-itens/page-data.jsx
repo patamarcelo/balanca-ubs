@@ -55,7 +55,7 @@ const PageData = ({ data }) => {
 		>
 			<Box
 				display="flex"
-				justifyContent="start"
+				justifyContent="space-between"
 				mt={3}
 				mb={5}
 				ml={-1}
@@ -406,6 +406,12 @@ const PageData = ({ data }) => {
 						</div>
 					</Typography>
 				</Box>
+				<Typography
+					color={colors.grey[500]}
+					sx={{ fontSize: "0.7rem", alignSelf: "flex-end" }}
+				>
+					{data.id}
+				</Typography>
 			</Box>
 		</Box>
 	);

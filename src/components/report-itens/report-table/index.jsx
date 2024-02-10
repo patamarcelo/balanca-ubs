@@ -652,6 +652,21 @@ const ReportTable = (props) => {
 			)
 		},
 		{
+			field: "id",
+			headerName: "Id",
+			width: 130,
+			headerAlign: "center",
+			align: "center",
+			renderCell: (params) => (
+				<Typography
+					sx={{ fontSize: defaultFontSize }}
+					color={colors.primary[100]}
+				>
+					{params.row.id}
+				</Typography>
+			)
+		},
+		{
 			field: "act",
 			headerName: "Situação",
 			flex: 0,
