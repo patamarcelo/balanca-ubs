@@ -161,13 +161,16 @@ const HomeTableTruck = (props) => {
 						sx={{
 							width: isNonMobile ? "98%" : "95%",
 							backgroundColor: colors.blueOrigin[800],
-							border: theme.palette.mode === 'dark' ? "" : `0.1px solid ${colors.primary[100]}`,
+							border:
+								theme.palette.mode === "dark"
+									? ""
+									: `0.1px solid ${colors.primary[100]}`,
 							boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
 							borderRadius: "5px",
 							padding: "10px",
 							"&:hover": {
 								background: colors.blueOrigin[900],
-								border: '1px solid black',
+								border: "1px solid black"
 								// cursor: "pointer"
 							}
 						}}
@@ -185,24 +188,38 @@ const HomeTableTruck = (props) => {
 								marginLeft: "12px"
 							}}
 						>
-							<LightTooltip
-								title="Romaneio"
-								placement="top"
-								arrow
-								TransitionComponent={Zoom}
-							>
+							{data?.createdBy === "App" ? (
+								<LightTooltip
+									title="Romaneio"
+									placement="top"
+									arrow
+									TransitionComponent={Zoom}
+								>
+									<FontAwesomeIcon
+										color={setColorTruck(data)}
+										icon={faTruckMoving}
+										size="3x"
+										className={classesTruck}
+										style={{
+											cursor: "pointer",
+											filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+										}}
+										onClick={() =>
+											handlerNavigatePrint(data)
+										}
+									/>
+								</LightTooltip>
+							) : (
 								<FontAwesomeIcon
 									color={setColorTruck(data)}
 									icon={faTruckMoving}
 									size="3x"
 									className={classesTruck}
 									style={{
-										cursor: "pointer",
 										filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
 									}}
-									onClick={() => handlerNavigatePrint(data)}
 								/>
-							</LightTooltip>
+							)}
 							<Typography
 								variant="h6"
 								color={colors.redAccent[200]}

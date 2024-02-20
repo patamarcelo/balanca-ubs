@@ -421,6 +421,31 @@ const PageRcData = ({ printValue }) => {
 					</Box>
 				</Box>
 			</Box>
+
+			<Box
+				sx={{
+					display: "flex",
+					with: "100%",
+					justifyContent: "space-between",
+					alignItems: "flex-end"
+				}}
+			>
+				{data?.coords && (
+					<Typography
+						color={colors.grey[500]}
+						sx={{ fontSize: "0.7rem" }}
+					>
+						Coordenadas: {data.coords.coords.latitude},{" "}
+						{data.coords.coords.longitude}
+					</Typography>
+				)}
+				<Typography
+					color={colors.grey[500]}
+					sx={{ fontSize: "0.7rem" }}
+				>
+					{data.id}
+				</Typography>
+			</Box>
 		</Box>
 	);
 };
