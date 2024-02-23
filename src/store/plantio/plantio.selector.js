@@ -497,9 +497,11 @@ export const createDictFarmBox = (state) => {
 		});
 
 		const progressos = data.progresses.map((data) => {
+			const equipment = data.equipment.name;
 			const areaApliacada = data.area;
 			const plantacoesAplicadas = data.plantations.map((data) => {
 				return {
+					equipment: equipment,
 					idPlantacao: data.plantation_id,
 					areaAplicadaPlantacao: data.area
 				};

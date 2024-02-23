@@ -130,6 +130,7 @@ const ModalDataFarmbox = (props) => {
 			const newarr = await dictSelectFarm.map((data) => {
 				const { parcelas, insumos, progressos, areaSolicitada } = data;
 				const parcelasDict = parcelas.map((parcela) => {
+					let equipmentsArray = [];
 					let sumTotalApp = 0;
 					const totalApplicado = progressos.map((prog) => {
 						prog.plantacoesAplicadas.map((areasApp) => {
@@ -137,14 +138,15 @@ const ModalDataFarmbox = (props) => {
 								areasApp.idPlantacao === parcela.id_plantation
 							) {
 								sumTotalApp += areasApp.areaAplicadaPlantacao;
+								equipmentsArray.push(areasApp.equipment);
 							}
 						});
 						return sumTotalApp;
 					});
 					const statusParcelaDetail = (status, processo, area) => {
-						console.log(processo)
-						if (status ==="finalized" && processo === 0){
-							return 'Não Aplicado'
+						console.log(processo);
+						if (status === "finalized" && processo === 0) {
+							return "Não Aplicado";
 						}
 						if (status === "finalized") {
 							return "Aplicado";
@@ -195,7 +197,8 @@ const ModalDataFarmbox = (props) => {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						}),
-						id: `${data.idCode}${parcela.parcela}`
+						id: `${data.idCode}${parcela.parcela}`,
+						equipmentsUsed: [...new Set(equipmentsArray)]
 					};
 				});
 				const appParcelasDict = parcelasDict.map((parc) => {
