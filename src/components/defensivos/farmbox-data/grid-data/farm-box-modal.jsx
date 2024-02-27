@@ -144,7 +144,7 @@ const ModalDataFarmbox = (props) => {
 						return sumTotalApp;
 					});
 					const statusParcelaDetail = (status, processo, area) => {
-						console.log(processo);
+						// console.log(processo);
 						if (status === "finalized" && processo === 0) {
 							return "Não Aplicado";
 						}
@@ -206,7 +206,8 @@ const ModalDataFarmbox = (props) => {
 						return {
 							...parc,
 							quantidadeSolicitada: (
-								parseFloat(ins.dose) * parseFloat(parc.area)
+								parseFloat(ins.dose) *
+								parseFloat(parc.areaSought)
 							).toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2

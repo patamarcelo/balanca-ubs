@@ -19,6 +19,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import { faMapLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faTractor } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
 
@@ -82,6 +83,13 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 			title: "Visitas",
 			icon: faMapLocationDot,
 			to: "/visitas",
+			unidade: "ubs",
+			permission: isDefensivosUser
+		},
+		{
+			title: "Plantio / Colheita",
+			icon: faTractor,
+			to: "/plantio-colheita",
 			unidade: "ubs",
 			permission: isDefensivosUser
 		}

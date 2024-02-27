@@ -435,8 +435,14 @@ const PageRcData = ({ printValue }) => {
 						color={colors.grey[500]}
 						sx={{ fontSize: "0.7rem" }}
 					>
-						Coordenadas: {data.coords.coords.latitude},{" "}
-						{data.coords.coords.longitude}
+						<a
+							href={`https://maps.google.com/?q=${data.coords.coords.latitude},${data.coords.coords.longitude}`}
+							target="_blank"
+							rel="noreferrer"
+						>
+							Coordenadas: {data.coords.coords.latitude},{" "}
+							{data.coords.coords.longitude}
+						</a>
 					</Typography>
 				)}
 				<Typography

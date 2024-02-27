@@ -17,7 +17,8 @@ import {
 	faChartSimple,
 	faPrint,
 	faPaperPlane,
-	faCalendarDays
+	faCalendarDays,
+	faTractor
 } from "@fortawesome/free-solid-svg-icons";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 
@@ -65,6 +66,10 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	const handlerDefensivos = () => {
 		navigate("/defensivo");
+	};
+
+	const handlerPlantioColheita = () => {
+		navigate("/plantio-colheita");
 	};
 
 	const handlerLogout = () => {
@@ -147,6 +152,16 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 							<FontAwesomeIcon
 								icon={faCalendarDays}
 								color={colors.primary[100]}
+								size={isNonMobile ? "sm" : "xs"}
+							/>
+						</IconButton>
+					)}
+				{isDefensivosUser &&
+					!location.pathname.includes("plantio-colheita") && (
+						<IconButton onClick={handlerPlantioColheita}>
+							<FontAwesomeIcon
+								icon={faTractor}
+								color={colors.greenAccent[300]}
 								size={isNonMobile ? "sm" : "xs"}
 							/>
 						</IconButton>

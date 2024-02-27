@@ -24,6 +24,7 @@ import {
 	selectUnidadeOpUser,
 	selectIsDefensivosUser
 } from "../../store/user/user.selector";
+import PlantioColheitaPage from "../../pages/PlantioColheita";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -96,6 +97,14 @@ const AuthApp = () => {
 							<Route
 								path="/visitas/:visitaId"
 								element={<VisitaIDPage />}
+							/>
+						</>
+					)}
+					{isDefensivosUser && (
+						<>
+							<Route
+								path="/plantio-colheita"
+								element={<PlantioColheitaPage />}
 							/>
 						</>
 					)}
