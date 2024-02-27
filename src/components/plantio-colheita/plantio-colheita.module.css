@@ -1,0 +1,8 @@
+.mainContainer{
+    display: grid;
+    /* justify-content: space-around; */
+    /* align-items: baseline; */
+    grid-template-columns: repeat(8, 1fr);
+    width: 70%;
+    height: 100%;
+}
