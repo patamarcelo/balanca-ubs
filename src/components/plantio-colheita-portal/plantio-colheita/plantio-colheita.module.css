@@ -1,0 +1,48 @@
+.mainContainer{
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
+    grid-template-columns: repeat(8, 1fr);
+    width: 70%;
+    height: 100%;
+}
+
+.oddRow {
+    background-color: rgba(128,128,128,0.4);
+}
+
+.colheitaRow {
+    /* background-color: rgba(0,128,0,0.5); */
+    color: rgb(67, 254, 67);
+    font-weight: bold;
+}
+
+/* .notColheitaRow { */
+    /* background-color: rgba; */
+    /* color: rgba(255,255,0,0.7); */
+    /* font-weight: bold; */
+/* } */
+
+.semAreaInformada{
+    background-color: rgba(255,255,0,0.4);
+}
+
+
+.containerHeader {
+    background-color: black;
+    color: whitesmoke;
+    border-radius: 8px;
+}
+
+.containerHeader:hover{
+    background-color: rgba(245,245,245,0.3);
+}
+.headerTitle{
+    margin: 8px 8px;
+}
+
+.isSelectedFarm{
+    background-color: rgba(245,245,245,0.6);
+    color: black;
+}
+

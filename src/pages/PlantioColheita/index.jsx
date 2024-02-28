@@ -7,10 +7,17 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
 
+import PermanentDrawerLeft from "./drawer";
+
 import djangoApi from "../../utils/axios/axios.utils";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import ListaRender from "../../components/plantio-colheita";
+import ListaRender from "../../components/plantio-colheita-portal/plantio-colheita";
+import TableColheita from "../../components/plantio-colheita-portal/plantio-colheita/table";
+import HeaderFarm from "../../components/plantio-colheita-portal/plantio-colheita/header-farm";
+import ColheitaAtual from "../../components/plantio-colheita-portal/plantio-colheita";
+
+import PlantioColheitaPortal from "../../components/plantio-colheita-portal";
 
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
@@ -25,6 +32,12 @@ const PlantioColheitaPage = () => {
 	const [filteredFarm, setFilteredFarm] = useState([]);
 	const [selectedFarm, setSelectedFarm] = useState(null);
 	const [selectedFilteredData, setSelectedFilteredData] = useState([]);
+
+	const [selectedRoute, setSelectedRoute] = useState("rota 1");
+
+	const handleNagivationIcon = (route) => {
+		setSelectedRoute(route);
+	};
 
 	const [params, setParams] = useState({
 		safra: safraCiclo.safra,
@@ -97,6 +110,7 @@ const PlantioColheitaPage = () => {
 		console.log(filteredFarm);
 		const filteredSet = [...new Set(filteredFarm)];
 		setFilteredFarm(filteredSet);
+		setSelectedFarm(filteredSet[0]);
 	}, [dataArray]);
 
 	useEffect(() => {
@@ -115,69 +129,53 @@ const PlantioColheitaPage = () => {
 		setSelectedFarm(farm);
 	};
 
-	if (isLoading) {
-		return (
-			<Box
-				sx={{
-					width: "100%",
-					height: "100%",
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center"
-				}}
-			>
-				<CircularProgress sx={{ color: colors.primary[100] }} />
+	// if (!isLoading && dataArray.length > 0) {
+	return (
+		<Box
+			width={"100%"}
+			position={"relative"}
+			sx={{
+				display: "flex"
+			}}
+		>
+			<Box>
+				<PermanentDrawerLeft
+					handleNagivationIcon={handleNagivationIcon}
+					selectedRoute={selectedRoute}
+				/>
 			</Box>
-		);
-	}
-	if (!isLoading && dataArray.length > 0) {
-		return (
 			<Box
 				className={styles["main-container"]}
+				// position={"relative"}
 				sx={{ backgroundColor: colors.blueOrigin[800] }}
 			>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "row",
-						justifyContent: "flex-start",
-						gap: "20px",
-						alignItems: "flex-start",
-						width: "70%",
-						height: "100%"
-					}}
-				>
-					{filteredFarm.map((farm, i) => {
-						return (
-							<Box
-								key={i}
-								sx={{ cursor: "pointer" }}
-								onClick={() => handlerFilter(farm)}
-							>
-								<p>{farm.replace("Projeto", "")}</p>
-							</Box>
-						);
-					})}
-				</Box>
-				<Box
-					sx={{
-						justifySelf: "flex-start",
-						width: "70%",
-						marginBottom: "10px"
-					}}
-				>
-					<Typography variant="h4" color={colors.textColor[100]}>
-						{selectedFarm}
-					</Typography>
-				</Box>
-				{selectedFilteredData
-					.sort((b, a) => a.dap - b.dap)
-					.map((data, i) => {
-						return <ListaRender data={data} key={i} />;
-					})}
+				{isLoading && (
+					<Box
+						sx={{
+							width: "100%",
+							height: "100%",
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center"
+						}}
+					>
+						<CircularProgress
+							sx={{ color: colors.blueAccent[100] }}
+						/>
+					</Box>
+				)}
+				{!isLoading && dataArray.length > 0 && (
+					<PlantioColheitaPortal
+						selectedRoute={selectedRoute}
+						filteredFarm={filteredFarm}
+						selectedFarm={selectedFarm}
+						handlerFilter={handlerFilter}
+						selectedFilteredData={selectedFilteredData}
+					/>
+				)}
 			</Box>
-		);
-	}
+		</Box>
+	);
 };
 
 export default PlantioColheitaPage;
