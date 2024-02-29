@@ -9,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "./store/user/user.selector";
 
-import Auth from "./routes/auth";
+// import Auth from "./routes/auth";
 import LoggedApp from "./routes/logged-app";
 import "./index.css";
 
@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./store/user/user.action";
 
 import { onAuthStateChangedListener } from "./utils/firebase/firebase";
+import LogginApp from "./routes/login-app";
 
 function App() {
 	const [theme, colorMode] = useMode();
@@ -37,7 +38,9 @@ function App() {
 				<CssBaseline />
 				{/* <NotificationContainer /> */}
 				<Toaster position="bottom-right" />
-				<div className="app">{user ? <LoggedApp /> : <Auth />}</div>
+				<div className="app">
+					{user ? <LoggedApp /> : <LogginApp />}
+				</div>
 			</ThemeProvider>
 		</ColorModeContext.Provider>
 	);
