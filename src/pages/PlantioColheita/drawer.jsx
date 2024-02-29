@@ -14,18 +14,44 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTractor } from "@fortawesome/free-solid-svg-icons";
+import {
+	faTractor,
+	faPlane,
+	faSheetPlastic
+} from "@fortawesome/free-solid-svg-icons";
 
 const drawerWidth = 180;
 
-const PermanentDrawerLeft = ({ handleNagivationIcon, selectedRoute }) => {
+const PermanentDrawerLeft = ({
+	handleNagivationIcon,
+	selectedRoute,
+	handlerRefresh
+}) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
+	const handlerRota2 = () => console.log("handler Rota 2");
+	const handlerRota3 = () => console.log("handler Rota 3");
+
 	const navigateList = [
-		{ icon: faTractor, title: "dap > 118 Ativa", route: "rota 1" },
-		{ icon: faTractor, title: "dap > 80 Ativa", route: "rota 2" },
-		{ icon: faTractor, title: "dap > 10 Ativa", route: "rota 3" }
+		{
+			icon: faTractor,
+			title: "Colheita",
+			route: "rota 1",
+			func: handlerRefresh
+		},
+		{
+			icon: faPlane,
+			title: "Aviação",
+			route: "rota 2",
+			func: handlerRota2
+		},
+		{
+			icon: faSheetPlastic,
+			title: "Outros",
+			route: "rota 3",
+			func: handlerRota3
+		}
 	];
 
 	return (
@@ -34,6 +60,7 @@ const PermanentDrawerLeft = ({ handleNagivationIcon, selectedRoute }) => {
 				PaperProps={{
 					sx: {
 						backgroundColor: colors.blueOrigin[800]
+						// borderRadius: "12px 0 0 12px"
 					}
 				}}
 				variant="permanent"
@@ -53,7 +80,7 @@ const PermanentDrawerLeft = ({ handleNagivationIcon, selectedRoute }) => {
 				}}
 			>
 				<Box sx={{ overflow: "auto" }}>
-					<List>
+					<List sx={{ paddingTop: "0px", paddingBottom: "0px" }}>
 						{navigateList.map((data, index) => (
 							<ListItem
 								key={index}
@@ -61,9 +88,10 @@ const PermanentDrawerLeft = ({ handleNagivationIcon, selectedRoute }) => {
 								selected={data.route === selectedRoute}
 							>
 								<ListItemButton
-									onClick={() =>
-										handleNagivationIcon(data.route)
-									}
+									onClick={() => {
+										data.func();
+										handleNagivationIcon(data.route);
+									}}
 								>
 									<ListItemIcon>
 										<FontAwesomeIcon icon={data.icon} />

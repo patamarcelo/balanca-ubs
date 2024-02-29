@@ -46,7 +46,7 @@ const TableColheita = ({ data }) => {
 							className={`${
 								i % 2 === 0 ? styles.oddRow : styles.evenRow
 							} ${
-								carga.romaneios > 0
+								carga.romaneios > 0 || areaParcial > 0
 									? styles.colheitaRow
 									: styles.notColheitaRow
 							}`}
@@ -70,8 +70,24 @@ const TableColheita = ({ data }) => {
 							>
 								{formatArea(areaParcial)}
 							</td>
-							<td>{scsColhidos}</td>
-							<td>{carga.romaneios}</td>
+							<td
+								className={`${
+									areaParcial > 0 &&
+									carga.romaneios === 0 &&
+									styles.semAreaInformada
+								}`}
+							>
+								{scsColhidos}
+							</td>
+							<td
+								className={`${
+									areaParcial > 0 &&
+									carga.romaneios === 0 &&
+									styles.semAreaInformada
+								}`}
+							>
+								{carga.romaneios}
+							</td>
 						</tr>
 					);
 				})}

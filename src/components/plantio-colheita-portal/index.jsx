@@ -22,7 +22,20 @@ const PlantioColheitaPortal = (props) => {
 				/>
 			)
 		},
-		{ route: "rota 2", component: <Box>Route 2</Box> }
+		{
+			route: "rota 2",
+			component: (
+				<Box
+					width={"100%"}
+					height={"100%"}
+					justifyContent={"center"}
+					display={"flex"}
+					alignItems={"center"}
+				>
+					Route 2
+				</Box>
+			)
+		}
 	];
 
 	const getCompToRender = routesComps.find(

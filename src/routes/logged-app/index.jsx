@@ -25,6 +25,7 @@ import {
 	selectIsDefensivosUser
 } from "../../store/user/user.selector";
 import PlantioColheitaPage from "../../pages/PlantioColheita";
+import PageNotFound from "../../pages/NotFound";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -108,6 +109,7 @@ const AuthApp = () => {
 							/>
 						</>
 					)}
+					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</Box>
 		</Box>

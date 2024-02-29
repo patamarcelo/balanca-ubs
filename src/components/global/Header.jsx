@@ -75,6 +75,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const handlerLogout = () => {
 		dispatch(logOffUser());
 		signOutUser();
+		handlerNavHome();
 	};
 
 	const print = (e) => {

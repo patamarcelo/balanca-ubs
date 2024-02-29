@@ -38,20 +38,20 @@ const PolicyPage = () => {
 					</p>
 					<ol>
 						<li>
-							<b>Informações de Identificação Pessoal:</b>
+							<b>Informações de Identificação Pessoal: </b>
 							Podemos coletar seu nome, endereço de e-mail, número
 							de telefone e outras informações de contato que você
 							fornecer voluntariamente ao se registrar no
 							aplicativo.
 						</li>
 						<li>
-							<b>Informações de Uso:</b>
+							<b>Informações de Uso: </b>
 							Podemos coletar informações sobre como você utiliza
 							o aplicativo, incluindo as ações que você realiza
 							dentro do aplicativo e os recursos que você utiliza.
 						</li>
 						<li>
-							<b>Informações de Dispositivo:</b>
+							<b>Informações de Dispositivo: </b>
 							Podemos coletar informações sobre o dispositivo
 							móvel que você utiliza para acessar o aplicativo,
 							incluindo o modelo do dispositivo, o sistema

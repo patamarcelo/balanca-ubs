@@ -129,25 +129,60 @@ const PlantioColheitaPage = () => {
 		setSelectedFarm(farm);
 	};
 
+	const handlerRefresh = () => {
+		const getTrueApi = async () => {
+			setIsLoading(true);
+			try {
+				await djangoApi
+					.post("plantio/get_colheita_plantio_info/", safraCiclo, {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						console.log(res.data);
+						setDataArray(res.data.data);
+						setCargasArray(res.data.cargas);
+					})
+					.catch((err) => {
+						console.log(err);
+						setIsLoading(false);
+					});
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+				setIsLoading(false);
+			} finally {
+				setIsLoading(false);
+				// console.log("Finally statement");
+			}
+		};
+		getTrueApi();
+	};
+
 	// if (!isLoading && dataArray.length > 0) {
 	return (
 		<Box
 			width={"100%"}
 			position={"relative"}
 			sx={{
-				display: "flex"
+				display: "flex",
+				borderRadius: "12px"
 			}}
 		>
 			<Box>
 				<PermanentDrawerLeft
 					handleNagivationIcon={handleNagivationIcon}
 					selectedRoute={selectedRoute}
+					handlerRefresh={handlerRefresh}
 				/>
 			</Box>
 			<Box
 				className={styles["main-container"]}
 				// position={"relative"}
-				sx={{ backgroundColor: colors.blueOrigin[800] }}
+				sx={{
+					backgroundColor: colors.blueOrigin[800],
+					borderRadius: "0px 12px 12px 0px"
+				}}
 			>
 				{isLoading && (
 					<Box
