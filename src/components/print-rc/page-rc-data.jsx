@@ -164,6 +164,7 @@ const PageRcData = ({ printValue }) => {
 				display="flex"
 				justifyContent="space-between"
 				sx={{ width: "100%" }}
+				className={classes.controleColheitaHeader}
 			>
 				<Box
 					display="flex"
@@ -261,6 +262,7 @@ const PageRcData = ({ printValue }) => {
 				display="flex"
 				justifyContent="space-between"
 				sx={{ width: "100%" }}
+				className={classes.controleColheitaHeader}
 			>
 				<Box
 					display="flex"
@@ -271,6 +273,7 @@ const PageRcData = ({ printValue }) => {
 						backgroundColor: colors.blueOrigin[700],
 						padding: "5px"
 					}}
+					
 				>
 					<Typography variant="h4" color="whitesmoke">
 						TRANSPORTE

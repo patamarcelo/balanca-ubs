@@ -40,23 +40,23 @@ const PlantioColheitaPage = () => {
 	};
 
 	const [params, setParams] = useState({
-		safra: safraCiclo.safra,
-		ciclo: safraCiclo.ciclo
+		safra: "2023/2024",
+		ciclo: "3"
 	});
 
-	useEffect(() => {
-		setParams({
-			safra: safraCiclo.safra,
-			ciclo: safraCiclo.ciclo
-		});
-	}, [safraCiclo]);
+	// useEffect(() => {
+	// 	setParams({
+	// 		safra: safraCiclo.safra,
+	// 		ciclo: safraCiclo.ciclo
+	// 	});
+	// }, [safraCiclo]);
 
 	useEffect(() => {
 		const getTrueApi = async () => {
 			setIsLoading(true);
 			try {
 				await djangoApi
-					.post("plantio/get_colheita_plantio_info/", safraCiclo, {
+					.post("plantio/get_colheita_plantio_info/", params, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}

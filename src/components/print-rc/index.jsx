@@ -52,6 +52,7 @@ const PrintRCLayout = ({ data }) => {
 						// backgroundCOlor: "white !important"
 					}
 				}}
+				id="printablediv"
 			>
 				<Box
 					display="flex"

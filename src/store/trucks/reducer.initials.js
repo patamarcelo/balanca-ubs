@@ -183,6 +183,6 @@ export const FAZENDA_ORIGEM = [
 	// { id: "D5", local: "Agronorte", user: "outros" },
 	// { id: "D6", local: "Cajueiro", user: "outros" },
 	{ id: "D7", local: "JK", user: "outros" },
-	// { id: "D8", local: "FTS", user: "outros" },
+	{ id: "D11", local: "Badu", user: "outros" },
 	{ id: 47, local: "Outros", user: "outros" }
 ];

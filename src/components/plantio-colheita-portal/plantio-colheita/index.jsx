@@ -3,11 +3,34 @@ import { tokens } from "../../../theme";
 import HeaderFarm from "./header-farm";
 import TableColheita from "./table";
 
+import { useEffect, useState } from "react";
+
 const ColheitaAtual = (props) => {
 	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData } =
 		props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
+	const [areaTotal, setAreaTotal] = useState(0);
+	const [parcelasTotal, setparcelasTotal] = useState(0);
+
+	const formatArea = (number) => {
+		return Number(number).toLocaleString("pt-br", {
+			maximumFractionDigits: 2,
+			minimumFractionDigits: 2
+		});
+	};
+	useEffect(() => {
+		let areaTotalSoma = 0;
+		let parcelasTotalCount = 0;
+		selectedFilteredData.forEach((data) => {
+			areaTotalSoma += data.area_colheita;
+			parcelasTotalCount += 1;
+		});
+		setAreaTotal(formatArea(areaTotalSoma));
+		setparcelasTotal(parcelasTotalCount);
+	}, [selectedFilteredData]);
+
 	return (
 		<Box
 			width={"100%"}
@@ -42,6 +65,14 @@ const ColheitaAtual = (props) => {
 							/>
 						);
 					})}
+			</Box>
+			<Box display={"flex"} flexDirection="column" mb={2}>
+				<span>
+					<b>Área Total:</b> {areaTotal}
+				</span>
+				<span>
+					<b>Parcelas:</b> {parcelasTotal}
+				</span>
 			</Box>
 			<Box
 				sx={{
