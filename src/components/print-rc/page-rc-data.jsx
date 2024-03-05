@@ -273,7 +273,6 @@ const PageRcData = ({ printValue }) => {
 						backgroundColor: colors.blueOrigin[700],
 						padding: "5px"
 					}}
-					
 				>
 					<Typography variant="h4" color="whitesmoke">
 						TRANSPORTE
@@ -357,6 +356,34 @@ const PageRcData = ({ printValue }) => {
 						</Box>
 					);
 				})}
+			</Box>
+
+			<Typography
+				variant="h6"
+				color={colors.primary[500]}
+				sx={{ marginLeft: "10px" }}
+				fontWeight="bold"
+				mt={2}
+			>
+				Observações:
+			</Typography>
+			<Box
+				display="flex"
+				justifyContent="start"
+				flexDirection={"column"}
+				sx={{
+					border: `1px  ${colors.blueOrigin[700]} dotted`,
+					width: "100%",
+					minHeight: "80px"
+				}}
+			>
+				<Typography
+					variant="h6"
+					color={colors.primary[500]}
+					sx={{ marginLeft: "10px", paddingTop: "5px" }}
+				>
+					{data?.observacoes}
+				</Typography>
 			</Box>
 			<Box
 				mt="70px"

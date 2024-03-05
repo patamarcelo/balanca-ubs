@@ -134,7 +134,7 @@ const PlantioColheitaPage = () => {
 			setIsLoading(true);
 			try {
 				await djangoApi
-					.post("plantio/get_colheita_plantio_info/", safraCiclo, {
+					.post("plantio/get_colheita_plantio_info/", params, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}

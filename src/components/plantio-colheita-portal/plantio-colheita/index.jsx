@@ -1,9 +1,12 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import HeaderFarm from "./header-farm";
 import TableColheita from "./table";
 
 import { useEffect, useState } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 
 const ColheitaAtual = (props) => {
 	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData } =
@@ -13,6 +16,9 @@ const ColheitaAtual = (props) => {
 
 	const [areaTotal, setAreaTotal] = useState(0);
 	const [parcelasTotal, setparcelasTotal] = useState(0);
+	const [newDayNow, setNewDayNow] = useState("");
+
+	const [dateSort, setDateSort] = useState(false);
 
 	const formatArea = (number) => {
 		return Number(number).toLocaleString("pt-br", {
@@ -31,6 +37,14 @@ const ColheitaAtual = (props) => {
 		setparcelasTotal(parcelasTotalCount);
 	}, [selectedFilteredData]);
 
+	useEffect(() => {
+		setNewDayNow(new Date().toLocaleDateString());
+	}, []);
+
+	const handleFilterTable = () => {
+		setDateSort(!dateSort);
+	};
+
 	return (
 		<Box
 			width={"100%"}
@@ -41,6 +55,7 @@ const ColheitaAtual = (props) => {
 			paddingLeft={6}
 			paddingRight={6}
 			paddingTop={2}
+			paddingBottom={2}
 		>
 			<Box
 				sx={{
@@ -75,6 +90,33 @@ const ColheitaAtual = (props) => {
 				</span>
 			</Box>
 			<Box
+				display="flex"
+				flexDirection="row-reverse"
+				justifyContent="space-between"
+				width={"100%"}
+			>
+				<Typography
+					sx={{
+						alignSelf: "flex-end",
+						color: colors.grey[300],
+						fontStyle: "italic"
+					}}
+				>
+					{newDayNow}
+				</Typography>
+
+				<FontAwesomeIcon
+					icon={faArrowDownAZ}
+					color={colors.greenAccent[500]}
+					size="md"
+					style={{
+						margin: "0px 0px",
+						cursor: "pointer"
+					}}
+					onClick={() => handleFilterTable()}
+				/>
+			</Box>
+			<Box
 				sx={{
 					justifySelf: "center",
 					width: "100%",
@@ -94,7 +136,13 @@ const ColheitaAtual = (props) => {
 			</Box>
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
-					data={selectedFilteredData.sort((b, a) => a.dap - b.dap)}
+					data={selectedFilteredData.sort((b, a) =>
+						dateSort
+							? b.talhao__id_talhao.localeCompare(
+									a.talhao__id_talhao
+							  )
+							: a.dap - b.dap
+					)}
 				/>
 			)}
 		</Box>
