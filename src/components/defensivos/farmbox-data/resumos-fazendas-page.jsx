@@ -51,7 +51,18 @@ const ResumoFazendasPage = (props) => {
 	return (
 		<div style={{ width: "100%" }}>
 			<div className={classes.resumoFazendasMainDiv}>
-				<span>{fazenda.split("Fazenda")[1]}</span>
+				<span>
+					<a
+						href={"#" + fazenda}
+						style={{
+							textDecoration: "none",
+							cursor: "pointer",
+							color: "whitesmoke"
+						}}
+					>
+						{fazenda.split("Fazenda")[1]}
+					</a>
+				</span>
 				<div style={{ marginLeft: "10px", fontSize: "large" }}>
 					{fazenda in dataGeral.fazendas
 						? dataGeral.fazendas[fazenda].saldo.toLocaleString(

@@ -41,7 +41,7 @@ const IndexModalDataFarmbox = (props) => {
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
-				<Box sx={style}>
+				<Box sx={style} style={{ scrollBehavior: "smooth" }}>
 					<Box
 						id="keep-mounted-modal-title"
 						display="flex"

@@ -77,6 +77,11 @@ const SheetFields = (props) => {
 							sx={{
 								width: "100%"
 							}}
+							disabled={
+								input.name === "relatorioColheita" &&
+								truckValues["createdBy"] === "App" &&
+								true
+							}
 						/>
 					);
 				})}

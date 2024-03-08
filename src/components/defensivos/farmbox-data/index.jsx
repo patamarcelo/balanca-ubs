@@ -222,7 +222,10 @@ const FarmBoxPage = () => {
 	}, []);
 
 	return (
-		<div className={classes.mainDiv}>
+		<div
+			className={classes.mainDiv}
+			style={{ scrollBehavior: "smooth !important" }}
+		>
 			{!loadingData && (
 				<Box
 					p={1}
@@ -328,6 +331,7 @@ const FarmBoxPage = () => {
 										<>
 											<div
 												key={i}
+												id={data}
 												style={{
 													margin: "29px"
 												}}
