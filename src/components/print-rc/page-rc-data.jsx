@@ -46,8 +46,8 @@ const PageRcData = ({ printValue }) => {
 		}
 	];
 	const dictDataR = [
-		{ label: "CULTURA", value: handleExistData(data?.cultura) },
-		{ label: "VARIEDADE", value: handleExistData(data?.mercadoria) }
+		{ label: "Cultura", value: handleExistData(data?.cultura) },
+		{ label: "Variedade", value: handleExistData(data?.mercadoria) }
 	];
 
 	const DataDict = [
@@ -86,7 +86,7 @@ const PageRcData = ({ printValue }) => {
 				alignItems="end"
 				sx={{
 					width: "100%",
-					height: "180px"
+					height: "140px"
 				}}
 			>
 				<Box
@@ -386,11 +386,11 @@ const PageRcData = ({ printValue }) => {
 				</Typography>
 			</Box>
 			<Box
-				mt="70px"
+				mt="55px"
 				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
-				mb={6}
+				mb={3}
 				sx={{
 					width: "100%"
 				}}

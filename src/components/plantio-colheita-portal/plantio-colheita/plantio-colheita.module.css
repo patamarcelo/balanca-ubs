@@ -46,3 +46,8 @@
     color: black;
 }
 
+.mainTable tr:hover{
+    background-color: rgba(3,24,36,0.8);
+    cursor: pointer;
+}
+

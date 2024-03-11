@@ -3,7 +3,7 @@ import styles from "./plantio-colheita.module.css";
 
 const TableColheita = ({ data }) => {
 	return (
-		<Table striped bordered hover style={{ width: "100%" }} size="sm">
+		<Table striped bordered hover style={{ width: "100%" }} size="sm" className={styles.mainTable}>
 			<thead>
 				<tr>
 					<th>Parcela</th>
@@ -14,6 +14,7 @@ const TableColheita = ({ data }) => {
 					<th>Area Colhida</th>
 					<th>Peso Carregado / Scs</th>
 					<th>Romaneios Computados</th>
+					<th>Média Prev.</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -41,6 +42,8 @@ const TableColheita = ({ data }) => {
 							minimumFractionDigits: 2
 						});
 					};
+
+					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
 					return (
 						<tr
 							className={`${
@@ -87,6 +90,9 @@ const TableColheita = ({ data }) => {
 								}`}
 							>
 								{carga.romaneios}
+							</td>
+							<td>
+								{formatArea(mediaPrev)}
 							</td>
 						</tr>
 					);

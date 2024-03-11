@@ -7,7 +7,10 @@ import {
 	faPrint,
 	faTrashCan,
 	faBookmark
+	// faMobile
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faMobile } from "@fortawesome/free-solid-svg-icons";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
@@ -51,7 +54,10 @@ const ReportTable = (props) => {
 	};
 
 	const handlerNavigatePrintRomaneio = (data) => {
-		navigate("/rcprint", { state: { data: data } });
+		console.log('data inside roma: ', data)
+		if(data?.createdBy === 'App'){
+			navigate("/rcprint", { state: { data: data } });
+		}
 	};
 
 	const { dataTable, isLoading, handlerSave, saved } = props;
@@ -240,7 +246,11 @@ const ReportTable = (props) => {
 										? colors.greenAccent[500]
 										: colors.yellow[550]
 								}
-								icon={faCircleCheck}
+								icon={
+									params?.row?.createdBy !== null
+										? faMobile
+										: faCircleCheck
+								}
 								size="sm"
 							/>
 						</>
