@@ -18,6 +18,7 @@ const PrintRCLayout = ({ data }) => {
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
+	const isNonMobileShort = useMediaQuery("(min-width: 800px)");
 	const newData = useSelector(selectTruckLoadsFormatData);
 
 	const [isLoading, setIsLoading] = useState(true);
@@ -45,12 +46,9 @@ const PrintRCLayout = ({ data }) => {
 				// id="printablediv"
 				sx={{
 					margin: "0 auto !important",
-					// transform: !isNonMobileLand && "scale(0.6)",
 					marginTop: "-5px",
 					padding: !isNonMobileLand && "0px",
-					" body": {
-						// backgroundCOlor: "white !important"
-					}
+					zoom: !isNonMobileLand && '60%'
 				}}
 				id="printablediv"
 			>
