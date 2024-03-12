@@ -22,6 +22,7 @@ const PageRcData = ({ printValue }) => {
 	const user = useSelector(selectCurrentUser);
 
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
+	const isNonMobileShort = useMediaQuery("(min-width: 400px)");
 
 	const getName = (UNITS_OP, nameTo) => {
 		if (nameTo) {
@@ -333,7 +334,9 @@ const PageRcData = ({ printValue }) => {
 				display="flex"
 				justifyContent="start"
 				sx={{
-					border: `1px  ${colors.blueOrigin[700]} dotted`
+					border: `1px  ${colors.blueOrigin[700]} dotted`,
+					flexDirection: isNonMobileShort ? 'row' : 'column'
+					
 				}}
 			>
 				{CordeDict.map((data, i) => {
@@ -346,7 +349,7 @@ const PageRcData = ({ printValue }) => {
 							sx={{
 								width: "100%",
 								padding: "0px 10px 0px 0px",
-								margin: "10px"
+								margin: "10px",
 							}}
 						>
 							<Typography
