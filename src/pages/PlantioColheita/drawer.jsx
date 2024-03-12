@@ -16,7 +16,7 @@ import { tokens } from "../../theme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faTractor,
-	faPlane,
+	faClipboard,
 	faSheetPlastic
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -41,8 +41,8 @@ const PermanentDrawerLeft = ({
 			func: handlerRefresh
 		},
 		{
-			icon: faPlane,
-			title: "Aviação",
+			icon: faClipboard,
+			title: "Romaneios",
 			route: "rota 2",
 			func: handlerRota2
 		},

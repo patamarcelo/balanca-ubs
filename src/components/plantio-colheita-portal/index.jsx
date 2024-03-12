@@ -1,6 +1,7 @@
 import ColheitaAtual from "./plantio-colheita";
 import { useEffect } from "react";
 import { Box } from "@mui/material";
+import RomaneiosPage from "./romaneios";
 
 const PlantioColheitaPortal = (props) => {
 	const {
@@ -25,15 +26,7 @@ const PlantioColheitaPortal = (props) => {
 		{
 			route: "rota 2",
 			component: (
-				<Box
-					width={"100%"}
-					height={"100%"}
-					justifyContent={"center"}
-					display={"flex"}
-					alignItems={"center"}
-				>
-					Route 2
-				</Box>
+				<RomaneiosPage />
 			)
 		}
 	];
