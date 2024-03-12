@@ -185,7 +185,7 @@ const HomeTableTruck = (props) => {
 							sx={{
 								// backgroundColor: "red",
 								width: "9%",
-								marginLeft: "12px"
+								marginLeft: !isNonMobile ? '25px' : "12px"
 							}}
 						>
 							{data?.createdBy === "App" ? (

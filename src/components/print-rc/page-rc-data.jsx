@@ -11,6 +11,10 @@ import { formatDate } from "../../store/trucks/trucks.selector";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMap, faMapLocation } from "@fortawesome/free-solid-svg-icons"
+
+
 const PageRcData = ({ printValue }) => {
 	const data = printValue[0];
 	const theme = useTheme();
@@ -82,7 +86,7 @@ const PageRcData = ({ printValue }) => {
 				borderColor: colors.blueOrigin[700],
 				borderRadius: "8px",
 				margin: "30px",
-				zoom: '80%'
+				zoom: !isNonMobileLand ?'70%' : '80%'
 
 			}}
 		>
@@ -469,14 +473,26 @@ const PageRcData = ({ printValue }) => {
 				{data?.coords && (
 					<Typography
 						color={colors.grey[500]}
-						sx={{ fontSize: "0.7rem" }}
+						sx={{ fontSize: "0.7rem",}}
 					>
-						<a
+						
+							<FontAwesomeIcon
+										color={"black"}
+										icon={faMapLocation}
+										size="2x"
+										style={{
+											marginRight: '8px'
+										}}
+										// onClick={() =>
+										// 	handlerNavigatePrint(data)
+										// }
+									/> 
+									<a
 							href={`https://maps.google.com/?q=${data.coords.coords.latitude},${data.coords.coords.longitude}`}
 							target="_blank"
 							rel="noreferrer"
 						>
-							Coordenadas: {data.coords.coords.latitude},{" "}
+									{data.coords.coords.latitude},{" "}
 							{data.coords.coords.longitude}
 						</a>
 					</Typography>
