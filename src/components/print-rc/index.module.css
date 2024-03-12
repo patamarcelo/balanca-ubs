@@ -10,18 +10,14 @@ img {
         top: 10px
 	}
 
-	
 
-	#printablediv,
-	#printablediv * {
-		visibility: visible;
-	}
-	#printablediv2,
-	#printablediv2 * {
+
+	#printabledivRc,
+	#printabledivRc * {
 		visibility: visible;
 	}
 
-	#printablediv {
+	#printabledivRc {
 		/* margin-top: 20px; */
 		display: flex;
 		flex-direction: column;
@@ -35,28 +31,13 @@ img {
         
 	}
 
-	#printablediv2 {
-		/* margin-top: 20px; */
-		display: flex;
-		flex-direction: column;
-		justify-content: start;
-		width: 100%;
-		height: 90%;
-		align-items: center;
-		box-shadow: none !important;
-		background-color: transparent !important;
-	}
-
-	#printablediv2 div,
-	#printablediv div {
+	#printabledivRc div {
 		background-color: transparent;
 		box-shadow: none !important;
 	}
 	
     
-	#printablediv {
-        border-bottom: 1px dotted black
-	}
+	
 
 	.print-container {
 		max-width: 150% !important;

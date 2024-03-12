@@ -387,7 +387,8 @@ const PageRcData = ({ printValue }) => {
 				sx={{
 					border: `1px  ${colors.blueOrigin[700]} dotted`,
 					width: "100%",
-					minHeight: "80px"
+					minHeight: "80px",
+					whiteSpace: 'pre-wrap'
 				}}
 			>
 				<Typography

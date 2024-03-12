@@ -98,6 +98,7 @@ const AuthApp = () => {
 				display="flex"
 				justifyContent="center"
 				alignItems={(location.pathname === "/rcprint" || location.pathname === "/print")  && 'center'}
+				id="mainPrintDivContainer"
 				sx={{
 					padding: "10px",
 					overflow: "auto",

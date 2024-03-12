@@ -68,7 +68,7 @@ const PrintRCLayout = ({ data }) => {
 						<Box
 							width="100%"
 							height="60vh"
-							id="printablediv"
+							id="printabledivRc"
 							sx={{
 								padding: "20px 50px"
 							}}
@@ -123,7 +123,9 @@ const PrintRCLayout = ({ data }) => {
 							<LoaderPage isLoading={isLoading} />
 						</Box>
 					) : (
+						<>
 						<PageRcData printValue={printData} />
+						</>
 					)}
 				</Box>
 			</Box>
