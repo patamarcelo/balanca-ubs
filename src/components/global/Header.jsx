@@ -84,7 +84,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	return (
 		<Box
-			display="flex"
+			display={"flex"}
 			justifyContent="space-between"
 			alignItems="center"
 			mt="20px"
@@ -126,7 +126,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 				</Typography>
 			</Box>
 			<Box
-				display="flex"
+				display={"flex"}
 				justifyContent="space-around"
 				alignItems="center"
 				sx={{

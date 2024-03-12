@@ -27,6 +27,8 @@ import {
 import PlantioColheitaPage from "../../pages/PlantioColheita";
 import PageNotFound from "../../pages/NotFound";
 
+import MenuIcon from "@mui/icons-material/Menu";
+
 const AuthApp = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -55,7 +57,36 @@ const AuthApp = () => {
 				backgroundColor: colors.blueOrigin[900]
 			}}
 		>
-			<Header toggleDrawer={toggleDrawer} isdrawerOpen={isdrawerOpen} />
+			{
+				isNonMobile ? 
+				<Header toggleDrawer={toggleDrawer} isdrawerOpen={isdrawerOpen} />
+				: 
+				<Box
+				display="flex"
+				flexDirection="column"
+				alignItems="flex-start"
+				justifyContent={"flex-start"}
+				onClick={toggleDrawer}
+				sx={{
+					cursor: "pointer",
+					width: "100%",
+					height: "30px",
+					marginRight: "20px",
+					marginLeft: '30px',
+					position: 'absolute',
+					top: '10px'
+
+				}}
+			>
+				<MenuIcon
+					sx={{
+						fontSize: "32px"
+					}}
+				/>
+				</Box>
+				
+			}
+
 			<TempDrawer
 				isdrawerOpen={isdrawerOpen}
 				toggleDrawer={toggleDrawer}
