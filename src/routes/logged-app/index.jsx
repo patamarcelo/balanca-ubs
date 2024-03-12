@@ -66,6 +66,7 @@ const AuthApp = () => {
 				height="100%"
 				display="flex"
 				justifyContent="center"
+				alignItems={(location.pathname === "/rcprint" || location.pathname === "/print")  && 'center'}
 				sx={{
 					padding: "10px",
 					overflow: "auto",

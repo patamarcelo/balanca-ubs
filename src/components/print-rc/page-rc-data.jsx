@@ -9,11 +9,15 @@ import { UNITS_OP } from "../../store/trucks/trucks.types";
 import classes from "./index.module.css";
 import { formatDate } from "../../store/trucks/trucks.selector";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const PageRcData = ({ printValue }) => {
 	const data = printValue[0];
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
+
+	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
 
 	const getName = (UNITS_OP, nameTo) => {
 		if (nameTo) {
@@ -77,7 +81,9 @@ const PageRcData = ({ printValue }) => {
 				border: "1px solid",
 				borderColor: colors.blueOrigin[700],
 				borderRadius: "8px",
-				margin: "30px"
+				margin: "30px",
+				zoom: '80%'
+
 			}}
 		>
 			<Box
@@ -456,7 +462,7 @@ const PageRcData = ({ printValue }) => {
 				sx={{
 					display: "flex",
 					with: "100%",
-					justifyContent: "space-between",
+					justifyContent: data?.coords ? "space-between" : "flex-end",
 					alignItems: "flex-end"
 				}}
 			>
