@@ -146,8 +146,8 @@ const PageRcData = ({ printValue }) => {
 						mt={6}
 						fontSize={"16px"}
 					>
-						{data.relatorioColheita
-							? `Nº ${data.relatorioColheita}`
+						{data?.relatorioColheita
+							? `Nº ${data?.relatorioColheita}`
 							: ""}
 					</Typography>
 					<Typography
@@ -161,7 +161,7 @@ const PageRcData = ({ printValue }) => {
 							width: "100%"
 						}}
 					>
-						{formatDate(data.createdAt)}
+						{formatDate(data?.createdAt)}
 					</Typography>
 				</Box>
 			</Box>

@@ -294,6 +294,9 @@ const HomePage = () => {
 			<Box
 				display="flex"
 				justifyContent={!isCellPhone && "space-between"}
+				sx={{
+					marginTop: !isNonMobile && '30px'
+				}}			
 			>
 				<CustomButton
 					// isBalanca={!isBalanca}

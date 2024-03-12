@@ -72,7 +72,7 @@ const AuthApp = () => {
 					width: "100%",
 					height: "30px",
 					marginRight: "20px",
-					marginLeft: '30px',
+					marginLeft: '10px',
 					position: 'absolute',
 					top: '10px'
 
