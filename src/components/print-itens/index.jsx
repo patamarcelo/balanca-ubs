@@ -40,12 +40,9 @@ const PrintLayout = ({ data }) => {
 				id="printablediv"
 				sx={{
 					margin: "0 auto !important",
-					transform: !isNonMobileLand && "scale(0.6)",
-					marginTop: "-5px",
+					transform: !isNonMobileLand && "scale(0.98)",
 					padding: !isNonMobileLand && "0px",
-					" body": {
-						// backgroundCOlor: "white !important"
-					}
+					zoom: !isNonMobileLand && '70%'
 				}}
 			>
 				<Box
@@ -55,7 +52,7 @@ const PrintLayout = ({ data }) => {
 					sx={{
 						width: isNonMobile ? "90%" : "100%",
 						maxWidth: "925px",
-						marginTop: !isNonMobileLand ? "-265px" : "0px",
+						// marginTop: !isNonMobileLand ? "-265px" : "0px",
 						backgroundColor: "white",
 						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
 					}}

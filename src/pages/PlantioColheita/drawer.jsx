@@ -93,10 +93,10 @@ const PermanentDrawerLeft = ({
 										handleNagivationIcon(data.route);
 									}}
 								>
-									<ListItemIcon>
-										<FontAwesomeIcon icon={data.icon} />
+									<ListItemIcon sx={{color: data.route === selectedRoute && 'white' }}>
+										<FontAwesomeIcon icon={data.icon}/>
 									</ListItemIcon>
-									<ListItemText primary={data.title} />
+									<ListItemText primary={data.title} sx={{color: data.route === selectedRoute && 'white' }}/>
 								</ListItemButton>
 							</ListItem>
 						))}

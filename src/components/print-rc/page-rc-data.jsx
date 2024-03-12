@@ -68,7 +68,7 @@ const PageRcData = ({ printValue }) => {
 	];
 	const ProdDict = [
 		{
-			label: "Parcelas",
+			label: data?.parcelasNovas.length === 1 ? "Parcela" : 'Parcelas',
 			value:
 				handleExistData(data?.parcelasNovas) !== " - "
 					? data?.parcelasNovas?.toString().replaceAll(",", " , ")

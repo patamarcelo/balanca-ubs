@@ -81,7 +81,7 @@ const ColheitaAtual = (props) => {
 						);
 					})}
 			</Box>
-			<Box display={"flex"} flexDirection="column" mb={2}>
+			<Box display={"flex"} flexDirection="column" mb={2} sx={{color: colors.textColor[100]}}>
 				<span>
 					<b>Área Total:</b> {areaTotal}
 				</span>
@@ -136,6 +136,7 @@ const ColheitaAtual = (props) => {
 			</Box>
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
+					colors={colors}
 					data={selectedFilteredData.sort((b, a) =>
 						dateSort
 							? b.talhao__id_talhao.localeCompare(

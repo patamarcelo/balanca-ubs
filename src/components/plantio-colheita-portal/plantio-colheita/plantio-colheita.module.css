@@ -36,6 +36,8 @@
 
 .containerHeader:hover{
     background-color: rgba(245,245,245,0.3);
+    color: black;
+    border: 1px solid black;
 }
 .headerTitle{
     margin: 8px 8px;
@@ -44,6 +46,7 @@
 .isSelectedFarm{
     background-color: rgba(245,245,245,0.6);
     color: black;
+    border: 1px solid black;
 }
 
 .mainTable tr:hover{
