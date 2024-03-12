@@ -48,7 +48,7 @@ const PrintRCLayout = ({ data }) => {
 					margin: "0 auto !important",
 					marginTop: "-5px",
 					padding: !isNonMobileLand && "0px",
-					zoom: !isNonMobileLand && '60%'
+					zoom: !isNonMobileLand && '50%'
 				}}
 				id="printablediv"
 			>
