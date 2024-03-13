@@ -143,7 +143,7 @@ const PlantioColheitaPage = () => {
 						}
 					})
 					.then((res) => {
-						console.log(res.data);
+						console.log('response here ', res.data);
 						setDataArray(res.data.data);
 						setCargasArray(res.data.cargas);
 					})

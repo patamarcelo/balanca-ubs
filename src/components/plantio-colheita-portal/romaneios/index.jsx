@@ -12,6 +12,9 @@ import { handleUpdateRomaneioCheck } from "../../../utils/firebase/firebase.data
 
 import { selectRomaneiosLoads } from "../../../store/trucks/trucks.selector";
 
+import toast from "react-hot-toast";
+
+
 const RomaneiosPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -39,6 +42,9 @@ const RomaneiosPage = () => {
             await handleUpdateRomaneioCheck(event, cargaDetail.id, updatedData)
             const newArr = useData.filter((data) => data.id !== cargaDetail.id)
             setfilteredUserData(newArr.filter((data) => data.uploadedToProtheus === false))
+            toast.success(`Romaneio ${cargaDetail.relatorioColheita} - ${cargaDetail.fazendaOrigem} atualizado com sucesso!!`, {
+                position: "top-center"
+            });
         } catch (error) {
             alert('Erro ao editar a Carga', error)
         }

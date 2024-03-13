@@ -4,6 +4,10 @@ import DeleteIcon from "@mui/icons-material/DoneAll";
 import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
 
+import moment from "moment";
+
+
+
 const RomaneiosTable = ({ data, handleUpdateCarga }) => {
     if (data.length === 0) {
         return (
@@ -16,10 +20,11 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
     }
 
     return (
-        <Box width={"100%"} sx={{ maxHeight: "500px", overflow: "auto" }}>
+        <Box width={"100%"}>
             <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th>Data</th>
                         <th>Romaneio</th>
                         <th>Projeto</th>
                         <th>Parcelas</th>
@@ -31,11 +36,15 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                 </thead>
                 <tbody>
                     {data.map((carga, i) => {
+                        const newDate = carga.syncDate.toDate().toLocaleString('pt-BR')
                         return (
                             <tr
                                 key={i}
                                 className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
                             >
+                                <td>
+                                    {newDate}
+                                </td>
                                 <td>
                                     {carga.relatorioColheita}
                                 </td>
@@ -46,7 +55,8 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                     {carga.parcelasNovas.join(", ")}
                                 </td>
                                 <td>
-                                    {carga.placa}
+                                {carga.placa.slice(0, 3)}-
+									{carga.placa.slice(3, 12)}
                                 </td>
                                 <td>
                                     {carga.motorista}
@@ -60,6 +70,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                         size="sm"
                                         color="success"
                                         onClick={e => handleUpdateCarga(e, carga)}
+                                        style={{padding: '2px'}}
                                     >
                                         <DeleteIcon fontSize="inherit" />
                                     </IconButton>
