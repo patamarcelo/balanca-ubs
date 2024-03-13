@@ -45,7 +45,7 @@ const TableColheita = ({ data, colors }) => {
 
 					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
 					return (
-						<tr
+						<tr key={i}
 							className={`${
 								i % 2 === 0 ? styles.oddRow : styles.evenRow
 							} ${

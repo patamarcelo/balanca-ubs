@@ -11,6 +11,20 @@ import toast from "react-hot-toast";
 
 import { newDateArr } from "../../utils/format-suport/data-format";
 
+export const handleUpdateRomaneioCheck = async (e, id, data) => {
+	e.preventDefault();
+	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
+	let updatedDoc;
+	const updatedData = { ...data};
+	try {
+		updatedDoc = await updateDoc(taskDocRef, {
+			...updatedData
+		});
+	} catch (err) {
+		alert(err);
+	}
+	return updatedDoc;
+};
 export const handleUpdateClassic = async (e, id, data) => {
 	e.preventDefault();
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);

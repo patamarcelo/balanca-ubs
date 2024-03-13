@@ -4,6 +4,10 @@ import styles from "./PlantioColheita.module.css";
 
 import { useEffect, useState } from "react";
 
+import { onSnapshot, collection, query, where, limit, orderBy } from "firebase/firestore";
+import { db } from "../../utils/firebase/firebase";
+import { TABLES_FIREBASE } from "../../utils/firebase/firebase.typestables";
+
 import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
 
@@ -12,16 +16,15 @@ import PermanentDrawerLeft from "./drawer";
 import djangoApi from "../../utils/axios/axios.utils";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import ListaRender from "../../components/plantio-colheita-portal/plantio-colheita";
-import TableColheita from "../../components/plantio-colheita-portal/plantio-colheita/table";
-import HeaderFarm from "../../components/plantio-colheita-portal/plantio-colheita/header-farm";
-import ColheitaAtual from "../../components/plantio-colheita-portal/plantio-colheita";
-
 import PlantioColheitaPortal from "../../components/plantio-colheita-portal";
+
+import { useDispatch } from "react-redux";
+import { setRomaneiosLoads } from "../../store/trucks/trucks.actions";
 
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const dispatch = useDispatch();
 
 	const safraCiclo = useSelector(selectSafraCiclo);
 
@@ -159,7 +162,25 @@ const PlantioColheitaPage = () => {
 		getTrueApi();
 	};
 
-	// if (!isLoading && dataArray.length > 0) {
+	useEffect(() => {
+        const collRef = collection(db, TABLES_FIREBASE.truckmove);
+        // const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
+        const q = query(collRef, where("syncDate", "!=", null),
+            orderBy("syncDate", "desc"), limit(100));
+        onSnapshot(q, (snapshot) => {
+
+            const formArr = snapshot.docs.map((doc) => {
+                const upToPro =  doc.data().uploadedToProtheus ? doc.data().uploadedToProtheus : false
+                return ({
+                ...doc.data(),
+                id: doc.id,
+                uploadedToProtheus: upToPro
+            })})
+            dispatch(setRomaneiosLoads(formArr))
+        });
+    }, [dispatch]);
+
+
 	return (
 		<Box
 			width={"100%"}

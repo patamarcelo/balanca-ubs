@@ -11,7 +11,8 @@ import { TRUCKS_ACTIONS_TYPES } from "./trucks.types";
 export const TRUCK_INITIAL_STATE = {
 	truckLoads: [],
 	carregando: 0,
-	descarregando: 0
+	descarregando: 0,
+	romaneiosComp: []
 };
 
 export const TruckReport = (state = TRUCK_INITIAL_STATE, action = {}) => {
@@ -21,6 +22,11 @@ export const TruckReport = (state = TRUCK_INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				truckLoads: payload
+			};
+		case TRUCKS_ACTIONS_TYPES.SET_ROMANEIOS_LOAD:
+			return {
+				...state,
+				romaneiosComp: payload
 			};
 		default:
 			return state;

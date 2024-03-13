@@ -108,7 +108,7 @@ const ColheitaAtual = (props) => {
 				<FontAwesomeIcon
 					icon={faArrowDownAZ}
 					color={colors.greenAccent[500]}
-					size="md"
+					size="sm"
 					style={{
 						margin: "0px 0px",
 						cursor: "pointer"

@@ -2,6 +2,8 @@ import { FAZENDA_ORIGEM } from "../../store/trucks/reducer.initials";
 
 export const selectTruckLoads = (state) => state.truckLoads.truckLoads;
 
+export const selectRomaneiosLoads = (state) => state.truckLoads.romaneiosComp;
+
 export const selectTruckSendSeed = (state) => {
 	const dataLoad = state.truckLoads.truckLoads;
 	return dataLoad.filter((data) =>
