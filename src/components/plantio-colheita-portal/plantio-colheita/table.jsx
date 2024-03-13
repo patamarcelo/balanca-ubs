@@ -46,7 +46,7 @@ const TableColheita = ({ data, colors, idsPending }) => {
 
 					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
 
-					const romaneiosPending =  idsPending[carga.id] ? idsPending[carga.id] : 0
+					const romaneiosPending =  idsPending[carga.id] ? idsPending[carga.id] : " - "
 					return (
 						<tr key={i}
 							className={`${

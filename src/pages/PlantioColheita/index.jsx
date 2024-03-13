@@ -22,6 +22,8 @@ import { useDispatch } from "react-redux";
 import { setRomaneiosLoads } from "../../store/trucks/trucks.actions";
 import { selectRomaneiosLoads } from "../../store/trucks/trucks.selector";
 
+import toast from "react-hot-toast";
+
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -101,8 +103,8 @@ const PlantioColheitaPage = () => {
 			}
 			const dap = parseInt(
 				(new Date() - new Date(data.data_plantio)) /
-					(1000 * 60 * 60 * 24) +
-					1,
+				(1000 * 60 * 60 * 24) +
+				1,
 				10
 			);
 			return { ...data, peso: peso, romaneios: romaneio, dap };
@@ -168,22 +170,34 @@ const PlantioColheitaPage = () => {
 	};
 
 	useEffect(() => {
-        const collRef = collection(db, TABLES_FIREBASE.truckmove);
-        // const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
-        const q = query(collRef, where("syncDate", "!=", null),
-            orderBy("syncDate", "desc"), limit(100));
-        onSnapshot(q, (snapshot) => {
-
-            const formArr = snapshot.docs.map((doc) => {
-                const upToPro =  doc.data().uploadedToProtheus ? doc.data().uploadedToProtheus : false
-                return ({
-                ...doc.data(),
-                id: doc.id,
-                uploadedToProtheus: upToPro
-            })})
-            dispatch(setRomaneiosLoads(formArr))
-        });
-    }, [dispatch]);
+		const collRef = collection(db, TABLES_FIREBASE.truckmove);
+		// const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
+		const q = query(collRef, where("syncDate", "!=", null),
+			orderBy("syncDate", "desc"), limit(100));
+		onSnapshot(q, (snapshot) => {
+			// snapshot.docChanges().forEach((change) => {
+			// 	if (change.type === "added") {
+			// 		toast.success(`Romaneio Adiconado - ${change.doc.data().relatorioColheita}  - ${change.doc.data().fazendaOrigem}`, {
+			// 			position: "top-center"
+			// 		});
+			// 	}
+			// 	if (change.type === "modified") {
+			// 		toast.success(`Romaneio Alterado - ${change.doc.data().relatorioColheita}  - ${change.doc.data().fazendaOrigem}`, {
+			// 			position: "top-center"
+			// 		});
+			// 	}
+			// })
+			const formArr = snapshot.docs.map((doc) => {
+				const upToPro = doc.data().uploadedToProtheus ? doc.data().uploadedToProtheus : false
+				return ({
+					...doc.data(),
+					id: doc.id,
+					uploadedToProtheus: upToPro
+				})
+			})
+			dispatch(setRomaneiosLoads(formArr))
+		});
+	}, [dispatch]);
 
 	const handlerUpdateRomaneios = () => {
 		const resumeId = {}
@@ -197,8 +211,8 @@ const PlantioColheitaPage = () => {
 	useEffect(() => {
 		handlerUpdateRomaneios()
 	}, []);
-	
-	
+
+
 	useEffect(() => {
 		handlerUpdateRomaneios()
 	}, [useData]);
