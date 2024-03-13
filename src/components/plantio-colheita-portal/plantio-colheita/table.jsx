@@ -1,7 +1,7 @@
 import Table from "react-bootstrap/Table";
 import styles from "./plantio-colheita.module.css";
 
-const TableColheita = ({ data, colors }) => {
+const TableColheita = ({ data, colors, idsPending }) => {
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
 			<thead>
@@ -14,6 +14,7 @@ const TableColheita = ({ data, colors }) => {
 					<th>Area Colhida</th>
 					<th>Peso Carregado / Scs</th>
 					<th>Romaneios Computados</th>
+					<th>Romaneios Pendentes</th>
 					<th>Média Prev.</th>
 				</tr>
 			</thead>
@@ -44,6 +45,8 @@ const TableColheita = ({ data, colors }) => {
 					};
 
 					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
+
+					const romaneiosPending =  idsPending[carga.id] ? idsPending[carga.id] : 0
 					return (
 						<tr key={i}
 							className={`${
@@ -91,6 +94,7 @@ const TableColheita = ({ data, colors }) => {
 							>
 								{carga.romaneios}
 							</td>
+							<td style={{color: romaneiosPending > 0 && 'yellow'}}>{romaneiosPending}</td>
 							<td>
 								{formatArea(mediaPrev)}
 							</td>

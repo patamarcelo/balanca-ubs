@@ -20,6 +20,7 @@ import PlantioColheitaPortal from "../../components/plantio-colheita-portal";
 
 import { useDispatch } from "react-redux";
 import { setRomaneiosLoads } from "../../store/trucks/trucks.actions";
+import { selectRomaneiosLoads } from "../../store/trucks/trucks.selector";
 
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
@@ -37,6 +38,9 @@ const PlantioColheitaPage = () => {
 	const [selectedFilteredData, setSelectedFilteredData] = useState([]);
 
 	const [selectedRoute, setSelectedRoute] = useState("rota 1");
+
+	const useData = useSelector(selectRomaneiosLoads)
+	const [idsRomaneioPending, setIdsRomaneioPending] = useState({});
 
 	const handleNagivationIcon = (route) => {
 		setSelectedRoute(route);
@@ -133,6 +137,7 @@ const PlantioColheitaPage = () => {
 	};
 
 	const handlerRefresh = () => {
+		handlerUpdateRomaneios()
 		const getTrueApi = async () => {
 			setIsLoading(true);
 			try {
@@ -179,6 +184,24 @@ const PlantioColheitaPage = () => {
             dispatch(setRomaneiosLoads(formArr))
         });
     }, [dispatch]);
+
+	const handlerUpdateRomaneios = () => {
+		const resumeId = {}
+		useData.filter((data) => data.uploadedToProtheus === false).forEach(data => {
+			data.parcelasObjFiltered.forEach((parcela) => {
+				resumeId[parcela.id_plantio] = resumeId[parcela.id_plantio] ? resumeId[parcela.id_plantio] + 1 : 1
+			})
+		});
+		setIdsRomaneioPending(resumeId)
+	}
+	useEffect(() => {
+		handlerUpdateRomaneios()
+	}, []);
+	
+	
+	useEffect(() => {
+		handlerUpdateRomaneios()
+	}, [useData]);
 
 
 	return (
@@ -227,6 +250,7 @@ const PlantioColheitaPage = () => {
 						selectedFarm={selectedFarm}
 						handlerFilter={handlerFilter}
 						selectedFilteredData={selectedFilteredData}
+						idsPending={idsRomaneioPending}
 					/>
 				)}
 			</Box>

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 
 const ColheitaAtual = (props) => {
-	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData } =
+	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData, idsPending } =
 		props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -137,6 +137,7 @@ const ColheitaAtual = (props) => {
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
 					colors={colors}
+					idsPending={idsPending}
 					data={selectedFilteredData.sort((b, a) =>
 						dateSort
 							? b.talhao__id_talhao.localeCompare(

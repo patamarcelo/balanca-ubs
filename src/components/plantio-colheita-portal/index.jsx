@@ -9,7 +9,8 @@ const PlantioColheitaPortal = (props) => {
 		selectedFarm,
 		handlerFilter,
 		selectedFilteredData,
-		selectedRoute
+		selectedRoute,
+		idsPending
 	} = props;
 	const routesComps = [
 		{
@@ -20,6 +21,7 @@ const PlantioColheitaPortal = (props) => {
 					selectedFarm={selectedFarm}
 					handlerFilter={handlerFilter}
 					selectedFilteredData={selectedFilteredData}
+					idsPending={idsPending}
 				/>
 			)
 		},
