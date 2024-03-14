@@ -55,7 +55,7 @@ const TableColheita = ({ data, colors, idsPending }) => {
 								carga.romaneios > 0 || areaParcial > 0
 									? styles.colheitaRow
 									: styles.notColheitaRow
-							} ${areaParcial === carga.area_colheita && styles.closedParcela}`}
+							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && styles.closedParcela}`}
 						>
 							<td>{carga.talhao__id_talhao}</td>
 							<td>{formatDate(carga.data_plantio)}</td>

@@ -171,8 +171,8 @@ const PlantioColheitaPage = () => {
 
 	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
-		// const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
-		const q = query(collRef, where("syncDate", "!=", null),
+		const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
+		// const q = query(collRef, where("syncDate", "!=", null),
 			orderBy("syncDate", "desc"), limit(100));
 		onSnapshot(q, (snapshot) => {
 			// snapshot.docChanges().forEach((change) => {

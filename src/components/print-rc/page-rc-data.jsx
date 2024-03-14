@@ -431,7 +431,7 @@ const PageRcData = ({ printValue }) => {
 							color={colors.grey[800]}
 							fontWeight="bold"
 						>
-							{user?.displayName}
+							{data.userCreateDoc ? data.userCreateDoc : user?.displayName}
 						</Typography>
 					</Box>
 				</Box>
