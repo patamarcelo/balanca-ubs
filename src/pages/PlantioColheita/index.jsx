@@ -202,7 +202,7 @@ const PlantioColheitaPage = () => {
 	const handlerUpdateRomaneios = () => {
 		const resumeId = {}
 		useData.filter((data) => data.uploadedToProtheus === false).forEach(data => {
-			data.parcelasObjFiltered.forEach((parcela) => {
+			data?.parcelasObjFiltered?.forEach((parcela) => {
 				resumeId[parcela.id_plantio] = resumeId[parcela.id_plantio] ? resumeId[parcela.id_plantio] + 1 : 1
 			})
 		});

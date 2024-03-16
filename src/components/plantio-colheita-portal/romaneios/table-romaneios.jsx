@@ -39,6 +39,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                         <th>Bruto</th>
                         <th>Tara</th>
                         <th>Líquido</th>
+                        <th>Saída</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -75,6 +76,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                 <td>{carga.pesoBruto ? formatWeight(carga.pesoBruto) : formatWeight(0)}</td>
                                 <td>{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}</td>
                                 <td>{carga.liquido ? formatWeight(carga.liquido) : formatWeight(0)}</td>
+                                <td>{carga?.saida ? carga?.saida.toDate().toLocaleString('pt-BR') : '-'}</td>
                                 <td>
                                     <IconButton
                                         aria-label="delete"
