@@ -5,3 +5,7 @@
 thead  {
     height: 30px;
 }
+
+tbody tr{
+    font-size: 0.8rem;
+}

@@ -9,6 +9,11 @@ import moment from "moment";
 
 
 const RomaneiosTable = ({ data, handleUpdateCarga }) => {
+    
+    const formatWeight = (peso) => {
+		return Number(peso).toLocaleString("pt-BR") + " Kg";
+	};
+
     if (data.length === 0) {
         return (
             <Box justifyContent={"center"} alignItems={"center"}>
@@ -31,6 +36,9 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                         <th>Placa</th>
                         <th>Motorista</th>
                         <th>Destino</th>
+                        <th>Bruto</th>
+                        <th>Tara</th>
+                        <th>Líquido</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -64,6 +72,9 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                 <td>
                                     {carga.fazendaDestino}
                                 </td>
+                                <td>{carga.pesoBruto ? formatWeight(carga.pesoBruto) : formatWeight(0)}</td>
+                                <td>{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}</td>
+                                <td>{carga.liquido ? formatWeight(carga.liquido) : formatWeight(0)}</td>
                                 <td>
                                     <IconButton
                                         aria-label="delete"
