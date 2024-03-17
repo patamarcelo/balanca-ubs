@@ -61,7 +61,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                     {carga.fazendaOrigem}
                                 </td>
                                 <td>
-                                    {carga.parcelasNovas.join(", ")}
+                                    {carga.parcelasNovas.sort((a,b) => a.localeCompare(b)).join(", ")}
                                 </td>
                                 <td>
                                 {carga.placa.slice(0, 3)}-

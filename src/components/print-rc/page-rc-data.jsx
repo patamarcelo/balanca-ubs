@@ -87,7 +87,7 @@ const PageRcData = ({ printValue }) => {
 				borderColor: colors.blueOrigin[700],
 				borderRadius: "8px",
 				margin: "30px",
-				zoom: !isNonMobileLand ?'70%' : '80%'
+				zoom: !isNonMobileLand ? '70%' : '80%'
 
 			}}
 		>
@@ -112,10 +112,9 @@ const PageRcData = ({ printValue }) => {
 					</Box>
 					<Box>
 						{[
-							`LAGOA DA CONFUSÃO - TO / ${
-								data?.unidadeOp
-									? getName(UNITS_OP, data.unidadeOp)
-									: ""
+							`LAGOA DA CONFUSÃO - TO / ${data?.unidadeOp
+								? getName(UNITS_OP, data.unidadeOp)
+								: ""
 							}`
 						].map((data, i) => {
 							return (
@@ -336,7 +335,7 @@ const PageRcData = ({ printValue }) => {
 				sx={{
 					border: `1px  ${colors.blueOrigin[700]} dotted`,
 					flexDirection: isNonMobileShort ? 'row' : 'column'
-					
+
 				}}
 			>
 				{CordeDict.map((data, i) => {
@@ -477,27 +476,25 @@ const PageRcData = ({ printValue }) => {
 				{data?.coords && (
 					<Typography
 						color={colors.grey[500]}
-						sx={{ fontSize: "0.7rem",}}
+						sx={{ fontSize: "0.7rem", marginLeft: '5px' }}
 					>
-						
-							<FontAwesomeIcon
-										color={"black"}
-										icon={faMapLocation}
-										size="2x"
-										style={{
-											marginRight: '8px'
-										}}
-										// onClick={() =>
-										// 	handlerNavigatePrint(data)
-										// }
-									/> 
-									<a
+						<a
 							href={`https://maps.google.com/?q=${data.coords.coords.latitude},${data.coords.coords.longitude}`}
 							target="_blank"
 							rel="noreferrer"
 						>
-									{data.coords.coords.latitude},{" "}
-							{data.coords.coords.longitude}
+							<FontAwesomeIcon
+								color={"black"}
+								icon={faMapLocation}
+								size="2x"
+								style={{
+									marginRight: '8px'
+								}}
+							// onClick={() =>
+							// 	handlerNavigatePrint(data)
+							// }
+							/>
+
 						</a>
 					</Typography>
 				)}

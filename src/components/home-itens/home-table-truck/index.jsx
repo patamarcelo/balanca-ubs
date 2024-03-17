@@ -190,7 +190,7 @@ const HomeTableTruck = (props) => {
 						>
 							{data?.createdBy === "App" ? (
 								<LightTooltip
-									title={data?.parcelasNovas.join(', ')}
+									title={data?.parcelasNovas.sort((a,b) => a.localeCompare(b)).join(', ')}
 									placement="top"
 									arrow
 									TransitionComponent={Zoom}
