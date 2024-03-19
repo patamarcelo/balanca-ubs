@@ -36,17 +36,19 @@ const RomaneiosPage = () => {
     }, [useData]);
 
     const handleUpdateCarga = async (event, cargaDetail) => {
-        console.log(cargaDetail)
-        const updatedData = { ...cargaDetail, uploadedToProtheus: true }
-        try {
-            await handleUpdateRomaneioCheck(event, cargaDetail.id, updatedData)
-            const newArr = useData.filter((data) => data.id !== cargaDetail.id)
-            setfilteredUserData(newArr.filter((data) => data.uploadedToProtheus === false))
-            toast.success(`Romaneio ${cargaDetail.relatorioColheita} - ${cargaDetail.fazendaOrigem} atualizado com sucesso!!`, {
-                position: "top-center"
-            });
-        } catch (error) {
-            alert('Erro ao editar a Carga', error)
+        if(window.confirm(`Confirma o lançamento da carga: \n ${cargaDetail.relatorioColheita} - ${cargaDetail.placa} - ${cargaDetail.motorista}`) === true){            
+            console.log(cargaDetail)
+            const updatedData = { ...cargaDetail, uploadedToProtheus: true }
+            try {
+                await handleUpdateRomaneioCheck(event, cargaDetail.id, updatedData)
+                const newArr = useData.filter((data) => data.id !== cargaDetail.id)
+                setfilteredUserData(newArr.filter((data) => data.uploadedToProtheus === false))
+                toast.success(`Romaneio ${cargaDetail.relatorioColheita} - ${cargaDetail.fazendaOrigem} atualizado com sucesso!!`, {
+                    position: "top-center"
+                });
+            } catch (error) {
+                alert('Erro ao editar a Carga', error)
+            }
         }
     }
 
