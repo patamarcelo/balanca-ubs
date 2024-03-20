@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
+import styles from './index.module.css'
 
 const QuantityTruckHold = (props) => {
 	const { data } = props;
@@ -22,7 +23,7 @@ const QuantityTruckHold = (props) => {
 					<Typography variant="h6" color={colors.primary[300]} sx={{fontStyle: 'italic'}}>
 						Peso Bruto
 					</Typography>
-					<Typography variant="h6" color={colors.yellow[700]}>
+					<Typography variant="h6" color={colors.yellow[700]} className={styles.blink}>
 						Aguardando
 					</Typography>
 				</>
@@ -31,7 +32,7 @@ const QuantityTruckHold = (props) => {
 					<Typography variant="h6" color={colors.primary[300]} sx={{fontStyle: 'italic'}}>
 						Tara do Veículo
 					</Typography>
-					<Typography variant="h6" color={colors.yellow[700]}>
+					<Typography variant="h6" color={colors.yellow[700]} className={styles.blink}>
 						Aguardando
 					</Typography>
 				</>

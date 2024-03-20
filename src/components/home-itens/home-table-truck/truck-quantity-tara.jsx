@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
+import styles from './index.module.css'
 
 const QuantityTruck = (props) => {
 	const { data } = props;
@@ -38,7 +39,7 @@ const QuantityTruck = (props) => {
 					>
 						Tara do Veículo
 					</Typography>
-					<Typography variant="h6" color={isDark ? colors.yellow[700] : colors.yellow[200]}>
+					<Typography variant="h6" color={isDark ? colors.yellow[700] : colors.yellow[200]} className={styles.blink}>
 						Aguardando
 					</Typography>
 				</>
