@@ -28,6 +28,16 @@ const DateTruck = (props) => {
 		const [year, month, day] = date.split("-");
 		formatDate = [day, month, year].join("/");
 	}
+	if(data?.syncDate){
+		const newDate = new Date(
+			data?.syncDate.seconds * 1000 + data?.syncDate.nanoseconds / 1000000
+		);
+
+		const date = newDate.toISOString().split("T")[0];
+		atTime = newDate.toLocaleTimeString();
+		const [year, month, day] = date.split("-");
+		formatDate = [day, month, year].join("/");
+	}
 
 	return (
 		<Box

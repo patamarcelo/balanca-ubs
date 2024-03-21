@@ -60,7 +60,7 @@ const PageRcData = ({ printValue }) => {
 	];
 
 	const DataDict = [
-		{ label: "Entrada", value: data?.entrada },
+		{ label: "Entrada", value: data?.syncDate ? data?.syncDate : data?.entrada },
 		{ label: "Saída", value: data?.saida ? data.saida : " - " }
 	];
 	const CordeDict = [
@@ -165,7 +165,7 @@ const PageRcData = ({ printValue }) => {
 							width: "100%"
 						}}
 					>
-						{formatDate(data?.createdAt)}
+						{formatDate(data?.syncDate ? data?.syncDate : data?.createdAt)}
 					</Typography>
 				</Box>
 			</Box>
