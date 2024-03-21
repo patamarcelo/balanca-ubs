@@ -259,21 +259,38 @@ const ReportTable = (props) => {
 			)
 		},
 		{
-			field: "createdAt",
-			headerName: "Criado",
-			// flex: 1,
+			field: "relatorioColheita",
+			headerName: "Relatório Colh.",
+			width: 130,
 			headerAlign: "center",
 			align: "center",
-			width: 130,
 			renderCell: (params) => (
 				<Typography
 					sx={{ fontSize: defaultFontSize }}
-					color={colors.blueOrigin[300]}
+					color={colors.primary[100]}
 				>
-					{formatDate(params.row.createdAt)}
+					{params.row.relatorioColheita
+						? params.row.relatorioColheita
+						: " - "}
 				</Typography>
 			)
 		},
+		// {
+		// 	field: "createdAt",
+		// 	headerName: "Criado",
+		// 	// flex: 1,
+		// 	headerAlign: "center",
+		// 	align: "center",
+		// 	width: 130,
+		// 	renderCell: (params) => (
+		// 		<Typography
+		// 			sx={{ fontSize: defaultFontSize }}
+		// 			color={colors.blueOrigin[300]}
+		// 		>
+		// 			{formatDate(params.row.createdAt)}
+		// 		</Typography>
+		// 	)
+		// },
 		{
 			field: "entrada",
 			headerName: "Entrada",
@@ -416,19 +433,19 @@ const ReportTable = (props) => {
 				</Typography>
 			)
 		},
-		{
-			field: "projeto",
-			headerName: "Projeto",
-			headerAlign: "center",
-			align: "center",
-			// flex: 1
-			width: 100,
-			renderCell: (params) => (
-				<Typography sx={{ fontSize: defaultFontSize }}>
-					{params.row.projeto ? params.row.projeto : "-"}
-				</Typography>
-			)
-		},
+		// {
+		// 	field: "projeto",
+		// 	headerName: "Projeto",
+		// 	headerAlign: "center",
+		// 	align: "center",
+		// 	// flex: 1
+		// 	width: 100,
+		// 	renderCell: (params) => (
+		// 		<Typography sx={{ fontSize: defaultFontSize }}>
+		// 			{params.row.projeto ? params.row.projeto : "-"}
+		// 		</Typography>
+		// 	)
+		// },
 		{
 			field: "cultura",
 			headerName: "Cultura",
@@ -611,23 +628,6 @@ const ReportTable = (props) => {
 					color={colors.primary[100]}
 				>
 					{params.row.op ? params.row.op : " - "}
-				</Typography>
-			)
-		},
-		{
-			field: "relatorioColheita",
-			headerName: "Relatório Colh.",
-			width: 130,
-			headerAlign: "center",
-			align: "center",
-			renderCell: (params) => (
-				<Typography
-					sx={{ fontSize: defaultFontSize }}
-					color={colors.primary[100]}
-				>
-					{params.row.relatorioColheita
-						? params.row.relatorioColheita
-						: " - "}
 				</Typography>
 			)
 		},

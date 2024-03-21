@@ -100,7 +100,7 @@ const AuthApp = () => {
 				alignItems={(location.pathname === "/rcprint" || location.pathname === "/print")  && 'center'}
 				id="mainPrintDivContainer"
 				sx={{
-					padding: "10px",
+					padding: !isNonMobile ? "" : "10px",
 					overflow: "auto",
 					height: "100%",
 					backgroundColor:

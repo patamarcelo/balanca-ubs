@@ -295,7 +295,8 @@ const HomePage = () => {
 				display="flex"
 				justifyContent={!isCellPhone && "space-between"}
 				sx={{
-					marginTop: !isNonMobile && '30px'
+					marginTop: !isNonMobile && '30px',
+					padding: !isNonMobile && '10px',
 				}}			
 			>
 				<CustomButton
@@ -350,6 +351,7 @@ const HomePage = () => {
 				sx={{
 					marginBottom: isNonMobile ? "-22px" : "-5px",
 					marginLeft: isNonMobile ?? "15px",
+					padding: !isNonMobile && '10px',
 					borderRadius: !isNonMobile ?? "8px",
 					"& label": {
 						color: `whitesmoke !important`
@@ -443,7 +445,7 @@ const HomePage = () => {
 				p={1}
 				sx={{
 					backgroundColor: colors.blueOrigin[700],
-					borderRadius: "8px",
+					borderRadius: isNonMobile ? "8px" : '8px 8px 0px 0px',
 					boxShadow: `rgba(255, 255, 255, 0.3) 2px 2px 4px 0px inset, rgba(255, 255, 255, 0.3) -1px -1px 3px 1px inset;`,
 					overflow: "auto",
 					position: "relative",
@@ -459,7 +461,7 @@ const HomePage = () => {
 					width="100%"
 					sx={{
 						backgroundColor: colors.blueOrigin[700],
-						borderRadius: "8px",
+						borderRadius: isNonMobile && "8px",
 						overflow: "auto",
 						position: "relative",
 						height: "100%"
