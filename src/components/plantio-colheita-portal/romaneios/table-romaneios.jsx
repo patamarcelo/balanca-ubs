@@ -1,5 +1,6 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DoneAll";
+import { useState, useEffect } from "react";
 
 import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
@@ -9,10 +10,33 @@ import moment from "moment";
 
 
 const RomaneiosTable = ({ data, handleUpdateCarga }) => {
-    
+    const [sortBy, setsortBy] = useState(null);
+    const [dataFilter, setdataFilter] = useState([]);
+
+    useEffect(() => {
+        setdataFilter(data)
+    }, []);
+
+    useEffect(() => {
+        if (sortBy === 'fazendaOrigem') {
+            const sortArr = dataFilter.sort((a, b) =>
+                a['fazendaOrigem'].localeCompare(b['fazendaOrigem'])
+            )
+            setdataFilter(sortArr)
+        }
+        if (sortBy === 'relatorioColheita') {
+            const sortArr = dataFilter.sort((a, b) => {
+                console.log(a.relatorioColheita)
+                return b.relatorioColheita - a.relatorioColheita
+            }
+            )
+            setdataFilter(sortArr)
+        }
+    }, [sortBy, dataFilter]);
+
     const formatWeight = (peso) => {
-		return Number(peso).toLocaleString("pt-BR") + " Kg";
-	};
+        return Number(peso).toLocaleString("pt-BR") + " Kg";
+    };
 
     if (data.length === 0) {
         return (
@@ -24,14 +48,19 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
         );
     }
 
+    const handleOrder = (data) => {
+        console.log(data)
+        setsortBy(data)
+    }
+
     return (
         <Box width={"100%"}>
             <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>Data</th>
-                        <th>Romaneio</th>
-                        <th>Projeto</th>
+                        <th onClick={() => handleOrder('relatorioColheita')}>Romaneio</th>
+                        <th onClick={() => handleOrder('fazendaOrigem')}>Projeto</th>
                         <th>Parcelas</th>
                         <th>Placa</th>
                         <th>Motorista</th>
@@ -44,7 +73,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((carga, i) => {
+                    {dataFilter && dataFilter.map((carga, i) => {
                         const newDate = carga.syncDate.toDate().toLocaleString('pt-BR')
                         return (
                             <tr
@@ -61,11 +90,11 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                     {carga.fazendaOrigem}
                                 </td>
                                 <td>
-                                    {carga.parcelasNovas.sort((a,b) => a.localeCompare(b)).join(", ")}
+                                    {carga.parcelasNovas.sort((a, b) => a.localeCompare(b)).join(", ")}
                                 </td>
                                 <td>
-                                {carga.placa.slice(0, 3)}-
-									{carga.placa.slice(3, 12)}
+                                    {carga.placa.slice(0, 3)}-
+                                    {carga.placa.slice(3, 12)}
                                 </td>
                                 <td>
                                     {carga.motorista}
@@ -83,7 +112,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
                                         size="sm"
                                         color="success"
                                         onClick={e => handleUpdateCarga(e, carga)}
-                                        style={{padding: '2px'}}
+                                        style={{ padding: '2px' }}
                                     >
                                         <DeleteIcon fontSize="inherit" />
                                     </IconButton>
