@@ -16,6 +16,10 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
     useEffect(() => {
         setdataFilter(data)
     }, []);
+    
+    useEffect(() => {
+        setdataFilter(data)
+    }, [data]);
 
     useEffect(() => {
         if (sortBy === 'fazendaOrigem') {
