@@ -247,7 +247,7 @@ const ReportTable = (props) => {
 										: colors.yellow[550]
 								}
 								icon={
-									params?.row?.createdBy !== null
+									params?.row?.syncDate !== null
 										? faMobile
 										: faCircleCheck
 								}
