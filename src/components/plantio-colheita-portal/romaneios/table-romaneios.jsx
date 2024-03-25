@@ -7,127 +7,156 @@ import styles from "./romaneios.module.css";
 
 import moment from "moment";
 
-
-
 const RomaneiosTable = ({ data, handleUpdateCarga }) => {
-    const [sortBy, setsortBy] = useState(null);
-    const [dataFilter, setdataFilter] = useState([]);
+	const [sortBy, setsortBy] = useState(null);
+	const [dataFilter, setdataFilter] = useState([]);
 
-    useEffect(() => {
-        setdataFilter(data)
-    }, []);
-    
-    useEffect(() => {
-        setdataFilter(data)
-    }, [data]);
+	useEffect(() => {
+		setdataFilter(data);
+	}, []);
 
-    useEffect(() => {
-        if (sortBy === 'fazendaOrigem') {
-            const sortArr = dataFilter.sort((a, b) =>
-                a['fazendaOrigem'].localeCompare(b['fazendaOrigem'])
-            )
-            setdataFilter(sortArr)
-        }
-        if (sortBy === 'relatorioColheita') {
-            const sortArr = dataFilter.sort((a, b) => {
-                console.log(a.relatorioColheita)
-                return b.relatorioColheita - a.relatorioColheita
-            }
-            )
-            setdataFilter(sortArr)
-        }
-    }, [sortBy, dataFilter]);
+	useEffect(() => {
+		setdataFilter(data);
+	}, [data]);
 
-    const formatWeight = (peso) => {
-        return Number(peso).toLocaleString("pt-BR") + " Kg";
-    };
+	useEffect(() => {
+		if (sortBy === "fazendaOrigem") {
+			const sortArr = dataFilter.sort((a, b) =>
+				a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
+			);
+			setdataFilter(sortArr);
+		}
+		if (sortBy === "relatorioColheita") {
+			const sortArr = dataFilter.sort((a, b) => {
+				console.log(a.relatorioColheita);
+				return b.relatorioColheita - a.relatorioColheita;
+			});
+			setdataFilter(sortArr);
+		}
+	}, [sortBy, dataFilter]);
 
-    if (data.length === 0) {
-        return (
-            <Box justifyContent={"center"} alignItems={"center"}>
-                <Typography variant="h1" color={"white"}>
-                    Sem Romaneios Pendentes
-                </Typography>
-            </Box>
-        );
-    }
+	const formatWeight = (peso) => {
+		if (peso > 0) {
+			return Number(peso).toLocaleString("pt-BR") + " Kg";
+		}
+		return "-";
+	};
 
-    const handleOrder = (data) => {
-        console.log(data)
-        setsortBy(data)
-    }
+	if (data.length === 0) {
+		return (
+			<Box justifyContent={"center"} alignItems={"center"}>
+				<Typography variant="h1" color={"white"}>
+					Sem Romaneios Pendentes
+				</Typography>
+			</Box>
+		);
+	}
 
-    return (
-        <Box width={"100%"}>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th onClick={() => handleOrder('relatorioColheita')}>Romaneio</th>
-                        <th onClick={() => handleOrder('fazendaOrigem')}>Projeto</th>
-                        <th>Parcelas</th>
-                        <th>Placa</th>
-                        <th>Motorista</th>
-                        <th>Destino</th>
-                        <th>Bruto</th>
-                        <th>Tara</th>
-                        <th>Líquido</th>
-                        <th>Saída</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {dataFilter && dataFilter.map((carga, i) => {
-                        const newDate = carga.syncDate.toDate().toLocaleString('pt-BR')
-                        return (
-                            <tr
-                                key={i}
-                                className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
-                            >
-                                <td>
-                                    {newDate}
-                                </td>
-                                <td>
-                                    {carga.relatorioColheita}
-                                </td>
-                                <td>
-                                    {carga.fazendaOrigem}
-                                </td>
-                                <td>
-                                    {carga.parcelasNovas.sort((a, b) => a.localeCompare(b)).join(", ")}
-                                </td>
-                                <td>
-                                    {carga.placa.slice(0, 3)}-
-                                    {carga.placa.slice(3, 12)}
-                                </td>
-                                <td>
-                                    {carga.motorista}
-                                </td>
-                                <td>
-                                    {carga.fazendaDestino}
-                                </td>
-                                <td>{carga.pesoBruto ? formatWeight(carga.pesoBruto) : formatWeight(0)}</td>
-                                <td>{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}</td>
-                                <td>{carga.liquido ? formatWeight(carga.liquido) : formatWeight(0)}</td>
-                                <td>{carga?.saida ? carga?.saida.toDate().toLocaleString('pt-BR') : '-'}</td>
-                                <td>
-                                    <IconButton
-                                        aria-label="delete"
-                                        size="sm"
-                                        color="success"
-                                        onClick={e => handleUpdateCarga(e, carga)}
-                                        style={{ padding: '2px' }}
-                                    >
-                                        <DeleteIcon fontSize="inherit" />
-                                    </IconButton>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </Table>
-        </Box>
-    );
+	const handleOrder = (data) => {
+		console.log(data);
+		setsortBy(data);
+	};
+
+	return (
+		<Box width={"100%"}>
+			<Table striped bordered hover>
+				<thead>
+					<tr>
+						<th>Data</th>
+						<th
+							onClick={() => handleOrder("relatorioColheita")}
+							style={{ cursor: "pointer" }}
+						>
+							Romaneio
+						</th>
+						<th
+							onClick={() => handleOrder("fazendaOrigem")}
+							style={{ cursor: "pointer" }}
+						>
+							Projeto
+						</th>
+						<th>Parcelas</th>
+						<th>Placa</th>
+						<th>Motorista</th>
+						<th>Destino</th>
+						<th>Bruto</th>
+						<th>Tara</th>
+						<th>Líquido</th>
+						<th>Saída</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{dataFilter &&
+						dataFilter.map((carga, i) => {
+							const newDate = carga.syncDate
+								.toDate()
+								.toLocaleString("pt-BR");
+							return (
+								<tr
+									key={i}
+									className={`${
+										i % 2 !== 0
+											? styles.oddRow
+											: styles.evenRow
+									}`}
+								>
+									<td>{newDate}</td>
+									<td>{carga.relatorioColheita}</td>
+									<td>{carga.fazendaOrigem}</td>
+									<td>
+										{carga.parcelasNovas
+											.sort((a, b) => a.localeCompare(b))
+											.join(", ")}
+									</td>
+									<td>
+										{carga.placa.slice(0, 3)}-
+										{carga.placa.slice(3, 12)}
+									</td>
+									<td>{carga.motorista}</td>
+									<td>{carga.fazendaDestino}</td>
+									<td>
+										{carga.pesoBruto
+											? formatWeight(carga.pesoBruto)
+											: formatWeight(0)}
+									</td>
+									<td>
+										{carga.tara
+											? formatWeight(carga.tara)
+											: formatWeight(0)}
+									</td>
+									<td>
+										{carga.liquido
+											? formatWeight(carga.liquido)
+											: formatWeight(0)}
+									</td>
+									<td>
+										{carga?.saida
+											? carga?.saida
+													.toDate()
+													.toLocaleString("pt-BR")
+											: "-"}
+									</td>
+									<td>
+										<IconButton
+											aria-label="delete"
+											size="sm"
+											color="success"
+											onClick={(e) =>
+												handleUpdateCarga(e, carga)
+											}
+											style={{ padding: "2px" }}
+										>
+											<DeleteIcon fontSize="inherit" />
+										</IconButton>
+									</td>
+								</tr>
+							);
+						})}
+				</tbody>
+			</Table>
+		</Box>
+	);
 };
 
 export default RomaneiosTable;
