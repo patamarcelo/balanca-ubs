@@ -64,13 +64,13 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 					<tr>
 						<th>Data</th>
 						<th
-							onClick={() => handleOrder("relatorioColheita")}
+							onClick={() => handleOrder("fazendaOrigem")}
 							style={{ cursor: "pointer" }}
 						>
 							Romaneio
 						</th>
 						<th
-							onClick={() => handleOrder("fazendaOrigem")}
+							onClick={() => handleOrder("relatorioColheita")}
 							style={{ cursor: "pointer" }}
 						>
 							Projeto
