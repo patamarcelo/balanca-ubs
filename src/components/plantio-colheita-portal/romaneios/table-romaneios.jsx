@@ -1,5 +1,6 @@
 import { Box, IconButton, Typography } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/DoneAll";
+import DoneAll from "@mui/icons-material/DoneAll";
+import WarningIcon from "@mui/icons-material/Warning";
 import { useState, useEffect } from "react";
 
 import Table from "react-bootstrap/Table";
@@ -141,13 +142,21 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 										<IconButton
 											aria-label="delete"
 											size="sm"
-											color="success"
+											color={
+												carga.saida
+													? "success"
+													: "warning"
+											}
 											onClick={(e) =>
 												handleUpdateCarga(e, carga)
 											}
 											style={{ padding: "2px" }}
 										>
-											<DeleteIcon fontSize="inherit" />
+											{carga.saida ? (
+												<DoneAll fontSize="inherit" />
+											) : (
+												<WarningIcon fontSize="inherit" />
+											)}
 										</IconButton>
 									</td>
 								</tr>

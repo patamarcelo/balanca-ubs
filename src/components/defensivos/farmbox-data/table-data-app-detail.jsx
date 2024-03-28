@@ -4,6 +4,8 @@ import Chip from "@mui/material/Chip";
 import { Box, Grid } from "@mui/material";
 import classes from "./farmbox.module.css";
 
+import { useState, useEffect } from "react";
+
 const colorDict = [
 	{
 		tipo: "Inseticida",
@@ -52,20 +54,55 @@ const getColorChip = (data) => {
 	}
 };
 
-const IconDetail = ({ color }) => {
-	return (
-		<FontAwesomeIcon
-			icon={faCircleCheck}
-			color={color ? "green" : "red"}
-			size="sm"
-			style={{
-				margin: "0px 10px",
-				cursor: "pointer"
-			}}
-		/>
-	);
-};
-const DetailAppData = ({ data, showData }) => {
+const DetailAppData = ({
+	data,
+	showData,
+	setSumArea,
+	sumArea,
+	bombaValue,
+	bombArr,
+	setParcelaSelected,
+	parcelaSelected
+}) => {
+	const handlerSumArea = (parcelaDetail) => {
+		const findParcela = parcelaSelected.filter(
+			(data) => data.id_plantation === parcelaDetail.id_plantation
+		);
+		if (findParcela.length > 0) {
+			const removedParcela = parcelaSelected.filter(
+				(data) => data.id_plantation !== parcelaDetail.id_plantation
+			);
+			setParcelaSelected(removedParcela);
+		} else {
+			setParcelaSelected((prev) => [...prev, parcelaDetail]);
+		}
+	};
+
+	useEffect(() => {
+		console.log(parcelaSelected);
+		const totalArea = parcelaSelected.reduce(
+			(acc, curr) => acc + curr.area,
+			0
+		);
+		setSumArea(totalArea);
+	}, [parcelaSelected]);
+
+	const checkIsInArr = (parcelaDetail) => {
+		const findParcela = parcelaSelected.filter(
+			(data) => data.id_plantation === parcelaDetail.id_plantation
+		);
+		if (findParcela.length > 0) {
+			return true;
+		}
+		return false;
+	};
+
+	useEffect(() => {
+		if (sumArea === 0) {
+			setParcelaSelected([]);
+		}
+	}, [sumArea]);
+
 	return (
 		<>
 			<Box
@@ -82,16 +119,24 @@ const DetailAppData = ({ data, showData }) => {
 					.sort((a, b) => b.aplicado - a.aplicado)
 					.map((data, i) => {
 						return (
-							<Box m={1}>
+							<Box
+								m={1}
+								className={`${classes.parcelasInfoDiv}`}
+								onClick={() => handlerSumArea(data)}
+							>
 								{/* {<IconDetail color={data.aplicado} />} */}
 								<span
+									className={
+										checkIsInArr(data) && classes.isInArr
+									}
 									style={{
 										backgroundColor: data.aplicado
 											? "rgba(0,250,0, 0.6)"
 											: "rgba(238,75,43, 0.6)",
 										padding: "3px 10px",
 										borderRadius: "12px",
-										fontWeight: "bold"
+										fontWeight: "bold",
+										whiteSpace: "nowrap"
 									}}
 								>
 									{data.parcela} -{" "}
@@ -106,15 +151,65 @@ const DetailAppData = ({ data, showData }) => {
 					})}
 			</Box>
 			<div>
+				{bombArr[0].bombx > 0 && (
+					<Box
+						// style={{ margin: "0px", padding: "0px" }}
+						display={"grid"}
+						gridAutoFlow={"column"}
+						gridAutoColumns={"1fr 180px 1fr 1fr"}
+						gridRowGap="5px"
+						gap={"2px"}
+						margin={"7px"}
+						borderBottom={"1px solid white"}
+					>
+						<span>
+							<b>Dose</b>
+						</span>
+						<span style={{ textAlign: "center" }}>
+							{" "}
+							<b>Insumo</b>
+						</span>
+						<span>
+							<b>
+								{bombArr[0].quantx} x {bombArr[0].bombx}
+							</b>
+						</span>
+						{bombArr[1].bomby > 0 && (
+							<span style={{ textAlign: "right" }}>
+								<b>
+									{" - "}
+									{bombArr[1].quanty} x {bombArr[1].bomby}
+								</b>
+							</span>
+						)}
+					</Box>
+				)}
 				{data.insumos
 					.sort((a, b) => a.tipo.localeCompare(b.tipo))
 					.map((data, i) => {
+						const bombCalc =
+							bombArr[0].bombx > 0 && bombArr[0].bombx;
+
 						const tipo = data.tipo.includes("Óleo Mineral")
 							? "Óleo"
 							: data.tipo;
+						const quantiAplicar =
+							bombaValue > 0
+								? bombCalc * Number(data.dose)
+								: data.quantidade;
+
 						return (
 							<>
-								<p key={i}>
+								<Box
+									key={i}
+									// style={{ margin: "0px", padding: "0px" }}
+									display={"grid"}
+									gridAutoFlow={"column"}
+									gridAutoColumns={"1fr 180px 1fr 1fr"}
+									gridRowGap="5px"
+									gap={"2px"}
+									margin={"7px"}
+								>
 									<b>
 										{parseFloat(data.dose).toLocaleString(
 											"pt-br",
@@ -125,29 +220,47 @@ const DetailAppData = ({ data, showData }) => {
 										)}
 									</b>{" "}
 									<Chip
-										label={
-											tipo.includes("Óleo Mineral")
-												? "Óleo"
-												: tipo
-										}
+										label={data.insumo}
+										// label={
+										// 	tipo.includes("Óleo Mineral")
+										// 		? "Óleo"
+										// 		: tipo + " - " + data.insumo
+										// }
 										sx={{
 											backgroundColor: getColorChip(tipo),
 											minWidth: "90px",
 											textAlign: "center",
 											height: "auto",
-											margin: "0px 8px 0px 4px"
+											margin: "0px 8px 0px 4px",
+											fontWeight: "bold"
 										}}
 										size="small"
 									/>
-									{data.insumo} -{" "}
-									{parseFloat(data.quantidade).toLocaleString(
-										"pt-br",
-										{
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2
-										}
+									<Box textAlign={"right"}>
+										<b>
+											{parseFloat(
+												quantiAplicar
+											).toLocaleString("pt-br", {
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+											})}
+										</b>
+									</Box>
+									{bombArr[1].bomby > 0 && (
+										<Box textAlign={"right"}>
+											<b>
+												{" - "}{" "}
+												{parseFloat(
+													Number(data.dose) *
+														bombArr[1].bomby
+												).toLocaleString("pt-br", {
+													minimumFractionDigits: 2,
+													maximumFractionDigits: 2
+												})}
+											</b>
+										</Box>
 									)}
-								</p>
+								</Box>
 							</>
 						);
 					})}

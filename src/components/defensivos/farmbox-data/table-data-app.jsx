@@ -1,6 +1,15 @@
 import classes from "./farmbox.module.css";
 
-import { useTheme, Slide, Divider } from "@mui/material";
+import {
+	useTheme,
+	Slide,
+	Divider,
+	Box,
+	TextField,
+	InputAdornment,
+	Button,
+	IconButton
+} from "@mui/material";
 import Grow from "@mui/material/Grow";
 
 import { tokens } from "../../../theme";
@@ -14,13 +23,41 @@ import ProgressBarPage from "./progress-bar";
 
 import ProgressCircularPage from "./progress-circular";
 import DetailAppData from "./table-data-app-detail";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faPrint,
+	faCircleXmark,
+	faMap,
+	faArrowRotateRight
+} from "@fortawesome/free-solid-svg-icons";
+
+import djangoApi from "../../../utils/axios/axios.utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const TableDataPage = (props) => {
 	const { dataF } = props;
 	const [showDetail, setShowDetail] = useState(false);
+	const [sumArea, setSumArea] = useState(0);
+	const [bombaValue, setBombaValue] = useState(0);
+	const [bombArr, setBombArr] = useState([
+		{ bombx: 0, quantx: 0 },
+		{ bomby: 0, quanty: 0 }
+	]);
+	const [parcelaSelected, setParcelaSelected] = useState([]);
+	const [idParcelasSelected, setIdParcelasSelected] = useState([]);
+
+	useEffect(() => {
+		const newArray = parcelaSelected.map((data) => data.id_plantation);
+		setIdParcelasSelected(newArray);
+	}, [parcelaSelected]);
+
+	const [displayMap, setDisplayMap] = useState(null);
+	const [loadingMap, setLoadingMap] = useState(false);
+
+	const [rotateDir, setRotateDir] = useState("270");
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -70,6 +107,99 @@ const TableDataPage = (props) => {
 	};
 
 	const containerRef = useRef(null);
+
+	const handlerClearArea = () => {
+		console.log("zerando a area");
+		setSumArea(0);
+		setBombaValue(0);
+		setBombArr([
+			{ bombx: 0, quantx: 0 },
+			{ bomby: 0, quanty: 0 }
+		]);
+		setDisplayMap(null);
+		setIdParcelasSelected([]);
+		setRotateDir("270");
+	};
+
+	const handleSetBombValue = (value) => {
+		if (value) {
+			setBombaValue(value.replace(",", "."));
+		} else {
+			setBombaValue("");
+		}
+	};
+
+	const handleBombCalc = (bombaValue, sumArea) => {
+		const bomb = bombaValue;
+		const areaTotalInicial = sumArea;
+		let areaTotal = areaTotalInicial;
+		let total = areaTotalInicial;
+		let count = 0;
+		while (total > bomb) {
+			count += 1;
+			total -= bomb;
+		}
+		const saldo = areaTotal - count * bomb;
+		const bombArr = [
+			{ bombx: Number(bombaValue), quantx: count },
+			{ bomby: Number(Math.ceil(saldo)), quanty: saldo > 0 ? 1 : 0 }
+		];
+		if (Number(bombaValue) > sumArea) {
+			const bombArrInside = [
+				{ bombx: Number(sumArea.toFixed(0)), quantx: 1 },
+				{ bomby: 0, quanty: 0 }
+			];
+			setBombArr(bombArrInside);
+		} else {
+			setBombArr(bombArr);
+		}
+	};
+	useEffect(() => {
+		if (bombaValue > 0) {
+			handleBombCalc(bombaValue, sumArea);
+		}
+	}, [bombaValue, sumArea]);
+
+	const handleSendApiApp = async (idFarm) => {
+		const params = JSON.stringify({
+			projeto: idFarm,
+			parcelas: idParcelasSelected
+		});
+		setLoadingMap(true);
+		try {
+			await djangoApi
+				.post("plantio/get_matplot_draw/", params, {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					console.log(res.data);
+					setDisplayMap(res.data);
+				});
+		} catch (err) {
+			console.log("Erro ao alterar as aplicações", err);
+		} finally {
+			setLoadingMap(false);
+		}
+	};
+
+	const handleShowMap = (data) => {
+		handleSendApiApp(data);
+		console.log("get Map from API", data);
+		console.log("parcelas Selecionadas: ,", parcelaSelected);
+	};
+
+	const handleRotateDir = () => {
+		const currentRot = Number(rotateDir);
+		if (currentRot === 360) {
+			setRotateDir("90");
+		} else {
+			const newRotate = currentRot + 90;
+			setRotateDir(newRotate.toLocaleString());
+		}
+	};
+
 	return (
 		<div
 			style={{
@@ -153,7 +283,128 @@ const TableDataPage = (props) => {
 				direction="up"
 			>
 				<div className={classes.parcelasDetailDiv}>
-					<DetailAppData data={dataF} />
+					<Box
+						width="100%"
+						flexDirection={"row"}
+						display={"flex"}
+						justifyContent={"space-between"}
+					>
+						<DetailAppData
+							data={dataF}
+							setSumArea={setSumArea}
+							sumArea={sumArea}
+							bombaValue={bombaValue}
+							bombArr={bombArr}
+							parcelaSelected={parcelaSelected}
+							setParcelaSelected={setParcelaSelected}
+						/>
+					</Box>
+					{sumArea > 0 && (
+						<Box
+							sx={{
+								display: "flex",
+								width: "100%",
+								flexDirection: "row",
+								justifyContent: "space-between",
+								alignItems: "end"
+							}}
+						>
+							<Box className={classes.areaTotalSumDiv}>
+								<span
+									onClick={handlerClearArea}
+									style={{ cursor: "pointer" }}
+								>
+									<FontAwesomeIcon
+										icon={faCircleXmark}
+										color={colors.textColor[100]}
+										style={{ marginRight: "10px" }}
+									/>
+									Area Total:{" "}
+									<b>
+										{sumArea?.toLocaleString("pt-BR", {
+											maximumFractionDigits: 2,
+											minimumFractionDigits: 2
+										})}
+									</b>
+								</span>
+								<Box width={"100%"}>
+									<TextField
+										sx={{
+											width: "180px",
+											paddingLeft: "5px"
+										}}
+										aria-label="Bomba Input"
+										placeholder="Tamanho"
+										onChange={(e) =>
+											handleSetBombValue(e.target.value)
+										}
+										variant="standard"
+										value={bombaValue}
+										InputProps={{
+											endAdornment: (
+												<InputAdornment
+													disableTypography
+													position="end"
+												>
+													Bomba / Hectares
+												</InputAdornment>
+											)
+										}}
+									/>
+								</Box>
+							</Box>
+							<Box>
+								<IconButton
+									onClick={() =>
+										handleShowMap(dataF.fazenda_box_id)
+									}
+								>
+									<FontAwesomeIcon
+										icon={faMap}
+										color={colors.textColor[100]}
+										style={{
+											cursor: "pointer"
+										}}
+									/>
+								</IconButton>
+							</Box>
+						</Box>
+					)}
+					{loadingMap && (
+						<Box
+							display="flex"
+							justifyContent="center"
+							alignItems="center"
+						>
+							<CircularProgress
+								sx={{ color: colors.primary[100] }}
+							/>
+						</Box>
+					)}
+					{displayMap && (
+						<Box>
+							<Box display={"flex"} justifyContent={"center"}>
+								<img
+									src={displayMap}
+									alt="Italian Trulli"
+									style={{
+										transform: `rotate(${rotateDir}deg)`,
+										width: "400px"
+									}}
+								/>
+							</Box>
+							<Box>
+								<FontAwesomeIcon
+									onClick={handleRotateDir}
+									icon={faArrowRotateRight}
+									color={colors.textColor[100]}
+									style={{
+										cursor: "pointer"
+									}}
+								/>
+							</Box>
+						</Box>
+					)}
 				</div>
 			</Grow>
 		</div>

@@ -186,10 +186,7 @@ const ModalDataFarmbox = (props) => {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						}),
-						areaSought: areaSought.toLocaleString("pt-br", {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-						}),
+						areaSought: areaSought,
 						initialAppDateAplicadaParc:
 							parcela.initialAppDateAplicada,
 						finalAppDateAplicadaParc: parcela.finalAppDateAplicada,
@@ -203,21 +200,30 @@ const ModalDataFarmbox = (props) => {
 				});
 				const appParcelasDict = parcelasDict.map((parc) => {
 					const withInsumos = insumos.map((ins) => {
+						const quantidadeSolicitada =
+							parseFloat(ins.dose) * parseFloat(parc.areaSought);
+
+						const quantidade = ins.dose * parc.totalSomaUnform;
 						return {
 							...parc,
-							quantidadeSolicitada: (
-								parseFloat(ins.dose) *
-								parseFloat(parc.areaSought)
-							).toLocaleString("pt-br", {
+							quantidadeSolicitada:
+								quantidadeSolicitada.toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								}),
+							quantidade: quantidade.toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2
 							}),
-							quantidade: (
-								ins.dose * parc.totalSomaUnform
-							).toLocaleString("pt-br", {
-								minimumFractionDigits: 2,
-								maximumFractionDigits: 2
-							}),
+							saldoAplicar:
+								quantidadeSolicitada - quantidade < 0
+									? 0
+									: (
+											quantidadeSolicitada - quantidade
+									  ).toLocaleString("pt-br", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2
+									  }),
 							area: parc.area.toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2
@@ -245,10 +251,6 @@ const ModalDataFarmbox = (props) => {
 			setFinalArr(true);
 		}
 	};
-
-	useEffect(() => {
-		console.log(appArray);
-	}, [appArray]);
 
 	useEffect(() => {
 		if (dictSelectFarm.length > 0) {

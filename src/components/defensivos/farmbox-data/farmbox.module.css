@@ -28,7 +28,7 @@
 }
 
 
-.emptyFarm{
+.emptyFarm {
     width: 100%;
     height: 100%;
     font-size: 32px;
@@ -37,7 +37,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+
 }
 
 .formDiv {
@@ -50,17 +50,17 @@
     border-radius: 8px;
 }
 
-.formDiv > div {
+.formDiv>div {
     border-radius: 8px;
 }
 
 
 
-.dashLeft{
+.dashLeft {
     width: 65%;
 }
 
-.dashRight{
+.dashRight {
     width: 27%;
     display: flex;
     flex-direction: column;
@@ -75,7 +75,7 @@
 
 }
 
-.appDiv{
+.appDiv {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -110,7 +110,7 @@
     /* background-color: red; */
 }
 
-.labelDivApp p:first-child:hover{
+.labelDivApp p:first-child:hover {
     cursor: pointer;
     color: grey;
 
@@ -124,6 +124,7 @@
     margin-left: 10px;
     font-weight: 800;
 }
+
 .labelDivApp div:nth-child(2) {
     /* background-color: green; */
     flex-grow: 1;
@@ -140,13 +141,14 @@
     font-weight: bolder;
 }
 
-.numberDivApp p, .labelDivApp p {
+.numberDivApp p,
+.labelDivApp p {
     margin: 0px;
     margin-bottom: 0px;
     /* font-weight: 400; */
 }
 
-.numberDivApp p{
+.numberDivApp p {
     min-width: 60px;
 }
 
@@ -154,8 +156,10 @@
     border-radius: 8px;
     padding: 5px;
     margin: 5px;
+    min-width: 700px;
 }
-.headerApp{
+
+.headerApp {
     font-size: 1rem;
     border-radius: 8px;
     padding: 10px 10px 0px 10px;
@@ -163,7 +167,7 @@
 }
 
 
-.imgFarmDiv{
+.imgFarmDiv {
     width: 20px;
     height: 20px;
     margin-right: 2px;
@@ -182,7 +186,7 @@
     margin-right: 250px;
 }
 
-.resumoAppPage{
+.resumoAppPage {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -212,7 +216,7 @@
     font-size: 1.3rem;
 }
 
-.geralDivResumoHeader span{
+.geralDivResumoHeader span {
     padding-top: 20px;
 }
 
@@ -223,13 +227,14 @@
     font-size: 1.2rem;
     padding: 5px 0px;
 }
-.geralDivResumoBody span::after{
+
+.geralDivResumoBody span::after {
     content: " ................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................... ";
     position: absolute;
     padding-left: 5px;
 }
 
-.geralDivResumoBody span{
+.geralDivResumoBody span {
     position: relative;
     width: 90%;
     overflow: hidden;
@@ -262,13 +267,13 @@
     /* margin-top: -10px; */
 }
 
-.resumoFazendasMainDiv span::after{
+.resumoFazendasMainDiv span::after {
     content: " ................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................... ";
     position: absolute;
     padding-left: 5px;
 }
 
-.resumoFazendasMainDiv span{
+.resumoFazendasMainDiv span {
     position: relative;
     width: 90%;
     overflow: hidden;
@@ -291,16 +296,18 @@
     min-width: 6px;
 }
 
-.tipoDivApp  {
+.tipoDivApp {
     /* flex-grow: 2; */
     min-width: 230px;
     /* background-color: rebeccapurple; */
 }
 
-.parcelasDetailDiv{
+.parcelasDetailDiv {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
+    justify-content: space-between;
+    padding: 10px 5px 10px 5px;
 }
 
 .parcelasDetailDivHide {
@@ -308,12 +315,12 @@
 }
 
 
- .pluviNumber{
+.pluviNumber {
     font-size: 14px;
     text-align: center;
 }
 
-.pluviHeader{
+.pluviHeader {
     font-size: 16px;
     padding-left: 12px;
 }
@@ -329,11 +336,13 @@
     margin: 0;
     font-size: 0.7rem;
     font-style: italic;
-    
+
 }
+
 .headerDate p {
     margin: 0;
 }
+
 .headerTitle {
     /* text-align: center; */
     font-size: 18px;
@@ -365,6 +374,25 @@
 .rowTablePluvi:hover {
     background-color: rgba(245, 245, 245, 0.8) !important;
 }
-.rowTablePluvi:hover span, .rowTablePluvi:hover .pluviGood  {
+
+.rowTablePluvi:hover span,
+.rowTablePluvi:hover .pluviGood {
     color: black;
 }
+
+.parcelasInfoDiv {
+    cursor: pointer;
+}
+
+.isInArr {
+    border: 3px solid whitesmoke;
+    border-radius: 12px;
+}
+
+.areaTotalSumDiv {
+    margin-top: 20px;
+}
+
+/* .areaTotalSumDiv:hover{
+    background-color: rgba(128,128,128,0.3);
+} */

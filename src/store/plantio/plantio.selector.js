@@ -300,6 +300,7 @@ export const createDict = (state) => {
 	const plantio = state.plantio.app;
 	const newArr = plantio.map((data) => {
 		const farm = data.plantations[0].plantation.farm_name;
+		const farm_id = data.plantations[0].plantation.farm.id;
 		const operacao = data.inputs[0].input.name;
 		const operacaoTipo = data.inputs[0].input.input_type_name;
 		const cultura = data.plantations[0].plantation.culture_name;
@@ -371,6 +372,7 @@ export const createDict = (state) => {
 
 		return {
 			fazenda: farm,
+			fazenda_box_id: farm_id,
 			app: code,
 			status: status,
 			progresso: percentApp.toFixed(2),

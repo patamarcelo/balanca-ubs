@@ -51,6 +51,9 @@ import {
 import PluviDataComp from "./pluvi-data";
 
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -75,6 +78,8 @@ const FarmBoxPage = () => {
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
 
 	const user = useSelector(selectCurrentUser);
+
+	const isNonMobile = useMediaQuery("(min-width: 1200px)");
 
 	const ITEM_HEIGHT = 48;
 	const ITEM_PADDING_TOP = 8;
@@ -391,7 +396,10 @@ const FarmBoxPage = () => {
 							);
 						})}
 					</div>
-					<div className={classes.dashRight}>
+					<div
+						className={classes.dashRight}
+						style={{ display: !isNonMobile && "none" }}
+					>
 						{filteredApps.length > 0 && (
 							<div className={classes.resumoAppPage}>
 								<div className={classes.headerDivApp}>
