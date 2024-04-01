@@ -16,6 +16,8 @@ const ColheitaAtual = (props) => {
 
 	const [areaTotal, setAreaTotal] = useState(0);
 	const [parcelasTotal, setparcelasTotal] = useState(0);
+	const [areaColhidaParcial, setAreaColhidaParcial] = useState(0);
+	const [areaDisponivel, setAreaDisponivel] = useState(0);
 	const [newDayNow, setNewDayNow] = useState("");
 
 	const [dateSort, setDateSort] = useState(false);
@@ -29,12 +31,18 @@ const ColheitaAtual = (props) => {
 	useEffect(() => {
 		let areaTotalSoma = 0;
 		let parcelasTotalCount = 0;
+		let areaColhida = 0
 		selectedFilteredData.forEach((data) => {
 			areaTotalSoma += data.area_colheita;
 			parcelasTotalCount += 1;
+			areaColhida += data.area_parcial
 		});
+		const areaDisponivel = areaTotalSoma - areaColhida
 		setAreaTotal(formatArea(areaTotalSoma));
 		setparcelasTotal(parcelasTotalCount);
+		setAreaColhidaParcial(formatArea(areaColhida))
+		setAreaDisponivel(formatArea(areaDisponivel))
+
 	}, [selectedFilteredData]);
 
 	useEffect(() => {
@@ -81,12 +89,12 @@ const ColheitaAtual = (props) => {
 						);
 					})}
 			</Box>
-			<Box display={"flex"} flexDirection="column" mb={2} sx={{color: colors.textColor[100]}}>
+			<Box display={"flex"} flexDirection="row" gap={10} mb={2} sx={{color: colors.textColor[100]}}>
 				<span>
-					<b>Área Total:</b> {areaTotal}
+					<b>Área Disponível:</b> <br /> {areaDisponivel} Hectares
 				</span>
 				<span>
-					<b>Parcelas:</b> {parcelasTotal}
+					<b>Parcelas:</b> <br />{parcelasTotal}
 				</span>
 			</Box>
 			<Box
