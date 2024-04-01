@@ -136,6 +136,7 @@ const ColheitaAtual = (props) => {
 			</Box>
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
+					theme={theme}
 					colors={colors}
 					idsPending={idsPending}
 					data={selectedFilteredData.sort((b, a) =>

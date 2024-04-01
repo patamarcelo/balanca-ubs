@@ -8,7 +8,7 @@ import styles from "./romaneios.module.css";
 
 import moment from "moment";
 
-const RomaneiosTable = ({ data, handleUpdateCarga, colors }) => {
+const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
 
@@ -94,7 +94,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors }) => {
 							return (
 								<tr
 									key={i}
-									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
+									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
 								>
 									<td>{newDate}</td>
 									<td>{carga.relatorioColheita}</td>

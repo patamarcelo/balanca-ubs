@@ -79,7 +79,7 @@ const RomaneiosPage = () => {
             alignItems={filteredUserData.length === 0 ? "center" : "flex-start"}
             p={5}
         >
-            <RomaneiosTable colors={colors} data={filteredUserData} handleUpdateCarga={handleUpdateCarga} />
+            <RomaneiosTable theme={theme} colors={colors} data={filteredUserData} handleUpdateCarga={handleUpdateCarga} />
         </Box>
     );
 };

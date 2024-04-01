@@ -1,7 +1,8 @@
 import Table from "react-bootstrap/Table";
 import styles from "./plantio-colheita.module.css";
 
-const TableColheita = ({ data, colors, idsPending }) => {
+const TableColheita = ({ data, colors, idsPending, theme }) => {
+	console.log('tabela colheita :', theme.palette.mode)
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
 			<thead>
@@ -55,7 +56,8 @@ const TableColheita = ({ data, colors, idsPending }) => {
 								carga.romaneios > 0 || areaParcial > 0
 									? styles.colheitaRow
 									: styles.notColheitaRow
-							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && styles.closedParcela}`}
+							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && styles.closedParcela} 
+							${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
 						>
 							<td>{carga.talhao__id_talhao}</td>
 							<td>{formatDate(carga.data_plantio)}</td>
@@ -94,7 +96,7 @@ const TableColheita = ({ data, colors, idsPending }) => {
 							>
 								{carga.romaneios}
 							</td>
-							<td style={{color: romaneiosPending > 0 ? "rgb(148, 148, 55)" : 'whitesmoke' }}>{romaneiosPending}</td>
+							<td style={{color: romaneiosPending > 0 ? "rgb(148, 148, 55)" : colors.textColor[100] }}>{romaneiosPending}</td>
 							<td>
 								{formatArea(mediaPrev)}
 							</td>
