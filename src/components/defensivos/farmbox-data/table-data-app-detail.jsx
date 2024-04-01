@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import Chip from "@mui/material/Chip";
-import { Box, Grid } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import classes from "./farmbox.module.css";
+import { tokens } from "../../../theme";
 
 import { useState, useEffect } from "react";
 
@@ -54,16 +55,21 @@ const getColorChip = (data) => {
 	}
 };
 
-const DetailAppData = ({
-	data,
-	showData,
-	setSumArea,
-	sumArea,
-	bombaValue,
-	bombArr,
-	setParcelaSelected,
-	parcelaSelected
-}) => {
+const DetailAppData = (props) => {
+	const {
+		data,
+		showData,
+		setSumArea,
+		sumArea,
+		bombaValue,
+		bombArr,
+		setParcelaSelected,
+		parcelaSelected
+	} = props;
+
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
 	const handlerSumArea = (parcelaDetail) => {
 		const findParcela = parcelaSelected.filter(
 			(data) => data.id_plantation === parcelaDetail.id_plantation
@@ -160,7 +166,7 @@ const DetailAppData = ({
 						gridRowGap="5px"
 						gap={"2px"}
 						margin={"7px"}
-						borderBottom={"1px solid white"}
+						borderBottom={`1px solid ${colors.textColor[100]}`}
 					>
 						<span>
 							<b>Dose</b>
@@ -169,18 +175,25 @@ const DetailAppData = ({
 							{" "}
 							<b>Insumo</b>
 						</span>
-						<span>
+						<Box
+							style={{ textAlign: "right" }}
+							paddingRight={"8px"}
+						>
 							<b>
 								{bombArr[0].quantx} x {bombArr[0].bombx}
 							</b>
-						</span>
+						</Box>
 						{bombArr[1].bomby > 0 && (
-							<span style={{ textAlign: "right" }}>
+							<Box
+								style={{ textAlign: "right" }}
+								borderLeft={`1px solid ${colors.textColor[100]}`}
+								marginLeft={"5px"}
+								paddingLeft={"3px"}
+							>
 								<b>
-									{" - "}
 									{bombArr[1].quanty} x {bombArr[1].bomby}
 								</b>
-							</span>
+							</Box>
 						)}
 					</Box>
 				)}
@@ -232,11 +245,15 @@ const DetailAppData = ({
 											textAlign: "center",
 											height: "auto",
 											margin: "0px 8px 0px 4px",
-											fontWeight: "bold"
+											fontWeight: "bold",
+											border: "0.1em solid black"
 										}}
 										size="small"
 									/>
-									<Box textAlign={"right"}>
+									<Box
+										textAlign={"right"}
+										paddingRight={"8px"}
+									>
 										<b>
 											{parseFloat(
 												quantiAplicar
@@ -247,9 +264,14 @@ const DetailAppData = ({
 										</b>
 									</Box>
 									{bombArr[1].bomby > 0 && (
-										<Box textAlign={"right"}>
+										<Box
+											textAlign={"right"}
+											borderLeft={`1px solid ${colors.textColor[100]}`}
+											marginLeft={"5px"}
+											paddingLeft={"10px"}
+										>
 											<b>
-												{" - "}{" "}
+												{" "}
 												{parseFloat(
 													Number(data.dose) *
 														bombArr[1].bomby

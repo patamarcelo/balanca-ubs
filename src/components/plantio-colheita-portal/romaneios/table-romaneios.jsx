@@ -8,7 +8,7 @@ import styles from "./romaneios.module.css";
 
 import moment from "moment";
 
-const RomaneiosTable = ({ data, handleUpdateCarga }) => {
+const RomaneiosTable = ({ data, handleUpdateCarga, colors }) => {
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
 
@@ -60,7 +60,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 
 	return (
 		<Box width={"100%"}>
-			<Table striped bordered hover>
+			<Table striped bordered hover style={{color: colors.textColor[100]}}>
 				<thead>
 					<tr>
 						<th>Data</th>
@@ -90,17 +90,11 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 				<tbody>
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
-							const newDate = carga.syncDate
-								.toDate()
-								.toLocaleString("pt-BR");
+							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
 							return (
 								<tr
 									key={i}
-									className={`${
-										i % 2 !== 0
-											? styles.oddRow
-											: styles.evenRow
-									}`}
+									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
 								>
 									<td>{newDate}</td>
 									<td>{carga.relatorioColheita}</td>
@@ -111,8 +105,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 											.join(", ")}
 									</td>
 									<td>
-										{carga.placa.slice(0, 3)}-
-										{carga.placa.slice(3, 12)}
+										{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
 									</td>
 									<td>{carga.motorista}</td>
 									<td>{carga.fazendaDestino}</td>
@@ -122,9 +115,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 											: formatWeight(0)}
 									</td>
 									<td>
-										{carga.tara
-											? formatWeight(carga.tara)
-											: formatWeight(0)}
+										{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}
 									</td>
 									<td>
 										{carga.liquido
@@ -133,31 +124,23 @@ const RomaneiosTable = ({ data, handleUpdateCarga }) => {
 									</td>
 									<td>
 										{carga?.saida
-											? carga?.saida
-													.toDate()
-													.toLocaleString("pt-BR")
+											? carga?.saida.toDate().toLocaleString("pt-BR")
 											: "-"}
 									</td>
 									<td>
-										<IconButton
-											aria-label="delete"
-											size="sm"
-											color={
-												carga.saida
-													? "success"
-													: "warning"
-											}
-											onClick={(e) =>
-												handleUpdateCarga(e, carga)
-											}
-											style={{ padding: "2px" }}
-										>
-											{carga.saida ? (
+										{carga.saida ? (
+											<IconButton
+												aria-label="delete"
+												size="sm"
+												color={carga.saida ? "success" : "warning"}
+												onClick={(e) => handleUpdateCarga(e, carga)}
+												style={{ padding: "2px" }}
+											>
 												<DoneAll fontSize="inherit" />
-											) : (
-												<WarningIcon fontSize="inherit" />
-											)}
-										</IconButton>
+											</IconButton>
+										) : (
+												<WarningIcon fontSize="small" color="warning" />
+										)}
 									</td>
 								</tr>
 							);
