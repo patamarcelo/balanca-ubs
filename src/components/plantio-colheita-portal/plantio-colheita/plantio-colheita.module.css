@@ -11,6 +11,10 @@
     background-color: rgba(128,128,128,0.4);
 }
 
+.evenRow {
+    background-color: rgba(248,248,248,1.0);
+}
+
 .colheitaRow {
     /* background-color: rgba(0,128,0,0.5); */
     color: rgb(9, 137, 9);

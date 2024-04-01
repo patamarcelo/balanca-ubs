@@ -94,7 +94,7 @@ const TableColheita = ({ data, colors, idsPending }) => {
 							>
 								{carga.romaneios}
 							</td>
-							<td style={{color: romaneiosPending > 0 ? 'yellow' : 'whitesmoke' }}>{romaneiosPending}</td>
+							<td style={{color: romaneiosPending > 0 ? "rgb(148, 148, 55)" : 'whitesmoke' }}>{romaneiosPending}</td>
 							<td>
 								{formatArea(mediaPrev)}
 							</td>
