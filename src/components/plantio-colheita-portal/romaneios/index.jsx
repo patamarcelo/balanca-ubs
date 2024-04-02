@@ -175,13 +175,16 @@ const RomaneiosPage = () => {
                                     );
                                 })}
                         </Box>
+                        <Box justifySelf={"center"}>
+
                         <Typography
                         variant="h1"
                         color={colors.textColor[100]}
                         sx={{ alignSelf: "center", justifySelf: 'center' }}
-                    >
+                        >
                         Romaneios
                     </Typography>
+                        </Box>
                         {resumeByFarm && (
                             <Box justifySelf={"end"}>
                                 <Typography variant="h5" color={colors.textColor[100]} >
