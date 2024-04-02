@@ -1,6 +1,6 @@
 import { Box, IconButton, Typography } from "@mui/material";
 import DoneAll from "@mui/icons-material/DoneAll";
-import WarningIcon from "@mui/icons-material/Warning";
+import AgricultureIcon from '@mui/icons-material/Agriculture';
 import { useState, useEffect } from "react";
 
 import Table from "react-bootstrap/Table";
@@ -161,7 +161,7 @@ const RomaneiosTable = (props) => {
 												<DoneAll fontSize="inherit" />
 											</IconButton>
 										) : (
-												<WarningIcon fontSize="small" color="warning" />
+												<AgricultureIcon fontSize="small" color="warning" />
 										)}
 									</td>
 								</tr>
