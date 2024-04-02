@@ -23,4 +23,6 @@ td, th {
     padding: 1px !important;
     padding-left: 3px;
 }
-
+table{
+    min-width: 1300px;
+}

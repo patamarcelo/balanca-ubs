@@ -22,7 +22,11 @@ const RomaneiosTable = (props) => {
 				newObj[element.fazendaOrigem] = 1
 			}
 		});
-		setResumeByFarm(newObj)
+		const newArr = Object.keys(newObj).map((data) => {
+			return ({farm: data, quant: newObj[data]})
+		})
+		console.log('new Arrr: ', newArr)
+		setResumeByFarm(newArr)
 	}, []);
 
 	useEffect(() => {
@@ -35,7 +39,10 @@ const RomaneiosTable = (props) => {
 				newObj[element.fazendaOrigem] = 1
 			}
 		});
-		setResumeByFarm(newObj)
+		const newArr = Object.keys(newObj).map((data) => {
+			return ({farm: data, quant: newObj[data]})
+		})
+		setResumeByFarm(newArr)
 	}, [data, setResumeByFarm]);
 
 	useEffect(() => {

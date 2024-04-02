@@ -29,15 +29,12 @@ const RomaneiosPage = () => {
     const [isLoadingHome, setIsLoading] = useState(true);
     const useData = useSelector(selectRomaneiosLoads);
     const [filteredUserData, setfilteredUserData] = useState([]);
-    const [resumeByFarm, setResumeByFarm] = useState({});
+    const [resumeByFarm, setResumeByFarm] = useState();
     const [totalFarms, setTotalFarms] = useState(0);
     const [filterDataArr, setFilterDataArr] = useState(null);
 
     useEffect(() => {
-        let total = 0;
-        Object.keys(resumeByFarm).forEach((farm) => {
-            total += resumeByFarm[farm];
-        });
+        const total = resumeByFarm?.reduce((acc, cur) => acc + cur.quant, 0)
         setTotalFarms(total);
     }, [resumeByFarm]);
 
@@ -164,12 +161,12 @@ const RomaneiosPage = () => {
                     >
                         <Box>
                             {resumeByFarm &&
-                                Object.keys(resumeByFarm).map((farm) => {
+                                resumeByFarm.sort((a,b) => a.quant - b.quant).map((farm) => {
                                     return (
                                         <Typography variant="h6" color={colors.textColor[100]}>
-                                            {farm.replace("Projeto", "")}:
+                                            {farm.farm.replace("Projeto", "")}:
                                             <span style={{ marginLeft: "5px" }}>
-                                                <b>{resumeByFarm[farm]}</b>
+                                                <b>{farm.quant}</b>
                                             </span>
                                         </Typography>
                                     );
