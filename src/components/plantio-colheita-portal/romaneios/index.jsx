@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import ptBR from 'dayjs/locale/pt-br';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 
@@ -48,6 +49,7 @@ const RomaneiosPage = () => {
     }, []);
 
     useEffect(() => {
+        console.log("data: ", filterDataArr)
         if (useData.length > 0) {
             if (filterDataArr) {
                 setfilteredUserData(
@@ -151,19 +153,14 @@ const RomaneiosPage = () => {
                         </LocalizationProvider>
 
                     </Box>
-                    <Typography
-                        variant="h1"
-                        color={colors.textColor[100]}
-                        sx={{ alignSelf: "center" }}
-                    >
-                        Romaneios
-                    </Typography>
                     <Box
                         display={"grid"}
                         flexDirection={"column"}
-                        gridTemplateColumns={"1fr auto"}
+                        gridTemplateColumns={"1fr 1fr 1fr"}
                         alignItems={"end"}
                         width={"100%"}
+                        mb={1}
+                        mt={2}
                     >
                         <Box>
                             {resumeByFarm &&
@@ -178,9 +175,16 @@ const RomaneiosPage = () => {
                                     );
                                 })}
                         </Box>
+                        <Typography
+                        variant="h1"
+                        color={colors.textColor[100]}
+                        sx={{ alignSelf: "center", justifySelf: 'center' }}
+                    >
+                        Romaneios
+                    </Typography>
                         {resumeByFarm && (
-                            <Box>
-                                <Typography variant="h5" color={colors.textColor[100]}>
+                            <Box justifySelf={"end"}>
+                                <Typography variant="h5" color={colors.textColor[100]} >
                                     Geral: <b>{totalFarms}</b>
                                 </Typography>
                             </Box>
