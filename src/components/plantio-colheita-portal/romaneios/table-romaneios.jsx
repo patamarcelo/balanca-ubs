@@ -6,19 +6,37 @@ import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
 
-import moment from "moment";
+const RomaneiosTable = (props) => {
+	const {data, handleUpdateCarga, colors, theme, setResumeByFarm, setFilterDataArr} = props;
 
-const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
 
 	useEffect(() => {
 		setdataFilter(data);
+		let newObj = {}
+		data.forEach(element => {
+			if(newObj[element.fazendaOrigem]){
+				newObj[element.fazendaOrigem] += 1
+			} else {
+				newObj[element.fazendaOrigem] = 1
+			}
+		});
+		setResumeByFarm(newObj)
 	}, []);
 
 	useEffect(() => {
 		setdataFilter(data);
-	}, [data]);
+		let newObj = {}
+		data.forEach(element => {
+			if(newObj[element.fazendaOrigem]){
+				newObj[element.fazendaOrigem] += 1
+			} else {
+				newObj[element.fazendaOrigem] = 1
+			}
+		});
+		setResumeByFarm(newObj)
+	}, [data, setResumeByFarm]);
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
@@ -46,7 +64,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 	if (data.length === 0) {
 		return (
 			<Box justifyContent={"center"} alignItems={"center"}>
-				<Typography variant="h1" color={"white"}>
+				<Typography variant="h1" color={"white"} onClick={() => setFilterDataArr(null)} sx={{cursor: 'pointer'}}>
 					Sem Romaneios Pendentes
 				</Typography>
 			</Box>
@@ -60,7 +78,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 
 	return (
 		<Box width={"100%"}>
-			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}}>
+			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
 				<thead>
 					<tr>
 						<th>Data</th>
@@ -92,6 +110,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
 							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
+							console.log(carga.syncDate.toDate().toISOString().slice(0, 10))
 							const getTicket = carga?.ticket ? carga.ticket : '-'
 							return (
 								<tr

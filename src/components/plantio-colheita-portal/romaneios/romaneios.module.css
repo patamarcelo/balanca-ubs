@@ -17,3 +17,10 @@ tr:hover{
     background-color: rgba(0,0,0,1);
     color: whitesmoke
 }
+
+td, th {
+    /* text-align: left; */
+    padding: 1px !important;
+    padding-left: 3px;
+}
+
