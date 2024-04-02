@@ -60,7 +60,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 
 	return (
 		<Box width={"100%"}>
-			<Table striped bordered hover style={{color: colors.textColor[100]}}>
+			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}}>
 				<thead>
 					<tr>
 						<th>Data</th>
@@ -70,6 +70,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 						>
 							Romaneio
 						</th>
+						<th>Ticket</th>
 						<th
 							onClick={() => handleOrder("relatorioColheita")}
 							style={{ cursor: "pointer" }}
@@ -91,6 +92,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
 							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
+							const getTicket = carga?.ticket ? data.ticket : '-'
 							return (
 								<tr
 									key={i}
@@ -98,6 +100,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 								>
 									<td>{newDate}</td>
 									<td>{carga.relatorioColheita}</td>
+									<td>{getTicket}</td>
 									<td>{carga.fazendaOrigem}</td>
 									<td>
 										{carga.parcelasNovas
