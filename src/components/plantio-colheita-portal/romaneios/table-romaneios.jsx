@@ -92,7 +92,7 @@ const RomaneiosTable = ({ data, handleUpdateCarga, colors, theme}) => {
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
 							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
-							const getTicket = carga?.ticket ? data.ticket : '-'
+							const getTicket = carga?.ticket ? carga.ticket : '-'
 							return (
 								<tr
 									key={i}
