@@ -59,5 +59,6 @@
 }
 
 .closedParcela {
-    border: 2px solid green
+    background-color: rgba(11,156,49,0.3);
+    
 }
