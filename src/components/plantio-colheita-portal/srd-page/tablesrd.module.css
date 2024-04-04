@@ -1,0 +1,21 @@
+.oddRow {
+    background-color: rgba(128, 128, 128, 0.2);
+    color: 'whitesmoke';
+}
+.evenRow {
+    background-color: white;
+    color: black;
+}
+.evenRowLight {
+    background-color: rgba(248,248,248,1.0);
+}
+
+
+.destHeader{
+    text-transform: capitalize !important;
+}
+
+
+tbody tr:hover{
+    background-color: rgb(1, 1, 120);
+}

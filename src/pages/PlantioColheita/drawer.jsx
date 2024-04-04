@@ -1,14 +1,15 @@
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+// import InboxIcon from "@mui/icons-material/MoveToInbox";
+// import MailIcon from "@mui/icons-material/Mail";
+
+import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
@@ -48,7 +49,7 @@ const PermanentDrawerLeft = ({
 		},
 		{
 			icon: faSheetPlastic,
-			title: "Outros",
+			title: "SRD",
 			route: "rota 3",
 			func: handlerRota3
 		}
@@ -79,7 +80,8 @@ const PermanentDrawerLeft = ({
 					}
 				}}
 			>
-				<Box sx={{ overflow: "auto" }}>
+				{/* <Box sx={{ overflow: "auto" }}> */}
+				<Box >
 					<List sx={{ paddingTop: "0px", paddingBottom: "0px" }}>
 						{navigateList.map((data, index) => (
 							<ListItem
@@ -93,16 +95,38 @@ const PermanentDrawerLeft = ({
 										handleNagivationIcon(data.route);
 									}}
 								>
-									<ListItemIcon sx={{color: data.route === selectedRoute && 'white' }}>
-										<FontAwesomeIcon icon={data.icon}/>
+									<ListItemIcon sx={{ color: data.route === selectedRoute && 'white' }}>
+										<FontAwesomeIcon icon={data.icon} />
 									</ListItemIcon>
-									<ListItemText primary={data.title} sx={{color: data.route === selectedRoute && 'white' }}/>
+									<ListItemText primary={data.title} sx={{ color: data.route === selectedRoute && 'white' }} />
 								</ListItemButton>
 							</ListItem>
 						))}
 					</List>
 					<Divider />
-					<List>
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+						mt="60px"
+						sx={{
+							width: "100%"
+						}}
+					>
+						<Box
+							sx={{
+								width: "50px",
+								height: "50px"
+							}}
+						>
+							<Diamond
+								sx={{
+									fontSize: "30px"
+								}}
+							/>
+						</Box>
+					</Box>
+					{/* <List>
 						{["Icon 1 ", "Icon 2 ", "Icon 3"].map((text, index) => (
 							<ListItem key={text} disablePadding>
 								<ListItemButton>
@@ -117,7 +141,7 @@ const PermanentDrawerLeft = ({
 								</ListItemButton>
 							</ListItem>
 						))}
-					</List>
+					</List> */}
 				</Box>
 			</Drawer>
 		</Box>

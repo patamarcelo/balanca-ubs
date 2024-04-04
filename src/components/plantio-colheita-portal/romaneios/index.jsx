@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Divider } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import { useEffect, useState } from "react";
@@ -15,12 +15,12 @@ import toast from "react-hot-toast";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import ptBR from 'dayjs/locale/pt-br';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 
 import { IconButton } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import ResumoHeader from "./resumo-header";
 
 const RomaneiosPage = () => {
     const theme = useTheme();
@@ -29,14 +29,9 @@ const RomaneiosPage = () => {
     const [isLoadingHome, setIsLoading] = useState(true);
     const useData = useSelector(selectRomaneiosLoads);
     const [filteredUserData, setfilteredUserData] = useState([]);
-    const [resumeByFarm, setResumeByFarm] = useState();
-    const [totalFarms, setTotalFarms] = useState(0);
     const [filterDataArr, setFilterDataArr] = useState(null);
 
-    useEffect(() => {
-        const total = resumeByFarm?.reduce((acc, cur) => acc + cur.quant, 0)
-        setTotalFarms(total);
-    }, [resumeByFarm]);
+    const listSit = ["Descarregados", "Pendentes"];
 
     useEffect(() => {
         setTimeout(() => {
@@ -46,7 +41,7 @@ const RomaneiosPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log("data: ", filterDataArr)
+        console.log("data: ", filterDataArr);
         if (useData.length > 0) {
             if (filterDataArr) {
                 setfilteredUserData(
@@ -125,83 +120,127 @@ const RomaneiosPage = () => {
                         display={"flex"}
                         flexDirection={"row"}
                         gap={"10px"}
+                        width={"100%"}
                     >
-                        {filterDataArr &&
-                            (
-                                <IconButton
-                                    aria-label="delete"
-                                    size="sm"
-                                    color="warning"
-                                    onClick={(e) => setFilterDataArr(null)}
-                                    style={{ padding: "2px" }}
-                                >
-                                    <CancelIcon fontSize="inherit" />
-                                </IconButton>
-                            )}
+                        {filterDataArr && (
+                            <IconButton
+                                aria-label="delete"
+                                size="sm"
+                                color="warning"
+                                onClick={(e) => setFilterDataArr(null)}
+                                style={{ padding: "2px" }}
+                            >
+                                <CancelIcon fontSize="inherit" />
+                            </IconButton>
+                        )}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 label="Data"
                                 renderInput={(params) => <TextField size="small" {...params} />}
                                 onChange={(newValue) =>
-                                    setFilterDataArr(new Date(newValue).toISOString().slice(0, 10))
+                                    setFilterDataArr(
+                                        new Date(newValue).toISOString().slice(0, 10)
+                                    )
                                 }
                                 value={filterDataArr}
                             />
                         </LocalizationProvider>
-
                     </Box>
-                    <Box
-                        display={"grid"}
-                        flexDirection={"column"}
-                        gridTemplateColumns={"1fr 1fr 1fr"}
-                        alignItems={"end"}
-                        width={"100%"}
-                        mb={1}
-                        mt={2}
-                    >
-                        <Box>
-                            {resumeByFarm &&
-                                resumeByFarm.sort((a,b) => a.quant - b.quant).map((farm) => {
-                                    return (
-                                        <Typography variant="h6" color={colors.textColor[100]}>
-                                            {farm.farm.replace("Projeto", "")}:
-                                            <span style={{ marginLeft: "5px" }}>
-                                                <b>{farm.quant}</b>
-                                            </span>
-                                        </Typography>
-                                    );
-                                })}
-                        </Box>
-                        <Box justifySelf={"center"}>
 
+                    <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        p={1}
+                        mb={3}
+                        mt={3}
+                        sx={{ backgroundColor: colors.blueAccent[300], color: colors.grey[900] }}
+                        width={"100%"}
+                    >
                         <Typography
-                        variant="h1"
-                        color={colors.textColor[100]}
-                        sx={{ alignSelf: "center", justifySelf: 'center' }}
+                            variant="h1"
+                            color={"whitesmoke"}
+                            sx={{ alignSelf: "center", justifySelf: "center" }}
                         >
-                        Romaneios
-                    </Typography>
-                        </Box>
-                        {resumeByFarm && (
-                            <Box justifySelf={"end"}>
-                                <Typography variant="h5" color={colors.textColor[100]} >
-                                    Geral: <b>{totalFarms}</b>
-                                </Typography>
-                            </Box>
-                        )}
+                            Romaneios
+                        </Typography>
                     </Box>
                 </>
             )}
+            {listSit.map((situacao) => {
+                let newArr;
+                if (situacao === "Descarregados") {
+                    newArr = filteredUserData.filter((data) => data.liquido > 0);
+                    
+                } else {
+                    newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
+                }
 
-            <RomaneiosTable
-                theme={theme}
-                colors={colors}
-                data={filteredUserData}
-                handleUpdateCarga={handleUpdateCarga}
-                setResumeByFarm={setResumeByFarm}
-                filterDataArr={filterDataArr}
-                setFilterDataArr={setFilterDataArr}
-            />
+                const reduceFarms = newArr.reduce((acc, curr) => {
+                    if (acc.filter((data) => data.fazenda === curr.fazendaOrigem).length === 0) {
+                        const objToAdd = {
+                            fazenda: curr.fazendaOrigem,
+                            peso: curr.liquido,
+                            count: 1
+                        }
+                        acc.push(objToAdd)
+                    } else {
+                        const findIndexOf = (e) =>
+                            e.fazenda === curr.fazendaOrigem
+                        const getIndex = acc.findIndex(findIndexOf);
+                        acc[getIndex]["peso"] += curr.liquido;
+                        acc[getIndex]["count"] += 1;
+                        
+
+                        
+                    }
+                    return acc
+                }, [])
+
+                const totalQUant = reduceFarms.reduce((acc, curr) => acc + curr.count, 0)
+                const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0)
+                return (
+                    <Box width={"100%"} height={"100%"}>
+                        <Divider textAlign="center" style={{ marginBottom: "15px" }}>
+                            <Typography
+                                variant="h3"
+                                color={colors.textColor[100]}
+                                sx={{ fontWeight: "600" }}
+                            >
+                                {situacao}
+                            </Typography>
+                        </Divider>
+                        <Box
+                            mb={2}
+                            mt={2}
+                            >
+                            <ResumoHeader  data={{fazenda: 'Geral', peso: totalPeso , count: totalQUant}} />
+                            </Box>
+                        <Box
+                        display={"flex"}
+                        flexDirection={"row"}
+                        mt={2}
+                        mb={2}
+                        gap={4}
+                        >
+                        {
+                            reduceFarms.map((data, i) => {
+                                return (
+                                    <ResumoHeader key={i} data={data} />
+                                    )
+                                })
+                            }
+                            </Box>
+                        <RomaneiosTable
+                            theme={theme}
+                            colors={colors}
+                            data={newArr}
+                            handleUpdateCarga={handleUpdateCarga}
+                            filterDataArr={filterDataArr}
+                            setFilterDataArr={setFilterDataArr}
+                        />
+                    </Box>
+                );
+            })}
         </Box>
     );
 };

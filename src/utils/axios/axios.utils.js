@@ -8,6 +8,9 @@ const baseURLdev = "http://localhost:8000/diamante/";
 const baseURLNode = "https://ubs-nodeserver.up.railway.app/defensivos/";
 const baseURLdevNode = "http://localhost:5050/defensivos/";
 
+const baseURLNodeSRD = "https://ubs-nodeserver.up.railway.app/romaneios/";
+const baseURLdevNodeSRD = "http://localhost:5050/romaneios/";
+
 const djangoApi = axios.create({
 	baseURL: process.env.NODE_ENV !== "production" ? baseURLdev : baseURL,
 	headers: {
@@ -22,5 +25,15 @@ export const nodeServer = axios.create({
 		"Content-Type": "application/json"
 	}
 });
+
+
+export const nodeServerSrd = axios.create({
+	baseURL:
+		process.env.NODE_ENV !== "production" ? baseURLdevNodeSRD : baseURLNodeSRD,
+	headers: {
+		"Content-Type": "application/json"
+	}
+});
+
 
 export default djangoApi;

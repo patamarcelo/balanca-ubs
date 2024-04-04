@@ -7,43 +7,43 @@ import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
 
 const RomaneiosTable = (props) => {
-	const {data, handleUpdateCarga, colors, theme, setResumeByFarm, setFilterDataArr} = props;
+	const {data, handleUpdateCarga, colors, theme, setFilterDataArr} = props;
 
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
 
-	useEffect(() => {
-		setdataFilter(data);
-		let newObj = {}
-		data.forEach(element => {
-			if(newObj[element.fazendaOrigem]){
-				newObj[element.fazendaOrigem] += 1
-			} else {
-				newObj[element.fazendaOrigem] = 1
-			}
-		});
-		const newArr = Object.keys(newObj).map((data) => {
-			return ({farm: data, quant: newObj[data]})
-		})
-		console.log('new Arrr: ', newArr)
-		setResumeByFarm(newArr)
-	}, []);
+	// useEffect(() => {
+	// 	setdataFilter(data);
+	// 	let newObj = {}
+	// 	data.forEach(element => {
+	// 		if(newObj[element.fazendaOrigem]){
+	// 			newObj[element.fazendaOrigem] += 1
+	// 		} else {
+	// 			newObj[element.fazendaOrigem] = 1
+	// 		}
+	// 	});
+	// 	const newArr = Object.keys(newObj).map((data) => {
+	// 		return ({farm: data, quant: newObj[data]})
+	// 	})
+	// 	console.log('new Arrr: ', newArr)
+	// 	setResumeByFarm(newArr)
+	// }, []);
 
-	useEffect(() => {
-		setdataFilter(data);
-		let newObj = {}
-		data.forEach(element => {
-			if(newObj[element.fazendaOrigem]){
-				newObj[element.fazendaOrigem] += 1
-			} else {
-				newObj[element.fazendaOrigem] = 1
-			}
-		});
-		const newArr = Object.keys(newObj).map((data) => {
-			return ({farm: data, quant: newObj[data]})
-		})
-		setResumeByFarm(newArr)
-	}, [data, setResumeByFarm]);
+	// useEffect(() => {
+	// 	setdataFilter(data);
+	// 	let newObj = {}
+	// 	data.forEach(element => {
+	// 		if(newObj[element.fazendaOrigem]){
+	// 			newObj[element.fazendaOrigem] += 1
+	// 		} else {
+	// 			newObj[element.fazendaOrigem] = 1
+	// 		}
+	// 	});
+	// 	const newArr = Object.keys(newObj).map((data) => {
+	// 		return ({farm: data, quant: newObj[data]})
+	// 	})
+	// 	setResumeByFarm(newArr)
+	// }, [data, setResumeByFarm]);
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
@@ -59,7 +59,8 @@ const RomaneiosTable = (props) => {
 			});
 			setdataFilter(sortArr);
 		}
-	}, [sortBy, dataFilter]);
+		setdataFilter(data)
+	}, [sortBy, dataFilter, data]);
 
 	const formatWeight = (peso) => {
 		if (peso > 0) {
@@ -79,12 +80,11 @@ const RomaneiosTable = (props) => {
 	}
 
 	const handleOrder = (data) => {
-		console.log(data);
 		setsortBy(data);
 	};
 
 	return (
-		<Box width={"100%"}>
+		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
 				<thead>
 					<tr>
@@ -117,7 +117,6 @@ const RomaneiosTable = (props) => {
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
 							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
-							console.log(carga.syncDate.toDate().toISOString().slice(0, 10))
 							const getTicket = carga?.ticket ? carga.ticket : '-'
 							return (
 								<tr
