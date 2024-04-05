@@ -21,7 +21,7 @@ import {
 	faSheetPlastic
 } from "@fortawesome/free-solid-svg-icons";
 
-const drawerWidth = 180;
+const drawerWidth = 130;
 
 const PermanentDrawerLeft = ({
 	handleNagivationIcon,
@@ -94,8 +94,10 @@ const PermanentDrawerLeft = ({
 										data.func();
 										handleNagivationIcon(data.route);
 									}}
+
+									sx={{width: '10px'}}
 								>
-									<ListItemIcon sx={{ color: data.route === selectedRoute && 'white' }}>
+									<ListItemIcon sx={{ color: data.route === selectedRoute && 'white', minWidth: '30px' }}>
 										<FontAwesomeIcon icon={data.icon} />
 									</ListItemIcon>
 									<ListItemText primary={data.title} sx={{ color: data.route === selectedRoute && 'white' }} />

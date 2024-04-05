@@ -25,6 +25,11 @@ body,
   width: 4px;
 }
 
+::-webkit-scrollbar:horizontal {
+  height: 8px;   
+  width: 8px;
+}
+
 /*Track*/
 ::-webkit-scrollbar-track{
   height: 90%;
