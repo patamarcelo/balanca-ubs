@@ -37,7 +37,7 @@ const ResumoGeral = (props) => {
                 flexDirection: "row",
                 borderRadius: "8px",
                 border: "0.5px dotted black",
-                padding: "15px",
+                padding: "8px 15px",
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 width: '100%',

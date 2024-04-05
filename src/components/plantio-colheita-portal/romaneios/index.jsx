@@ -199,7 +199,7 @@ const RomaneiosPage = () => {
                 const totalQUant = reduceFarms.reduce((acc, curr) => acc + curr.count, 0)
                 const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0)
                 return (
-                    <Box width={"100%"} height={"100%"}>
+                    <Box width={"100%"} >
                         <Divider textAlign="center" style={{ marginBottom: "15px" }}>
                             <Typography
                                 variant="h3"
