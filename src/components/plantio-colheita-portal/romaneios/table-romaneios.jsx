@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
 
+import toast from "react-hot-toast";
+
 const RomaneiosTable = (props) => {
 	const {data, handleUpdateCarga, colors, theme, setFilterDataArr} = props;
 
@@ -83,6 +85,13 @@ const RomaneiosTable = (props) => {
 		setsortBy(data);
 	};
 
+	const handlerCopyData = (carga) => {
+		navigator.clipboard.writeText(carga?.id)
+		toast.success(`ID Copiado!!: ${carga.relatorioColheita} - ID: ${carga.id}`,{
+			position: 'top-center',
+		})
+	}
+
 	return (
 		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
@@ -124,7 +133,7 @@ const RomaneiosTable = (props) => {
 									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
 								>
 									<td>{newDate}</td>
-									<td>{carga.relatorioColheita}</td>
+									<td onClick={() => handlerCopyData(carga)} style={{cursor: 'pointer'}}>{carga.relatorioColheita}</td>
 									<td>{getTicket}</td>
 									<td>{carga.fazendaOrigem}</td>
 									<td>
