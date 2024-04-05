@@ -277,7 +277,7 @@ const RomaneiosPage = () => {
                                     // backgroundColor: colors.greenAccent[400]
                                 }}
                                 >
-                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{fontWeight: 'bold'}}>Sem Cargas Pendentes</Typography>
+                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{fontWeight: 'bold'}}>{situacao === "Descarregados" ? "Nenhum veículo descarregado do período selecionado" : "Sem Cargas Pendentes" }</Typography>
                                 </Box>
                         }
                     </Box>
