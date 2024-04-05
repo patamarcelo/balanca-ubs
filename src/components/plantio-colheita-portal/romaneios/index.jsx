@@ -33,6 +33,14 @@ const RomaneiosPage = () => {
 
     const listSit = ["Descarregados", "Pendentes"];
 
+    const formatDateIn = (formDate) => {
+        const date = formDate?.replaceAll('-', '')
+        const year = date?.slice(0, 4);
+        const month = date?.slice(4, 6);
+        const day = date?.slice(6, 8);
+        return `${day}/${month}/${year}`;
+    };
+
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
@@ -146,7 +154,20 @@ const RomaneiosPage = () => {
                             />
                         </LocalizationProvider>
                     </Box>
-
+                    {
+                        filterDataArr &&
+                        <Box
+                            sx={{
+                                width: '100%',
+                                marginBottom: '-20px',
+                                display: 'flex',
+                                justifyContent: 'end'
+                            }}
+                            mt={5}
+                        >
+                            <Typography variant="h5" color={colors.textColor[100]}>{formatDateIn(filterDataArr)}</Typography>
+                        </Box>
+                    }
                     <Box
                         display={"flex"}
                         justifyContent={"center"}
@@ -170,7 +191,7 @@ const RomaneiosPage = () => {
                 let newArr;
                 if (situacao === "Descarregados") {
                     newArr = filteredUserData.filter((data) => data.liquido > 0);
-                    
+
                 } else {
                     newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
                 }
@@ -189,9 +210,9 @@ const RomaneiosPage = () => {
                         const getIndex = acc.findIndex(findIndexOf);
                         acc[getIndex]["peso"] += curr.liquido;
                         acc[getIndex]["count"] += 1;
-                        
 
-                        
+
+
                     }
                     return acc
                 }, [])
@@ -209,36 +230,58 @@ const RomaneiosPage = () => {
                                 {situacao}
                             </Typography>
                         </Divider>
-                        <Box
-                            mb={2}
-                            mt={2}
-                            >
-                            <ResumoHeader  data={{fazenda: 'Geral', peso: totalPeso , count: totalQUant}} />
-                            </Box>
-                        <Box
-                        display={"flex"}
-                        flexDirection={"row"}
-                        mt={2}
-                        mb={2}
-                        gap={4}
-                        >
                         {
-                            reduceFarms.map((data, i) => {
-                                return (
-                                    <ResumoHeader key={i} data={data} />
-                                    )
-                                })
-                            }
-                            </Box>
-                        <RomaneiosTable
-                            theme={theme}
-                            colors={colors}
-                            data={newArr}
-                            handleUpdateCarga={handleUpdateCarga}
-                            filterDataArr={filterDataArr}
-                            setFilterDataArr={setFilterDataArr}
-                        />
+                            newArr.length > 0 ?
+                                <>
+
+                                    <Box
+                                        mb={2}
+                                        mt={2}
+                                    >
+                                        <ResumoHeader data={{ fazenda: 'Geral', peso: totalPeso, count: totalQUant }} />
+                                    </Box>
+                                    <Box
+                                        display={"flex"}
+                                        flexDirection={"row"}
+                                        mt={2}
+                                        mb={2}
+                                        gap={4}
+                                    >
+                                        {
+                                            reduceFarms.map((data, i) => {
+                                                return (
+                                                    <ResumoHeader key={i} data={data} />
+                                                )
+                                            })
+                                        }
+                                    </Box>
+                                    <RomaneiosTable
+                                        theme={theme}
+                                        colors={colors}
+                                        data={newArr}
+                                        handleUpdateCarga={handleUpdateCarga}
+                                        filterDataArr={filterDataArr}
+                                        setFilterDataArr={setFilterDataArr}
+                                    />
+                                </>
+
+                                :
+
+                                <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    height: '200px',
+                                    // backgroundColor: colors.greenAccent[400]
+                                }}
+                                >
+                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{fontWeight: 'bold'}}>Sem Cargas Pendente</Typography>
+                                </Box>
+                        }
                     </Box>
+
                 );
             })}
         </Box>

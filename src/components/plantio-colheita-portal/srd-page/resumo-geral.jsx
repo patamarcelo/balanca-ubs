@@ -74,7 +74,7 @@ const ResumoGeral = (props) => {
         )} Scs
                 </Typography>
                 <Typography variant="h4" color={colors.grey[900]} sx={{fontWeight: '700'}}>
-                    {totalQuant} Cargas
+                    {totalQuant} {totalQuant > 1 ? "Cargas" : 'Carga'}
                 </Typography>
             </Box>
         </Box>

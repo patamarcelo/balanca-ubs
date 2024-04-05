@@ -56,7 +56,7 @@ const ResumoHeader = (props) => {
                     color={colors.grey[900]}
                     sx={{ fontWeight: "bold" }}
                 >
-                    {count} Cargas
+                    {count} {count > 1 ? "Cargas" : 'Carga'}
                 </Typography>
             </Box>
         </Box>
