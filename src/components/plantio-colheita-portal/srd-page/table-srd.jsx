@@ -33,7 +33,7 @@ const TableSrd = ({data}) => {
         <Box pl={2}>
             <Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm">
             {/* <Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}> */}
-			<thead style={{backgroundColor: 'blue', color: 'white'}}>
+			<thead style={{backgroundColor: colors.blueOrigin[300], color: 'white'}}>
 				<tr>
 					<th>Ticket</th>
 					<th>Data</th>
@@ -55,7 +55,7 @@ const TableSrd = ({data}) => {
                     data.map((parcela, i ) => {
                         return (
                             <tr key={i}
-                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
+                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
                             >
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
                                 <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.split('/').reverse().join('/')}</td>

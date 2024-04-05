@@ -192,6 +192,7 @@ const SRDPage = () => {
                                                             gap={10}
                                                             borderTop={"1px solid black"}
                                                             pl={2}
+                                                            ml={2}
                                                             mb={4}
                                                         >
                                                             <Typography

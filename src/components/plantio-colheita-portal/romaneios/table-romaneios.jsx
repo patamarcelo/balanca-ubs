@@ -95,7 +95,7 @@ const RomaneiosTable = (props) => {
 	return (
 		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
-				<thead>
+				<thead style={{backgroundColor: colors.blueOrigin[300]}}>
 					<tr>
 						<th>Data</th>
 						<th

@@ -174,7 +174,7 @@ const RomaneiosPage = () => {
                         p={1}
                         mb={3}
                         mt={3}
-                        sx={{ backgroundColor: colors.blueAccent[300], color: colors.grey[900] }}
+                        sx={{ backgroundColor: colors.blueOrigin[400], color: colors.grey[900] }}
                         width={"100%"}
                     >
                         <Typography

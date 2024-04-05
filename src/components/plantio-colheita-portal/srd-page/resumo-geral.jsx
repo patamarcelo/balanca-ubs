@@ -49,7 +49,7 @@ const ResumoGeral = (props) => {
         >
             <Box
             >
-                <Typography variant="h3" color={colors.grey[900]}>
+                <Typography variant="h3" color={'white'}>
                     <b>
                         {dest}
                         </b>

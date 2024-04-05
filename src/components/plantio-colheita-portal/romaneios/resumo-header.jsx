@@ -18,13 +18,14 @@ const ResumoHeader = (props) => {
             width={"250px"}
             borderRadius={"8px"}
             border={`1px dotted ${colors.textColor[100]}`}
-            sx={{ padding: "5px 20px", backgroundColor: fazenda === "Geral" ? colors.greenAccent[400] : colors.blueAccent[300] }}
+            sx={{ padding: "5px 20px", backgroundColor: fazenda === "Geral" ? colors.greenAccent[400] : colors.blueOrigin[400] }}
         >
             <Box>
                 <Typography
                     sx={{ fontWeight: "bold" }}
                     variant="h5"
-                    color={colors.textColor[200]}
+                    color={'white'}
+                    // color={colors.primary[800]}
                 >
                     {fazenda.replace("Projeto", "")}
                 </Typography>
