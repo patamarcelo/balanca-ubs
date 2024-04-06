@@ -8,8 +8,12 @@ import styles from "./romaneios.module.css";
 
 import toast from "react-hot-toast";
 
+import { useSelector } from "react-redux";
+import { selectIsAdminUser } from "../../../store/user/user.selector";
+
 const RomaneiosTable = (props) => {
 	const {data, handleUpdateCarga, colors, theme, setFilterDataArr} = props;
+	const isAdmin = useSelector(selectIsAdminUser)
 
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
@@ -92,6 +96,7 @@ const RomaneiosTable = (props) => {
 		})
 	}
 
+	console.log('Usuário é Admin ?? :, ', isAdmin)
 	return (
 		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
@@ -170,7 +175,7 @@ const RomaneiosTable = (props) => {
 												aria-label="delete"
 												size="sm"
 												color={carga.saida ? "success" : "warning"}
-												onClick={(e) => handleUpdateCarga(e, carga)}
+												onClick={(e) => isAdmin && handleUpdateCarga(e, carga)}
 												style={{ padding: "2px" }}
 											>
 												<DoneAll fontSize="inherit" />
