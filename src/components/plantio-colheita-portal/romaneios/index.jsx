@@ -201,6 +201,7 @@ const RomaneiosPage = () => {
                         const objToAdd = {
                             fazenda: curr.fazendaOrigem,
                             peso: curr.liquido,
+                            pesoBruto: curr.pesoBruto,
                             count: 1
                         }
                         acc.push(objToAdd)
@@ -209,6 +210,7 @@ const RomaneiosPage = () => {
                             e.fazenda === curr.fazendaOrigem
                         const getIndex = acc.findIndex(findIndexOf);
                         acc[getIndex]["peso"] += curr.liquido;
+                        acc[getIndex]["pesoBruto"] += curr.pesoBruto;
                         acc[getIndex]["count"] += 1;
 
 
@@ -218,6 +220,8 @@ const RomaneiosPage = () => {
                 }, [])
 
                 const totalQUant = reduceFarms.reduce((acc, curr) => acc + curr.count, 0)
+                const totalQUantDescarregando = newArr.filter((data) => data.pesoBruto > 920202020)
+                const totalQUantTransito = newArr.filter((data) => data.pesoBruto === "")
                 const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0)
                 return (
                     <Box width={"100%"} >
@@ -239,6 +243,13 @@ const RomaneiosPage = () => {
                                         mt={2}
                                     >
                                         <ResumoHeader data={{ fazenda: 'Geral', peso: totalPeso, count: totalQUant }} />
+                                        <Box
+                                        display={"flex"}
+                                        flexDirection={"row"}
+                                        >
+                                        <ResumoHeader data={{ fazenda: 'Descarregando', count: totalQUantDescarregando.length }} mtComp={2}/>
+                                        <ResumoHeader data={{ fazenda: 'Trânsito', count: totalQUantTransito.length }} mlComp={2} mtComp={2}/>
+                                        </Box>
                                     </Box>
                                     <Box
                                         display={"flex"}
