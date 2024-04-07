@@ -18,7 +18,7 @@ const ResumoHeader = (props) => {
             width={"250px"}
             borderRadius={"8px"}
             border={`1px dotted ${colors.textColor[100]}`}
-            sx={{ padding: "5px 20px", backgroundColor: fazenda === "Geral" ? colors.greenAccent[400] : fazenda === "Descarregando" ? colors.yellow[300] : colors.blueOrigin[400] }}
+            sx={{ padding: "5px 20px", backgroundColor: fazenda === "Geral" ? colors.greenAccent[400] : fazenda === "Descarregando" || fazenda === "Trânsito" ? colors.yellow[300] : colors.blueOrigin[400] }}
             mt={mtComp && mtComp}
             ml={mlComp && mlComp}
         >

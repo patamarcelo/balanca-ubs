@@ -220,7 +220,7 @@ const RomaneiosPage = () => {
                 }, [])
 
                 const totalQUant = reduceFarms.reduce((acc, curr) => acc + curr.count, 0)
-                const totalQUantDescarregando = newArr.filter((data) => data.pesoBruto > 920202020)
+                const totalQUantDescarregando = newArr.filter((data) => data.pesoBruto > 0)
                 const totalQUantTransito = newArr.filter((data) => data.pesoBruto === "")
                 const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0)
                 return (
@@ -243,13 +243,18 @@ const RomaneiosPage = () => {
                                         mt={2}
                                     >
                                         <ResumoHeader data={{ fazenda: 'Geral', peso: totalPeso, count: totalQUant }} />
-                                        <Box
-                                        display={"flex"}
-                                        flexDirection={"row"}
-                                        >
-                                        <ResumoHeader data={{ fazenda: 'Descarregando', count: totalQUantDescarregando.length }} mtComp={2}/>
-                                        <ResumoHeader data={{ fazenda: 'Trânsito', count: totalQUantTransito.length }} mlComp={2} mtComp={2}/>
-                                        </Box>
+                                        {
+                                            situacao !== "Descarregados" &&
+                                            <Box
+                                                display={"flex"}
+                                                flexDirection={"row"}
+                                                gap={4}
+                                            >
+
+                                                <ResumoHeader data={{ fazenda: 'Descarregando', count: totalQUantDescarregando.length }} mtComp={2} />
+                                                <ResumoHeader data={{ fazenda: 'Trânsito', count: totalQUantTransito.length }} mtComp={2} />
+                                            </Box>
+                                        }
                                     </Box>
                                     <Box
                                         display={"flex"}
@@ -279,16 +284,16 @@ const RomaneiosPage = () => {
                                 :
 
                                 <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                    height: '200px',
-                                    // backgroundColor: colors.greenAccent[400]
-                                }}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        height: '200px',
+                                        // backgroundColor: colors.greenAccent[400]
+                                    }}
                                 >
-                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{fontWeight: 'bold'}}>{situacao === "Descarregados" ? "Nenhum veículo descarregado do período selecionado" : "Sem Cargas Pendentes" }</Typography>
+                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{ fontWeight: 'bold' }}>{situacao === "Descarregados" ? "Nenhum veículo descarregado do período selecionado" : "Sem Cargas Pendentes"}</Typography>
                                 </Box>
                         }
                     </Box>
