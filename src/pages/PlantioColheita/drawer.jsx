@@ -21,6 +21,8 @@ import {
 	faSheetPlastic
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useNavigate } from "react-router-dom";
+
 const drawerWidth = 130;
 
 const PermanentDrawerLeft = ({
@@ -30,6 +32,7 @@ const PermanentDrawerLeft = ({
 }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const navigate = useNavigate();
 
 	const handlerRota2 = () => console.log("handler Rota 2");
 	const handlerRota3 = () => console.log("handler Rota 3");
@@ -118,8 +121,10 @@ const PermanentDrawerLeft = ({
 						<Box
 							sx={{
 								width: "50px",
-								height: "50px"
+								height: "50px",
+								cursor: 'pointer'
 							}}
+							onClick={() => navigate("/")}
 						>
 							<Diamond
 								sx={{

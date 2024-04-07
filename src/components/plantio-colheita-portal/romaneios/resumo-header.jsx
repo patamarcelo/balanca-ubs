@@ -1,10 +1,8 @@
 import { Typography, useTheme, Box } from "@mui/material";
 import { tokens } from "../../../theme";
 
-const ResumoHeader = (props) => {
-    const {
-        data: { fazenda, peso, count }, mtComp, mlComp
-    } = props;
+const ResumoHeader = props => {
+    const { data: { fazenda, peso, count }, mtComp, mlComp } = props;
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -18,7 +16,16 @@ const ResumoHeader = (props) => {
             width={"250px"}
             borderRadius={"8px"}
             border={`1px dotted ${colors.textColor[100]}`}
-            sx={{ padding: "5px 20px", backgroundColor: fazenda === "Geral" ? colors.greenAccent[400] : fazenda === "Descarregando" || fazenda === "Trânsito" ? colors.yellow[300] : colors.blueOrigin[400] }}
+            sx={{
+                padding: "5px 20px",
+                backgroundColor:
+                    fazenda === "Geral"
+                        ? colors.greenAccent[400]
+                        : fazenda === "Descarregando" || fazenda === "Trânsito"
+                            ? colors.yellow[300]
+                            : colors.blueOrigin[400]
+                
+            }}
             mt={mtComp && mtComp}
             ml={mlComp && mlComp}
         >
@@ -26,8 +33,8 @@ const ResumoHeader = (props) => {
                 <Typography
                     sx={{ fontWeight: "bold" }}
                     variant="h5"
-                    color={'white'}
-                    // color={colors.primary[800]}
+                    color={fazenda === "Descarregando" || fazenda === "Trânsito" ? colors.textColor[200] : "white"}
+                // color={colors.primary[800]}
                 >
                     {fazenda.replace("Projeto", "")}
                 </Typography>
@@ -38,7 +45,8 @@ const ResumoHeader = (props) => {
                 justifyContent={"space-around"}
                 alignItems={"end"}
             >
-                {peso && peso > 0 && (
+                {peso &&
+                    peso > 0 &&
                     <Typography
                         variant="h5"
                         color={colors.grey[900]}
@@ -52,14 +60,13 @@ const ResumoHeader = (props) => {
                             maximumFractionDigits: 0
                         })}{" "}
                         Scs
-                    </Typography>
-                )}
+                    </Typography>}
                 <Typography
                     variant="h5"
                     color={colors.grey[900]}
                     sx={{ fontWeight: "bold" }}
                 >
-                    {count} {count > 1 || count === 0 ? "Cargas" : 'Carga'}
+                    {count} {count > 1 || count === 0 ? "Cargas" : "Carga"}
                 </Typography>
             </Box>
         </Box>
