@@ -190,7 +190,7 @@ const RomaneiosPage = () => {
             {listSit.map((situacao) => {
                 let newArr;
                 if (situacao === "Descarregados") {
-                    newArr = filteredUserData.filter((data) => data.liquido > 0);
+                    newArr = filteredUserData.filter((data) => data.liquido > 0).sort((a,b) => a?.saida && b?.saida.toMillis() - a?.saida.toMillis())
 
                 } else {
                     const withWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto === "").sort((a, b) => b.relatorioColheita - a.relatorioColheita)
@@ -267,7 +267,7 @@ const RomaneiosPage = () => {
                                         gap={4}
                                     >
                                         {
-                                            reduceFarms.map((data, i) => {
+                                            reduceFarms.sort((b,a) => a.count - b.count).map((data, i) => {
                                                 return (
                                                     <ResumoHeader key={i} data={data} />
                                                 )

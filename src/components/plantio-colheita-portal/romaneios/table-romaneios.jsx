@@ -52,20 +52,20 @@ const RomaneiosTable = (props) => {
 	// }, [data, setResumeByFarm]);
 
 	useEffect(() => {
-		if (sortBy === "fazendaOrigem") {
-			const sortArr = dataFilter.sort((a, b) =>
+			if (sortBy === "fazendaOrigem") {
+				const sortArr = dataFilter.sort((a, b) =>
 				a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-			);
-			setdataFilter(sortArr);
-		}
-		if (sortBy === "relatorioColheita") {
-			const sortArr = dataFilter.sort((a, b) => {
-				console.log(a.relatorioColheita);
-				return b.relatorioColheita - a.relatorioColheita;
-			});
-			setdataFilter(sortArr);
-		}
-		setdataFilter(data)
+				);
+				setdataFilter(sortArr);
+			}
+			if (sortBy === "relatorioColheita") {
+				const sortArr = dataFilter.sort((a, b) => {
+					console.log(a.relatorioColheita);
+					return b.relatorioColheita - a.relatorioColheita;
+				});
+				setdataFilter(sortArr);
+			}
+			setdataFilter(data)
 	}, [sortBy, dataFilter, data]);
 
 	const formatWeight = (peso) => {
@@ -86,7 +86,7 @@ const RomaneiosTable = (props) => {
 	}
 
 	const handleOrder = (data) => {
-		setsortBy(data);
+		setsortBy(prev => data);
 	};
 
 	const handlerCopyData = (carga) => {
