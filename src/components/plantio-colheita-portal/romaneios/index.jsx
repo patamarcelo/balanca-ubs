@@ -193,7 +193,7 @@ const RomaneiosPage = () => {
                     newArr = filteredUserData.filter((data) => data.liquido > 0);
 
                 } else {
-                    const withWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto === "").sort((a, b) => a.relatorioColheita - b.relatorioColheita)
+                    const withWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto === "").sort((a, b) => b.relatorioColheita - a.relatorioColheita)
                     const noWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto > 0).sort((a,b) => b.entrada.toMillis() - a.entrada.toMillis())
                     newArr = noWei.concat(withWei)
                     // newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
