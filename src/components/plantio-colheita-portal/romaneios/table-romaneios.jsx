@@ -130,7 +130,7 @@ const RomaneiosTable = (props) => {
 				<tbody>
 					{dataFilter &&
 						dataFilter.map((carga, i) => {
-							const newDate = carga.syncDate.toDate().toLocaleString("pt-BR");
+							const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
 							const getTicket = carga?.ticket ? carga.ticket : '-'
 							return (
 								<tr
