@@ -487,6 +487,7 @@ export const createDictFarmBox = (state) => {
 		const insumosSolicitados = data.inputs.map((data) => {
 			return {
 				insumo: data.input.name,
+				insumo_id: data.input.id,
 				tipo: data.input.input_type_name,
 				quantidade: data.sought_quantity
 					.toFixed(2)

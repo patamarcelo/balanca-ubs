@@ -230,6 +230,7 @@ const ModalDataFarmbox = (props) => {
 							}),
 							dose: ins.dose.replace(".", ","),
 							insumo: ins.insumo,
+							insumo_id : ins.insumo_id,
 							tipo: ins.tipo,
 							id: `${parc.id}${ins.dose}${ins.insumo}`
 						};

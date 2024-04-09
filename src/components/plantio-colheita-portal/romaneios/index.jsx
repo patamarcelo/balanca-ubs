@@ -34,7 +34,7 @@ const RomaneiosPage = () => {
     const listSit = ["Descarregados", "Pendentes"];
 
     const formatDateIn = (formDate) => {
-        const date = formDate?.replaceAll('-', '')
+        const date = formDate?.replaceAll("-", "");
         const year = date?.slice(0, 4);
         const month = date?.slice(4, 6);
         const day = date?.slice(6, 8);
@@ -73,7 +73,11 @@ const RomaneiosPage = () => {
     const handleUpdateCarga = async (event, cargaDetail) => {
         if (
             window.confirm(
-                `Confirma o lançamento da carga: \n ${cargaDetail.relatorioColheita} - ${cargaDetail.placa} - ${cargaDetail.motorista}`
+                `Confirma o lançamento da carga: \n ${cargaDetail.relatorioColheita
+                } - ${cargaDetail.placa} - ${cargaDetail.fazendaOrigem
+                }- ${cargaDetail.parcelasNovas
+                    .sort((a, b) => a.localeCompare(b))
+                    .join(", ")}`
             ) === true
         ) {
             console.log(cargaDetail);
@@ -154,27 +158,31 @@ const RomaneiosPage = () => {
                             />
                         </LocalizationProvider>
                     </Box>
-                    {
-                        filterDataArr &&
+                    {filterDataArr && (
                         <Box
                             sx={{
-                                width: '100%',
-                                marginBottom: '-20px',
-                                display: 'flex',
-                                justifyContent: 'end'
+                                width: "100%",
+                                marginBottom: "-20px",
+                                display: "flex",
+                                justifyContent: "end"
                             }}
                             mt={5}
                         >
-                            <Typography variant="h5" color={colors.textColor[100]}>{formatDateIn(filterDataArr)}</Typography>
+                            <Typography variant="h5" color={colors.textColor[100]}>
+                                {formatDateIn(filterDataArr)}
+                            </Typography>
                         </Box>
-                    }
+                    )}
                     <Box
                         display={"flex"}
                         justifyContent={"center"}
                         p={1}
                         mb={3}
                         mt={3}
-                        sx={{ backgroundColor: colors.blueOrigin[400], color: colors.grey[900] }}
+                        sx={{
+                            backgroundColor: colors.blueOrigin[400],
+                            color: colors.grey[900]
+                        }}
                         width={"100%"}
                     >
                         <Typography
@@ -190,44 +198,59 @@ const RomaneiosPage = () => {
             {listSit.map((situacao) => {
                 let newArr;
                 if (situacao === "Descarregados") {
-                    newArr = filteredUserData.filter((data) => data.liquido > 0).sort((a,b) => a?.saida && b?.saida.toMillis() - a?.saida.toMillis())
-
+                    newArr = filteredUserData
+                        .filter((data) => data.liquido > 0)
+                        .sort(
+                            (a, b) => a?.saida && b?.saida.toMillis() - a?.saida.toMillis()
+                        );
                 } else {
-                    const withWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto === "").sort((a, b) => b.relatorioColheita - a.relatorioColheita)
-                    const noWei = filteredUserData.filter((data) => data.saida.length === 0).filter((data) => data.pesoBruto > 0).sort((a,b) => b.entrada.toMillis() - a.entrada.toMillis())
-                    newArr = noWei.concat(withWei)
+                    const withWei = filteredUserData
+                        .filter((data) => data.saida.length === 0)
+                        .filter((data) => data.pesoBruto === "")
+                        .sort((a, b) => b.relatorioColheita - a.relatorioColheita);
+                    const noWei = filteredUserData
+                        .filter((data) => data.saida.length === 0)
+                        .filter((data) => data.pesoBruto > 0)
+                        .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
+                    newArr = noWei.concat(withWei);
                     // newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
                 }
 
                 const reduceFarms = newArr.reduce((acc, curr) => {
-                    if (acc.filter((data) => data.fazenda === curr.fazendaOrigem).length === 0) {
+                    if (
+                        acc.filter((data) => data.fazenda === curr.fazendaOrigem).length ===
+                        0
+                    ) {
                         const objToAdd = {
                             fazenda: curr.fazendaOrigem,
                             peso: curr.liquido,
                             pesoBruto: curr.pesoBruto,
                             count: 1
-                        }
-                        acc.push(objToAdd)
+                        };
+                        acc.push(objToAdd);
                     } else {
-                        const findIndexOf = (e) =>
-                            e.fazenda === curr.fazendaOrigem
+                        const findIndexOf = (e) => e.fazenda === curr.fazendaOrigem;
                         const getIndex = acc.findIndex(findIndexOf);
                         acc[getIndex]["peso"] += curr.liquido;
                         acc[getIndex]["pesoBruto"] += curr.pesoBruto;
                         acc[getIndex]["count"] += 1;
-
-
-
                     }
-                    return acc
-                }, [])
+                    return acc;
+                }, []);
 
-                const totalQUant = reduceFarms.reduce((acc, curr) => acc + curr.count, 0)
-                const totalQUantDescarregando = newArr.filter((data) => data.pesoBruto > 0)
-                const totalQUantTransito = newArr.filter((data) => data.pesoBruto === "")
-                const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0)
+                const totalQUant = reduceFarms.reduce(
+                    (acc, curr) => acc + curr.count,
+                    0
+                );
+                const totalQUantDescarregando = newArr.filter(
+                    (data) => data.pesoBruto > 0
+                );
+                const totalQUantTransito = newArr.filter(
+                    (data) => data.pesoBruto === ""
+                );
+                const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0);
                 return (
-                    <Box width={"100%"} >
+                    <Box width={"100%"}>
                         <Divider textAlign="center" style={{ marginBottom: "15px" }}>
                             <Typography
                                 variant="h3"
@@ -237,70 +260,80 @@ const RomaneiosPage = () => {
                                 {situacao}
                             </Typography>
                         </Divider>
-                        {
-                            newArr.length > 0 ?
-                                <>
-
-                                    <Box
-                                        mb={2}
-                                        mt={2}
-                                    >
-                                        <ResumoHeader data={{ fazenda: 'Geral', peso: totalPeso, count: totalQUant }} />
-                                        {
-                                            situacao !== "Descarregados" &&
-                                            <Box
-                                                display={"flex"}
-                                                flexDirection={"row"}
-                                                gap={4}
-                                            >
-
-                                                <ResumoHeader data={{ fazenda: 'Descarregando', count: totalQUantDescarregando.length }} mtComp={2} />
-                                                <ResumoHeader data={{ fazenda: 'Trânsito', count: totalQUantTransito.length }} mtComp={2} />
-                                            </Box>
-                                        }
-                                    </Box>
-                                    <Box
-                                        display={"flex"}
-                                        flexDirection={"row"}
-                                        mt={2}
-                                        mb={2}
-                                        gap={4}
-                                    >
-                                        {
-                                            reduceFarms.sort((b,a) => a.count - b.count).map((data, i) => {
-                                                return (
-                                                    <ResumoHeader key={i} data={data} />
-                                                )
-                                            })
-                                        }
-                                    </Box>
-                                    <RomaneiosTable
-                                        theme={theme}
-                                        colors={colors}
-                                        data={newArr}
-                                        handleUpdateCarga={handleUpdateCarga}
-                                        filterDataArr={filterDataArr}
-                                        setFilterDataArr={setFilterDataArr}
+                        {newArr.length > 0 ? (
+                            <>
+                                <Box mb={2} mt={2}>
+                                    <ResumoHeader
+                                        data={{
+                                            fazenda: "Geral",
+                                            peso: totalPeso,
+                                            count: totalQUant
+                                        }}
                                     />
-                                </>
-
-                                :
-
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        height: '200px',
-                                        // backgroundColor: colors.greenAccent[400]
-                                    }}
-                                >
-                                    <Typography variant="h2" color={colors.greenAccent[300]} sx={{ fontWeight: 'bold' }}>{situacao === "Descarregados" ? "Nenhum veículo descarregado do período selecionado" : "Sem Cargas Pendentes"}</Typography>
+                                    {situacao !== "Descarregados" && (
+                                        <Box display={"flex"} flexDirection={"row"} gap={4}>
+                                            <ResumoHeader
+                                                data={{
+                                                    fazenda: "Descarregando",
+                                                    count: totalQUantDescarregando.length
+                                                }}
+                                                mtComp={2}
+                                            />
+                                            <ResumoHeader
+                                                data={{
+                                                    fazenda: "Trânsito",
+                                                    count: totalQUantTransito.length
+                                                }}
+                                                mtComp={2}
+                                            />
+                                        </Box>
+                                    )}
                                 </Box>
-                        }
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"row"}
+                                    mt={2}
+                                    mb={2}
+                                    gap={4}
+                                >
+                                    {reduceFarms
+                                        .sort((b, a) => a.count - b.count)
+                                        .map((data, i) => {
+                                            return <ResumoHeader key={i} data={data} />;
+                                        })}
+                                </Box>
+                                <RomaneiosTable
+                                    theme={theme}
+                                    colors={colors}
+                                    data={newArr}
+                                    handleUpdateCarga={handleUpdateCarga}
+                                    filterDataArr={filterDataArr}
+                                    setFilterDataArr={setFilterDataArr}
+                                />
+                            </>
+                        ) : (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    height: "200px"
+                                    // backgroundColor: colors.greenAccent[400]
+                                }}
+                            >
+                                <Typography
+                                    variant="h2"
+                                    color={colors.greenAccent[300]}
+                                    sx={{ fontWeight: "bold" }}
+                                >
+                                    {situacao === "Descarregados"
+                                        ? "Nenhum veículo descarregado do período selecionado"
+                                        : "Sem Cargas Pendentes"}
+                                </Typography>
+                            </Box>
+                        )}
                     </Box>
-
                 );
             })}
         </Box>

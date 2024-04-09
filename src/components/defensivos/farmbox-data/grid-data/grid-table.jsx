@@ -43,6 +43,7 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Ciclo", field: "ciclo", width: 50 },
 		{ headerName: "Status", field: "statusParcela" },
 		{ headerName: "Insumo", field: "insumo" },
+		{ headerName: "ID Insumo", field: "insumo_id" },
 		{ headerName: "Tipo", field: "tipo" },
 		{ headerName: "Dose", field: "dose" },
 		{ headerName: "Area", field: "area" },
