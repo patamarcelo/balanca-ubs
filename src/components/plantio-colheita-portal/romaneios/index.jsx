@@ -29,16 +29,22 @@ const RomaneiosPage = () => {
     const [isLoadingHome, setIsLoading] = useState(true);
     const useData = useSelector(selectRomaneiosLoads);
     const [filteredUserData, setfilteredUserData] = useState([]);
+    const [filterDataArrInit, setFilterDataArrInit] = useState(null);
     const [filterDataArr, setFilterDataArr] = useState(null);
 
     const listSit = ["Descarregados", "Pendentes"];
 
-    const formatDateIn = (formDate) => {
-        const date = formDate?.replaceAll("-", "");
+    const formatDateIn = (dateInit, dataFinal) => {
+        const date = dataFinal?.replaceAll("-", "");
         const year = date?.slice(0, 4);
         const month = date?.slice(4, 6);
         const day = date?.slice(6, 8);
         return `${day}/${month}/${year}`;
+    };
+
+    const handlerClearData = () => {
+        setFilterDataArr(null);
+        setFilterDataArrInit(null);
     };
 
     useEffect(() => {
@@ -51,24 +57,66 @@ const RomaneiosPage = () => {
     useEffect(() => {
         console.log("data: ", filterDataArr);
         if (useData.length > 0) {
-            if (filterDataArr) {
+            if (filterDataArr && filterDataArrInit) {
                 setfilteredUserData(
                     useData
                         .filter((data) => data.uploadedToProtheus === false)
-                        .filter((data) =>
-                            filterDataArr
-                                ? data.syncDate.toDate().toISOString().slice(0, 10) ===
-                                filterDataArr
-                                : data.syncDate.length > 0
+                        .filter((data) => {
+                            const addOndeDay = new Date(filterDataArr);
+                            addOndeDay.setDate(addOndeDay.getDate() + 1);
+                            return (
+                                new Date(data.syncDate.toDate().toDateString()) <= addOndeDay
+                            );
+                        })
+                        .filter(
+                            (data) =>
+                                new Date(data.syncDate.toDate().toDateString()) >=
+                                new Date(filterDataArrInit)
                         )
                 );
-            } else {
+            } else if (filterDataArr != null) {
+                setfilteredUserData(
+                    useData
+                        .filter((data) => data.uploadedToProtheus === false)
+                        .filter((data) => {
+                            const addOndeDay = new Date(filterDataArr);
+                            addOndeDay.setDate(addOndeDay.getDate() + 1);
+                            return (
+                                new Date(data.syncDate.toDate().toDateString()) <= addOndeDay
+                            );
+                        })
+                );
+            } else if (filterDataArrInit != null) {
+                setfilteredUserData(
+                    useData
+                        .filter((data) => data.uploadedToProtheus === false)
+                        .filter((data) => {
+                            console.log(
+                                "dataString: , ",
+                                new Date(data.syncDate.toDate()).toDateString()
+                            );
+                            console.log(
+                                "dataStringInit: , ",
+                                new Date(filterDataArrInit).toDateString()
+                            );
+                            console.log(
+                                "isBigger??",
+                                new Date(data.syncDate.toDate()).toDateString() >=
+                                new Date(filterDataArrInit).toDateString()
+                            );
+                            return (
+                                new Date(data.syncDate.toDate().toDateString()) >=
+                                new Date(filterDataArrInit)
+                            );
+                        })
+                );
+            } else if (filterDataArrInit === null && filterDataArr === null) {
                 setfilteredUserData(
                     useData.filter((data) => data.uploadedToProtheus === false)
                 );
             }
         }
-    }, [useData, filterDataArr]);
+    }, [useData, filterDataArr, filterDataArrInit]);
 
     const handleUpdateCarga = async (event, cargaDetail) => {
         if (
@@ -126,39 +174,44 @@ const RomaneiosPage = () => {
             alignItems={filteredUserData.length === 0 ? "center" : "flex-start"}
             p={5}
         >
+            <Box display={"flex"} flexDirection={"row"} gap={"10px"} width={"100%"}>
+                {(filterDataArr || filterDataArrInit) && (
+                    <IconButton
+                        aria-label="delete"
+                        size="sm"
+                        color="warning"
+                        onClick={(e) => handlerClearData()}
+                        style={{ padding: "2px" }}
+                    >
+                        <CancelIcon fontSize="inherit" />
+                    </IconButton>
+                )}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Data Inicial"
+                        renderInput={(params) => <TextField size="small" {...params} />}
+                        onChange={(newValue) =>
+                            setFilterDataArrInit(
+                                new Date(newValue).toISOString().slice(0, 10)
+                            )
+                        }
+                        value={filterDataArrInit}
+                    />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Data Final"
+                        renderInput={(params) => <TextField size="small" {...params} />}
+                        onChange={(newValue) =>
+                            setFilterDataArr(new Date(newValue).toISOString().slice(0, 10))
+                        }
+                        value={filterDataArr}
+                    />
+                </LocalizationProvider>
+            </Box>
             {filteredUserData.length > 0 && (
                 <>
-                    <Box
-                        display={"flex"}
-                        flexDirection={"row"}
-                        gap={"10px"}
-                        width={"100%"}
-                    >
-                        {filterDataArr && (
-                            <IconButton
-                                aria-label="delete"
-                                size="sm"
-                                color="warning"
-                                onClick={(e) => setFilterDataArr(null)}
-                                style={{ padding: "2px" }}
-                            >
-                                <CancelIcon fontSize="inherit" />
-                            </IconButton>
-                        )}
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                label="Data"
-                                renderInput={(params) => <TextField size="small" {...params} />}
-                                onChange={(newValue) =>
-                                    setFilterDataArr(
-                                        new Date(newValue).toISOString().slice(0, 10)
-                                    )
-                                }
-                                value={filterDataArr}
-                            />
-                        </LocalizationProvider>
-                    </Box>
-                    {filterDataArr && (
+                    {(filterDataArr || filterDataArrInit) && (
                         <Box
                             sx={{
                                 width: "100%",
@@ -169,7 +222,7 @@ const RomaneiosPage = () => {
                             mt={5}
                         >
                             <Typography variant="h5" color={colors.textColor[100]}>
-                                {formatDateIn(filterDataArr)}
+                                {formatDateIn(filterDataArrInit, filterDataArr)}
                             </Typography>
                         </Box>
                     )}
@@ -200,9 +253,7 @@ const RomaneiosPage = () => {
                 if (situacao === "Descarregados") {
                     newArr = filteredUserData
                         .filter((data) => data.liquido > 0)
-                        .sort(
-                            (a, b) => a?.saida && b?.saida.toMillis() - a?.saida.toMillis()
-                        );
+                        .sort((a, b) => a?.saida && b?.saida - a?.saida);
                 } else {
                     const withWei = filteredUserData
                         .filter((data) => data.saida.length === 0)
