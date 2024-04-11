@@ -55,7 +55,7 @@ const TableSrd = ({data}) => {
                     data.map((parcela, i ) => {
                         return (
                             <tr key={i}
-                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
+                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${(parcela.UMIDADE_ENTRADA > 25 || parcela.IMPUREZA_ENTRADA > 3) && styles.warningRow}`}
                             >
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
                                 <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.split('/').reverse().join('/')}</td>

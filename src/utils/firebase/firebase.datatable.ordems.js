@@ -1,8 +1,7 @@
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { query, orderBy, getDocs } from "firebase/firestore";
 import { TABLES_FIREBASE } from "./firebase.typestables";
-import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 
 import toast from "react-hot-toast";
 
