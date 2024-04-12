@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Divider } from "@mui/material";
+import { Box, Typography, useTheme, Divider, Button } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import { useEffect, useState } from "react";
@@ -40,6 +40,26 @@ const RomaneiosPage = () => {
         const month = date?.slice(4, 6);
         const day = date?.slice(6, 8);
         return `${day}/${month}/${year}`;
+    };
+
+    const handlerToday = () => {
+        const newDate = new Date();
+        const formDate = newDate.toLocaleDateString().replaceAll("/", "-");
+        const reversed = formDate.split("-").reverse().join("-");
+        setFilterDataArrInit(reversed);
+        setFilterDataArr(reversed);
+    };
+    
+    const handlerYesterday = () => {
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        var year = yesterday.getFullYear();
+        var month = ("0" + (yesterday.getMonth() + 1)).slice(-2); // Adding 1 because getMonth returns zero-based index
+        var day = ("0" + yesterday.getDate()).slice(-2);
+        const reversed =  year + "-" + month + "-" + day;
+        setFilterDataArrInit(reversed);
+        setFilterDataArr(reversed);
     };
 
     const handlerClearData = () => {
@@ -208,6 +228,12 @@ const RomaneiosPage = () => {
                         value={filterDataArr}
                     />
                 </LocalizationProvider>
+                <Button color="warning" variant="outlined" onClick={handlerYesterday}>
+                    Ontem
+                </Button>
+                <Button color="success" variant="outlined" onClick={handlerToday}>
+                    Hoje
+                </Button>
             </Box>
             {filteredUserData.length > 0 && (
                 <>
