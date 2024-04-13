@@ -22,7 +22,8 @@ export const nodeServer = axios.create({
 	baseURL:
 		process.env.NODE_ENV !== "production" ? baseURLdevNode : baseURLNode,
 	headers: {
-		"Content-Type": "application/json"
+		"Content-Type": "application/json",
+		"Authorization": `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 	}
 });
 
@@ -31,7 +32,8 @@ export const nodeServerSrd = axios.create({
 	baseURL:
 		process.env.NODE_ENV !== "production" ? baseURLdevNodeSRD : baseURLNodeSRD,
 	headers: {
-		"Content-Type": "application/json"
+		"Content-Type": "application/json",
+		"Authorization": `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 	}
 });
 

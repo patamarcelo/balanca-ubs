@@ -33,6 +33,7 @@ import formatDate, {
 } from "../../../utils/format-suport/data-format";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
 export default function FormDialog(props) {
 	const user = useSelector(selectCurrentUser);
@@ -147,6 +148,19 @@ export default function FormDialog(props) {
 		navigate("/print", { state: { data: data } });
 	};
 
+	const updateAndSendProtheus = async (cargaId) => {
+		try {
+			const response = await nodeServerSrd
+				.post("updated-romaneio-data/", {
+					id: cargaId,
+				})
+				.catch((err) => console.log(err));
+			return response;
+		} catch (err) {
+			console.log("Erro ao consumir a API para envio de romaneio ao protheus", err);
+		}
+	}
+
 	const handleEditCarga = async (event) => {
 		event.preventDefault();
 		setIsLoadingSubmit(true);
@@ -164,6 +178,13 @@ export default function FormDialog(props) {
 			};
 			await handleUpdateTruck(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
+			if(newTransData?.createdBy === "App"){
+				console.log('Enviando alterações para o protheus')
+				const result = await updateAndSendProtheus(truckValues.id)
+				console.log('result from protheus API: ', result)
+			} else {
+				console.log('dados não enviados')
+			}
 			handleCloseModal();
 			handlerSave(saved + 1);
 			if (isNumber(truckValues.liquido) > 0) {
@@ -181,6 +202,7 @@ export default function FormDialog(props) {
 		}
 	};
 
+
 	const handleEditCargaFull = async (event) => {
 		event.preventDefault();
 		setIsLoadingSubmit(true);
@@ -190,6 +212,13 @@ export default function FormDialog(props) {
 			};
 			await handleUpdateClassic(event, truckValues.id, newTransData);
 			toast.success("Carga alterada com sucesso!!");
+			if(newTransData?.createdBy === "App"){
+				console.log('Enviando alterações para o protheus')
+				const result = await updateAndSendProtheus(truckValues.id)
+				console.log('result from protheus API: ', result)
+			} else {
+				console.log('dados não enviados')
+			}
 			handleCloseModal();
 			handlerSave(saved + 1);
 		} catch (error) {
