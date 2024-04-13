@@ -142,8 +142,8 @@ const RomaneiosPage = () => {
         if (
             window.confirm(
                 `Confirma o lançamento da carga: \n ${cargaDetail.relatorioColheita
-                } - ${cargaDetail.placa} - ${cargaDetail.fazendaOrigem
-                }- ${cargaDetail.parcelasNovas
+                } - ${cargaDetail.placa} -${cargaDetail.fazendaOrigem
+                }\nTicket: ${cargaDetail?.ticket} - Parcela${cargaDetail?.parcelasNovas.length > 1 ? 's' : ''}: ${cargaDetail.parcelasNovas
                     .sort((a, b) => a.localeCompare(b))
                     .join(", ")}`
             ) === true
