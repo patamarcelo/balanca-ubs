@@ -347,7 +347,7 @@ const RomaneiosPage = () => {
                                         }}
                                     />
                                     {situacao !== "Descarregados" && (
-                                        <Box display={"flex"} flexDirection={"row"} gap={4}>
+                                        <Box display={"flex"} flexDirection={"row"} gap={2}>
                                             <ResumoHeader
                                                 data={{
                                                     fazenda: "Descarregando",
@@ -366,11 +366,12 @@ const RomaneiosPage = () => {
                                     )}
                                 </Box>
                                 <Box
-                                    display={"flex"}
-                                    flexDirection={"row"}
+                                    display={"grid"}
+                                    gridTemplateColumns={"repeat(5, 250px)"}
                                     mt={2}
                                     mb={2}
-                                    gap={4}
+                                    columnGap={2}
+                                    rowGap={"15px"}
                                 >
                                     {reduceFarms
                                         .sort((b, a) => a.count - b.count)
