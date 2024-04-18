@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 
 const ColheitaAtual = (props) => {
-	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData, idsPending } =
+	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData, idsPending, resumeFarmRomaneios } =
 		props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -52,7 +52,6 @@ const ColheitaAtual = (props) => {
 	const handleFilterTable = () => {
 		setDateSort(!dateSort);
 	};
-
 	return (
 		<Box
 			width={"100%"}
@@ -95,6 +94,9 @@ const ColheitaAtual = (props) => {
 				</span>
 				<span>
 					<b>Parcelas:</b> <br />{parcelasTotal}
+				</span>
+				<span>
+					<b>Romaneios Pendentes:</b> <br />{resumeFarmRomaneios[selectedFarm] ? resumeFarmRomaneios[selectedFarm] : ' - '}
 				</span>
 			</Box>
 			<Box

@@ -2,7 +2,6 @@ import Table from "react-bootstrap/Table";
 import styles from "./plantio-colheita.module.css";
 
 const TableColheita = ({ data, colors, idsPending, theme }) => {
-	console.log('tabela colheita :', theme.palette.mode)
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
 			<thead>

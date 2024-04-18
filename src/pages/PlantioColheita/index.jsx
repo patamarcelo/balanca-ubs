@@ -43,6 +43,7 @@ const PlantioColheitaPage = () => {
 
 	const useData = useSelector(selectRomaneiosLoads)
 	const [idsRomaneioPending, setIdsRomaneioPending] = useState({});
+	const [resumeFarmRomaneios, setResumeFarmRomaneios] = useState({});
 
 	const handleNagivationIcon = (route) => {
 		setSelectedRoute(route);
@@ -201,12 +202,15 @@ const PlantioColheitaPage = () => {
 
 	const handlerUpdateRomaneios = () => {
 		const resumeId = {}
+		const resumeFarm = {}
 		useData.filter((data) => data.uploadedToProtheus === false).forEach(data => {
+			resumeFarm[data.fazendaOrigem] = resumeFarm[data.fazendaOrigem] ? resumeFarm[data.fazendaOrigem] + 1 : 1
 			data?.parcelasObjFiltered?.forEach((parcela) => {
 				resumeId[parcela.id_plantio] = resumeId[parcela.id_plantio] ? resumeId[parcela.id_plantio] + 1 : 1
 			})
 		});
 		setIdsRomaneioPending(resumeId)
+		setResumeFarmRomaneios(resumeFarm)
 	}
 	useEffect(() => {
 		handlerUpdateRomaneios()
@@ -265,6 +269,7 @@ const PlantioColheitaPage = () => {
 						handlerFilter={handlerFilter}
 						selectedFilteredData={selectedFilteredData}
 						idsPending={idsRomaneioPending}
+						resumeFarmRomaneios={resumeFarmRomaneios}
 					/>
 				)}
 			</Box>
