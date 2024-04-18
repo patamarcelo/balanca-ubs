@@ -1,7 +1,9 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { tokens } from "../../../theme";
 import DoneAll from "@mui/icons-material/DoneAll";
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import { useState, useEffect } from "react";
+
 
 import Table from "react-bootstrap/Table";
 import styles from "./romaneios.module.css";
@@ -12,7 +14,11 @@ import { useSelector } from "react-redux";
 import { selectIsAdminUser } from "../../../store/user/user.selector";
 
 const RomaneiosTable = (props) => {
-	const {data, handleUpdateCarga, colors, theme, setFilterDataArr} = props;
+	const {data, handleUpdateCarga, setFilterDataArr, duplicates} = props;
+
+	const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+
 	const isAdmin = useSelector(selectIsAdminUser)
 
 	const [sortBy, setsortBy] = useState(null);
@@ -97,6 +103,8 @@ const RomaneiosTable = (props) => {
 	}
 
 	console.log('Usuário é Admin ?? :, ', isAdmin)
+
+	
 	return (
 		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{color: colors.textColor[100], marginBottom: '20px'}} size="">
@@ -139,7 +147,7 @@ const RomaneiosTable = (props) => {
 								>
 									<td>{newDate}</td>
 									<td onClick={() => handlerCopyData(carga)} style={{cursor: 'pointer'}}>{carga.relatorioColheita}</td>
-									<td>{getTicket}</td>
+									<td style={{ color: duplicates?.includes(getTicket) &&  'red', fontWeight: duplicates?.includes(getTicket) && 'bold'}}>{getTicket}</td>
 									<td>{carga.fazendaOrigem}</td>
 									<td>
 										{carga.parcelasNovas
