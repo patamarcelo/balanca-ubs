@@ -73,6 +73,8 @@ const FarmBoxPage = () => {
 	const [showFutureApps, setShowFutureApps] = useState(false);
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
 
+	const [isOpenedAll, setIsOpenedAll] = useState(false);
+
 	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
@@ -226,6 +228,10 @@ const FarmBoxPage = () => {
 		getPluviData();
 	}, []);
 
+	const handleOpenAllDetail = () => {
+		setIsOpenedAll(!isOpenedAll)
+	}
+
 	return (
 		<div
 			className={classes.mainDiv}
@@ -297,7 +303,7 @@ const FarmBoxPage = () => {
 										<MenuItem
 											key={i}
 											value={farm}
-											//   style={getStyles(name, personName, theme)}
+										//   style={getStyles(name, personName, theme)}
 										>
 											{farm}
 										</MenuItem>
@@ -338,8 +344,12 @@ const FarmBoxPage = () => {
 												key={i}
 												id={data}
 												style={{
-													margin: "29px"
+													margin: "29px",
+													cursor: 'pointer',
+
 												}}
+												className={classes.headerNameFarmTitle}
+												onClick={handleOpenAllDetail}
 											>
 												<Divider>{data}</Divider>
 											</div>
@@ -353,22 +363,22 @@ const FarmBoxPage = () => {
 												!openAppOnly
 													? data.status === "sought"
 													: data.status ===
-															"sought" ||
-													  "finalized"
+													"sought" ||
+													"finalized"
 											)
 											.filter((data) =>
 												filterPreaproSolo
 													? operationFilter.includes(
-															data.operacao.trim()
-													  )
+														data.operacao.trim()
+													)
 													: data.app.length > 0
 											)
 											.filter((data) =>
 												!showFutureApps
 													? new Date(data.date) <
-													  getNextWeekDays()
+													getNextWeekDays()
 													: new Date(data.date) <
-													  new Date("2031-10-17")
+													new Date("2031-10-17")
 											)
 											.sort((b, a) =>
 												a.status.localeCompare(b.status)
@@ -386,6 +396,7 @@ const FarmBoxPage = () => {
 															colors={colors}
 															key={i}
 															dataF={app}
+															openAll={isOpenedAll}
 														/>
 													);
 												}

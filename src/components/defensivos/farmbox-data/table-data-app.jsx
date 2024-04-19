@@ -31,6 +31,7 @@ import {
 	faPrint,
 	faCircleXmark,
 	faMap,
+	faCheckCircle,
 	faArrowRotateRight
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -38,7 +39,11 @@ import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const TableDataPage = (props) => {
-	const { dataF } = props;
+	const { dataF, openAll } = props;
+	
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
 	const [showDetail, setShowDetail] = useState(false);
 	const [sumArea, setSumArea] = useState(0);
 	const [bombaValue, setBombaValue] = useState(0);
@@ -49,18 +54,27 @@ const TableDataPage = (props) => {
 	const [parcelaSelected, setParcelaSelected] = useState([]);
 	const [idParcelasSelected, setIdParcelasSelected] = useState([]);
 
-	useEffect(() => {
-		const newArray = parcelaSelected.map((data) => data.id_plantation);
-		setIdParcelasSelected(newArray);
-	}, [parcelaSelected]);
-
 	const [displayMap, setDisplayMap] = useState(null);
 	const [loadingMap, setLoadingMap] = useState(false);
 
 	const [rotateDir, setRotateDir] = useState("270");
 
-	const theme = useTheme();
-	const colors = tokens(theme.palette.mode);
+	useEffect(() => {
+		if(openAll){
+			setShowDetail(true)
+		} else {
+			setShowDetail(false)
+		}
+	}, [openAll]);
+
+	useEffect(() => {
+		const newArray = parcelaSelected.map((data) => data.id_plantation);
+		setIdParcelasSelected(newArray);
+	}, [parcelaSelected]);
+
+
+
+	
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -108,6 +122,10 @@ const TableDataPage = (props) => {
 
 	const containerRef = useRef(null);
 
+	const handlerSelectAllParcelas = ()=>{
+		setParcelaSelected(dataF.parcelas)
+	}
+
 	const handlerClearArea = () => {
 		console.log("zerando a area");
 		setSumArea(0);
@@ -119,6 +137,7 @@ const TableDataPage = (props) => {
 		setDisplayMap(null);
 		setIdParcelasSelected([]);
 		setRotateDir("270");
+		setParcelaSelected([])
 	};
 
 	const handleSetBombValue = (value) => {
@@ -297,9 +316,10 @@ const TableDataPage = (props) => {
 							bombArr={bombArr}
 							parcelaSelected={parcelaSelected}
 							setParcelaSelected={setParcelaSelected}
+							openAll={openAll}
 						/>
 					</Box>
-					{sumArea > 0 && (
+					{sumArea > 0 ? (
 						<Box
 							sx={{
 								display: "flex",
@@ -369,7 +389,19 @@ const TableDataPage = (props) => {
 								</IconButton>
 							</Box>
 						</Box>
-					)}
+					) : 
+					<Box className={classes.areaTotalSumDiv}>
+								<span
+									onClick={handlerSelectAllParcelas}
+									style={{ cursor: "pointer" }}
+								>
+									<FontAwesomeIcon
+										icon={faCheckCircle}
+										color={colors.greenAccent[300]}
+										style={{ marginRight: "10px" }}
+									/>
+									</span></Box>
+					}
 					{loadingMap && (
 						<Box
 							display="flex"

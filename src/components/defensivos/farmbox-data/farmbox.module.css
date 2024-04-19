@@ -385,7 +385,7 @@
 }
 
 .isInArr {
-    border: 3px solid whitesmoke;
+    border: 1px solid rgba(245,245,245,0.8);
     border-radius: 12px;
 }
 
@@ -396,3 +396,9 @@
 /* .areaTotalSumDiv:hover{
     background-color: rgba(128,128,128,0.3);
 } */
+
+
+.headerNameFarmTitle:hover {
+    background-color: rgba(245,245,245,0.1);
+    /* border-radius: 6px; */
+}

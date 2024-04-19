@@ -64,7 +64,8 @@ const DetailAppData = (props) => {
 		bombaValue,
 		bombArr,
 		setParcelaSelected,
-		parcelaSelected
+		parcelaSelected,
+		openAll
 	} = props;
 
 	const theme = useTheme();
@@ -83,6 +84,19 @@ const DetailAppData = (props) => {
 			setParcelaSelected((prev) => [...prev, parcelaDetail]);
 		}
 	};
+
+	
+	// Selecionar todas as parcelas ao abrir todas as APs
+	// useEffect(() => {
+	// 	if(openAll && data.parcelas.length > 0){
+	// 		const newParcelas = data.parcelas
+	// 		setParcelaSelected(newParcelas)
+	// 		console.log(newParcelas)
+	// 	} else {
+	// 		setParcelaSelected([])
+	// 	}
+	// }, [openAll]);
+
 
 	useEffect(() => {
 		console.log(parcelaSelected);
@@ -103,11 +117,11 @@ const DetailAppData = (props) => {
 		return false;
 	};
 
-	useEffect(() => {
-		if (sumArea === 0) {
-			setParcelaSelected([]);
-		}
-	}, [sumArea]);
+	// useEffect(() => {
+	// 	if (sumArea === 0) {
+	// 		setParcelaSelected([]);
+	// 	}
+	// }, [sumArea]);
 
 	return (
 		<>
