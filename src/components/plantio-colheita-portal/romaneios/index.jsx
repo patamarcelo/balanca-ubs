@@ -277,6 +277,10 @@ const RomaneiosPage = () => {
                 let newArr;
                 const onlyTickets = filteredUserData.map((roms) => roms.ticket)
                 const duplicates = onlyTickets?.filter((item, index) => onlyTickets?.indexOf(item) !== index);
+                
+                const onlyPlates = filteredUserData.map((roms) => roms.placa)
+                const duplicatesPlates = onlyPlates?.filter((item, index) => onlyPlates?.indexOf(item) !== index);
+
                 if (situacao === "Descarregados") {
                     newArr = filteredUserData
                         .filter((data) => data.liquido > 0)
@@ -389,6 +393,7 @@ const RomaneiosPage = () => {
                                     filterDataArr={filterDataArr}
                                     setFilterDataArr={setFilterDataArr}
                                     duplicates={duplicates}
+                                    duplicatesPlates={duplicatesPlates}
                                 />
                             </>
                         ) : (

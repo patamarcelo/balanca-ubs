@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { selectIsAdminUser } from "../../../store/user/user.selector";
 
 const RomaneiosTable = (props) => {
-	const {data, handleUpdateCarga, setFilterDataArr, duplicates} = props;
+	const {data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates} = props;
 
 	const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -154,7 +154,7 @@ const RomaneiosTable = (props) => {
 											.sort((a, b) => a.localeCompare(b))
 											.join(", ")}
 									</td>
-									<td>
+									<td style={{ color: duplicatesPlates?.includes(carga.placa) &&  'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold'}}>
 										{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
 									</td>
 									<td>{carga.motorista}</td>
