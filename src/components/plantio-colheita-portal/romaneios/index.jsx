@@ -278,8 +278,8 @@ const RomaneiosPage = () => {
                 const onlyTickets = filteredUserData.map((roms) => roms.ticket)
                 const duplicates = onlyTickets?.filter((item, index) => onlyTickets?.indexOf(item) !== index);
                 
-                const onlyPlates = filteredUserData.map((roms) => roms.placa)
-                const duplicatesPlates = onlyPlates?.filter((item, index) => onlyPlates?.indexOf(item) !== index);
+                let onlyPlates;
+                let duplicatesPlates;
 
                 if (situacao === "Descarregados") {
                     newArr = filteredUserData
@@ -295,6 +295,8 @@ const RomaneiosPage = () => {
                         .filter((data) => data.pesoBruto > 0)
                         .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
                     newArr = noWei.concat(withWei);
+                    onlyPlates = filteredUserData.filter((data) => data.saida.length === 0).map((roms) => roms.placa)
+                    duplicatesPlates = onlyPlates?.filter((item, index) => onlyPlates?.indexOf(item) !== index);
                     // newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
                 }
 
