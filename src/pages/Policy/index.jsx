@@ -15,11 +15,11 @@ const PolicyPage = () => {
 				overflow: "auto",
 				height: "100%",
 				backgroundColor: colors.blueAccent[900],
-				padding: "50px"
+				padding: "50px",
+				marginBottom: '50px'
 			}}
 		>
 			<Box width={"50%"} textAlign={"justify"}>
-				<Typography variant="h3">
 					<p style={{ textAlign: "center" }}>
 						<b>
 							Política de Privacidade do Aplicativo Empresarial
@@ -132,6 +132,8 @@ const PolicyPage = () => {
 						utilizando as informações fornecidas no final desta
 						Política de Privacidade.
 					</p>
+					<p><b>Nome dos Aplicativos:</b> FarmTruck | Farm Applicações</p>
+					<p><b>Desenvolvedor:</b> Marcelo Pata</p>
 					<p>
 						<b>Alterações a Esta Política de Privacidade</b>
 					</p>
@@ -158,9 +160,8 @@ const PolicyPage = () => {
 					</p>
 					Esta Política de Privacidade entra em vigor a partir de:{" "}
 					<b>01/03/2024</b>
-				</Typography>
+				</Box>
 			</Box>
-		</Box>
 	);
 };
 

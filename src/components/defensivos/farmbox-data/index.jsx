@@ -53,6 +53,8 @@ import PluviDataComp from "./pluvi-data";
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
+import ColheitaModalPage from "./colheita-modal";
+import ColheitaPage from "./colheita-index-data";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
@@ -78,6 +80,8 @@ const FarmBoxPage = () => {
 	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
+
+	const [openColheitaModal, setOpenColheitaModal] = useState(false);
 
 	const user = useSelector(selectCurrentUser);
 
@@ -165,6 +169,7 @@ const FarmBoxPage = () => {
 
 	const refreshData = () => {
 		console.log("refreshing");
+		handleCloseColheitaPage()
 		dispatch(setApp([]));
 		dispatch(setAppFarmBox([]));
 		getTrueApi();
@@ -179,17 +184,20 @@ const FarmBoxPage = () => {
 
 	const [openFarm, setOpenFarm] = useState(false);
 	const handleOpenFarm = () => setOpenFarm(true);
+
 	const handleCloseFarm = () => {
 		setOpenFarm(false);
 	};
 
-	// useEffect(() => {
-	// 	if (openApp.length > 0) {
-	// 		console.log(dictSelect);
-	// 		console.log(onlyFarms);
-	// 	}
-	// }, [openApp]);
 
+	const handleOpenColheitaPage = () => {
+		setOpenColheitaModal(true)
+		console.log('Abrindo modal da Colheita')
+	}
+	const handleCloseColheitaPage = () => {
+		setOpenColheitaModal(false)
+	}
+	
 	useEffect(() => {
 		let saldoAplicar = 0;
 		filtFarm.forEach((data, index) => {
@@ -256,6 +264,9 @@ const FarmBoxPage = () => {
 					</Button>
 					<Button onClick={() => handleOpenFarm()} color="success">
 						Farm Reunião
+					</Button>
+					<Button onClick={() => handleOpenColheitaPage()} color="success">
+						Colheita de Grãos
 					</Button>
 					<ModalDataFarmbox open={open} handleClose={handleClose} />
 				</Box>
@@ -496,6 +507,10 @@ const FarmBoxPage = () => {
 					</Box>
 				)}
 			</IndexModalDataFarmbox>
+			{
+				openColheitaModal &&
+					<ColheitaPage />
+			}
 		</div>
 	);
 };

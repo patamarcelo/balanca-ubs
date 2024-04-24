@@ -38,6 +38,7 @@ const TableSrd = ({data}) => {
 					<th>Ticket</th>
 					<th>Data</th>
 					<th>Projeto</th>
+					<th>Parcelas</th>
 					<th>Placa</th>
 					<th>Motorista</th>
 					<th>Bruto</th>
@@ -60,6 +61,7 @@ const TableSrd = ({data}) => {
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
                                 <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.split('/').reverse().join('/')}</td>
                                 <td style={{width: '160px'}}>{parcela.PROJETO}</td>
+                                <td style={{width: '100px'}}>{parcela.PARCELA.replace("'",'').replaceAll(';', ' ')}</td>
                                 <td style={{width: '100px'}}>{parcela?.PLACA?.slice(0,3) + "-" + parcela?.PLACA?.slice(3,7) }</td>
                                 <td style={{width: '350px', overflow: 'hidden', textOverflow: "ellipsis", whiteSpace: 'nowrap'}}>{parcela.MOTORISTA}</td>
                                 <td>{formatWei(parcela.BRUTO)}</td>

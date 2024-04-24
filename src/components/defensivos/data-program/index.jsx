@@ -48,6 +48,9 @@ import JsPDF from "jspdf";
 import moment from "moment";
 import html2canvas from "html2canvas";
 
+import MapPlotDjango from "./data-plot-map";
+
+
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -69,6 +72,7 @@ const DataProgramPage = (props) => {
 	const [filtData, setFiltData] = useState(false);
 
 	const [mapArray, setMapArray] = useState([]);
+	const [mapArrayIds, setMapArrayIds] = useState([]);
 	const [dataToMap, setDataToMap] = useState([]);
 
 	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
@@ -87,6 +91,8 @@ const DataProgramPage = (props) => {
 	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [hidenAppsArr, setHidenAppsArr] = useState([]);
+
+	const [loadMaps, setLoadMaps] = useState(false);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -116,6 +122,10 @@ const DataProgramPage = (props) => {
 			// console.log("ainda não estava");
 		}
 	};
+	
+	// const handleRequestDjangoMaps = () => {
+	// 	setLoadMaps(!loadMaps)
+	// }
 
 	const handleSendApiApp = async (data) => {
 		const params = JSON.stringify({
@@ -232,6 +242,7 @@ const DataProgramPage = (props) => {
 			setMapArray(
 				mapArray.filter((data) => data.projeto === farmSelected)
 			);
+			setLoadMaps(false)
 		}
 	}, [dataToMap, farmSelected]);
 
@@ -597,6 +608,36 @@ const DataProgramPage = (props) => {
 									onClick={() => handleShowMaps()}
 								/>
 							)}
+							
+							{/* {isLoadingHome ? (
+								<CircularProgress
+									size={15}
+									sx={{
+										margin: "0px 10px",
+										color: (theme) =>
+											colors.greenAccent[
+												theme.palette.mode === "dark"
+													? 200
+													: 800
+											]
+									}}
+								/>
+							) : (
+								<FontAwesomeIcon
+									icon={faMapLocationDot}
+									color={
+										!showMapps
+											? colors.greenAccent[500]
+											: colors.yellow[500]
+									}
+									size="sm"
+									style={{
+										margin: "0px 10px",
+										cursor: "pointer"
+									}}
+									onClick={() => handleRequestDjangoMaps()}
+								/>
+							)} */}
 
 							{isAdminUser &&
 								updateApp.length > 0 &&
@@ -661,6 +702,7 @@ const DataProgramPage = (props) => {
 							const estagio = data.estagio.split("|")[0];
 							const hiddenAppName =
 								dat.data.estagio + farmSelected;
+							const mapIdsFilter = data.cronograma.map((ids) => ids.plantioId)
 							return (
 								<>
 									<IconButton
@@ -1112,6 +1154,11 @@ const DataProgramPage = (props) => {
 												</div>
 											</div>
 										</div>
+											{/* <MapPlotDjango
+											mapIdsFilter={mapIdsFilter}
+											farmSelected={farmSelected}
+											loadMaps={loadMaps}
+											/> */}
 										{showMapps && (
 											<Box
 												sx={{
@@ -1127,6 +1174,7 @@ const DataProgramPage = (props) => {
 												}
 											>
 												<MapPage
+													farmSelected={farmSelected}
 													mapArray={mapArray}
 													filtData={data}
 												/>
