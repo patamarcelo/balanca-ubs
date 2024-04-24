@@ -241,9 +241,9 @@ const FarmBoxPage = () => {
 	}
 
 	return (
-		<div
+		<Box
 			className={classes.mainDiv}
-			style={{ scrollBehavior: "smooth !important" }}
+			sx={{ scrollBehavior: "smooth !important" }}
 		>
 			{!loadingData && (
 				<Box
@@ -511,7 +511,7 @@ const FarmBoxPage = () => {
 				openColheitaModal &&
 					<ColheitaPage />
 			}
-		</div>
+		</Box>
 	);
 };
 
