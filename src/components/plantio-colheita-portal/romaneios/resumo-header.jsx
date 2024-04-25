@@ -33,7 +33,7 @@ const ResumoHeader = props => {
                 <Typography
                     sx={{ fontWeight: "bold" }}
                     variant="h5"
-                    color={fazenda === "Descarregando" || fazenda === "Trânsito" ? colors.textColor[200] : "white"}
+                    color={fazenda === "Descarregando" || fazenda === "Trânsito" || fazenda ===  "Geral" ? colors.textColor[200] : "white"}
                 // color={colors.primary[800]}
                 >
                     {fazenda.replace("Projeto", "")}
@@ -49,7 +49,7 @@ const ResumoHeader = props => {
                     peso > 0 &&
                     <Typography
                         variant="h5"
-                        color={colors.grey[900]}
+                        color={fazenda === "Descarregando" || fazenda === "Trânsito" || fazenda ===  "Geral" ? colors.textColor[200] : "white"}
                         sx={{
                             fontWeight: "bold",
                             borderBottom: `1px solid ${colors.textColor[200]}`
@@ -63,7 +63,7 @@ const ResumoHeader = props => {
                     </Typography>}
                 <Typography
                     variant="h5"
-                    color={colors.grey[900]}
+                    color={fazenda === "Descarregando" || fazenda === "Trânsito" || fazenda ===  "Geral" ? colors.textColor[200] : "white"}
                     sx={{ fontWeight: "bold" }}
                 >
                     {count} {count > 1 || count === 0 ? "Cargas" : "Carga"}
