@@ -54,7 +54,7 @@ import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ColheitaModalPage from "./colheita-modal";
-import ColheitaPage from "./colheita-index-data";
+import ColheitaPage from "./colheita-section/colheita-index-data";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
