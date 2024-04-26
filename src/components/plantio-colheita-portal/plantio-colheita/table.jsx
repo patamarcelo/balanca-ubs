@@ -1,10 +1,15 @@
 import Table from "react-bootstrap/Table";
 import styles from "./plantio-colheita.module.css";
+import { useTheme } from '@mui/material'
+import { tokens } from '../../../theme'
 
-const TableColheita = ({ data, colors, idsPending, theme }) => {
+const TableColheita = ({ data, idsPending }) => {
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
-			<thead>
+			<thead style={{backgroundColor: colors.blueOrigin[300]}}>
 				<tr>
 					<th>Parcela</th>
 					<th>Data Plantio</th>

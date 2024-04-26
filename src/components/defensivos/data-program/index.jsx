@@ -122,7 +122,7 @@ const DataProgramPage = (props) => {
 			// console.log("ainda não estava");
 		}
 	};
-	
+
 	// const handleRequestDjangoMaps = () => {
 	// 	setLoadMaps(!loadMaps)
 	// }
@@ -483,12 +483,12 @@ const DataProgramPage = (props) => {
 											: colors.brown[550],
 									color:
 										farmSelected === data &&
-										theme.palette.mode === "light"
+											theme.palette.mode === "light"
 											? "black"
 											: farmSelected !== data &&
-											  theme.palette.mode === "light"
-											? "white"
-											: colors.primary[100],
+												theme.palette.mode === "light"
+												? "white"
+												: colors.primary[100],
 									fontStyle: "italic",
 									fontWeight: 600
 								}}
@@ -586,9 +586,9 @@ const DataProgramPage = (props) => {
 										margin: "0px 10px",
 										color: (theme) =>
 											colors.greenAccent[
-												theme.palette.mode === "dark"
-													? 200
-													: 800
+											theme.palette.mode === "dark"
+												? 200
+												: 800
 											]
 									}}
 								/>
@@ -608,7 +608,7 @@ const DataProgramPage = (props) => {
 									onClick={() => handleShowMaps()}
 								/>
 							)}
-							
+
 							{/* {isLoadingHome ? (
 								<CircularProgress
 									size={15}
@@ -648,10 +648,10 @@ const DataProgramPage = (props) => {
 											margin: "0px 10px",
 											color: (theme) =>
 												colors.greenAccent[
-													theme.palette.mode ===
+												theme.palette.mode ===
 													"dark"
-														? 200
-														: 800
+													? 200
+													: 800
 												]
 										}}
 									/>
@@ -753,16 +753,15 @@ const DataProgramPage = (props) => {
 													colors.blueOrigin[800],
 												border:
 													theme.palette.mode ===
-														"light" &&
+													"light" &&
 													"1px solid black"
 											}}
 											className={
 												classes[
-													`${
-														!isCellPhone
-															? "detail-parcela-div-mobile"
-															: "detail-parcela-div"
-													}`
+												`${!isCellPhone
+													? "detail-parcela-div-mobile"
+													: "detail-parcela-div"
+												}`
 												]
 											}
 										>
@@ -770,8 +769,8 @@ const DataProgramPage = (props) => {
 												className={
 													!isNonIpad
 														? classes[
-																"estagio-div-ipad"
-														  ]
+														"estagio-div-ipad"
+														]
 														: classes["estagio-div"]
 												}
 											>
@@ -784,9 +783,9 @@ const DataProgramPage = (props) => {
 													color={
 														!showProducts
 															? colors
-																	.redAccent[500]
+																.redAccent[500]
 															: colors
-																	.greenAccent[500]
+																.greenAccent[500]
 													}
 													size="sm"
 													style={{
@@ -804,24 +803,49 @@ const DataProgramPage = (props) => {
 														color:
 															theme.palette
 																.mode ===
-															"light"
+																"light"
 																? "grey"
 																: colors
-																		.primary[300]
+																	.primary[300]
 													}}
 												>
 													{programa}
 												</p>
-												<p>{estagio}</p>
+												<Box
+													sx={{
+														cursor: 'pointer',
+														"& p:hover": {
+															opacity: 0.5
+														}
+													}}
+													onClick={() => data.cronograma
+														.sort((a, b) =>
+															!filtData
+																? new Date(
+																	a.dataPrevApp
+																) -
+																new Date(
+																	b.dataPrevApp
+																)
+																: a.parcela.localeCompare(
+																	b.parcela
+																)
+														).forEach(element => {
+															console.log(element.plantioId, element.estagio.split("|")[0])
+															handleSetApp(element.plantioId, element.estagio.split("|")[0])
+														})}
+												>
+													<p>{estagio}</p>
+												</Box>
 												<p
 													style={{
 														color:
 															theme.palette
 																.mode ===
-															"light"
+																"light"
 																? "grey"
 																: colors
-																		.primary[300]
+																	.primary[300]
 													}}
 												>
 													Area Total: {data.total}
@@ -838,7 +862,7 @@ const DataProgramPage = (props) => {
 													<div
 														className={
 															classes[
-																"div-produtos-aplicar-outside"
+															"div-produtos-aplicar-outside"
 															]
 														}
 													>
@@ -875,7 +899,7 @@ const DataProgramPage = (props) => {
 																		<div
 																			className={
 																				classes[
-																					"div-produtos-aplicar"
+																				"div-produtos-aplicar"
 																				]
 																			}
 																		>
@@ -885,14 +909,14 @@ const DataProgramPage = (props) => {
 																						theme
 																							.palette
 																							.mode ===
-																						"light"
+																							"light"
 																							? "grey"
 																							: colors
-																									.primary[300]
+																								.primary[300]
 																				}}
 																				className={
 																					classes[
-																						"div-produtos-aplicar-produto"
+																					"div-produtos-aplicar-produto"
 																					]
 																				}
 																			>
@@ -911,14 +935,14 @@ const DataProgramPage = (props) => {
 																						theme
 																							.palette
 																							.mode ===
-																						"light"
+																							"light"
 																							? "black"
 																							: colors
-																									.primary[100]
+																								.primary[100]
 																				}}
 																				className={
 																					classes[
-																						"div-produtos-aplicar-quantidade"
+																					"div-produtos-aplicar-quantidade"
 																					]
 																				}
 																			>
@@ -937,7 +961,7 @@ const DataProgramPage = (props) => {
 											<div
 												className={
 													classes[
-														"parcelas-resumo-div"
+													"parcelas-resumo-div"
 													]
 												}
 											>
@@ -945,7 +969,7 @@ const DataProgramPage = (props) => {
 													<div
 														className={
 															classes[
-																"parcelas-div-header"
+															"parcelas-div-header"
 															]
 														}
 														style={{
@@ -976,7 +1000,7 @@ const DataProgramPage = (props) => {
 															}}
 															className={
 																classes[
-																	"cultura-div"
+																"cultura-div"
 																]
 															}
 														>
@@ -1005,14 +1029,14 @@ const DataProgramPage = (props) => {
 														.sort((a, b) =>
 															!filtData
 																? new Date(
-																		a.dataPrevApp
-																  ) -
-																  new Date(
-																		b.dataPrevApp
-																  )
+																	a.dataPrevApp
+																) -
+																new Date(
+																	b.dataPrevApp
+																)
 																: a.parcela.localeCompare(
-																		b.parcela
-																  )
+																	b.parcela
+																)
 														)
 														.map((data, i) => {
 															const dataId =
@@ -1026,18 +1050,17 @@ const DataProgramPage = (props) => {
 																updateApp.some(
 																	(data) =>
 																		data.id ===
-																			dataId &&
+																		dataId &&
 																		data.estagio ===
-																			estagio
+																		estagio
 																);
 															return (
 																<div
 																	key={i}
-																	className={`${
-																		classes[
-																			"parcelas-detail-div"
+																	className={`${classes[
+																		"parcelas-detail-div"
 																		]
-																	}
+																		}
 																	${checkSelected && classes["parcelas-resumo-div-selected"]}
 																	${data.aplicado && classes["parcelas-resumo-div-aplicado"]}
 																}
@@ -1046,14 +1069,14 @@ const DataProgramPage = (props) => {
 																	<div
 																		className={
 																			classes[
-																				"parcela-div"
+																			"parcela-div"
 																			]
 																		}
 																	>
 																		<div
 																			className={
 																				classes[
-																					"parcela-icon-div"
+																				"parcela-icon-div"
 																				]
 																			}
 																			onClick={() =>
@@ -1091,15 +1114,15 @@ const DataProgramPage = (props) => {
 																	</div>
 																	<div>
 																		{data.dap <
-																		10
+																			10
 																			? "0" +
-																			  data.dap
+																			data.dap
 																			: data.dap}
 																	</div>
 																	<div
 																		className={
 																			classes[
-																				"cultura-div"
+																			"cultura-div"
 																			]
 																		}
 																	>
@@ -1110,7 +1133,7 @@ const DataProgramPage = (props) => {
 																	<div
 																		className={
 																			classes[
-																				"variedade-div"
+																			"variedade-div"
 																			]
 																		}
 																	>
@@ -1135,7 +1158,7 @@ const DataProgramPage = (props) => {
 																		}}
 																		className={
 																			classes[
-																				"area-div"
+																			"area-div"
 																			]
 																		}
 																	>
@@ -1154,7 +1177,7 @@ const DataProgramPage = (props) => {
 												</div>
 											</div>
 										</div>
-											{/* <MapPlotDjango
+										{/* <MapPlotDjango
 											mapIdsFilter={mapIdsFilter}
 											farmSelected={farmSelected}
 											loadMaps={loadMaps}

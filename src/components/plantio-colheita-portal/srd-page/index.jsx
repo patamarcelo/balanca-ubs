@@ -199,7 +199,7 @@ const SRDPage = () => {
                                                                 variant="h5"
                                                                 color={colors.textColor[100]}
                                                             >
-                                                                <b>{lengthArr.length} Cargas</b>
+                                                                <b>{lengthArr.length}{lengthArr.length === 1 ? " Carga" : " Cargas"}</b>
                                                             </Typography>
                                                             <Typography
                                                                 variant="h5"
@@ -207,8 +207,8 @@ const SRDPage = () => {
                                                             >
                                                                 <b>
                                                                     {totalScs.toLocaleString("pt-br", {
-                                                                        minimumFractionDigits: 2,
-                                                                        maximumFractionDigits: 2
+                                                                        minimumFractionDigits: 0,
+                                                                        maximumFractionDigits: 0
                                                                     })}{" "}
                                                                     Scs
                                                                 </b>

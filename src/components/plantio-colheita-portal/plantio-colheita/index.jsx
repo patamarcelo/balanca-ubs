@@ -132,13 +132,16 @@ const ColheitaAtual = (props) => {
 					width: "100%",
 					marginBottom: "10px",
 					textAlign: "center",
-					backgroundColor: "rgba(128,128,128,0.4)",
+					// backgroundColor: "rgba(128,128,128,0.4)",
+					backgroundColor: colors.blueOrigin[400],
+					// backgroundColor:'blue',
 					padding: "10px"
 				}}
 			>
 				<Typography
 					variant="h4"
-					color={colors.textColor[100]}
+					// color={colors.textColor[100]}
+					color="whitesmoke"
 					sx={{ fontWeight: "bold" }}
 				>
 					{selectedFarm?.replace("Projeto", "")}
