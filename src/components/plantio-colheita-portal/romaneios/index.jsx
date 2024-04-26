@@ -22,6 +22,11 @@ import { IconButton } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ResumoHeader from "./resumo-header";
 
+
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+
 const RomaneiosPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -31,6 +36,7 @@ const RomaneiosPage = () => {
     const [filteredUserData, setfilteredUserData] = useState([]);
     const [filterDataArrInit, setFilterDataArrInit] = useState(null);
     const [filterDataArr, setFilterDataArr] = useState(null);
+    const [dataToCsv, setdataToCsv] = useState([]);
 
     const listSit = ["Descarregados", "Pendentes"];
 
@@ -49,7 +55,7 @@ const RomaneiosPage = () => {
         setFilterDataArrInit(reversed);
         setFilterDataArr(reversed);
     };
-    
+
     const handlerYesterday = () => {
         var today = new Date();
         var yesterday = new Date(today);
@@ -57,7 +63,7 @@ const RomaneiosPage = () => {
         var year = yesterday.getFullYear();
         var month = ("0" + (yesterday.getMonth() + 1)).slice(-2); // Adding 1 because getMonth returns zero-based index
         var day = ("0" + yesterday.getDate()).slice(-2);
-        const reversed =  year + "-" + month + "-" + day;
+        const reversed = year + "-" + month + "-" + day;
         setFilterDataArrInit(reversed);
         setFilterDataArr(reversed);
     };
@@ -167,6 +173,47 @@ const RomaneiosPage = () => {
         }
     };
 
+    const formatWeight = (peso) => {
+        if (peso > 0) {
+            return Number(peso).toLocaleString("pt-BR") + " Kg";
+        }
+        return "-";
+    };
+
+    useEffect(() => {
+        console.log('dados para CSV', filteredUserData)
+        const dataCsv = [["Data", "Romaneio", "Ticket", 'Projeto', "Parcelas", 'Placa', "Motorista", "Destino", "Bruto", "Tara", "Líquido", "Saída"]]
+        filteredUserData.forEach((carga) => {
+            const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
+            const ticket = carga?.ticket ? carga.ticket : '-'
+            const placa = `${carga.placa.slice(0, 3)}-${carga.placa.slice(3, 12)}`
+            const pesoBruto = carga.pesoBruto ? formatWeight(carga.pesoBruto) : formatWeight(0)
+            const pesoTara = carga.tara ? formatWeight(carga.tara) : formatWeight(0)
+            const pesoLiquido = carga.liquido ? formatWeight(carga.liquido) : formatWeight(0)
+            const saida = carga?.saida ? carga?.saida.toDate().toLocaleString("pt-BR"): "-"
+            const newLine = [
+                newDate,
+                carga.relatorioColheita,
+                ticket,
+                carga.fazendaOrigem,
+                carga.parcelasNovas
+                    .sort((a, b) => a.localeCompare(b))
+                    .join(", "),
+                placa,
+                carga.motorista,
+                carga.fazendaDestino,
+                pesoBruto,
+                pesoTara,
+                pesoLiquido,
+                saida
+            ]
+            dataCsv.push(newLine)
+        })
+        setdataToCsv(dataCsv)
+
+
+    }, [filteredUserData]);
+
     if (isLoadingHome) {
         return (
             <Box
@@ -193,7 +240,7 @@ const RomaneiosPage = () => {
             alignItems={filteredUserData.length === 0 ? "center" : "flex-start"}
             p={5}
         >
-            <Box display={"flex"} flexDirection={"row"} gap={"10px"} width={"100%"}>
+            <Box display={"flex"} flexDirection={"row"} gap={"10px"} width={"100%"} alignItems={"center"}>
                 {(filterDataArr || filterDataArrInit) && (
                     <IconButton
                         aria-label="delete"
@@ -233,6 +280,15 @@ const RomaneiosPage = () => {
                 <Button color="success" variant="outlined" onClick={handlerToday}>
                     Hoje
                 </Button>
+                <Box>
+                    <CSVLink
+                        data={dataToCsv}
+                        separator={";"}
+                        filename={"Romaneios.csv"}
+                    >
+                        <FontAwesomeIcon icon={faFileExcel} color={colors.greenAccent[500]} size="xl" style={{ paddingLeft: '5px' }} />
+                    </CSVLink>
+                </Box>
             </Box>
             {filteredUserData.length > 0 && (
                 <>
@@ -277,7 +333,7 @@ const RomaneiosPage = () => {
                 let newArr;
                 const onlyTickets = filteredUserData.map((roms) => roms.ticket)
                 const duplicates = onlyTickets?.filter((item, index) => onlyTickets?.indexOf(item) !== index);
-                
+
                 let onlyPlates;
                 let duplicatesPlates;
 
