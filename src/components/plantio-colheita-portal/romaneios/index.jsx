@@ -22,7 +22,6 @@ import { IconButton } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ResumoHeader from "./resumo-header";
 
-
 import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -148,7 +147,8 @@ const RomaneiosPage = () => {
         if (
             window.confirm(
                 `Confirma o lançamento da carga: \n ${cargaDetail.relatorioColheita
-                } - ${cargaDetail.placa} -${cargaDetail.fazendaOrigem} - ${cargaDetail.parcelasNovas
+                } - ${cargaDetail.placa} -${cargaDetail.fazendaOrigem
+                } - ${cargaDetail.parcelasNovas
                     .sort((a, b) => a.localeCompare(b))
                     .join(", ")}\nTicket: ${cargaDetail?.ticket}`
             ) === true
@@ -181,37 +181,61 @@ const RomaneiosPage = () => {
     };
 
     useEffect(() => {
-        console.log('dados para CSV', filteredUserData)
-        const dataCsv = [["Data", "Romaneio", "Ticket", 'Projeto', "Parcelas", 'Placa', "Motorista", "Destino", "Bruto", "Tara", "Líquido", "Saída"]]
-        filteredUserData.forEach((carga) => {
-            const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
-            const ticket = carga?.ticket ? carga.ticket : '-'
-            const placa = `${carga.placa.slice(0, 3)}-${carga.placa.slice(3, 12)}`
-            const pesoBruto = carga.pesoBruto ? formatWeight(carga.pesoBruto) : formatWeight(0)
-            const pesoTara = carga.tara ? formatWeight(carga.tara) : formatWeight(0)
-            const pesoLiquido = carga.liquido ? formatWeight(carga.liquido) : formatWeight(0)
-            const saida = carga?.saida ? carga?.saida.toDate().toLocaleString("pt-BR"): "-"
-            const newLine = [
-                newDate,
-                carga.relatorioColheita,
-                ticket,
-                carga.fazendaOrigem,
-                carga.parcelasNovas
-                    .sort((a, b) => a.localeCompare(b))
-                    .join(", "),
-                placa,
-                carga.motorista,
-                carga.fazendaDestino,
-                pesoBruto,
-                pesoTara,
-                pesoLiquido,
-                saida
-            ]
-            dataCsv.push(newLine)
-        })
-        setdataToCsv(dataCsv)
-
-
+        console.log("dados para CSV", filteredUserData);
+        if (filteredUserData?.length > 0) {
+            const dataCsv = [
+                [
+                    "Data",
+                    "Romaneio",
+                    "Ticket",
+                    "Projeto",
+                    "Parcelas",
+                    "Placa",
+                    "Motorista",
+                    "Destino",
+                    "Bruto",
+                    "Tara",
+                    "Líquido",
+                    "Saída"
+                ]
+            ];
+            filteredUserData?.forEach((carga) => {
+                const newDate =
+                    carga?.pesoBruto > 0
+                        ? carga.entrada.toDate().toLocaleString("pt-BR")
+                        : carga.syncDate.toDate().toLocaleString("pt-BR");
+                const ticket = carga?.ticket ? carga.ticket : "-";
+                const placa = `${carga.placa.slice(0, 3)}-${carga.placa.slice(3, 12)}`;
+                const pesoBruto = carga.pesoBruto
+                    ? formatWeight(carga.pesoBruto)
+                    : formatWeight(0);
+                const pesoTara = carga.tara
+                    ? formatWeight(carga.tara)
+                    : formatWeight(0);
+                const pesoLiquido = carga.liquido
+                    ? formatWeight(carga.liquido)
+                    : formatWeight(0);
+                const saida = carga?.saida
+                    ? carga?.saida.toDate().toLocaleString("pt-BR")
+                    : "-";
+                const newLine = [
+                    newDate,
+                    carga.relatorioColheita,
+                    ticket,
+                    carga.fazendaOrigem,
+                    carga.parcelasNovas.sort((a, b) => a.localeCompare(b)).join(", "),
+                    placa,
+                    carga.motorista,
+                    carga.fazendaDestino,
+                    pesoBruto,
+                    pesoTara,
+                    pesoLiquido,
+                    saida
+                ];
+                dataCsv.push(newLine);
+            });
+            setdataToCsv(dataCsv);
+        }
     }, [filteredUserData]);
 
     if (isLoadingHome) {
@@ -240,7 +264,13 @@ const RomaneiosPage = () => {
             alignItems={filteredUserData.length === 0 ? "center" : "flex-start"}
             p={5}
         >
-            <Box display={"flex"} flexDirection={"row"} gap={"10px"} width={"100%"} alignItems={"center"}>
+            <Box
+                display={"flex"}
+                flexDirection={"row"}
+                gap={"10px"}
+                width={"100%"}
+                alignItems={"center"}
+            >
                 {(filterDataArr || filterDataArrInit) && (
                     <IconButton
                         aria-label="delete"
@@ -281,12 +311,13 @@ const RomaneiosPage = () => {
                     Hoje
                 </Button>
                 <Box>
-                    <CSVLink
-                        data={dataToCsv}
-                        separator={";"}
-                        filename={"Romaneios.csv"}
-                    >
-                        <FontAwesomeIcon icon={faFileExcel} color={colors.greenAccent[500]} size="xl" style={{ paddingLeft: '5px' }} />
+                    <CSVLink data={dataToCsv} separator={";"} filename={"Romaneios.csv"}>
+                        <FontAwesomeIcon
+                            icon={faFileExcel}
+                            color={colors.greenAccent[500]}
+                            size="xl"
+                            style={{ paddingLeft: "5px" }}
+                        />
                     </CSVLink>
                 </Box>
             </Box>
@@ -331,8 +362,10 @@ const RomaneiosPage = () => {
             )}
             {listSit.map((situacao) => {
                 let newArr;
-                const onlyTickets = filteredUserData.map((roms) => roms.ticket)
-                const duplicates = onlyTickets?.filter((item, index) => onlyTickets?.indexOf(item) !== index);
+                const onlyTickets = filteredUserData.map((roms) => roms.ticket);
+                const duplicates = onlyTickets?.filter(
+                    (item, index) => onlyTickets?.indexOf(item) !== index
+                );
 
                 let onlyPlates;
                 let duplicatesPlates;
@@ -351,8 +384,12 @@ const RomaneiosPage = () => {
                         .filter((data) => data.pesoBruto > 0)
                         .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
                     newArr = noWei.concat(withWei);
-                    onlyPlates = filteredUserData.filter((data) => data.saida.length === 0).map((roms) => roms.placa)
-                    duplicatesPlates = onlyPlates?.filter((item, index) => onlyPlates?.indexOf(item) !== index);
+                    onlyPlates = filteredUserData
+                        .filter((data) => data.saida.length === 0)
+                        .map((roms) => roms.placa);
+                    duplicatesPlates = onlyPlates?.filter(
+                        (item, index) => onlyPlates?.indexOf(item) !== index
+                    );
                     // newArr = filteredUserData.filter((data) => data.saida.length === 0).sort((a, b) => a.relatorioColheita - b.relatorioColheita && b.pesoBruto - a.pesoBruto);
                 }
 

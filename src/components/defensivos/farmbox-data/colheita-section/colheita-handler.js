@@ -60,7 +60,9 @@ const handlerDataColheita = (data) => {
                     plantationId: plantioId,
                     farmName: farmName,
                     parcela: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
-                        ?.parcela
+                        ?.parcela,
+                    totalApplied: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
+                        ?.areaAplicada
                 };
             });
             return eachProgress;
@@ -71,7 +73,7 @@ const handlerDataColheita = (data) => {
     const formatExtratoColheitaCsv = newExtratoArr.flat();
     console.log(formatExtratoColheitaCsv);
     const formatExtratoColheita = [
-        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao", "plantioId"]
+        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId"]
     ];
     formatExtratoColheitaCsv.forEach((element) => {
         const dateApp = element.dataApplied.split('T')[0]
@@ -93,6 +95,10 @@ const handlerDataColheita = (data) => {
             }),
             dateApp,
             horaAp,
+            element.totalApplied.toLocaleString("pt-br", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }),
             element.plantationId
         ];
         formatExtratoColheita.push(arrToAdd);
