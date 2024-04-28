@@ -2,6 +2,8 @@ import { Box, useTheme, Typography, Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { tokens } from "../../../../theme";
 
+import styles from './colheita-index.module.css'
+
 import { nodeServer } from "../../../../utils/axios/axios.utils";
 
 import { useEffect, useState } from "react";
@@ -191,6 +193,7 @@ const ColheitaPage = () => {
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1-content"
                                                 id="panel1-header"
+                                                sx={{backgroundColor: colors.blueOrigin[800]}}
                                             >
                                                 <Typography
                                                     color={colors.textColor[100]}
@@ -320,6 +323,7 @@ const ColheitaPage = () => {
                                                                                         flexDirection="column"
                                                                                         width="100%"
                                                                                         m={1}
+                                                                                        className={ind % 2 === 0 && styles.lineTableAccEve}
                                                                                     >
                                                                                         <Typography
                                                                                             color={

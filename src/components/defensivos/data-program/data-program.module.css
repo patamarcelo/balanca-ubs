@@ -172,6 +172,7 @@
     align-items: center;
     gap: 10px;
     align-items: center;
+    transition: background-color 0.1s ease;
     /* align-items: center;
     justify-content: space-around;
     margin: 2px; */

@@ -51,7 +51,7 @@ const SRDPage = () => {
 
     useEffect(() => {
         const formD = dataArray?.map((data) => {
-            const dest = data.DESTINO.split("-")[0].trim();
+            const dest = data.DESTINO.trim().split("-")[0];
             return { destino: dest, projeto: data.PROJETO };
         });
         const onlyDest = formD?.map((data) => data.destino).sort();
