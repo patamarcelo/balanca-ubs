@@ -1,4 +1,4 @@
-import { Typography, Box, useTheme, Button } from "@mui/material";
+import { Typography, Box, useTheme, TextField, Chip, Button } from "@mui/material";
 import { tokens } from "../../../theme";
 import styles from "./tablesrd.module.css";
 
@@ -22,9 +22,13 @@ const SRDPage = () => {
     });
 
     const [dataArray, setDataArray] = useState([]);
+    const [filterDataArray, setFilterDataArray] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [destArr, setdestArr] = useState([]);
     const [projArr, setprojArr] = useState();
+    const [filterImp, setFilterImp] = useState();
+
+    const [filteImp, setFilteImp] = useState();
 
     const [dataDisplay, setDataDisplay] = useState("");
 
@@ -50,7 +54,7 @@ const SRDPage = () => {
     }, [paramsQuery]);
 
     useEffect(() => {
-        const formD = dataArray?.map((data) => {
+        const formD = filterDataArray?.map((data) => {
             const dest = data.DESTINO.trim().split("-")[0];
             return { destino: dest, projeto: data.PROJETO };
         });
@@ -58,7 +62,28 @@ const SRDPage = () => {
         const onlyProj = formD?.map((data) => data.projeto);
         setdestArr([...new Set(onlyDest)]);
         setprojArr([...new Set(onlyProj)]);
-    }, [dataArray]);
+    }, [filterDataArray]);
+
+    const handleChangeImp = (data) => {
+        setFilteImp(data.target.value.replace(',', '.'))
+        const impureza = data.target.value.replace(',', '.')
+        if (impureza) {
+            setFilterImp(impureza)
+        } else {
+            setFilterImp(0)
+        }
+    }
+
+    useEffect(() => {
+        if (filterImp > 0) {
+            console.log(filterImp)
+            const filterArr = dataArray.filter((data) => parseFloat(data.IMPUREZA_ENTRADA).toFixed(2) >= parseFloat(filterImp).toFixed(2) || data.IMPUREZA_ENTRADA === filterImp)
+            filterArr.forEach((data) => console.log(data))
+            setFilterDataArray(filterArr)
+        } else {
+            setFilterDataArray(dataArray)
+        }
+    }, [filterImp, setFilterDataArray, dataArray]);
 
     return (
         <Box p={2} height={"100%"}>
@@ -70,6 +95,13 @@ const SRDPage = () => {
                     paramsQuery={paramsQuery}
                 />
             </Box>
+            <Box display={"flex"} flexDirection={"row"} gap={0} ml={2} mt={2} alignItems={"center"}>
+                <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} />
+                <Button onClick={() => setFilterImp(3)}>
+                <Chip label="3%" color="info" style={{cursor: 'pointer'}}/> 
+                </Button>
+            </Box>
+            <Divider style={{marginTop: '10px'}}/>
 
             {isLoading ? (
                 <Box
@@ -81,7 +113,7 @@ const SRDPage = () => {
                 >
                     <CircularProgress sx={{ color: colors.primary[100] }} />
                 </Box>
-            ) : dataArray?.length > 0 ? (
+            ) : filterDataArray?.length > 0 ? (
                 <Box height={"100%"} mb={5} pb={5} sx={{ backgroundColor: theme.palette.mode !== "dark" && 'white' }}>
                     {
                         <Box
@@ -96,16 +128,16 @@ const SRDPage = () => {
                             mb={4}
                             mt={4}
                         >
-                            <Box width={"100%"} gap={"20px"}  display={"flex"} flexDirection={"row"}>
+                            <Box width={"100%"} gap={"20px"} display={"flex"} flexDirection={"row"}>
 
-                            {destArr &&
-                                destArr.map((dest, i) => {
-                                    return <ResumoGeral key={i} dest={dest} data={dataArray}/>;
-                                })}
-                                </Box>
-                                <Box width={"100%"} display={"flex"} justifyContent={"end"}>
-                                    <ResumoGeral dest={"Geral"} data={dataArray}/>
-                                </Box>
+                                {destArr &&
+                                    destArr.map((dest, i) => {
+                                        return <ResumoGeral key={i} dest={dest} data={filterDataArray} />;
+                                    })}
+                            </Box>
+                            <Box width={"100%"} display={"flex"} justifyContent={"end"}>
+                                <ResumoGeral dest={"Geral"} data={filterDataArray} />
+                            </Box>
                         </Box>
                     }
                     <Box
@@ -142,7 +174,7 @@ const SRDPage = () => {
                                 </Divider>
 
                                 {projArr.map((projeto, i) => {
-                                    const lengthArr = dataArray
+                                    const lengthArr = filterDataArray
                                         .filter((data) => data.DESTINO.includes(destino))
                                         .filter((data) => data.PROJETO.includes(projeto));
                                     const totalScs = lengthArr.reduce(
@@ -151,7 +183,7 @@ const SRDPage = () => {
                                     );
                                     return (
                                         <>
-                                            {dataArray
+                                            {filterDataArray
                                                 .filter((data) => data.DESTINO.includes(destino))
                                                 .filter((data) => data.PROJETO.includes(projeto))
                                                 .length > 0 && (
@@ -180,7 +212,7 @@ const SRDPage = () => {
                                                             </Box>
                                                         </Box>
                                                         <TableSrd
-                                                            data={dataArray
+                                                            data={filterDataArray
                                                                 .filter((data) => data.DESTINO.includes(destino))
                                                                 .filter((data) => data.PROJETO.includes(projeto))
                                                                 .sort((a, b) => b.TICKET - a.TICKET)}

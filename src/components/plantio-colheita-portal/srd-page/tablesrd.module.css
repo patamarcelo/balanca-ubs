@@ -1,11 +1,11 @@
 .oddRow {
-    background-color: rgba(128, 128, 128, 0.2);
+    background-color: rgba(128, 128, 128, 0.3);
     color: 'whitesmoke';
 }
 
 .evenRow {
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    color: 'whitesmoke';
 }
 
 .evenRowLight {

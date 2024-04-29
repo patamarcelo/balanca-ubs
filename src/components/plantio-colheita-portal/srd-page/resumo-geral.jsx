@@ -29,7 +29,7 @@ const ResumoGeral = (props) => {
             .reduce((acc, curr) => acc + 1, 0);
             setTotalQuant(totalQUant);
         }
-    }, []);
+    }, [data, dest]);
     return (
         <Box
             sx={{
@@ -64,7 +64,7 @@ const ResumoGeral = (props) => {
                     height: '100%',
                 }}
             >
-                <Typography variant="h4" color={colors.grey[900]} sx={{fontWeight: '700', borderBottom: `1px solid ${colors.grey[900]}`}}>
+                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{fontWeight: '700', borderBottom: `1px solid ${dest === "Geral" ? colors.grey[900] : '#c2c2c2'}`}}>
                     {pesoTotal.toLocaleString(
             "pt-br",
             {
@@ -73,7 +73,7 @@ const ResumoGeral = (props) => {
             }
         )} Scs
                 </Typography>
-                <Typography variant="h4" color={colors.grey[900]} sx={{fontWeight: '700'}}>
+                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{fontWeight: '700'}}>
                     {totalQuant} {totalQuant > 1 ? "Cargas" : 'Carga'}
                 </Typography>
             </Box>
