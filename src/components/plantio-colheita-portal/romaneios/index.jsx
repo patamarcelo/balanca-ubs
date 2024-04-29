@@ -387,7 +387,20 @@ const RomaneiosPage = () => {
                         .filter((data) => data.saida.length === 0)
                         .filter((data) => data.pesoBruto > 0)
                         .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
-                    newArr = noWei.concat(withWei);
+                    if(withWei.length > 0){
+                        const upArr = withWei.map((data, index) => {
+                            let dataForm;
+                            if(index === 0) {
+                                dataForm = {...data, firstOne: true}
+                            } else {
+                                dataForm = data
+                            }
+                            return dataForm
+                        })
+                        newArr = noWei.concat(upArr);    
+                    } else {
+                        newArr = noWei.concat(withWei);    
+                    }
                     onlyPlates = filteredUserData
                         .filter((data) => data.saida.length === 0)
                         .map((roms) => roms.placa);

@@ -144,6 +144,7 @@ const RomaneiosTable = (props) => {
 								<tr
 									key={i}
 									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
+									style={{borderTop: carga?.firstOne && `0.5px solid ${colors.textColor[100]}`}}
 								>
 									<td>{newDate}</td>
 									<td onClick={() => handlerCopyData(carga)} style={{cursor: 'pointer'}}>{carga.relatorioColheita}</td>
