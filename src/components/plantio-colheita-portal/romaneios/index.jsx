@@ -199,7 +199,22 @@ const RomaneiosPage = () => {
                     "Saída"
                 ]
             ];
-            filteredUserData?.forEach((carga) => {
+
+            const withEx = filteredUserData
+                        .filter((data) => data.liquido > 0)
+                        .sort((a, b) => a?.saida && b?.saida - a?.saida);
+            const withWei = filteredUserData
+                .filter((data) => data.saida.length === 0)
+                .filter((data) => data.pesoBruto === "")
+                .sort((a, b) => b.relatorioColheita - a.relatorioColheita);
+            const noWei = filteredUserData
+                .filter((data) => data.saida.length === 0)
+                .filter((data) => data.pesoBruto > 0)
+                .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
+            const withExitArr = withEx.concat(noWei)
+            const newArr = withExitArr.concat(withWei);
+
+            newArr?.forEach((carga) => {
                 const newDate =
                     carga?.pesoBruto > 0
                         ? carga.entrada.toDate().toLocaleString("pt-BR")
@@ -237,7 +252,7 @@ const RomaneiosPage = () => {
             setdataToCsv(dataCsv);
         }
     }, [filteredUserData]);
-    
+
 
     if (isLoadingHome) {
         return (
@@ -256,7 +271,7 @@ const RomaneiosPage = () => {
     }
 
 
-    const csvFileName = new Date().toLocaleString().replaceAll('/','-').split(",")[0] 
+    const csvFileName = new Date().toLocaleString().replaceAll('/', '-').split(",")[0]
 
     return (
         <Box
@@ -387,19 +402,19 @@ const RomaneiosPage = () => {
                         .filter((data) => data.saida.length === 0)
                         .filter((data) => data.pesoBruto > 0)
                         .sort((a, b) => b.entrada.toMillis() - a.entrada.toMillis());
-                    if(withWei.length > 0){
+                    if (withWei.length > 0) {
                         const upArr = withWei.map((data, index) => {
                             let dataForm;
-                            if(index === 0) {
-                                dataForm = {...data, firstOne: true}
+                            if (index === 0) {
+                                dataForm = { ...data, firstOne: true }
                             } else {
                                 dataForm = data
                             }
                             return dataForm
                         })
-                        newArr = noWei.concat(upArr);    
+                        newArr = noWei.concat(upArr);
                     } else {
-                        newArr = noWei.concat(withWei);    
+                        newArr = noWei.concat(withWei);
                     }
                     onlyPlates = filteredUserData
                         .filter((data) => data.saida.length === 0)
