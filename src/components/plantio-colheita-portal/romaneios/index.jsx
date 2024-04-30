@@ -222,14 +222,14 @@ const RomaneiosPage = () => {
                 const ticket = carga?.ticket ? carga.ticket : "-";
                 const placa = `${carga.placa.slice(0, 3)}-${carga.placa.slice(3, 12)}`;
                 const pesoBruto = carga.pesoBruto
-                    ? formatWeight(carga.pesoBruto)
-                    : formatWeight(0);
+                    ? carga.pesoBruto
+                    : 0;
                 const pesoTara = carga.tara
-                    ? formatWeight(carga.tara)
-                    : formatWeight(0);
+                    ? carga.tara
+                    : 0;
                 const pesoLiquido = carga.liquido
-                    ? formatWeight(carga.liquido)
-                    : formatWeight(0);
+                    ? carga.liquido
+                    : 0;
                 const saida = carga?.saida
                     ? carga?.saida.toDate().toLocaleString("pt-BR")
                     : "-";
