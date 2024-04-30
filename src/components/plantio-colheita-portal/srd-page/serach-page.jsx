@@ -2,8 +2,9 @@ import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 import { Button } from "@mui/material";
 
 const SearchPage = props => {
-    const { setIsLoading, setDataArray, paramsQuery } = props;
+    const { setIsLoading, setDataArray, paramsQuery, setcsvData } = props;
     const handleSearch = async () => {
+        setcsvData([])
         console.log("Buscar os dados", paramsQuery);
         setIsLoading(true);
         try {

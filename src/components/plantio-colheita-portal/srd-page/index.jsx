@@ -13,6 +13,12 @@ import TableSrd from "./table-srd";
 import Divider from "@mui/material/Divider";
 import SearchPage from "./serach-page";
 
+
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import formatData from "./csv-format-data";
+
 const SRDPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -27,6 +33,7 @@ const SRDPage = () => {
     const [destArr, setdestArr] = useState([]);
     const [projArr, setprojArr] = useState();
     const [filterImp, setFilterImp] = useState();
+    const [csvData, setcsvData] = useState([]);
 
     const [filteImp, setFilteImp] = useState();
 
@@ -83,25 +90,54 @@ const SRDPage = () => {
         } else {
             setFilterDataArray(dataArray)
         }
+        console.log('dados from SRD: ', dataArray)
+        if (dataArray.length > 0) {
+            const csvData = formatData(dataArray)
+            setcsvData(csvData)
+        }
+
+
     }, [filterImp, setFilterDataArray, dataArray]);
+
+
+
+    const csvFileName = new Date().toLocaleString().replaceAll('/', '-').split(",")[0]
 
     return (
         <Box p={2} height={"100%"}>
-            <Box display={"flex"} flexDirection={"row"} gap={2}>
+            <Box display={"flex"} flexDirection={"row"} gap={2}
+            // alignItems="center"
+            >
                 <DateRange setParamsQuery={setParamsQuery} />
                 <SearchPage
                     setIsLoading={setIsLoading}
                     setDataArray={setDataArray}
                     paramsQuery={paramsQuery}
+                    setcsvData={setcsvData}
                 />
+                {
+                    csvData.length > 0 && (
+                        <Box alignSelf="center">
+                            <CSVLink data={csvData} separator={";"} filename={`${csvFileName}_SRD.csv`}>
+                                <FontAwesomeIcon
+                                    icon={faFileExcel}
+                                    color={colors.greenAccent[500]}
+                                    size="xl"
+                                    style={{ paddingLeft: "5px" }}
+                                />
+                            </CSVLink>
+                        </Box>
+                    )
+                }
+
             </Box>
             <Box display={"flex"} flexDirection={"row"} gap={0} ml={2} mt={2} alignItems={"center"}>
                 <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} />
                 <Button onClick={() => setFilterImp(3)}>
-                <Chip label="3%" color="info" style={{cursor: 'pointer'}}/> 
+                    <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
                 </Button>
             </Box>
-            <Divider style={{marginTop: '10px'}}/>
+            <Divider style={{ marginTop: '10px' }} />
 
             {isLoading ? (
                 <Box
