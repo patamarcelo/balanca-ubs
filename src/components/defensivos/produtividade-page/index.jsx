@@ -180,6 +180,8 @@ const ProdutividadePage = () => {
 						}
 					})
 					.then((res) => {
+						// console.log('detail Produtividade: ', res.data.dados_plantio)
+						// setProdutividade(res.data.dados_plantio.filter((data) => data.variedade__nome_fantasia !== "Pingo de Ouro").filter((data) =>  data.variedade__nome_fantasia !== "Caupi"));
 						setProdutividade(res.data.dados_plantio);
 					});
 			} catch (err) {
@@ -200,7 +202,9 @@ const ProdutividadePage = () => {
 						}
 					})
 					.then((res) => {
-						dispatch(setPlantioMapAll(res.data.dados_plantio));
+						// console.log('detailMap: ', res.data.dados_plantio)
+						dispatch(setPlantioMapAll(res.data.dados_plantio))
+						// dispatch(setPlantioMapAll(res.data.dados_plantio.filter((data) => data.dados.variedade !== "Pingo de Ouro").filter((data) => data.dados.variedade !== "Caupi")));
 					})
 					.catch((err) => console.log(err));
 			} catch (err) {
