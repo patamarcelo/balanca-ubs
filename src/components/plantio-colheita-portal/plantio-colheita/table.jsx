@@ -57,7 +57,7 @@ const TableColheita = ({ data, idsPending }) => {
 							className={`${
 								i % 2 === 0 ? styles.oddRow : styles.evenRow
 							} ${
-								carga.romaneios > 0 || areaParcial > 0
+								carga.romaneios > 0 || areaParcial > 0 || romaneiosPending > 0
 									? styles.colheitaRow
 									: styles.notColheitaRow
 							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && styles.closedParcela} 
