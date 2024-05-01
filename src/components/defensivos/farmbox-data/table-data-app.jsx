@@ -38,6 +38,9 @@ import {
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { useSelector } from "react-redux";
+import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
+
 const TableDataPage = (props) => {
 	const { dataF, openAll } = props;
 	
@@ -58,6 +61,8 @@ const TableDataPage = (props) => {
 	const [loadingMap, setLoadingMap] = useState(false);
 
 	const [rotateDir, setRotateDir] = useState("270");
+
+	const safraCiclo = useSelector(selectSafraCiclo);
 
 	useEffect(() => {
 		if(openAll){
@@ -182,7 +187,8 @@ const TableDataPage = (props) => {
 	const handleSendApiApp = async (idFarm) => {
 		const params = JSON.stringify({
 			projeto: idFarm,
-			parcelas: idParcelasSelected
+			parcelas: idParcelasSelected,
+			safra: safraCiclo
 		});
 		setLoadingMap(true);
 		try {

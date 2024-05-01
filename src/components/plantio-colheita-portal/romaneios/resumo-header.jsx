@@ -52,7 +52,7 @@ const ResumoHeader = props => {
                         color={fazenda === "Descarregando" || fazenda === "Trânsito" || fazenda ===  "Geral" ? colors.textColor[200] : "white"}
                         sx={{
                             fontWeight: "bold",
-                            borderBottom: `1px solid ${colors.textColor[200]}`
+                            borderBottom: `1px solid ${fazenda === "Descarregando" || fazenda === "Trânsito" || fazenda ===  "Geral" ? colors.textColor[200] : "white"}`
                         }}
                     >
                         {(peso / 60).toLocaleString("pt-br", {

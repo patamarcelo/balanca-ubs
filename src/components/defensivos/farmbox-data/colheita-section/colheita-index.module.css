@@ -1,4 +1,10 @@
 .lineTableAccEve {
+    background-color: rgba(245,245,245,0.1);
+    width: fit-content;
+}
+
+
+.lineGridData:hover {
     background-color: rgba(245,245,245,0.3);
     width: fit-content;
 }

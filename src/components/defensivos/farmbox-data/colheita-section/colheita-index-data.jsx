@@ -282,7 +282,7 @@ const ColheitaPage = () => {
                                                                         <Typography
                                                                             color={colors.textColor[100]}
                                                                             variant="h5"
-                                                                            sx={{ textAlign: "right" }}
+                                                                            sx={{ textAlign: "right", paddingRight: "15px" }}
                                                                             fontWeight={"bold"}
                                                                         >
                                                                             Aberto
@@ -323,7 +323,7 @@ const ColheitaPage = () => {
                                                                                         flexDirection="column"
                                                                                         width="100%"
                                                                                         m={1}
-                                                                                        className={ind % 2 === 0 && styles.lineTableAccEve}
+                                                                                        className={`${ind % 2 === 0 && styles.lineTableAccEve} ${styles.lineGridData}`}
                                                                                     >
                                                                                         <Typography
                                                                                             color={
@@ -369,7 +369,7 @@ const ColheitaPage = () => {
                                                                                         <Typography
                                                                                             color={colors.textColor[100]}
                                                                                             variant="h5"
-                                                                                            sx={{ textAlign: "right" }}
+                                                                                            sx={{ textAlign: "right", paddingRight: "15px"}}
                                                                                         >
                                                                                             {saldoAcolher === 0
                                                                                                 ? "-"
