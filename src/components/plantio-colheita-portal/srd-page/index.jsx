@@ -1,4 +1,4 @@
-import { Typography, Box, useTheme, TextField, Chip, Button } from "@mui/material";
+import { Typography, Box, useTheme, TextField, Chip, Button, IconButton } from "@mui/material";
 import { tokens } from "../../../theme";
 import styles from "./tablesrd.module.css";
 
@@ -15,16 +15,21 @@ import SearchPage from "./serach-page";
 
 
 import { CSVLink } from "react-csv";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 import formatData from "./csv-format-data";
+import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
 const SRDPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [paramsQuery, setParamsQuery] = useState({
         dtIni: null,
-        dtFim: null
+        dtFim: null,
+        ticket: ''
     });
 
     const [dataArray, setDataArray] = useState([]);
@@ -38,6 +43,40 @@ const SRDPage = () => {
     const [filteImp, setFilteImp] = useState();
 
     const [dataDisplay, setDataDisplay] = useState("");
+
+    const [initialDate, setInitialDate] = useState();
+    const [finalDate, setFinalDate] = useState();
+    const [ticketApi, setTicketApi] = useState("");
+
+    const handleSearch = async () => {
+        setcsvData([])
+        console.log("Buscar os dados", paramsQuery);
+        setIsLoading(true);
+        try {
+            nodeServerSrd
+                .get("/get-from-srd", {
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                    },
+                    params: {
+                        paramsQuery
+                    }
+                })
+                .then(res => {
+                    setDataArray(res.data.objects);
+                    console.log(res.data.objects);
+                    setIsLoading(false);
+                }).catch((err) => {
+                    setIsLoading(false)
+                    window.alert('erro ao pegar os dados: ', err)
+                })
+        } catch (error) {
+            console.log("erro ao pegar os dados: ", error);
+            setIsLoading(false);
+        } finally {
+            // setIsLoading(false);
+        }
+    };
 
     const formatDateIn = (date) => {
         const year = date?.slice(0, 4);
@@ -81,6 +120,15 @@ const SRDPage = () => {
         }
     }
 
+    const handleChangeTicket = (data) => {
+        const ticket = data.target.value
+        if (ticket.length > 0) {
+            setTicketApi(ticket)
+        } else {
+            setTicketApi('')
+        }
+    }
+
     useEffect(() => {
         if (filterImp > 0) {
             console.log(filterImp)
@@ -103,17 +151,55 @@ const SRDPage = () => {
 
     const csvFileName = new Date().toLocaleString().replaceAll('/', '-').split(",")[0]
 
+    const handlerClearData = () => {
+        setParamsQuery(
+            {
+                dtIni: null,
+                dtFim: null
+            }
+        )
+        setInitialDate(null)
+        setFinalDate(null)
+        setTicketApi('')
+        setFilterImp('')
+        setFilterDataArray([])
+        setDataArray([])
+        setcsvData([])
+    }
+
     return (
         <Box p={2} height={"100%"}>
             <Box display={"flex"} flexDirection={"row"} gap={2}
             // alignItems="center"
             >
-                <DateRange setParamsQuery={setParamsQuery} />
+                {
+                    (initialDate || finalDate || ticketApi || filterImp) &&
+                    <IconButton
+                        aria-label="delete"
+                        size="sm"
+                        color="warning"
+                        onClick={(e) => handlerClearData()}
+                        style={{ padding: "2px" }}
+                    >
+                        <CancelIcon fontSize="inherit" />
+                    </IconButton>
+                }
+                <DateRange
+                    setParamsQuery={setParamsQuery}
+                    initialDate={initialDate}
+                    setInitialDate={setInitialDate}
+                    finalDate={finalDate}
+                    setFinalDate={setFinalDate}
+                    ticketApi={ticketApi}
+                    className={styles.dateRangeTransition}
+                />
                 <SearchPage
                     setIsLoading={setIsLoading}
                     setDataArray={setDataArray}
                     paramsQuery={paramsQuery}
                     setcsvData={setcsvData}
+                    className={styles.dateRangeTransition}
+                    handleSearch={handleSearch}
                 />
                 {
                     csvData.length > 0 && (
@@ -131,11 +217,19 @@ const SRDPage = () => {
                 }
 
             </Box>
-            <Box display={"flex"} flexDirection={"row"} gap={0} ml={2} mt={2} alignItems={"center"}>
-                <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} />
-                <Button onClick={() => setFilterImp(3)}>
-                    <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
-                </Button>
+            <Box display={"flex"} flexDirection={"row"} gap={2} ml={initialDate || finalDate || ticketApi || filterImp ? 7 : 2} mt={2} alignItems={"center"}
+                className={styles.dateRangeTransition}
+            >
+                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} />
+                {
+                    filterDataArray.length > 0 &&
+                    <>
+                        <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} />
+                        <Button onClick={() => setFilterImp(3)}>
+                            <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
+                        </Button>
+                    </>
+                }
             </Box>
             <Divider style={{ marginTop: '10px' }} />
 

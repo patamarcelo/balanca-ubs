@@ -5,9 +5,7 @@ import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 import { useState, useEffect } from "react";
 
-const DateRange = ({ setParamsQuery }) => {
-    const [initialDate, setInitialDate] = useState();
-    const [finalDate, setFinalDate] = useState();
+const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, setFinalDate, ticketApi  }) => {
 
     useEffect(() => {
         const today = new Date()
@@ -18,12 +16,19 @@ const DateRange = ({ setParamsQuery }) => {
     }, []);
 
     useEffect(() => {
+        const max = 9
+        console.log(ticketApi.length)
+        const totalzeros = (max - ticketApi.length)
+        const zeroS = "0"
+        const formatTicket = ticketApi.length > 0 ? zeroS.repeat(totalzeros) + ticketApi : ''
+
         const newObj = {
             dtIni: initialDate?.replaceAll('-', ''),
-            dtFim: finalDate?.replaceAll('-', '')
+            dtFim: finalDate?.replaceAll('-', ''),
+            ticket: formatTicket
         }
         setParamsQuery(newObj)
-    }, [finalDate, initialDate, setParamsQuery]);
+    }, [finalDate, initialDate, setParamsQuery, ticketApi]);
     return (
         <Box display={"flex"} flexDirection={"row"} gap={2} ml={2}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
