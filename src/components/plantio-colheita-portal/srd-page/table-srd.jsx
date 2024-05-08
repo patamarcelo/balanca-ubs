@@ -59,7 +59,7 @@ const TableSrd = ({data}) => {
                             className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${(parcela.UMIDADE_ENTRADA > 25 || parcela.IMPUREZA_ENTRADA > 3) && styles.warningRow}`}
                             >
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
-                                <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.split('/').reverse().join('/')}</td>
+                                <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.trim().split('-').reverse().join('/')}</td>
                                 <td style={{width: '160px'}}>{parcela.PROJETO}</td>
                                 <td style={{width: '100px'}}>{parcela.PARCELA.replace("'",'').replaceAll(';', ' ')}</td>
                                 <td style={{width: '100px'}}>{parcela?.PLACA?.slice(0,3) + "-" + parcela?.PLACA?.slice(3,7) }</td>

@@ -23,8 +23,8 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
         const formatTicket = ticketApi.length > 0 ? zeroS.repeat(totalzeros) + ticketApi : ''
 
         const newObj = {
-            dtIni: initialDate?.replaceAll('-', ''),
-            dtFim: finalDate?.replaceAll('-', ''),
+            dtIni: initialDate,
+            dtFim: finalDate,
             ticket: formatTicket
         }
         setParamsQuery(newObj)
