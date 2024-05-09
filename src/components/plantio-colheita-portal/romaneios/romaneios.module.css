@@ -24,5 +24,9 @@ td, th {
     padding-left: 3px;
 }
 .romaneioTable{
-    min-width: 1380px;
+    min-width: 1180px;
+}
+
+.romaneioTable thead tr th, .romaneioTable tbody tr td {
+    font-size: 10px;
 }
