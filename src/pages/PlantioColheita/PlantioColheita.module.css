@@ -11,3 +11,7 @@
     /* background-color: grey; */
     overflow: auto;
 }
+
+.drawerTrans{
+    transition: all 1d ease-in-out;
+}

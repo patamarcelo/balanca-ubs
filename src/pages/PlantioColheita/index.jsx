@@ -44,6 +44,7 @@ const PlantioColheitaPage = () => {
 	const useData = useSelector(selectRomaneiosLoads)
 	const [idsRomaneioPending, setIdsRomaneioPending] = useState({});
 	const [resumeFarmRomaneios, setResumeFarmRomaneios] = useState({});
+	const [openDrawer, setOpenDrawer] = useState(true);
 
 	const handleNagivationIcon = (route) => {
 		setSelectedRoute(route);
@@ -233,6 +234,7 @@ const PlantioColheitaPage = () => {
 		>
 			<Box>
 				<PermanentDrawerLeft
+					openDrawer={openDrawer}
 					handleNagivationIcon={handleNagivationIcon}
 					selectedRoute={selectedRoute}
 					handlerRefresh={handlerRefresh}
@@ -263,6 +265,8 @@ const PlantioColheitaPage = () => {
 				)}
 				{!isLoading && dataArray.length > 0 && (
 					<PlantioColheitaPortal
+						setOpenDrawer={setOpenDrawer}
+						openDrawer={openDrawer}
 						selectedRoute={selectedRoute}
 						filteredFarm={filteredFarm}
 						selectedFarm={selectedFarm}

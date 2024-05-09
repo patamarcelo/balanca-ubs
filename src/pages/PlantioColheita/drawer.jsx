@@ -9,6 +9,8 @@ import ListItemText from "@mui/material/ListItemText";
 // import InboxIcon from "@mui/icons-material/MoveToInbox";
 // import MailIcon from "@mui/icons-material/Mail";
 
+import styles from './PlantioColheita.module.css'
+
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
 import { useTheme } from "@mui/material";
@@ -28,7 +30,8 @@ const drawerWidth = 130;
 const PermanentDrawerLeft = ({
 	handleNagivationIcon,
 	selectedRoute,
-	handlerRefresh
+	handlerRefresh,
+	openDrawer
 }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -59,15 +62,18 @@ const PermanentDrawerLeft = ({
 	];
 
 	return (
-		<Box sx={{ display: "flex" }}>
+		<Box sx={{ display: "flex" }} >
 			<Drawer
+				// anchor={'right'}
+				className={styles.drawerTrans}
 				PaperProps={{
 					sx: {
 						backgroundColor: colors.blueOrigin[800]
 						// borderRadius: "12px 0 0 12px"
 					}
 				}}
-				variant="permanent"
+				variant={openDrawer && "permanent"}
+				open={openDrawer}
 				sx={{
 					width: drawerWidth,
 					flexShrink: 0,
