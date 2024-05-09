@@ -79,10 +79,11 @@ const SRDPage = () => {
     };
 
     const formatDateIn = (date) => {
-        const year = date?.slice(0, 4);
-        const month = date?.slice(4, 6);
-        const day = date?.slice(6, 8);
-        return `${day}/${month}/${year}`;
+        return date?.split('-').reverse().join('/');
+        // const year = date?.slice(0, 4);
+        // const month = date?.slice(5, 7);
+        // const day = date?.slice(6, 8);
+        // return `${day}/${month}/${year}`;
     };
 
     useEffect(() => {
@@ -104,7 +105,7 @@ const SRDPage = () => {
             const dest = data.DESTINO.trim().split("-")[0];
             return { destino: dest, projeto: data.PROJETO };
         });
-        const onlyDest = formD?.map((data) => data.destino).sort();
+        const onlyDest = formD?.map((data) => data?.destino?.trim()).sort();
         const onlyProj = formD?.map((data) => data.projeto);
         setdestArr([...new Set(onlyDest)]);
         setprojArr([...new Set(onlyProj)]);
