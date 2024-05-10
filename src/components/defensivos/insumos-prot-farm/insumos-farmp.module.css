@@ -1,0 +1,31 @@
+.oddRow {
+    background-color: rgba(128, 128, 128, 0.3);
+    color: 'whitesmoke';
+}
+
+.evenRow {
+    /* background-color: white; */
+    color: 'whitesmoke';
+}
+
+.evenRowLight {
+    background-color: rgba(248, 248, 248, 1.0);
+}
+
+
+.destHeader {
+    text-transform: capitalize !important;
+}
+
+
+tbody tr:hover {
+    background-color: rgb(1, 1, 120);
+}
+
+.warningRow {
+    background-color: rgba(255, 255, 0, 0.3);
+}
+
+.dateRangeTransition{
+    transition: all 0.1s ease-out;
+}
