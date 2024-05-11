@@ -1,7 +1,7 @@
 import classes from "./farmbox.module.css";
 import { nodeServer } from "../../../utils/axios/axios.utils";
 import { useEffect, useState, useCallback } from "react";
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import {
@@ -281,6 +281,9 @@ const FarmBoxPage = () => {
 				open={openFarm}
 				handleCloseFarm={handleCloseFarm}
 			>
+				<Typography variant="h6" sx={{marginTop: '5px', color: colors.grey[100]}}>
+					{safraCiclo.safra}
+				</Typography>
 				{!loadingData && onlyFarms.length > 0 && (
 					<Box className={classes.formDiv}>
 						<Switch

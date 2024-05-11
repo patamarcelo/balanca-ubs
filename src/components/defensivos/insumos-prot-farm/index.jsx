@@ -1,7 +1,8 @@
 import { Box, Typography, Divider, useTheme } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { tokens } from "../../../theme";
 
-import styles from './insumos-farmp.module.css'
+import styles from "./insumos-farmp.module.css";
 
 import data from "./dados_defens.json";
 import { useEffect, useState } from "react";
@@ -11,7 +12,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import Table from 'react-bootstrap/Table'
+import Table from "react-bootstrap/Table";
+
+import { nodeServer } from "../../../utils/axios/axios.utils";
+import { selectCurrentUser } from "../../../store/user/user.selector";
+import { useSelector } from "react-redux";
 
 const onlyIns = ["DEFENSIVO", "FERTILIZANTES"];
 
@@ -31,17 +36,46 @@ const InsumosProtFarm = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    
     const [onlyInsumos, setOnlyInsumos] = useState([]);
     const [onlyFarms, setOnlyFarms] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
+
+    const [loadingData, setLoadinData] = useState(false);
+    const user = useSelector(selectCurrentUser);
 
     const [farm, setFarm] = useState("");
 
     const handleChange = (event) => {
         setFarm(event.target.value);
     };
+
+    useEffect(() => {
+        const getTrueApi = async () => {
+            try {
+                setLoadinData(true);
+                await nodeServer
+                    .get("/data-open-apps", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+                            "X-Firebase-AppCheck": user.accessToken
+                        }
+                        // params: {
+                        // 	safraCiclo
+                        // }
+                    })
+                    .then((res) => {
+                        console.log('resp openAPP: ',res.data);
+                    })
+                    .catch((err) => console.log(err));
+            } catch (err) {
+                console.log("Erro ao consumir a API", err);
+            } finally {
+                setLoadinData(false);
+            }
+        };
+        getTrueApi();
+    }, [user]);
 
     useEffect(() => {
         const filiais = [];
@@ -101,11 +135,34 @@ const InsumosProtFarm = () => {
         }
     }, [farm]);
 
+    if (loadingData) {
+        return (
+            <Box
+                sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <CircularProgress
+                    size={30}
+                    sx={{
+                        margin: "0px 10px",
+                        color: (theme) =>
+                            colors.greenAccent[theme.palette.mode === "dark" ? 200 : 800]
+                    }}
+                />
+            </Box>
+        );
+    }
+
     return (
         <Box>
             <Box mb={2}>
                 <Typography>{data.descricao}</Typography>
-                <Typography>{data.data_consulta.replace('-', ' ')}</Typography>
+                <Typography>{data.data_consulta.replace("-", " ")}</Typography>
             </Box>
             <Divider />
             <Box mt={2} mb={2}>
@@ -130,8 +187,19 @@ const InsumosProtFarm = () => {
             </Box>
             {farm && (
                 <Box mt={2}>
-                    <Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm">
-                    <thead style={{backgroundColor: colors.blueOrigin[300], color: 'white'}}>
+                    <Table
+                        striped
+                        bordered
+                        hover
+                        style={{ width: "100%", color: colors.textColor[100] }}
+                        size="sm"
+                    >
+                        <thead
+                            style={{
+                                backgroundColor: colors.blueOrigin[300],
+                                color: "white"
+                            }}
+                        >
                             <tr>
                                 <th>Grupo</th>
                                 <th>Insumo</th>
@@ -141,29 +209,36 @@ const InsumosProtFarm = () => {
                             </tr>
                         </thead>
                         <tbody>
-
                             {filteredProdcuts
                                 .filter((type) => onlyIns.includes(type.descriao_grupo))
-                                .sort((a,b) => a.descricao_produto.localeCompare(b.descricao_produto))
+                                .sort((a, b) =>
+                                    a.descricao_produto.localeCompare(b.descricao_produto)
+                                )
                                 .map((data, i) => {
                                     const totalprods = data.filiais
                                         .filter((filial) => filial.cod_filial === farm)
                                         .map((filiais) =>
-                                            filiais.locais.reduce((acc, curr) => acc + curr.quantidade, 0)
+                                            filiais.locais.reduce(
+                                                (acc, curr) => acc + curr.quantidade,
+                                                0
+                                            )
                                         );
 
                                     return (
-                                        <tr key={i} className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}>
-
+                                        <tr
+                                            key={i}
+                                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow
+                                                }`}
+                                        >
                                             <td>{data.descriao_grupo}</td>
-                                            <td>{data.descricao_produto.replace('DEFENSIVO', '')}</td>
+                                            <td>{data.descricao_produto.replace("DEFENSIVO", "")}</td>
                                             <td>{data.unidade_medida}</td>
-                                            <td style={{textAlign: 'right'}}>
-                                                <b style={{marginRight: '40%'}}>
-                                                {totalprods.toLocaleString("pt-br", {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2
-                                                })}
+                                            <td style={{ textAlign: "right" }}>
+                                                <b style={{ marginRight: "40%" }}>
+                                                    {totalprods.toLocaleString("pt-br", {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    })}
                                                 </b>
                                             </td>
                                             <td
@@ -195,7 +270,6 @@ const InsumosProtFarm = () => {
                                         // {/* <Typography>{"-".repeat(100)}</Typography> */}
                                     );
                                 })}
-
                         </tbody>
                     </Table>
                 </Box>
