@@ -98,11 +98,11 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log(onlyFarms);
+        console.log('Farm Object with code: ', onlyFarms);
     }, [onlyFarms]);
 
     useEffect(() => {
-        console.log(onlyFarmsArr);
+        console.log('only listed farmNames: ', onlyFarmsArr);
     }, [onlyFarmsArr]);
 
     useEffect(() => {
@@ -115,7 +115,7 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log(onlyInsumos);
+        console.log('only prod list :', onlyInsumos);
     }, [onlyInsumos]);
 
     useEffect(() => {
@@ -250,24 +250,6 @@ const InsumosProtFarm = () => {
                                                 {data.id_farm_box ? data.id_farm_box : "Sem ID"}
                                             </td>
                                         </tr>
-                                        // {/* <Typography>Depósitos:</Typography>
-                                        // {data.filiais
-                                        //     .filter((filial) => filial.cod_filial === farm)
-                                        //     .map((filiais) => {
-                                        //         return (
-                                        //             <Box>
-                                        //                 {filiais.locais.map((local) => {
-                                        //                     return (
-                                        //                         <Box>
-                                        //                             <Typography>{local.armazem}</Typography>
-                                        //                             <Typography>{local.quantidade}</Typography>
-                                        //                         </Box>
-                                        //                     );
-                                        //                 })}
-                                        //             </Box>
-                                        //         );
-                                        //     })} */}
-                                        // {/* <Typography>{"-".repeat(100)}</Typography> */}
                                     );
                                 })}
                         </tbody>
