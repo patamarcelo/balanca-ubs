@@ -24,7 +24,7 @@ import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
-const onlyIns = ["DEFENSIVO", "FERTILIZANTES"];
+const onlyIns = ["DEFENSIVO", "FERTILIZANTES", "SEM CADASTRO"];
 
 const InsumosProtFarm = () => {
     // const [onlyGrupo, setOnlyGrupo] = useState([]);
@@ -46,6 +46,7 @@ const InsumosProtFarm = () => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const useThemeHere = theme.palette.mode
 
     const [onlyInsumos, setOnlyInsumos] = useState([]);
     const [onlyFarms, setOnlyFarms] = useState([]);
@@ -162,14 +163,6 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log("Farm Object with code: ", onlyFarms);
-    }, [onlyFarms]);
-
-    useEffect(() => {
-        console.log("only listed farmNames: ", onlyFarmsArr);
-    }, [onlyFarmsArr]);
-
-    useEffect(() => {
         const newArr = data.itens.filter((type) =>
             onlyIns.includes(type.descriao_grupo)
         );
@@ -179,25 +172,68 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log("only prod list :", onlyInsumos);
-    }, [onlyInsumos]);
-
-    useEffect(() => {
         if (farm) {
             const newArr = data.itens.map((item) => {
                 const newArr = item.filiais;
                 let hasHere = false;
+                let farmProd = {};
                 newArr.forEach((filial) => {
                     if (filial.cod_filial === farm) {
                         hasHere = true;
+                        const farmProdFilt = formatedProdcuts.filter(
+                            (filt) => filt.protId === filial.cod_filial
+                        );
+                        const prodToAdd = farmProdFilt.find(
+                            (prod) => prod.insumoId === Number(item.id_farm_box)
+                        );
+                        if (prodToAdd) {
+                            farmProd = prodToAdd;
+                        }
                     }
                 });
-                return { ...item, hasHere };
+                return { ...item, hasHere, ...farmProd };
             });
             const filtArr = newArr.filter((data) => data.hasHere === true);
+            const idIn = filtArr.map((data) => Number(data.id_farm_box));
+            console.log(idIn);
+            console.log('farm', farm)
+            const prodToAddNoCodeFinded = formatedProdcuts
+                .filter((filt) => filt.protId === farm)
+                .filter((type) => type.insumoTipo !== "Operação")
+            prodToAddNoCodeFinded.forEach((prodToAdd) => {
+                if(idIn.includes(prodToAdd.insumoId)){
+                    console.log('ja consta')
+                } else {
+                    const obToAdd = {
+                        descriao_grupo: "SEM CADASTRO",
+                        descricao_produto: prodToAdd.insumoNome,
+                        quantidadeSaldoAplicar: prodToAdd.quantidadeSaldoAplicar,
+                        unidade_medida: " - ",
+                        id_farm_box: prodToAdd.insumoId,
+                        cod_filial: farm,
+                        filiais: [],
+                        farmName: prodToAdd.farmName.replace('Fazenda',''),
+                    };
+                    filtArr.push(obToAdd);
+                }
+            });
+
             setFilteredProdcuts(filtArr);
+            console.log("produtos protheus :", filtArr);
+            console.log("produtos farm :", formatedProdcuts);
         }
-    }, [farm]);
+    }, [farm, formatedProdcuts]);
+
+    const handleQUantProd = (protheus, farm) => {
+        if (isNaN(protheus) || isNaN(farm)) {
+            return " - ";
+        }
+        if(Number(protheus) > 0 && Number(farm)){
+            const result = Number(protheus) - Number(farm);
+            return result;
+        }
+        return " - "
+    };
 
     if (loadingData) {
         return (
@@ -223,13 +259,20 @@ const InsumosProtFarm = () => {
     }
 
     return (
-        <Box>
-            <Box mb={1}
-            sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "10px",
-            }}
+        <Box
+        sx={{
+            margin: "20px -10px",
+            padding: '20px 20px 40px 20px',
+            backgroundColor: useThemeHere !== 'dark' && "whitesmoke"
+        }}
+        >
+            <Box
+                mb={1}
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px"
+                }}
             >
                 <Box>
                     <Typography>{data.descricao}</Typography>
@@ -239,7 +282,7 @@ const InsumosProtFarm = () => {
                     <CSVLink
                         data={dataToCsv}
                         separator={";"}
-                        filename={`${csvFileName}_romaneios.csv`}
+                        filename={`${csvFileName}_insumos.csv`}
                     >
                         <FontAwesomeIcon
                             icon={faFileExcel}
@@ -287,19 +330,22 @@ const InsumosProtFarm = () => {
                             }}
                         >
                             <tr>
+                                <th>Projeto</th>
                                 <th>Grupo</th>
                                 <th>Insumo</th>
                                 <th>Un. Medida</th>
                                 <th>Quantidade Estoque</th>
+                                <th>Necessidade Farm</th>
+                                <th>Saldo Produtos</th>
                                 <th>ID Farm</th>
+                                <th>id Protheus</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredProdcuts
                                 .filter((type) => onlyIns.includes(type.descriao_grupo))
-                                .sort((a, b) =>
-                                    a.descricao_produto.localeCompare(b.descricao_produto)
-                                )
+                                .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))
+                                // .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto) && a.descriao_grupo.localeCompare(b.descriao_grupo))
                                 .map((data, i) => {
                                     const totalprods = data.filiais
                                         .filter((filial) => filial.cod_filial === farm)
@@ -315,18 +361,45 @@ const InsumosProtFarm = () => {
                                             key={i}
                                             className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow
                                                 }`}
-                                        >
+                                        >   <td>{data?.farmName ? data.farmName : '-'}</td>
                                             <td>{data.descriao_grupo}</td>
                                             <td>{data.descricao_produto.replace("DEFENSIVO", "")}</td>
                                             <td>{data.unidade_medida}</td>
                                             <td style={{ textAlign: "right" }}>
                                                 <b style={{ marginRight: "40%" }}>
-                                                    {totalprods.toLocaleString("pt-br", {
+                                                    {totalprods > 0 ? totalprods.toLocaleString("pt-br", {
                                                         minimumFractionDigits: 2,
                                                         maximumFractionDigits: 2
-                                                    })}
+                                                    }) : ' - '}
                                                 </b>
                                             </td>
+                                            <td style={{ textAlign: "right" }}>
+                                                <b style={{ marginRight: "40%" }}>
+                                                    {data?.quantidadeSaldoAplicar
+                                                        ? formatNumber(data?.quantidadeSaldoAplicar)
+                                                        : " - "}
+                                                </b>
+                                            </td>
+                                            <td style={{ textAlign: "right" }}>
+                                                <b
+                                                    style={{
+                                                        marginRight: "40%",
+                                                        color:
+                                                            handleQUantProd(
+                                                                totalprods,
+                                                                data?.quantidadeSaldoAplicar
+                                                            ) < 0 && "red"
+                                                    }}
+                                                >
+                                                    {formatNumber(
+                                                        handleQUantProd(
+                                                            totalprods,
+                                                            data?.quantidadeSaldoAplicar
+                                                        )
+                                                    )}
+                                                </b>
+                                            </td>
+
                                             <td
                                                 style={{
                                                     color: !data.id_farm_box && "red",
@@ -334,6 +407,9 @@ const InsumosProtFarm = () => {
                                                 }}
                                             >
                                                 {data.id_farm_box ? data.id_farm_box : "Sem ID"}
+                                            </td>
+                                            <td>
+                                                {data?.cod_produto ? data.cod_produto : " - "}
                                             </td>
                                         </tr>
                                     );

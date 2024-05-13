@@ -151,10 +151,11 @@ const formatArrayData = data => {
         if (acc.filter(f => f.farmId === curr.farmId).length === 0) {
             acc.push(curr);
         } else {
+            console.log("farmId", curr.farmId, 'protId', curr.protId, 'farmName', curr.farmName);
             const findIndexOf = e => e.farmId === curr.farmId;
+            // const findIndexOf = e => e.protId === curr.protId;
             const getIndex = acc.findIndex(findIndexOf);
             acc[getIndex].inputsArr = [...acc[getIndex].inputsArr, ...curr.inputsArr];
-
         }
 
         return acc;
@@ -185,7 +186,9 @@ const formatArrayData = data => {
 
         return inputsArrForm
     })
-    console.log("resumo produtos consolidados: ", unionQuantProds.flat())
+    if(unionQuantProds.length > 0) {
+        console.log("resumo produtos consolidados: ", unionQuantProds.flat())
+    }
     return unionQuantProds.flat()
 };
 export default formatArrayData;
