@@ -20,5 +20,51 @@ const dictFarm = [
 {id: 12105, name: 'Fazenda Biguá', protId: ''}
 ]
 
-export default dictFarm
+
+const formatArrayData = (data) => {
+    console.log('formar Data: ', data)
+
+    const adjustTable = data.map((aps) => {
+        const appNumber = aps.code
+        const farmName = aps.plantations[0].plantation.farm.name
+        const farmId = aps.plantations[0].plantation.farm.id
+        const protId = dictFarm.find((farm) => farm.id === farmId).protId
+        const progressos = aps.progresses.map((progress) => {
+            const areaAplicada = progress.area
+            return ({areaAplicada})
+        })
+        const totalAplicado = progressos.reduce((acc, curr) => acc + curr.areaAplicada, 0)
+        const inputsArr = aps.inputs.map((input) => {
+            const quantiSolicitada = input.sought_quantity
+            const doseSolicitada = input.sought_dosage_value
+            const quantidadeAplicada = (totalAplicado * doseSolicitada).toFixed(2)
+            const insumoNome = input.input.name
+            const insumoId = input.input.id
+            const insumoTipo = input.input.input_type_name
+            const quantidadeSaldoAplicar = (quantiSolicitada - quantidadeAplicada).toFixed(2)  //
+            return ({
+                quantiSolicitada,
+                doseSolicitada,
+                quantidadeAplicada,
+                insumoNome,
+                insumoId,
+                insumoTipo,
+                quantidadeSaldoAplicar
+            })
+        })
+        // console.log('ap: ', appNumber, 'farm: ', farmName, 'totalAplicado: ', totalAplicado)
+        // console.log(inputsArr)
+        // console.log(progressos)
+        return ({
+            appNumber,
+            farmName,
+            farmId,
+            protId,
+            inputsArr,
+        })
+    })
+
+    console.log(adjustTable)
+}
+export default formatArrayData
 

@@ -18,6 +18,8 @@ import { nodeServer } from "../../../utils/axios/axios.utils";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 import { useSelector } from "react-redux";
 
+import formatArrayData from "./support";
+
 const onlyIns = ["DEFENSIVO", "FERTILIZANTES"];
 
 const InsumosProtFarm = () => {
@@ -40,6 +42,8 @@ const InsumosProtFarm = () => {
     const [onlyFarms, setOnlyFarms] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
+
+    const [dataFromFam, setDataFromFam] = useState([]);
 
     const [loadingData, setLoadinData] = useState(false);
     const user = useSelector(selectCurrentUser);
@@ -65,7 +69,7 @@ const InsumosProtFarm = () => {
                         // }
                     })
                     .then((res) => {
-                        console.log('resp openAPP: ',res.data);
+                        setDataFromFam(res.data)
                     })
                     .catch((err) => console.log(err));
             } catch (err) {
@@ -76,6 +80,12 @@ const InsumosProtFarm = () => {
         };
         getTrueApi();
     }, [user]);
+
+    useEffect(() => {
+        if(dataFromFam){
+            formatArrayData(dataFromFam)
+        }
+    }, [dataFromFam]);
 
     useEffect(() => {
         const filiais = [];
