@@ -20,6 +20,10 @@ import { useSelector } from "react-redux";
 
 import formatArrayData from "./support";
 
+import { CSVLink } from "react-csv";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+
 const onlyIns = ["DEFENSIVO", "FERTILIZANTES"];
 
 const InsumosProtFarm = () => {
@@ -35,6 +39,11 @@ const InsumosProtFarm = () => {
     //     console.log(onlyGrupo)
     // }, [onlyGrupo]);
 
+    const csvFileName = new Date()
+        .toLocaleString()
+        .replaceAll("/", "-")
+        .split(",")[0];
+
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -44,8 +53,10 @@ const InsumosProtFarm = () => {
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [dataFromFam, setDataFromFam] = useState([]);
+    const [formatedProdcuts, setFormatedProdcuts] = useState([]);
+    const [dataToCsv, setDataToCsv] = useState([]);
 
-    const [loadingData, setLoadinData] = useState(false);
+    const [loadingData, setLoadinData] = useState(true);
     const user = useSelector(selectCurrentUser);
 
     const [farm, setFarm] = useState("");
@@ -69,7 +80,7 @@ const InsumosProtFarm = () => {
                         // }
                     })
                     .then((res) => {
-                        setDataFromFam(res.data)
+                        setDataFromFam(res.data);
                     })
                     .catch((err) => console.log(err));
             } catch (err) {
@@ -82,10 +93,53 @@ const InsumosProtFarm = () => {
     }, [user]);
 
     useEffect(() => {
-        if(dataFromFam){
-            formatArrayData(dataFromFam)
+        if (dataFromFam) {
+            const formData = formatArrayData(dataFromFam);
+            setFormatedProdcuts(formData);
         }
     }, [dataFromFam]);
+
+    const formatNumber = (number) =>
+        number.toLocaleString("pt-br", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+    useEffect(() => {
+        if (formatedProdcuts) {
+            const headerCsv = [
+                [
+                    "Id Prodtheus",
+                    "Projeto",
+                    "Projeto ID",
+                    "Inusmo",
+                    "Inusmo TIpo",
+                    "Insumo ID",
+                    "dose",
+                    "Quantidade Solicitada",
+                    "Quantidade Aplicada",
+                    "Quantidade Saldo Aplicar"
+                ]
+            ];
+
+            formatedProdcuts.forEach((prod) => {
+                const newLine = [
+                    prod.protId,
+                    prod.farmName,
+                    prod.farmId,
+                    prod.insumoNome,
+                    prod.insumoTipo,
+                    prod.insumoId,
+                    formatNumber(prod.doseSolicitada),
+                    formatNumber(prod.quantiSolicitada),
+                    formatNumber(prod.quantidadeAplicada),
+                    formatNumber(prod.quantidadeSaldoAplicar)
+                ];
+                headerCsv.push(newLine);
+            });
+            setDataToCsv(headerCsv);
+        }
+    }, [formatedProdcuts]);
 
     useEffect(() => {
         const filiais = [];
@@ -108,11 +162,11 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log('Farm Object with code: ', onlyFarms);
+        console.log("Farm Object with code: ", onlyFarms);
     }, [onlyFarms]);
 
     useEffect(() => {
-        console.log('only listed farmNames: ', onlyFarmsArr);
+        console.log("only listed farmNames: ", onlyFarmsArr);
     }, [onlyFarmsArr]);
 
     useEffect(() => {
@@ -125,7 +179,7 @@ const InsumosProtFarm = () => {
     }, []);
 
     useEffect(() => {
-        console.log('only prod list :', onlyInsumos);
+        console.log("only prod list :", onlyInsumos);
     }, [onlyInsumos]);
 
     useEffect(() => {
@@ -170,9 +224,31 @@ const InsumosProtFarm = () => {
 
     return (
         <Box>
-            <Box mb={2}>
-                <Typography>{data.descricao}</Typography>
-                <Typography>{data.data_consulta.replace("-", " ")}</Typography>
+            <Box mb={1}
+            sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "10px",
+            }}
+            >
+                <Box>
+                    <Typography>{data.descricao}</Typography>
+                    <Typography>{data.data_consulta.replace("-", " ")}</Typography>
+                </Box>
+                <Box>
+                    <CSVLink
+                        data={dataToCsv}
+                        separator={";"}
+                        filename={`${csvFileName}_romaneios.csv`}
+                    >
+                        <FontAwesomeIcon
+                            icon={faFileExcel}
+                            color={colors.greenAccent[500]}
+                            size="xl"
+                            style={{ paddingLeft: "5px" }}
+                        />
+                    </CSVLink>
+                </Box>
             </Box>
             <Divider />
             <Box mt={2} mb={2}>
