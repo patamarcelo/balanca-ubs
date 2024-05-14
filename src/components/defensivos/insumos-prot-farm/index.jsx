@@ -18,11 +18,14 @@ import { nodeServer } from "../../../utils/axios/axios.utils";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 import { useSelector } from "react-redux";
 
-import formatArrayData from "./support";
+import formatArrayData, { dictFarm } from "./support";
 
 import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+
+import Switch from '@mui/material/Switch';
+
 
 const onlyIns = ["DEFENSIVO", "FERTILIZANTES", "SEM CADASTRO"];
 
@@ -55,7 +58,10 @@ const InsumosProtFarm = () => {
 
     const [dataFromFam, setDataFromFam] = useState([]);
     const [formatedProdcuts, setFormatedProdcuts] = useState([]);
+    const [isByPorject, setIsByPorject] = useState(true);
+
     const [dataToCsv, setDataToCsv] = useState([]);
+    const [dataToCsvScreen, setDataToCsvScreen] = useState([]);
 
     const [loadingData, setLoadinData] = useState(true);
     const user = useSelector(selectCurrentUser);
@@ -65,6 +71,10 @@ const InsumosProtFarm = () => {
     const handleChange = (event) => {
         setFarm(event.target.value);
     };
+
+    const handleChangeProjectTo = () => {
+        setIsByPorject(!isByPorject);
+    }
 
     useEffect(() => {
         const getTrueApi = async () => {
@@ -95,24 +105,29 @@ const InsumosProtFarm = () => {
 
     useEffect(() => {
         if (dataFromFam) {
-            const formData = formatArrayData(dataFromFam);
+            const formData = formatArrayData(dataFromFam, isByPorject);
             setFormatedProdcuts(formData);
         }
-    }, [dataFromFam]);
+    }, [dataFromFam, isByPorject]);
 
-    const formatNumber = (number) =>
-        number.toLocaleString("pt-br", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+    const formatNumber = (number) => {
+        if (number) {
+            return number?.toLocaleString("pt-br", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        return "-"
+    }
+
 
     useEffect(() => {
         if (formatedProdcuts) {
             const headerCsv = [
                 [
-                    "Id Prodtheus",
+                    "Id Fazenda Prodtheus",
                     "Projeto",
-                    "Projeto ID",
+                    "ID Projeto Protheus",
                     "Inusmo",
                     "Inusmo TIpo",
                     "Insumo ID",
@@ -141,6 +156,53 @@ const InsumosProtFarm = () => {
             setDataToCsv(headerCsv);
         }
     }, [formatedProdcuts]);
+
+    useEffect(() => {
+        if (filteredProdcuts) {
+            const headerCsvHere = [
+                [
+                    "Fazenda",
+                    "Grupo",
+                    "Insumo",
+                    'Unidade Medida',
+                    "Quantidade Estoque",
+                    "Necessidade Farm",
+                    "Saldo Produtos",
+                    "ID Farm",
+                    "ID Protheus"
+                ]
+            ]
+
+            filteredProdcuts
+                .filter((type) => onlyIns.includes(type.descriao_grupo))
+                .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)).forEach((row) => {
+                    const totalprods = row.filiais
+                        .filter((filial) => filial.cod_filial === farm)
+                        .map((filiais) =>
+                            filiais.locais.reduce(
+                                (acc, curr) => acc + curr.quantidade,
+                                0
+                            )
+                        );
+                    const saldoProd = formatNumber(handleQUantProd(totalprods[0], row?.quantidadeSaldoAplicar))
+                    const newLine = [
+                        row.farmOrigName,
+                        row.descriao_grupo,
+                        row.descricao_produto,
+                        row.unidade_medida,
+                        formatNumber(totalprods),
+                        formatNumber(row.quantidadeSaldoAplicar),
+                        saldoProd,
+                        row.id_farm_box,
+                        row.cod_produto
+                    ]
+                    headerCsvHere.push(newLine)
+                })
+
+            setDataToCsvScreen(headerCsvHere)
+        }
+
+    }, [filteredProdcuts]);
 
     useEffect(() => {
         const filiais = [];
@@ -177,12 +239,14 @@ const InsumosProtFarm = () => {
                 const newArr = item.filiais;
                 let hasHere = false;
                 let farmProd = {};
+                let farmOrigName;
                 newArr.forEach((filial) => {
                     if (filial.cod_filial === farm) {
                         hasHere = true;
                         const farmProdFilt = formatedProdcuts.filter(
                             (filt) => filt.protId === filial.cod_filial
                         );
+                        farmOrigName = dictFarm.find((f) => f.protId === filial.cod_filial)?.fazenda;
                         const prodToAdd = farmProdFilt.find(
                             (prod) => prod.insumoId === Number(item.id_farm_box)
                         );
@@ -191,17 +255,17 @@ const InsumosProtFarm = () => {
                         }
                     }
                 });
-                return { ...item, hasHere, ...farmProd };
+                return { ...item, hasHere, ...farmProd, farmOrigName };
             });
+            // console.log('newARR: ', newArr);
             const filtArr = newArr.filter((data) => data.hasHere === true);
             const idIn = filtArr.map((data) => Number(data.id_farm_box));
-            console.log(idIn);
             console.log('farm', farm)
             const prodToAddNoCodeFinded = formatedProdcuts
                 .filter((filt) => filt.protId === farm)
                 .filter((type) => type.insumoTipo !== "Operação")
             prodToAddNoCodeFinded.forEach((prodToAdd) => {
-                if(idIn.includes(prodToAdd.insumoId)){
+                if (idIn.includes(prodToAdd.insumoId)) {
                     console.log('ja consta')
                 } else {
                     const obToAdd = {
@@ -212,7 +276,8 @@ const InsumosProtFarm = () => {
                         id_farm_box: prodToAdd.insumoId,
                         cod_filial: farm,
                         filiais: [],
-                        farmName: prodToAdd.farmName.replace('Fazenda',''),
+                        farmName: prodToAdd.farmName.replace('Fazenda', ''),
+                        farmOrigName: prodToAdd.farmOrigName
                     };
                     filtArr.push(obToAdd);
                 }
@@ -228,7 +293,7 @@ const InsumosProtFarm = () => {
         if (isNaN(protheus) || isNaN(farm)) {
             return " - ";
         }
-        if(Number(protheus) > 0 && Number(farm)){
+        if (Number(protheus) > 0 && Number(farm)) {
             const result = Number(protheus) - Number(farm);
             return result;
         }
@@ -260,11 +325,11 @@ const InsumosProtFarm = () => {
 
     return (
         <Box
-        sx={{
-            margin: "20px -10px",
-            padding: '20px 20px 40px 20px',
-            backgroundColor: useThemeHere !== 'dark' && "whitesmoke"
-        }}
+            sx={{
+                margin: "20px -10px",
+                padding: '20px 20px 40px 20px',
+                backgroundColor: useThemeHere !== 'dark' && "whitesmoke"
+            }}
         >
             <Box
                 mb={1}
@@ -278,7 +343,14 @@ const InsumosProtFarm = () => {
                     <Typography>{data.descricao}</Typography>
                     <Typography>{data.data_consulta.replace("-", " ")}</Typography>
                 </Box>
-                <Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "10px"
+                    }}
+                >
                     <CSVLink
                         data={dataToCsv}
                         separator={";"}
@@ -291,6 +363,24 @@ const InsumosProtFarm = () => {
                             style={{ paddingLeft: "5px" }}
                         />
                     </CSVLink>
+                    <CSVLink
+                        data={dataToCsvScreen}
+                        separator={";"}
+                        filename={`${csvFileName}_insumos.csv`}
+                    >
+                        <FontAwesomeIcon
+                            icon={faFileExcel}
+                            color={colors.greenAccent[500]}
+                            size="xl"
+                            style={{ paddingLeft: "5px" }}
+                        />
+                    </CSVLink>
+                    <Switch
+                        checked={isByPorject}
+                        onChange={handleChangeProjectTo}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                        color="secondary"
+                    />
                 </Box>
             </Box>
             <Divider />
@@ -330,7 +420,8 @@ const InsumosProtFarm = () => {
                             }}
                         >
                             <tr>
-                                <th>Projeto</th>
+                                {/* <th>Projeto</th> */}
+                                <th>Fazenda</th>
                                 <th>Grupo</th>
                                 <th>Insumo</th>
                                 <th>Un. Medida</th>
@@ -361,7 +452,9 @@ const InsumosProtFarm = () => {
                                             key={i}
                                             className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow
                                                 }`}
-                                        >   <td>{data?.farmName ? data.farmName : '-'}</td>
+                                        >
+                                            <td>{data?.farmOrigName ? data.farmOrigName : '-'}</td>
+                                            {/* <td>{data?.farmName ? data.farmName : '-'}</td> */}
                                             <td>{data.descriao_grupo}</td>
                                             <td>{data.descricao_produto.replace("DEFENSIVO", "")}</td>
                                             <td>{data.unidade_medida}</td>
