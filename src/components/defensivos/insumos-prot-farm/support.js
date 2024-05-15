@@ -145,6 +145,7 @@ const formatArrayData = (data, isByPorject = true) => {
             return {
                 protId,
                 farmOrigName,
+                farmName,
                 quantiSolicitada,
                 doseSolicitada,
                 quantidadeAplicada,
@@ -154,7 +155,7 @@ const formatArrayData = (data, isByPorject = true) => {
                 quantidadeSaldoAplicar
             };
         });
-        // console.log('ap: ', appNumber, 'farm: ', farmName, 'totalAplicado: ', totalAplicado)
+        // console.log('ap: ', appNumber, 'farm: ', farmName, 'totalAplicado: ', totalAplicado, 'farmId: ', farmId)
         // console.log(inputsArr)
         // console.log(progressos)
         return {
@@ -179,7 +180,6 @@ const formatArrayData = (data, isByPorject = true) => {
             const getIndex = isByPorject ? acc.findIndex(findIndexOfFarmId) : acc.findIndex(findIndexOfProtId) ;
             acc[getIndex].inputsArr = [...acc[getIndex].inputsArr, ...curr.inputsArr];
         }
-
         return acc;
     }, []);
 
@@ -203,6 +203,7 @@ const formatArrayData = (data, isByPorject = true) => {
                 acc[getIndex]["quantidadeAplicada"] = Number(acc[getIndex]["quantidadeAplicada"]) + Number(curr.quantidadeAplicada)
                 acc[getIndex]["quantidadeSaldoAplicar"] = Number(acc[getIndex]["quantidadeSaldoAplicar"]) + Number(curr.quantidadeSaldoAplicar)
             }
+            // console.log('accAfter: ', acc)
             return acc
         },[])
 

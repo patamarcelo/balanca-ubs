@@ -172,10 +172,16 @@ const InsumosProtFarm = () => {
                     "ID Protheus"
                 ]
             ]
+            const farmFilt = filteredProdcuts.filter((data) => data.quantidadeSaldoAplicar !== undefined)
+            const protFilt = filteredProdcuts.filter((data) => data.quantidadeSaldoAplicar === undefined)
+            console.log(farmFilt)
+            console.log(protFilt)
+            const newArrSorted = farmFilt
+            newArrSorted.push(...protFilt)
 
-            filteredProdcuts
+            newArrSorted
                 .filter((type) => onlyIns.includes(type.descriao_grupo))
-                .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)).forEach((row) => {
+                .forEach((row) => {
                     const totalprods = row.filiais
                         .filter((filial) => filial.cod_filial === farm)
                         .map((filiais) =>
@@ -257,8 +263,8 @@ const InsumosProtFarm = () => {
                 });
                 return { ...item, hasHere, ...farmProd, farmOrigName };
             });
-            // console.log('newARR: ', newArr);
-            const filtArr = newArr.filter((data) => data.hasHere === true);
+            console.table('newARR: ', newArr);
+            const filtArr = newArr.filter((data) => data.hasHere === true).sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto));
             const idIn = filtArr.map((data) => Number(data.id_farm_box));
             console.log('farm', farm)
             const prodToAddNoCodeFinded = formatedProdcuts
@@ -266,7 +272,22 @@ const InsumosProtFarm = () => {
                 .filter((type) => type.insumoTipo !== "Operação")
             prodToAddNoCodeFinded.forEach((prodToAdd) => {
                 if (idIn.includes(prodToAdd.insumoId)) {
-                    console.log('ja consta')
+                    // console.log('ja consta')
+                    console.log('adicionar: ', prodToAdd)
+                    // const findProd = filtArr.find((data) => data.id_farm_box === prodToAdd.insumoId);
+                    // console.log('incrementar: ', filtArr[0])
+                    const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada === prodToAdd?.quantiSolicitada;
+                    const getIndex = filtArr.findIndex(findIndexOfFarmId) 
+                    if(getIndex !== -1){
+                        console.log('não faça o incremento')
+                    } else {
+                        const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada !== prodToAdd?.quantiSolicitada;
+                        const getIndexNew = filtArr.findIndex(findIndexOfFarmId) 
+                        console.log('incrementar', filtArr[getIndexNew])
+                        filtArr[getIndexNew].quantiSolicitada += prodToAdd.quantiSolicitada
+                        filtArr[getIndexNew].quantidadeAplicada += prodToAdd.quantidadeAplicada
+                        filtArr[getIndexNew].quantidadeSaldoAplicar += prodToAdd.quantidadeSaldoAplicar
+                    }
                 } else {
                     const obToAdd = {
                         descriao_grupo: "SEM CADASTRO",
@@ -282,10 +303,13 @@ const InsumosProtFarm = () => {
                     filtArr.push(obToAdd);
                 }
             });
-
-            setFilteredProdcuts(filtArr);
-            console.log("produtos protheus :", filtArr);
-            console.log("produtos farm :", formatedProdcuts);
+            const farmFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar !== undefined)
+            const protFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar === undefined)
+            console.log(farmFilt)
+            console.log(protFilt)
+            const newArrSorted = farmFilt
+            newArrSorted.push(...protFilt)
+            setFilteredProdcuts(newArrSorted);
         }
     }, [farm, formatedProdcuts]);
 
@@ -435,7 +459,7 @@ const InsumosProtFarm = () => {
                         <tbody>
                             {filteredProdcuts
                                 .filter((type) => onlyIns.includes(type.descriao_grupo))
-                                .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))
+                                // .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))
                                 // .sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto) && a.descriao_grupo.localeCompare(b.descriao_grupo))
                                 .map((data, i) => {
                                     const totalprods = data.filiais

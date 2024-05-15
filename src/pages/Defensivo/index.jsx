@@ -37,7 +37,7 @@ const DefensivoPage = () => {
 
 	const [params, setParams] = useState({
 		safra: safraCiclo.safra,
-		ciclo: safraCiclo.ciclo
+		ciclo: safraCiclo.ciclo,
 	});
 
 	useEffect(() => {
@@ -47,7 +47,7 @@ const DefensivoPage = () => {
 	useEffect(() => {
 		setParams({
 			safra: safraCiclo.safra,
-			ciclo: safraCiclo.ciclo
+			ciclo: safraCiclo.ciclo,
 		});
 	}, [safraCiclo]);
 
@@ -72,11 +72,12 @@ const DefensivoPage = () => {
 	};
 
 	const getFalseApi = async () => {
+		const newObj  = { ...safraCiclo, device: 'WEB'}
 		try {
 			await djangoApi
 				.post(
 					"plantio/get_plantio_operacoes_detail_json_program/",
-					safraCiclo,
+					newObj,
 					{
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`

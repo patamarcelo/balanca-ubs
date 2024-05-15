@@ -1,6 +1,6 @@
 {
     "descricao": "Consulta de saldos Protheus",
-    "data_consulta": "14/05/2024-14:12:57",
+    "data_consulta": "15/05/2024-14:43:30",
     "itens": [
         {
             "cod_produto": "012008",
@@ -76,7 +76,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 1935.89
+                            "quantidade": 11941.09
                         }
                     ]
                 },
@@ -86,7 +86,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 13263.37
+                            "quantidade": 11347.87
                         }
                     ]
                 },
@@ -96,7 +96,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 6190.99
+                            "quantidade": 3162.69
                         }
                     ]
                 },
@@ -106,7 +106,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 2760.63
+                            "quantidade": 10424.63
                         }
                     ]
                 }
@@ -126,7 +126,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 9918.63
+                            "quantidade": 7880.98
                         }
                     ]
                 }
@@ -292,7 +292,7 @@
             "cod_grupo": "0007",
             "descriao_grupo": "FERTILIZANTES",
             "unidade_medida": "KG",
-            "id_farm_box": "",
+            "id_farm_box": "202953",
             "filiais": [
                 {
                     "cod_filial": "0208",
@@ -329,12 +329,16 @@
                     "desc_filial": "SAO MIGUEL - FAZENDA",
                     "locais": [
                         {
+                            "armazem": "27",
+                            "quantidade": 60
+                        },
+                        {
                             "armazem": "35",
                             "quantidade": 80
                         },
                         {
                             "armazem": "99",
-                            "quantidade": 40
+                            "quantidade": 10
                         }
                     ]
                 },
@@ -374,7 +378,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 8310
+                            "quantidade": 8300
                         }
                     ]
                 }
@@ -414,7 +418,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 625
+                            "quantidade": 575
                         }
                     ]
                 }
@@ -426,7 +430,7 @@
             "cod_grupo": "0007",
             "descriao_grupo": "FERTILIZANTES",
             "unidade_medida": "KG",
-            "id_farm_box": "",
+            "id_farm_box": "154266",
             "filiais": [
                 {
                     "cod_filial": "0202",
@@ -434,7 +438,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 58000
+                            "quantidade": 108000
                         }
                     ]
                 },
@@ -454,7 +458,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 15200
+                            "quantidade": 65200
                         }
                     ]
                 }
@@ -678,7 +682,7 @@
                         },
                         {
                             "armazem": "99",
-                            "quantidade": 140
+                            "quantidade": 60
                         }
                     ]
                 },
@@ -710,7 +714,7 @@
             "cod_grupo": "0007",
             "descriao_grupo": "FERTILIZANTES",
             "unidade_medida": "KG",
-            "id_farm_box": "",
+            "id_farm_box": "158106",
             "filiais": [
                 {
                     "cod_filial": "0202",
@@ -729,6 +733,46 @@
                         {
                             "armazem": "01",
                             "quantidade": 3600
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "00025276",
+            "descricao_produto": "SEMENTE DE SOJA ANSC89 109",
+            "cod_grupo": "0009",
+            "descriao_grupo": "SEMENTES",
+            "unidade_medida": "KG",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 11587
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "00032545",
+            "descricao_produto": "SEMENTE DE SOJA AN88 022",
+            "cod_grupo": "0009",
+            "descriao_grupo": "SEMENTES",
+            "unidade_medida": "KG",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 59537.45
                         }
                     ]
                 }
@@ -1159,26 +1203,6 @@
             ]
         },
         {
-            "cod_produto": "046652",
-            "descricao_produto": "AEROSHELL GREASE 5- BISNAGA",
-            "cod_grupo": "0015",
-            "descriao_grupo": "LUBRIFICANTES",
-            "unidade_medida": "UN",
-            "id_farm_box": "",
-            "filiais": [
-                {
-                    "cod_filial": "0202",
-                    "desc_filial": "SAO MIGUEL - FAZENDA",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 4
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "cod_produto": "00029688",
             "descricao_produto": "BOVINO FEMEA  DE 0 A 12 MESES",
             "cod_grupo": "0016",
@@ -1272,7 +1296,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 617
+                            "quantidade": 117
                         }
                     ]
                 }
@@ -1392,7 +1416,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 1390.4
+                            "quantidade": 1385.2
                         }
                     ]
                 }
@@ -1412,7 +1436,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 2730.86
+                            "quantidade": 2726.2
                         }
                     ]
                 }
@@ -1432,7 +1456,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 1722.9
+                            "quantidade": 1721.6
                         }
                     ]
                 }
@@ -1612,7 +1636,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 1283.2
+                            "quantidade": 1281.9
                         }
                     ]
                 }
@@ -1872,7 +1896,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 1900.5
+                            "quantidade": 1855.5
                         }
                     ]
                 }
@@ -2772,7 +2796,7 @@
                     "locais": [
                         {
                             "armazem": "04",
-                            "quantidade": 819
+                            "quantidade": 741
                         }
                     ]
                 }
@@ -2913,6 +2937,26 @@
                         {
                             "armazem": "01",
                             "quantidade": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "00022750",
+            "descricao_produto": "TAMPA DA BOMBONA 20 LITROS",
+            "cod_grupo": "0024",
+            "descriao_grupo": "REPARO",
+            "unidade_medida": "UN",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 1400
                         }
                     ]
                 }
@@ -4814,7 +4858,7 @@
             "cod_grupo": "0037",
             "descriao_grupo": "DEFENSIVO",
             "unidade_medida": "L",
-            "id_farm_box": "",
+            "id_farm_box": "227500",
             "filiais": [
                 {
                     "cod_filial": "0206",
@@ -4832,7 +4876,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 321
+                            "quantidade": 2320
                         }
                     ]
                 }
@@ -4846,6 +4890,20 @@
             "unidade_medida": "L",
             "id_farm_box": "154220",
             "filiais": [
+                {
+                    "cod_filial": "0202",
+                    "desc_filial": "SAO MIGUEL - FAZENDA",
+                    "locais": [
+                        {
+                            "armazem": "27",
+                            "quantidade": 160
+                        },
+                        {
+                            "armazem": "99",
+                            "quantidade": 40
+                        }
+                    ]
+                },
                 {
                     "cod_filial": "0206",
                     "desc_filial": "SAO MIGUEL - FAZ BENCAO DE DEUS",
@@ -4872,7 +4930,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 14140
+                            "quantidade": 14060
                         }
                     ]
                 }
@@ -5136,7 +5194,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 6480
+                            "quantidade": 6440
                         }
                     ]
                 }
@@ -5190,7 +5248,27 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 2000
+                            "quantidade": 1960
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "00033040",
+            "descricao_produto": "GLI-UP 720 WG 2X5KG IMP",
+            "cod_grupo": "0037",
+            "descriao_grupo": "DEFENSIVO",
+            "unidade_medida": "KG",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 10000
                         }
                     ]
                 }
@@ -5305,10 +5383,6 @@
                         {
                             "armazem": "35",
                             "quantidade": 10
-                        },
-                        {
-                            "armazem": "99",
-                            "quantidade": 50
                         }
                     ]
                 },
@@ -5319,6 +5393,16 @@
                         {
                             "armazem": "01",
                             "quantidade": 135
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 2070
                         }
                     ]
                 }
@@ -5408,14 +5492,14 @@
             "cod_grupo": "0037",
             "descriao_grupo": "DEFENSIVO",
             "unidade_medida": "L",
-            "id_farm_box": "173274",
+            "id_farm_box": "154271",
             "filiais": [
                 {
                     "cod_filial": "0202",
                     "desc_filial": "SAO MIGUEL - FAZENDA",
                     "locais": [
                         {
-                            "armazem": "34",
+                            "armazem": "99",
                             "quantidade": 5
                         }
                     ]
@@ -5426,7 +5510,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 13
+                            "quantidade": 3
                         }
                     ]
                 }
@@ -5498,7 +5582,7 @@
             "cod_grupo": "0037",
             "descriao_grupo": "DEFENSIVO",
             "unidade_medida": "L",
-            "id_farm_box": "",
+            "id_farm_box": "179877",
             "filiais": [
                 {
                     "cod_filial": "0202",
@@ -5517,16 +5601,6 @@
                         {
                             "armazem": "01",
                             "quantidade": 115
-                        }
-                    ]
-                },
-                {
-                    "cod_filial": "0209",
-                    "desc_filial": "SAO MIGUEL - CD",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 69
                         }
                     ]
                 }
@@ -5678,19 +5752,19 @@
             "cod_grupo": "0037",
             "descriao_grupo": "DEFENSIVO",
             "unidade_medida": "KG",
-            "id_farm_box": "",
+            "id_farm_box": "154201",
             "filiais": [
                 {
                     "cod_filial": "0202",
                     "desc_filial": "SAO MIGUEL - FAZENDA",
                     "locais": [
                         {
-                            "armazem": "35",
-                            "quantidade": 2620
+                            "armazem": "27",
+                            "quantidade": 1340
                         },
                         {
-                            "armazem": "99",
-                            "quantidade": 440
+                            "armazem": "35",
+                            "quantidade": 2620
                         }
                     ]
                 },
@@ -5751,10 +5825,6 @@
                         {
                             "armazem": "34",
                             "quantidade": 137
-                        },
-                        {
-                            "armazem": "99",
-                            "quantidade": 300
                         }
                     ]
                 },
@@ -5894,7 +5964,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 6
+                            "quantidade": 196
                         }
                     ]
                 }
@@ -6004,7 +6074,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 4260
+                            "quantidade": 3440
                         }
                     ]
                 }
@@ -6166,12 +6236,16 @@
             "cod_grupo": "0037",
             "descriao_grupo": "DEFENSIVO",
             "unidade_medida": "LT",
-            "id_farm_box": "217986",
+            "id_farm_box": "209941",
             "filiais": [
                 {
                     "cod_filial": "0202",
                     "desc_filial": "SAO MIGUEL - FAZENDA",
                     "locais": [
+                        {
+                            "armazem": "27",
+                            "quantidade": 340
+                        },
                         {
                             "armazem": "34",
                             "quantidade": 360
@@ -6179,10 +6253,6 @@
                         {
                             "armazem": "35",
                             "quantidade": 140
-                        },
-                        {
-                            "armazem": "99",
-                            "quantidade": 240
                         }
                     ]
                 },
@@ -6212,7 +6282,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 1420
+                            "quantidade": 4420
                         }
                     ]
                 }
@@ -6306,7 +6376,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 1569
+                            "quantidade": 1549
                         }
                     ]
                 }
@@ -6367,6 +6437,26 @@
                         {
                             "armazem": "01",
                             "quantidade": 5.82
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "00022747",
+            "descricao_produto": "BOMBONA 20 LITROS",
+            "cod_grupo": "0044",
+            "descriao_grupo": "INSUMOS PARA GADO",
+            "unidade_medida": "UN",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 1400
                         }
                     ]
                 }
@@ -7886,7 +7976,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 2708.8
+                            "quantidade": 1328.48
                         }
                     ]
                 },
@@ -7896,7 +7986,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 46.57
+                            "quantidade": 34.03
                         }
                     ]
                 }
@@ -7941,16 +8031,6 @@
                     ]
                 },
                 {
-                    "cod_filial": "0202",
-                    "desc_filial": "SAO MIGUEL - FAZENDA",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 1
-                        }
-                    ]
-                },
-                {
                     "cod_filial": "0203",
                     "desc_filial": "SAO MIGUEL - FAZ SAO PEDRO",
                     "locais": [
@@ -7971,62 +8051,12 @@
                     ]
                 },
                 {
-                    "cod_filial": "0206",
-                    "desc_filial": "SAO MIGUEL - FAZ BENCAO DE DEUS",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 1
-                        }
-                    ]
-                },
-                {
-                    "cod_filial": "0207",
-                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 1
-                        }
-                    ]
-                },
-                {
-                    "cod_filial": "0208",
-                    "desc_filial": "SAO MIGUEL  - CAMPO GUAPO",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 1
-                        }
-                    ]
-                },
-                {
                     "cod_filial": "0209",
                     "desc_filial": "SAO MIGUEL - CD",
                     "locais": [
                         {
                             "armazem": "01",
                             "quantidade": 3
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "cod_produto": "050228",
-            "descricao_produto": "ATIVO BIOLOGICO",
-            "cod_grupo": "0047",
-            "descriao_grupo": "ATIVO BIOLOGICO",
-            "unidade_medida": "KG",
-            "id_farm_box": "",
-            "filiais": [
-                {
-                    "cod_filial": "0209",
-                    "desc_filial": "SAO MIGUEL - CD",
-                    "locais": [
-                        {
-                            "armazem": "01",
-                            "quantidade": 5
                         }
                     ]
                 }
@@ -8063,6 +8093,26 @@
             ]
         },
         {
+            "cod_produto": "00026458",
+            "descricao_produto": "FEIJAO MUNGO",
+            "cod_grupo": "0051",
+            "descriao_grupo": "FEIJAO",
+            "unidade_medida": "KG",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 48160
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "cod_produto": "00030873",
             "descricao_produto": "FEIJAO MUNGO A BENEFICIAR",
             "cod_grupo": "0051",
@@ -8076,7 +8126,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 208512.76
+                            "quantidade": 208554.24
                         }
                     ]
                 },
@@ -8086,7 +8136,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 387853.61
+                            "quantidade": 381453.61
                         }
                     ]
                 }
@@ -8186,7 +8236,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 29138848.75
+                            "quantidade": 29576620.43
                         }
                     ]
                 },
@@ -8196,7 +8246,7 @@
                     "locais": [
                         {
                             "armazem": "01",
-                            "quantidade": 26628.48
+                            "quantidade": 218489.91
                         }
                     ]
                 }
