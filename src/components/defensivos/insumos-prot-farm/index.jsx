@@ -4,7 +4,6 @@ import { tokens } from "../../../theme";
 
 import styles from "./insumos-farmp.module.css";
 
-import data from "./dados_defens.json";
 import { useEffect, useState } from "react";
 
 import InputLabel from "@mui/material/InputLabel";
@@ -25,6 +24,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 import Switch from '@mui/material/Switch';
+
+import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
 
 const onlyIns = ["DEFENSIVO", "FERTILIZANTES", "SEM CADASTRO"];
@@ -57,6 +58,8 @@ const InsumosProtFarm = () => {
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [dataFromFam, setDataFromFam] = useState([]);
+    const [dataFromProtheus, setdataFromProtheus] = useState([]);
+
     const [formatedProdcuts, setFormatedProdcuts] = useState([]);
     const [isByPorject, setIsByPorject] = useState(true);
 
@@ -64,6 +67,10 @@ const InsumosProtFarm = () => {
     const [dataToCsvScreen, setDataToCsvScreen] = useState([]);
 
     const [loadingData, setLoadinData] = useState(true);
+    const [loadingDataProtheus, setloadingDataProtheus] = useState(true);
+
+
+
     const user = useSelector(selectCurrentUser);
 
     const [farm, setFarm] = useState("");
@@ -75,6 +82,36 @@ const InsumosProtFarm = () => {
     const handleChangeProjectTo = () => {
         setIsByPorject(!isByPorject);
     }
+
+    useEffect(() => {
+        const handleSearch = async () => {
+            setloadingDataProtheus(true);
+            try {
+                nodeServerSrd
+                    .get("/get-defensivos-from-srd", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                        },
+                    })
+                    .then(res => {
+                        console.log(res.data)
+                        setdataFromProtheus(res.data);
+                        setloadingDataProtheus(false);
+                    }).catch((err) => {
+                        setloadingDataProtheus(false)
+                        window.alert('erro ao pegar os dados: ', err)
+                    })
+            } catch (error) {
+                console.log("erro ao pegar os dados: ", error);
+                setloadingDataProtheus(false);
+            } finally {
+                // setIsLoading(false);
+            }
+        };
+
+        handleSearch()
+    }, [user]);
+
 
     useEffect(() => {
         const getTrueApi = async () => {
@@ -208,110 +245,118 @@ const InsumosProtFarm = () => {
             setDataToCsvScreen(headerCsvHere)
         }
 
-    }, [filteredProdcuts]);
+    }, [filteredProdcuts, farm]);
 
     useEffect(() => {
-        const filiais = [];
-        data.itens.forEach((data) => {
-            data.filiais.forEach((filial) => {
-                const hasFilial = filiais.filter(
-                    (data) => data.cod_filial === filial.cod_filial
-                );
-                if (hasFilial.length === 0) {
-                    filiais.push({
-                        cod_filial: filial.cod_filial,
-                        desc_filial: filial.desc_filial
-                    });
-                }
-            });
-        });
-        setOnlyFarms(filiais);
-        const filiaisArr = filiais.map((data) => data.desc_filial);
-        setOnlyFarmsArr(filiaisArr);
-    }, []);
-
-    useEffect(() => {
-        const newArr = data.itens.filter((type) =>
-            onlyIns.includes(type.descriao_grupo)
-        );
-        const prods = newArr.map((prods) => prods.descricao_produto);
-        const formProds = [...new Set(prods)];
-        setOnlyInsumos(formProds);
-    }, []);
-
-    useEffect(() => {
-        if (farm) {
-            const newArr = data.itens.map((item) => {
-                const newArr = item.filiais;
-                let hasHere = false;
-                let farmProd = {};
-                let farmOrigName;
-                newArr.forEach((filial) => {
-                    if (filial.cod_filial === farm) {
-                        hasHere = true;
-                        const farmProdFilt = formatedProdcuts.filter(
-                            (filt) => filt.protId === filial.cod_filial
-                        );
-                        farmOrigName = dictFarm.find((f) => f.protId === filial.cod_filial)?.fazenda;
-                        const prodToAdd = farmProdFilt.find(
-                            (prod) => prod.insumoId === Number(item.id_farm_box)
-                        );
-                        if (prodToAdd) {
-                            farmProd = prodToAdd;
-                        }
+        if (dataFromProtheus?.itens?.length > 0) {
+            console.log('gerando as filiais')
+            const filiais = [];
+            dataFromProtheus?.itens.forEach((data) => {
+                data.filiais.forEach((filial) => {
+                    const hasFilial = filiais.filter(
+                        (data) => data.cod_filial === filial.cod_filial
+                    );
+                    if (hasFilial.length === 0) {
+                        filiais.push({
+                            cod_filial: filial.cod_filial,
+                            desc_filial: filial.desc_filial
+                        });
                     }
                 });
-                return { ...item, hasHere, ...farmProd, farmOrigName };
             });
-            console.table('newARR: ', newArr);
-            const filtArr = newArr.filter((data) => data.hasHere === true).sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto));
-            const idIn = filtArr.map((data) => Number(data.id_farm_box));
-            console.log('farm', farm)
-            const prodToAddNoCodeFinded = formatedProdcuts
-                .filter((filt) => filt.protId === farm)
-                .filter((type) => type.insumoTipo !== "Operação")
-            prodToAddNoCodeFinded.forEach((prodToAdd) => {
-                if (idIn.includes(prodToAdd.insumoId)) {
-                    // console.log('ja consta')
-                    console.log('adicionar: ', prodToAdd)
-                    // const findProd = filtArr.find((data) => data.id_farm_box === prodToAdd.insumoId);
-                    // console.log('incrementar: ', filtArr[0])
-                    const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada === prodToAdd?.quantiSolicitada;
-                    const getIndex = filtArr.findIndex(findIndexOfFarmId) 
-                    if(getIndex !== -1){
-                        console.log('não faça o incremento')
-                    } else {
-                        const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada !== prodToAdd?.quantiSolicitada;
-                        const getIndexNew = filtArr.findIndex(findIndexOfFarmId) 
-                        console.log('incrementar', filtArr[getIndexNew])
-                        filtArr[getIndexNew].quantiSolicitada += prodToAdd.quantiSolicitada
-                        filtArr[getIndexNew].quantidadeAplicada += prodToAdd.quantidadeAplicada
-                        filtArr[getIndexNew].quantidadeSaldoAplicar += prodToAdd.quantidadeSaldoAplicar
-                    }
-                } else {
-                    const obToAdd = {
-                        descriao_grupo: "SEM CADASTRO",
-                        descricao_produto: prodToAdd.insumoNome,
-                        quantidadeSaldoAplicar: prodToAdd.quantidadeSaldoAplicar,
-                        unidade_medida: " - ",
-                        id_farm_box: prodToAdd.insumoId,
-                        cod_filial: farm,
-                        filiais: [],
-                        farmName: prodToAdd.farmName.replace('Fazenda', ''),
-                        farmOrigName: prodToAdd.farmOrigName
-                    };
-                    filtArr.push(obToAdd);
-                }
-            });
-            const farmFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar !== undefined)
-            const protFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar === undefined)
-            console.log(farmFilt)
-            console.log(protFilt)
-            const newArrSorted = farmFilt
-            newArrSorted.push(...protFilt)
-            setFilteredProdcuts(newArrSorted);
+            setOnlyFarms(filiais);
+            console.log('filiais', filiais);
+            const filiaisArr = filiais.map((data) => data.desc_filial);
+            setOnlyFarmsArr(filiaisArr);
         }
-    }, [farm, formatedProdcuts]);
+    }, [dataFromProtheus]);
+
+    useEffect(() => {
+        if (dataFromProtheus?.itens?.length > 0) {
+            const newArr = dataFromProtheus.itens.filter((type) =>
+                onlyIns.includes(type.descriao_grupo)
+            );
+            const prods = newArr.map((prods) => prods.descricao_produto);
+            const formProds = [...new Set(prods)];
+            setOnlyInsumos(formProds);
+        }
+    }, [dataFromProtheus]);
+
+    useEffect(() => {
+        if(dataFromProtheus) {
+            if (farm) {
+                const newArr = dataFromProtheus.itens.map((item) => {
+                    const newArr = item.filiais;
+                    let hasHere = false;
+                    let farmProd = {};
+                    let farmOrigName;
+                    newArr.forEach((filial) => {
+                        if (filial.cod_filial === farm) {
+                            hasHere = true;
+                            const farmProdFilt = formatedProdcuts.filter(
+                                (filt) => filt.protId === filial.cod_filial
+                            );
+                            farmOrigName = dictFarm.find((f) => f.protId === filial.cod_filial)?.fazenda;
+                            const prodToAdd = farmProdFilt.find(
+                                (prod) => prod.insumoId === Number(item.id_farm_box)
+                            );
+                            if (prodToAdd) {
+                                farmProd = prodToAdd;
+                            }
+                        }
+                    });
+                    return { ...item, hasHere, ...farmProd, farmOrigName };
+                });
+                console.table('newARR: ', newArr);
+                const filtArr = newArr.filter((data) => data.hasHere === true).sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto));
+                const idIn = filtArr.map((data) => Number(data.id_farm_box));
+                console.log('farm', farm)
+                const prodToAddNoCodeFinded = formatedProdcuts
+                    .filter((filt) => filt.protId === farm)
+                    .filter((type) => type.insumoTipo !== "Operação")
+                prodToAddNoCodeFinded.forEach((prodToAdd) => {
+                    if (idIn.includes(prodToAdd.insumoId)) {
+                        // console.log('ja consta')
+                        console.log('adicionar: ', prodToAdd)
+                        // const findProd = filtArr.find((data) => data.id_farm_box === prodToAdd.insumoId);
+                        // console.log('incrementar: ', filtArr[0])
+                        const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada === prodToAdd?.quantiSolicitada;
+                        const getIndex = filtArr.findIndex(findIndexOfFarmId)
+                        if (getIndex !== -1) {
+                            console.log('não faça o incremento')
+                        } else {
+                            const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada !== prodToAdd?.quantiSolicitada;
+                            const getIndexNew = filtArr.findIndex(findIndexOfFarmId)
+                            console.log('incrementar', filtArr[getIndexNew])
+                            filtArr[getIndexNew].quantiSolicitada += prodToAdd.quantiSolicitada
+                            filtArr[getIndexNew].quantidadeAplicada += prodToAdd.quantidadeAplicada
+                            filtArr[getIndexNew].quantidadeSaldoAplicar += prodToAdd.quantidadeSaldoAplicar
+                        }
+                    } else {
+                        const obToAdd = {
+                            descriao_grupo: "SEM CADASTRO",
+                            descricao_produto: prodToAdd.insumoNome,
+                            quantidadeSaldoAplicar: prodToAdd.quantidadeSaldoAplicar,
+                            unidade_medida: " - ",
+                            id_farm_box: prodToAdd.insumoId,
+                            cod_filial: farm,
+                            filiais: [],
+                            farmName: prodToAdd.farmName.replace('Fazenda', ''),
+                            farmOrigName: prodToAdd.farmOrigName
+                        };
+                        filtArr.push(obToAdd);
+                    }
+                });
+                const farmFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar !== undefined)
+                const protFilt = filtArr.filter((data) => data.quantidadeSaldoAplicar === undefined)
+                console.log(farmFilt)
+                console.log(protFilt)
+                const newArrSorted = farmFilt
+                newArrSorted.push(...protFilt)
+                setFilteredProdcuts(newArrSorted);
+            }
+        }
+    }, [farm, formatedProdcuts, dataFromProtheus]);
 
     const handleQUantProd = (protheus, farm) => {
         if (isNaN(protheus) || isNaN(farm)) {
@@ -324,7 +369,7 @@ const InsumosProtFarm = () => {
         return " - "
     };
 
-    if (loadingData) {
+    if (loadingData || loadingDataProtheus ) {
         return (
             <Box
                 sx={{
@@ -364,8 +409,8 @@ const InsumosProtFarm = () => {
                 }}
             >
                 <Box>
-                    <Typography>{data.descricao}</Typography>
-                    <Typography>{data.data_consulta.replace("-", " ")}</Typography>
+                    <Typography>{dataFromProtheus.descricao}</Typography>
+                    <Typography>{dataFromProtheus.data_consulta.replace("-", " ")}</Typography>
                 </Box>
                 <Box
                     sx={{
