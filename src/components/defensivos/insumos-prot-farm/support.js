@@ -115,12 +115,14 @@ export const dictFarm = [{
 ];
 
 const formatArrayData = (data, isByPorject = true) => {
-    // console.log("formar Data: ", data);
+    console.log("formar Data: ", data);
 
     const adjustTable = data.map(aps => {
         const appNumber = aps.code;
         const farmName = aps.plantations[0].plantation.farm.name;
         const farmId = aps.plantations[0].plantation.farm.id;
+        // console.log('farmname: ', farmId);
+
         const protId = dictFarm.find(farm => farm.id === farmId).protId;
         const farmOrigName = dictFarm.find(farm => farm.id === farmId).fazenda;
         const progressos = aps.progresses.map(progress => {
@@ -171,20 +173,35 @@ const formatArrayData = (data, isByPorject = true) => {
     // console.log(adjustTable);
 
     const unionProdctsFarm = adjustTable.reduce((acc, curr) => {
-        if (acc.filter(f => f.farmId === curr.farmId).length === 0) {
-            acc.push(curr);
+        
+        // isByPorject DEFINE IF IT"S GONNA GROUP BY FARM OR PROJECT
+        if(isByPorject){
+            if (acc.filter(f => f.farmId === curr.farmId).length === 0) {
+                acc.push(curr);
+            } else {
+                // console.log("farmId", curr.farmId, 'protId', curr.protId, 'farmName', curr.farmName);
+                const findIndexOfFarmId = e => e.farmId === curr.farmId;
+                const getIndex = acc.findIndex(findIndexOfFarmId);
+                acc[getIndex].inputsArr = [...acc[getIndex].inputsArr, ...curr.inputsArr];
+            }
         } else {
-            // console.log("farmId", curr.farmId, 'protId', curr.protId, 'farmName', curr.farmName);
-            const findIndexOfFarmId = e => e.farmId === curr.farmId;
-            const findIndexOfProtId = e => e.protId === curr.protId;
-            const getIndex = isByPorject ? acc.findIndex(findIndexOfFarmId) : acc.findIndex(findIndexOfProtId) ;
-            acc[getIndex].inputsArr = [...acc[getIndex].inputsArr, ...curr.inputsArr];
+            if (acc.filter(f => f.protId === curr.protId).length === 0) {
+                acc.push(curr);
+            } else {
+                // console.log("farmId", curr.farmId, 'protId', curr.protId, 'farmName', curr.farmName);
+                // const findIndexOfFarmId = e => e.farmId === curr.farmId;
+                const findIndexOfProtId = e => e.protId === curr.protId;
+                // const getIndex = isByPorject ? acc.findIndex(findIndexOfFarmId) : acc.findIndex(findIndexOfProtId) ;
+                const getIndex = acc.findIndex(findIndexOfProtId) ;
+                acc[getIndex].inputsArr = [...acc[getIndex].inputsArr, ...curr.inputsArr];
+            }
         }
         return acc;
     }, []);
 
 
     const unionQuantProds = unionProdctsFarm.map((data) => {
+        console.log('data', data);
         const inputsArrForm = data.inputsArr.reduce((acc, curr) =>{
             if(acc.filter(f => f.insumoId === curr.insumoId).length === 0){
                 const objToAdd = {
@@ -196,8 +213,10 @@ const formatArrayData = (data, isByPorject = true) => {
                     farmId: data.farmId
                 }
                 acc.push(objToAdd);
+                
             } else {
                 const findIndexOf = e => e.insumoId === curr.insumoId;
+                console.log('acc', acc)
                 const getIndex = acc.findIndex(findIndexOf);
                 acc[getIndex]["quantiSolicitada"] = Number(acc[getIndex]["quantiSolicitada"]) + Number(curr.quantiSolicitada);
                 acc[getIndex]["quantidadeAplicada"] = Number(acc[getIndex]["quantidadeAplicada"]) + Number(curr.quantidadeAplicada)

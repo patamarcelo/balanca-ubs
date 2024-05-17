@@ -142,7 +142,7 @@ const InsumosProtFarm = () => {
 
     useEffect(() => {
         if (dataFromFam) {
-            const formData = formatArrayData(dataFromFam, isByPorject);
+            const formData = formatArrayData(dataFromFam, !isByPorject);
             setFormatedProdcuts(formData);
         }
     }, [dataFromFam, isByPorject]);
@@ -317,17 +317,17 @@ const InsumosProtFarm = () => {
                 prodToAddNoCodeFinded.forEach((prodToAdd) => {
                     if (idIn.includes(prodToAdd.insumoId)) {
                         // console.log('ja consta')
-                        console.log('adicionar: ', prodToAdd)
+                        // console.log('adicionar: ', prodToAdd)
                         // const findProd = filtArr.find((data) => data.id_farm_box === prodToAdd.insumoId);
                         // console.log('incrementar: ', filtArr[0])
                         const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada === prodToAdd?.quantiSolicitada;
                         const getIndex = filtArr.findIndex(findIndexOfFarmId)
                         if (getIndex !== -1) {
-                            console.log('não faça o incremento')
+                            // console.log('não faça o incremento', prodToAdd)
                         } else {
                             const findIndexOfFarmId = e => Number(e.id_farm_box) === prodToAdd.insumoId && e.protId === prodToAdd.protId && e?.quantiSolicitada !== prodToAdd?.quantiSolicitada;
                             const getIndexNew = filtArr.findIndex(findIndexOfFarmId)
-                            console.log('incrementar', filtArr[getIndexNew])
+                            // console.log('incrementar', filtArr[getIndexNew])
                             filtArr[getIndexNew].quantiSolicitada += prodToAdd.quantiSolicitada
                             filtArr[getIndexNew].quantidadeAplicada += prodToAdd.quantidadeAplicada
                             filtArr[getIndexNew].quantidadeSaldoAplicar += prodToAdd.quantidadeSaldoAplicar
