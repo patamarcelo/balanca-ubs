@@ -28,7 +28,8 @@ const CustomButton = (props) => {
 				":hover": {
 					color: "white"
 				},
-				height
+				height,
+				whiteSpace: "nowrap"
 			}}
 			startIcon={props.children}
 			onClick={handleOpenModal}
