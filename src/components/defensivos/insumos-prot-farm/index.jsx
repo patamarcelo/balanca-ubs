@@ -28,7 +28,7 @@ import Switch from '@mui/material/Switch';
 import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
 
-const onlyIns = ["DEFENSIVO", "FERTILIZANTES", "SEM CADASTRO"];
+const onlyIns = ["DEFENSIVO", "FERTILIZANTES", "SEM CADASTRO", "BIO DEFENSIVO"];
 
 const InsumosProtFarm = () => {
     // const [onlyGrupo, setOnlyGrupo] = useState([]);
@@ -86,12 +86,16 @@ const InsumosProtFarm = () => {
     useEffect(() => {
         const handleSearch = async () => {
             setloadingDataProtheus(true);
+            const paramsQuery = { products: 'all' }
             try {
                 nodeServerSrd
                     .get("/get-defensivos-from-srd", {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
                         },
+                        params: {
+                            paramsQuery
+                        }
                     })
                     .then(res => {
                         console.log(res.data)
