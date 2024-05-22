@@ -34,7 +34,7 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Data"
-                    renderInput={params => <TextField size="small" {...params} />}
+                    renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
                     onChange={newValue =>
                         setInitialDate(new Date(newValue).toISOString().slice(0, 10))}
                     value={initialDate}
@@ -43,7 +43,7 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                     label="Data"
-                    renderInput={params => <TextField size="small" {...params} />}
+                    renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
                     onChange={newValue =>
                         setFinalDate(new Date(newValue).toISOString().slice(0, 10))}
                     value={finalDate}

@@ -66,7 +66,6 @@ const RomaneiosTable = (props) => {
 			}
 			if (sortBy === "relatorioColheita") {
 				const sortArr = dataFilter.sort((a, b) => {
-					console.log(a.relatorioColheita);
 					return b.relatorioColheita - a.relatorioColheita;
 				});
 				setdataFilter(sortArr);
@@ -101,9 +100,6 @@ const RomaneiosTable = (props) => {
 			position: 'top-center',
 		})
 	}
-
-	console.log('Usuário é Admin ?? :, ', isAdmin)
-
 	
 	return (
 		<Box width={"100%"} height={"100%"}>

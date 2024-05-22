@@ -117,7 +117,7 @@ const SRDPage = () => {
         if (impureza) {
             setFilterImp(impureza)
         } else {
-            setFilterImp(0)
+            setFilterImp()
         }
     }
 
@@ -166,6 +166,12 @@ const SRDPage = () => {
         setFilterDataArray([])
         setDataArray([])
         setcsvData([])
+    }
+
+    const handlerKeyDown = (e) => {
+        if(e.key === 'Enter') {
+            handleSearch()
+        }
     }
 
     return (
@@ -221,11 +227,11 @@ const SRDPage = () => {
             <Box display={"flex"} flexDirection={"row"} gap={2} ml={initialDate || finalDate || ticketApi || filterImp ? 7 : 2} mt={2} alignItems={"center"}
                 className={styles.dateRangeTransition}
             >
-                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} />
+                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
+                <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
                 {
                     filterDataArray.length > 0 &&
                     <>
-                        <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} />
                         <Button onClick={() => setFilterImp(3)}>
                             <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
                         </Button>

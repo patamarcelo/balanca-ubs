@@ -80,7 +80,6 @@ const RomaneiosPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log("data: ", filterDataArr);
         if (useData.length > 0) {
             if (filterDataArr && filterDataArrInit) {
                 setfilteredUserData(
@@ -116,19 +115,6 @@ const RomaneiosPage = () => {
                     useData
                         .filter((data) => data.uploadedToProtheus === false)
                         .filter((data) => {
-                            console.log(
-                                "dataString: , ",
-                                new Date(data.syncDate.toDate()).toDateString()
-                            );
-                            console.log(
-                                "dataStringInit: , ",
-                                new Date(filterDataArrInit).toDateString()
-                            );
-                            console.log(
-                                "isBigger??",
-                                new Date(data.syncDate.toDate()).toDateString() >=
-                                new Date(filterDataArrInit).toDateString()
-                            );
                             return (
                                 new Date(data.syncDate.toDate().toDateString()) >=
                                 new Date(filterDataArrInit)
@@ -379,7 +365,7 @@ const RomaneiosPage = () => {
                     </Box>
                 </>
             )}
-            {listSit.map((situacao) => {
+            {listSit.map((situacao, i) => {
                 let newArr;
                 const onlyTickets = filteredUserData.map((roms) => roms.ticket);
                 const duplicates = onlyTickets?.filter(
@@ -459,7 +445,7 @@ const RomaneiosPage = () => {
                 );
                 const totalPeso = reduceFarms.reduce((acc, curr) => acc + curr.peso, 0);
                 return (
-                    <Box width={"100%"}>
+                    <Box width={"100%"} key={i}>
                         <Divider textAlign="center" style={{ marginBottom: "15px" }}>
                             <Typography
                                 variant="h3"
@@ -533,6 +519,7 @@ const RomaneiosPage = () => {
                                     height: "200px"
                                     // backgroundColor: colors.greenAccent[400]
                                 }}
+                                key={i}
                             >
                                 <Typography
                                     variant="h2"

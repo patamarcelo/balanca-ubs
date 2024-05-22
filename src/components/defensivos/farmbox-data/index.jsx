@@ -197,7 +197,7 @@ const FarmBoxPage = () => {
 	const handleCloseColheitaPage = () => {
 		setOpenColheitaModal(false)
 	}
-	
+
 	useEffect(() => {
 		let saldoAplicar = 0;
 		filtFarm.forEach((data, index) => {
@@ -239,6 +239,8 @@ const FarmBoxPage = () => {
 	const handleOpenAllDetail = () => {
 		setIsOpenedAll(!isOpenedAll)
 	}
+	const hojeH = (new Date()).toLocaleString('pt-BR')
+
 
 	return (
 		<Box
@@ -281,7 +283,7 @@ const FarmBoxPage = () => {
 				open={openFarm}
 				handleCloseFarm={handleCloseFarm}
 			>
-				<Typography variant="h6" sx={{marginTop: '5px', color: colors.grey[100]}}>
+				<Typography variant="h6" sx={{ marginTop: '5px', color: colors.grey[100] }}>
 					{safraCiclo.safra}
 				</Typography>
 				{!loadingData && onlyFarms.length > 0 && (
@@ -346,7 +348,22 @@ const FarmBoxPage = () => {
 						</Box>
 					</Box>
 				)}
+				{
+
+					filtFarm.length > 0 &&
+					<Box
+						sx={{
+							width: "100%",
+							justifyContent: "center",
+							alignItems: "center",
+							display: "flex",
+						}}
+					>
+						{hojeH}
+					</Box>
+				}
 				<div className={classes.dashboardDiv}>
+
 					<div className={classes.dashLeft}>
 						{filtFarm?.map((data, i) => {
 							const hasApp = (obj) => obj.fazenda === data;
@@ -512,7 +529,7 @@ const FarmBoxPage = () => {
 			</IndexModalDataFarmbox>
 			{
 				openColheitaModal &&
-					<ColheitaPage />
+				<ColheitaPage />
 			}
 		</Box>
 	);

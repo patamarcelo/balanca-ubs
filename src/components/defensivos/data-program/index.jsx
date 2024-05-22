@@ -386,7 +386,8 @@ const DataProgramPage = (props) => {
 					res[value.produto] = {
 						produto: value.produto,
 						qty: 0,
-						dose: Number(value.dose)
+						dose: Number(value.dose),
+						tipo: value.tipo
 					};
 					result.push(res[value.produto]);
 				}
@@ -875,7 +876,9 @@ const DataProgramPage = (props) => {
 																	b.produto
 																)
 															)
+															.filter((tipos) => tipos.tipo !== 'operacao')
 															.map((dataP, i) => {
+																console.log('dataP', dataP)
 																const quantidade =
 																	Number(
 																		dataP.qty
