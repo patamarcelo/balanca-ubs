@@ -46,10 +46,15 @@ import {
 import EmptyResultPage from "./empty-result";
 
 import JsPDF from "jspdf";
-import moment from "moment";
-import html2canvas from "html2canvas";
+// import moment from "moment";
+// import html2canvas from "html2canvas";
 
-import MapPlotDjango from "./data-plot-map";
+// import MapPlotDjango from "./data-plot-map";
+
+
+import FarmIcon from '../../../utils/assets/icons/farmbox.svg'
+import toast from "react-hot-toast";
+import LinearProgress from "@mui/material/LinearProgress";
 
 
 const DataProgramPage = (props) => {
@@ -93,6 +98,8 @@ const DataProgramPage = (props) => {
 
 	const [hidenAppsArr, setHidenAppsArr] = useState([]);
 
+	const [appIsLoading, setAppIsLoading] = useState(null);
+
 	const [loadMaps, setLoadMaps] = useState(false);
 
 	const iconDict = [
@@ -104,6 +111,7 @@ const DataProgramPage = (props) => {
 	];
 
 	const handleSetApp = (dataId, estagio) => {
+		console.log(dataId, estagio);
 		const newDict = {
 			id: dataId,
 			estagio: estagio
@@ -286,11 +294,36 @@ const DataProgramPage = (props) => {
 			const variedadeColorLine = data.dados.variedade_color_line;
 			const plantioId = data.dados.plantio_id;
 
+			//INTEGRACAO FARMBOX
+			const id_marcelo_pata = 15153
+			const harvest_id = data.dados.safra_id_farmbox
+			const farm_id = data.dados.projeto_id_farmbox
+			const responsible_id = data.dados?.responsavel_id_farmbox ? data.dados?.responsavel_id_farmbox : id_marcelo_pata
+			const charge_id = data.dados?.encarregado_id_farmbox ? data.dados?.encarregado_id_farmbox : id_marcelo_pata
+			const today = (new Date()).toLocaleDateString('pt-BR').split('/').reverse().join('-')
+			const plantations = []
+			const inputs = []
+
+			const objSendToFarm = {
+				date: today,
+				harvest_id,
+				farm_id,
+				responsible_id,
+				charge_id,
+				plantations,
+				inputs,
+				observations: 'Aplicação Aberta via integração'
+			}
+
+			// console.log('objToFarm', objSendToFarm)
+
+
 			const cronArr = cronograma.map((cron, i) => {
 				const aplicado = cron.aplicado;
 				let cronOb;
 				const dataPrev = cron["data prevista"];
 				if (dataPrev >= initialDate && dataPrev <= finalDate) {
+					const plantioIdFarmbox = data?.plantio_id_farmbox
 					const estagio = cron.estagio;
 					const dataPrevApp = dataPrev;
 					const dapApp = cron.dap;
@@ -321,7 +354,9 @@ const DataProgramPage = (props) => {
 						mapGeoPoints,
 						variedadeColor,
 						variedadeColorLine,
-						plantioId
+						plantioId,
+						objSendToFarm,
+						plantioIdFarmbox
 					};
 				}
 				return cronOb;
@@ -350,29 +385,72 @@ const DataProgramPage = (props) => {
 		}, {});
 		const dictTotal = [];
 		Object.keys(result).map((data, i) => {
+			// console.log('data', data)
+			// console.log('resultData', result[data])
+
+			//Array to send plantations to FarmBox
+			const plantationsFarm = []
+
 			const total = result[data].reduce((acc, curr) => {
+				const objToAdd = {
+					sought_area: curr.area,
+					plantation_id: curr.plantioIdFarmbox
+				}
+				plantationsFarm.push(objToAdd)
 				return curr.area + acc;
 			}, 0);
 
+			//Array to send plantations to FarmBox
+			const inputsFarm = []
+			let objToFarm;
 			const produtosArr = result[data].map((data, i) => {
-				const filtArr = data.produtos.map((data) => {
-					return data;
-				});
+				if (i === 0) {
+					objToFarm = data.objSendToFarm
+				}
+				const filtArr = data.produtos
+					.sort((a, b) => a.tipo.localeCompare(b.tipo))
+					.map((data) => {
+						if (inputsFarm.filter((insumosInside) => insumosInside.input_id === data.id_farmbox).length === 0) {
+							const objToAdd = {
+								dosage_value: parseFloat(data.dose),
+								dosage_unity: data.formulacao,
+								input_id: data.id_farmbox
+							}
+							inputsFarm.push(objToAdd)
+						}
+						return data;
+					});
 				return filtArr;
 			});
+			const firstOrder = inputsFarm.filter((input) => input.dosage_unity === 'un_ha')
+			const secondOrder = inputsFarm.filter((input) => input.dosage_unity !== 'un_ha')
+			let inputsOrdered = []
+			if (showProducts) {
+				inputsOrdered = [...firstOrder, ...secondOrder]
+			} else {
+				inputsOrdered = firstOrder
+			}
+			//obj para enviar ao farm
+			const dataToFarmBox = {
+				...objToFarm,
+				plantations: plantationsFarm,
+				inputs: inputsOrdered,
+			}
+
 			const newDic = {
 				estagio: data,
 				cronograma: result[data],
 				total: total.toLocaleString("pt-br", {
 					maximumFractionDigits: 2
 				}),
-				produtos: produtosArr.flat()
+				produtos: produtosArr.flat(),
+				dataToFarmBox: dataToFarmBox
 			};
 			dictTotal.push(newDic);
 			return newDic;
 		});
 		setObjList(dictTotal);
-	}, [filteredList, initialDateForm, finalDateForm, onlyOpenApp]);
+	}, [filteredList, initialDateForm, finalDateForm, onlyOpenApp, showProducts]);
 
 	useEffect(() => {
 		const useArr = [...objList];
@@ -458,6 +536,54 @@ const DataProgramPage = (props) => {
 	useEffect(() => {
 		setHidenAppsArr([]);
 	}, [farmSelected]);
+
+	const handleOpenApp = async (data, cronograma, estagio, programaLoading) => {
+		console.log('data to send to Farmbox', data)
+		const parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
+		const params = JSON.stringify({
+			data: data
+		});
+		try {
+			setAppIsLoading(programaLoading)
+			await djangoApi
+				.put("plantio/open_app_farmbox/", params, {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					}
+				})
+				.then((res) => {
+					console.log(res);
+					if (res.data.status === 201) {
+						const dataFromServer = JSON.parse(res.data.result)
+						const { code } = dataFromServer;
+						toast.success(
+							`AP Aberta com Sucesso: ${code} `,
+							{
+								position: "top-center"
+							}
+						);
+						parcelasToUp.forEach((parcela) => {
+							handleSetApp(parcela.id, parcela.estagio)
+						})
+					}
+					setAppIsLoading(null)
+				});
+		} catch (err) {
+			console.log("Erro ao alterar as aplicações", err);
+			console.log("Erro ao alterar as aplicações", err.response.data.msg);
+			console.log("Erro ao alterar as aplicações", JSON.parse(err.response.data.result));
+			toast.error(
+				`Erro ao Abrir a Aplicação - ${err.response.data.msg} - ${JSON.parse(err.response.data.result)}`,
+				{
+					position: "top-center",
+					duration: 5000
+				}
+			)
+			setAppIsLoading(null)
+		} finally {
+			console.log('finally alterar')
+		}
+	}
 
 	return (
 		<Box
@@ -702,35 +828,91 @@ const DataProgramPage = (props) => {
 					{objResumValues.length > 0 &&
 						objResumValues.map((dat, i) => {
 							const data = dat.data;
+							const openApp = data.dataToFarmBox
 							const programa = data.estagio.split("|")[1];
 							const estagio = data.estagio.split("|")[0];
 							const hiddenAppName =
 								dat.data.estagio + farmSelected;
-							const mapIdsFilter = data.cronograma.map((ids) => ids.plantioId)
+							// const mapIdsFilter = data.cronograma.map((ids) => ids.plantioId)
+							// if (data) {
+							// 	return <Box
+							// 		sx={{
+							// 			display: 'flex',
+							// 			justifyContent: 'center',
+							// 			alignItems: 'center',
+							// 			width: '100%',
+							// 			height: '30px',
+							// 			boxShadow:
+							// 				"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
+							// 			borderRadius: "8px",
+							// 			opacity: hidenAppsArr.includes(
+							// 				hiddenAppName
+							// 			)
+							// 				? "0"
+							// 				: "1",
+							// 		}}
+							// 		className={classes["mainProgramAllDiv"]}
+							// 	>Loading...</Box>
+							// }
 							return (
 								<>
-									<IconButton
-										onClick={() =>
-											hiddenApps(
-												hiddenAppName,
-												data.total
-											)
-										}
-										aria-label="delete"
-										color="warning"
+									<Box
 										sx={{
-											alignSelf: "start",
-											borderRadius: "12px"
+											display: 'flex',
+											justifyContent: 'space-between',
+											alignItems: 'center',
+											width: '100%',
 										}}
 									>
-										<DeleteIcon />
-										<Typography
-											variant="h6"
-											color={colors.textColor[100]}
+										<IconButton
+											onClick={() =>
+												hiddenApps(
+													hiddenAppName,
+													data.total
+												)
+											}
+											aria-label="delete"
+											color="warning"
+											sx={{
+												alignSelf: "start",
+												borderRadius: "12px"
+											}}
 										>
-											{estagio}
-										</Typography>
-									</IconButton>
+											<DeleteIcon />
+											<Typography
+												variant="h6"
+												color={colors.textColor[100]}
+											>
+												{estagio}
+											</Typography>
+										</IconButton>
+										{/* <Box
+										sx={{
+											width: "50px",
+											height: "50px",
+										}}
+										> */}
+										{
+											isAdminUser &&
+											<Button
+												onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio)}
+												sx={{
+													cursor: "pointer",
+													width: "50px",
+													height: "50px",
+												}}
+											>
+												<img src={FarmIcon} alt="img-icon" style={{ marginTop: '15px' }} />
+											</Button>
+										}
+										{/* </Box> */}
+									</Box >
+									{
+										appIsLoading === data.estagio &&
+										<Box sx={{ width: "100%", padding: '0px 10px' }}>
+											<LinearProgress color="success" />
+										</Box>
+									}
 									<div
 										key={i}
 										style={{
@@ -878,7 +1060,7 @@ const DataProgramPage = (props) => {
 															)
 															.filter((tipos) => tipos.tipo !== 'operacao')
 															.map((dataP, i) => {
-																console.log('dataP', dataP)
+																// console.log('dataP', dataP)
 																const quantidade =
 																	Number(
 																		dataP.qty
@@ -1065,7 +1247,7 @@ const DataProgramPage = (props) => {
 																	key={i}
 																	className={`${classes[
 																		"parcelas-detail-div"
-																		]
+																	]
 																		}
 																	${checkSelected && classes["parcelas-resumo-div-selected"]}
 																	${data.aplicado && classes["parcelas-resumo-div-aplicado"]}
@@ -1215,7 +1397,7 @@ const DataProgramPage = (props) => {
 						})}
 				</Box>
 			</Box>
-		</Box>
+		</Box >
 	);
 };
 
