@@ -13,6 +13,15 @@ import { nodeServerSrd, nodeServer } from "../../../utils/axios/axios.utils";
 import bioprot from './bio-prot.json'
 import biofarm from './bio-farm.json'
 
+import TableBio from "./table-bio";
+
+
+import formatProds from './support-bio.js'
+
+const dataToTable = [
+    { prod: 'a', title: 2 }, { prod: 'b', title: 4 }
+]
+
 const InsumosBioPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -27,38 +36,40 @@ const InsumosBioPage = () => {
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
 
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
-    // useEffect(() => {
-    //     const handleSearch = async () => {
-    //         setloadingDataProtheus(true);
-    //         const paramsQuery = { products: 'bio' }
-    //         try {
-    //             nodeServerSrd
-    //                 .get("/get-defensivos-from-srd", {
-    //                     headers: {
-    //                         Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-    //                     },
-    //                     params: {
-    //                         paramsQuery
-    //                     }
-    //                 })
-    //                 .then(res => {
-    //                     console.log('biológicos', res.data)
-    //                     setdataFromProtheus(res.data);
-    //                     setloadingDataProtheus(false);
-    //                 }).catch((err) => {
-    //                     setloadingDataProtheus(false)
-    //                     window.alert('erro ao pegar os dados: ', err)
-    //                 })
-    //         } catch (error) {
-    //             console.log("erro ao pegar os dados: ", error);
-    //             setloadingDataProtheus(false);
-    //         } finally {
-    //             // setIsLoading(false);
-    //         }
-    //     };
 
-    //     handleSearch()
-    // }, [user]);
+    const [protDataToTable, setprotDataToTable] = useState([]);
+    useEffect(() => {
+        const handleSearch = async () => {
+            setloadingDataProtheus(true);
+            const paramsQuery = { products: 'bio' }
+            try {
+                nodeServerSrd
+                    .get("/get-defensivos-from-srd", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                        },
+                        params: {
+                            paramsQuery
+                        }
+                    })
+                    .then(res => {
+                        console.log('biológicos', res.data)
+                        setdataFromProtheus(res.data.itens);
+                        setloadingDataProtheus(false);
+                    }).catch((err) => {
+                        setloadingDataProtheus(false)
+                        window.alert('erro ao pegar os dados: ', err)
+                    })
+            } catch (error) {
+                console.log("erro ao pegar os dados: ", error);
+                setloadingDataProtheus(false);
+            } finally {
+                // setIsLoading(false);
+            }
+        };
+
+        handleSearch()
+    }, [user]);
 
     // useEffect(() => {
     //     const getTrueApi = async () => {
@@ -91,32 +102,39 @@ const InsumosBioPage = () => {
 
     useEffect(() => {
         setDataFromFam(biofarm)
-        setdataFromProtheus(bioprot.itens)
+        // setdataFromProtheus(bioprot.itens)
         setLoadinData(false);
-        setloadingDataProtheus(false)
+        // setloadingDataProtheus(false)
     }, []);
 
 
     useEffect(() => {
+        if(dataFromFam && dataFromFam.length > 0) {
         // console.log("dataFromFarm", dataFromFam);
-        // console.log("dataFromprot", dataFromProtheus);
+        const prodsArr = formatProds(dataFromProtheus)
+        setprotDataToTable(prodsArr)
+        }
     }, [dataFromFam, dataFromProtheus]);
 
     useEffect(() => {
-        if(dataFromProtheus.length > 0) {
-                const newArr = dataFromProtheus?.map((item) => {
-                    const newArr = item.filiais;
-                    let hasHere = false;
-                    let farmProd = {};
-                    let farmOrigName;
-                    newArr.forEach((filial) => {
-                        console.log(filial)
-                    });
-                    return { ...item, hasHere, ...farmProd, farmOrigName };
+        if (dataFromProtheus.length > 0) {
+            const filiais = [{ cod_filial: '0209', des_filial: 'UBS' }];
+            const newArr = dataFromProtheus?.map((item) => {
+                const newArr = item.filiais;
+                let hasHere = false;
+                let farmProd = {};
+                let farmOrigName;
+                newArr.forEach((filial) => {
+                    if (filiais.filter((data) => data.cod_filial === filial.cod_filial).length === 0) {
+                        const objToAdd = { cod_filial: filial.cod_filial, des_filial: filial.desc_filial }
+                        filiais.push(objToAdd)
+                    }
                 });
-                console.table('newARR: ', newArr);
-                setFilteredProdcuts(newArr);
-            }
+                return { ...item, hasHere, ...farmProd, farmOrigName };
+            });
+            // console.log('Filiais: ', filiais)
+            setFilteredProdcuts(newArr);
+        }
     }, [dataFromProtheus]);
 
     if (loadingData || loadingDataProtheus) {
@@ -149,13 +167,32 @@ const InsumosBioPage = () => {
                 width: "100%",
                 height: "100%",
                 display: "flex",
-                justifyContent: "center",
-                // alignItems: "center",
+                flexDirection: "column",
+                alignItems: "center",
                 backgroundColor: useThemeHere !== 'dark' && "whitesmoke",
                 borderRadius: "8px",
             }}
         >
-            <Typography color={colors.textColor[100]} variant="h1">Insumos Bio Page</Typography>
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    // alignItems: "center",
+                }}
+            >
+                <Typography color={colors.textColor[100]} variant="h1">Insumos Bio Page</Typography>
+            </Box>
+            <Box
+                sx={{
+                    width: "80%",
+                    justifyContent: "center",
+                    display: 'flex',
+                    // backgroundColor: 'red'
+                }}
+            >
+                <TableBio data={protDataToTable} />
+            </Box>
         </Box>
     );
 }

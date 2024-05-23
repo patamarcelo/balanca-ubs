@@ -1,260 +1,485 @@
 {
     "descricao": "Consulta de saldos Protheus",
-    "data_consulta": "20/05/2024-16:30:38",
-    "itens": [{
-        "cod_produto": "050727",
-        "descricao_produto": "BIOND SOLLUM AMY - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 82
-            }]
-        }]
-    }, {
-        "cod_produto": "050892",
-        "descricao_produto": "BIOND SOLLUM BM - GL 10L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 58
-            }]
-        }]
-    }, {
-        "cod_produto": "050893",
-        "descricao_produto": "BIOND SOLLUM AZ - GL 10L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 37
-            }]
-        }]
-    }, {
-        "cod_produto": "050899",
-        "descricao_produto": "BIOND PROTEC BP - GL 10L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 25
-            }]
-        }]
-    }, {
-        "cod_produto": "050921",
-        "descricao_produto": "BIOND SOLLUM BS - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": []
-    }, {
-        "cod_produto": "050922",
-        "descricao_produto": "BIOND SOLLUM BM - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 55
-            }]
-        }]
-    }, {
-        "cod_produto": "050924",
-        "descricao_produto": "BIOND SOLLUM PS - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 53
-            }]
-        }]
-    }, {
-        "cod_produto": "050928",
-        "descricao_produto": "BIOND PROTEC BTK - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 74
-            }]
-        }]
-    }, {
-        "cod_produto": "050930",
-        "descricao_produto": "BIOND PROTEC BSF - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 21
-            }]
-        }]
-    }, {
-        "cod_produto": "050935",
-        "descricao_produto": "BIOND PROTEC TRC - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 44
-            }]
-        }]
-    }, {
-        "cod_produto": "050965",
-        "descricao_produto": "BIOND FUNGO META - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 80
-            }]
-        }]
-    }, {
-        "cod_produto": "050966",
-        "descricao_produto": "BIOND FUNGO BV - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 24
-            }]
-        }]
-    }, {
-        "cod_produto": "050967",
-        "descricao_produto": "BIOND FUNGO IS - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 68
-            }]
-        }]
-    }, {
-        "cod_produto": "050968",
-        "descricao_produto": "BIOND FIXADOR RS - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 76
-            }]
-        }]
-    }, {
-        "cod_produto": "050969",
-        "descricao_produto": "BIOND FIXADOR RC - GL 20L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 66
-            }]
-        }]
-    }, {
-        "cod_produto": "050975",
-        "descricao_produto": "BIOND FIXADOR RC - GL 10L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 3
-            }]
-        }]
-    }, {
-        "cod_produto": "051218",
-        "descricao_produto": "BIOND SOLLUM RMP - GL 20 L",
-        "cod_grupo": "0072",
-        "descriao_grupo": "BIO DEFENSIVO",
-        "unidade_medida": "GL",
-        "id_farm_box": "",
-        "filiais": [{
-            "cod_filial": "0207",
-            "desc_filial": "SAO MIGUEL - FAZENDINHA",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 78
-            }]
-        }, {
-            "cod_filial": "0209",
-            "desc_filial": "SAO MIGUEL - CD",
-            "locais": [{
-                "armazem": "04",
-                "quantidade": 180
-            }]
-        }]
-    }]
+    "data_consulta": "23/05/2024-14:57:37",
+    "itens": [
+        {
+            "cod_produto": "050727",
+            "descricao_produto": "BIOND SOLLUM AMY - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "176739",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1640
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 2200
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050877",
+            "descricao_produto": "BIOND SOLLUM AZ - CX  10L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154214",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 10
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050892",
+            "descricao_produto": "BIOND SOLLUM BM - GL 10L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154213",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 570
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050893",
+            "descricao_produto": "BIOND SOLLUM AZ - GL 10L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154214",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 370
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050899",
+            "descricao_produto": "BIOND PROTEC BP - GL 10L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "164990",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 250
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050921",
+            "descricao_produto": "BIOND SOLLUM BS - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154211",
+            "filiais": []
+        },
+        {
+            "cod_produto": "050922",
+            "descricao_produto": "BIOND SOLLUM BM - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154213",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1040
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 400
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050923",
+            "descricao_produto": "BIOND SOLLUM AZ - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154214",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1040
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 620
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050924",
+            "descricao_produto": "BIOND SOLLUM PS - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "154217",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1060
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 900
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050928",
+            "descricao_produto": "BIOND PROTEC BTK - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "194841",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1480
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 3160
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050930",
+            "descricao_produto": "BIOND PROTEC BSF - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "169422",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 420
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050935",
+            "descricao_produto": "BIOND PROTEC TRC - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 760
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 900
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050965",
+            "descricao_produto": "BIOND FUNGO META - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 700
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 800
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050966",
+            "descricao_produto": "BIOND FUNGO BV - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 480
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 200
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050967",
+            "descricao_produto": "BIOND FUNGO IS - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 460
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 1700
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050968",
+            "descricao_produto": "BIOND FIXADOR RS - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1520
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050969",
+            "descricao_produto": "BIOND FIXADOR RC - GL 20L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1320
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 2600
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "050975",
+            "descricao_produto": "BIOND FIXADOR RC - GL 10L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 30
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cod_produto": "051218",
+            "descricao_produto": "BIOND SOLLUM RMP - GL 20 L",
+            "cod_grupo": "0072",
+            "descriao_grupo": "BIO DEFENSIVO",
+            "unidade_medida": "L",
+            "id_farm_box": "201809",
+            "filiais": [
+                {
+                    "cod_filial": "0207",
+                    "desc_filial": "SAO MIGUEL - FAZENDINHA",
+                    "locais": [
+                        {
+                            "armazem": "04",
+                            "quantidade": 1560
+                        }
+                    ]
+                },
+                {
+                    "cod_filial": "0209",
+                    "desc_filial": "SAO MIGUEL - CD",
+                    "locais": [
+                        {
+                            "armazem": "01",
+                            "quantidade": 2120
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

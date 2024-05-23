@@ -886,26 +886,35 @@ const DataProgramPage = (props) => {
 												{estagio}
 											</Typography>
 										</IconButton>
-										{/* <Box
-										sx={{
-											width: "50px",
-											height: "50px",
-										}}
-										> */}
 										{
 											isAdminUser &&
-											<Button
-												onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio)}
-												sx={{
-													cursor: "pointer",
-													width: "50px",
-													height: "50px",
-												}}
-											>
-												<img src={FarmIcon} alt="img-icon" style={{ marginTop: '15px' }} />
-											</Button>
+											(
+												appIsLoading === data.estagio ?
+													<CircularProgress
+														size={25}
+														sx={{
+															margin: "0px 10px",
+															color: (theme) =>
+																colors.greenAccent[
+																theme.palette.mode === "dark"
+																	? 200
+																	: 800
+																]
+														}}
+													/>
+													:
+													<Button
+														onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio)}
+														sx={{
+															cursor: "pointer",
+															width: "50px",
+															height: "50px",
+														}}
+													>
+														<img src={FarmIcon} alt="img-icon" style={{ marginTop: '15px' }} />
+													</Button>
+											)
 										}
-										{/* </Box> */}
 									</Box >
 									{
 										appIsLoading === data.estagio &&
