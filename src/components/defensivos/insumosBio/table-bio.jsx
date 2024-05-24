@@ -17,8 +17,8 @@ const TableBio = (props) => {
 
     const formatNumber = number => {
         return number.toLocaleString("pt-br", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         })
     }
 
@@ -35,7 +35,6 @@ const TableBio = (props) => {
     useEffect(() => {
         const getTotal = () => {
             const totalData = data.reduce((acc, curr) => {
-                
                 const fazendinha = `0207-${curr.id_farm_box}`
                 const quantityFaz = curr[fazendinha] !== undefined ?  curr[fazendinha] : 0
 
@@ -54,6 +53,13 @@ const TableBio = (props) => {
                 } else {
                     acc['0207'] = quantityFaz
                 }
+
+                if(acc['quant_farm'] > 0){
+                    acc["quant_farm"] += curr.quantity_farmbox
+                } else {
+                    acc["quant_farm"] = curr.quantity_farmbox
+                }
+
                 return acc
         },{})
         return totalData
@@ -108,7 +114,7 @@ const TableBio = (props) => {
                                     <td className={styles.numberRow}><span>{data[fazendinha] ? formatNumber(data[fazendinha]) : ' - '}</span></td>
                                     <td className={styles.numberRow}><span>{data[ubs] ? formatNumber(data[ubs]) : ' - '}</span></td>
                                     <td className={styles.numberRow}><span>{formatNumber(estoqueTotal)}</span></td>
-                                    <td> - </td>
+                                    <td className={styles.numberRow}><span>{data?.quantity_farmbox ? formatNumber(data.quantity_farmbox) : '-'}</span> </td>
                                     <td> - </td>
                                     <td> - </td>
                                     <td>{data.id_farm_box}</td>
@@ -122,6 +128,7 @@ const TableBio = (props) => {
                         <th className={styles.numberRow}><span>{totalData['0207'] && formatNumber(totalData['0207'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['0209'] && formatNumber(totalData['0209'])}</span></th>
                         <th className={styles.numberRow}><span>{formatNumber(formatEstoque(totalData['0207'],totalData['0209']))}</span></th>
+                        <th className={styles.numberRow}><span>{totalData['quant_farm'] && formatNumber(totalData['quant_farm'])}</span></th>
                         <th colSpan={"4"}></th>
                     </tr>
                 </tfoot>

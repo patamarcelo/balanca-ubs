@@ -75,22 +75,57 @@ export const dataFromFarm = (data) => {
     if (data.length > 0) {
         const getData = data.map((farms) => {
 
-            console.log('code', farms.code)
-            const sought_area = farms.plantations.reduce((acc, curr) => {
-                return acc += curr.sought_area
-            }, 0)
+            const code = farms.code
+            const charged =  farms.responsible.name
+            // const sought_area = farms.plantations.reduce((acc, curr) => {
+            //     return acc += curr.sought_area
+            // }, 0)
             const applied_area = farms.plantations.reduce((acc, curr) => {
                 return acc += curr.applied_area
             }, 0)
-            console.log('solicitado: ', sought_area, 'Aplicado: ', applied_area)
-
-            return ({
-                sought_area: sought_area,
-                applied_area: applied_area
+            
+            const inputs_data = farms.inputs.map((input) => {
+                const type = input.input.input_type_name
+                const name = input.input.name
+                const input_id = input.input.id
+                const input_dose = input.sought_dosage_value
+                const input_sought_quantity = input.sought_quantity
+                const input_applied_quantity = input_dose * applied_area
+                const input_remain_quantity = input_sought_quantity - input_applied_quantity
+                return ({
+                    code, 
+                    charged,
+                    type, 
+                    name,
+                    input_id,
+                    input_dose,
+                    input_sought_quantity,
+                    input_applied_quantity,
+                    input_remain_quantity
+                })
             })
+            const onlyBio = inputs_data.filter((inputs) => inputs.type === 'Biológico')
+
+
+            return onlyBio
         })
 
-        return getData
+        const consolidateProds = getData.flat().reduce((acc, curr) => {
+            if(acc.filter((data) => data.input_id === curr.input_id).length === 0){
+                const objToAdd = {
+                    input_id: curr.input_id,
+                    quantity: curr.input_remain_quantity,
+                    name: curr.name
+                }
+                acc.push(objToAdd)
+            } else {
+            const findIndexOf = f => f.input_id === curr.input_id;
+            const getIndex = acc.findIndex(findIndexOf);
+            acc[getIndex]["quantity"] += curr.input_remain_quantity
+            }
+            return acc
+        },[])
+        return consolidateProds
 
     }
     return data

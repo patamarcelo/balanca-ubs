@@ -1,5 +1,9 @@
                 /* LOCAL SETTINGS */
-.bioTable .numberRow {
+
+.bioTable {
+    min-width: 1200px;
+}
+                .bioTable .numberRow {
     text-align: right;
 }
 .titleRow{

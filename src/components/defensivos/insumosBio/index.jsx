@@ -10,17 +10,12 @@ import { useSelector } from "react-redux";
 
 import { nodeServerSrd, nodeServer } from "../../../utils/axios/axios.utils";
 
-import bioprot from './bio-prot.json'
-import biofarm from './bio-farm.json'
+
 
 import TableBio from "./table-bio";
 
 
 import formatProds, { dataFromFarm } from './support-bio.js'
-
-const dataToTable = [
-    { prod: 'a', title: 2 }, { prod: 'b', title: 4 }
-]
 
 const InsumosBioPage = () => {
     const theme = useTheme();
@@ -70,52 +65,92 @@ const InsumosBioPage = () => {
         handleSearch()
     }, [user]);
 
-    // useEffect(() => {
-    //     const getTrueApi = async () => {
-    //         try {
-    //             setLoadinData(true);
-    //             await nodeServer
-    //                 .get("/data-open-apps-only-bio", {
-    //                     headers: {
-    //                         Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-    //                         "X-Firebase-AppCheck": user.accessToken
-    //                     }
-    //                     // params: {
-    //                     // 	safraCiclo
-    //                     // }
-    //                 })
-    //                 .then((res) => {
-    //                     console.log('data bio from farm: ' + res.data)
-    //                     setDataFromFam(res.data);
-    //                 })
-    //                 .catch((err) => console.log(err));
-    //         } catch (err) {
-    //             console.log("Erro ao consumir a API", err);
-    //         } finally {
-    //             setLoadinData(false);
-    //         }
-    //     };
-    //     getTrueApi();
-    // }, [user]);
+    useEffect(() => {
+        const getTrueApi = async () => {
+            try {
+                setLoadinData(true);
+                await nodeServer
+                    .get("/data-open-apps-only-bio", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+                            "X-Firebase-AppCheck": user.accessToken
+                        }
+                        // params: {
+                        // 	safraCiclo
+                        // }
+                    })
+                    .then((res) => {
+                        console.log('data bio from farm: ' + res.data)
+                        setDataFromFam(res.data);
+                    })
+                    .catch((err) => console.log(err));
+            } catch (err) {
+                console.log("Erro ao consumir a API", err);
+            } finally {
+                setLoadinData(false);
+            }
+        };
+        getTrueApi();
+    }, [user]);
 
 
     useEffect(() => {
-        setDataFromFam(biofarm)
+        // setDataFromFam(biofarm)
         // setdataFromProtheus(bioprot.itens)
-        setLoadinData(false);
+        // setLoadinData(false);
         // setloadingDataProtheus(false)
     }, []);
 
 
     useEffect(() => {
-        if(dataFromFam && dataFromFam.length > 0) {
+        if (dataFromFam && dataFromFam.length > 0) {
             //data from protheus
             const prodsArr = formatProds(dataFromProtheus)
             setprotDataToTable(prodsArr)
 
             //data from farmbox
             const prodFarmArr = dataFromFarm(dataFromFam)
-            
+            console.log('array of prods from farm: ', prodFarmArr)
+            console.log('array of prods from protheus: ', prodsArr)
+
+
+            if (prodsArr.length > 0 && prodFarmArr.length > 0) {
+                const mergeProducts = prodsArr.map((prods) => {
+                    const findInFarmArray = prodFarmArr.find((farm) => farm.input_id === Number(prods.id_farm_box))
+                    let objToAdd = {}
+                    if (findInFarmArray) {
+                        objToAdd = {
+                            quantity_farmbox: findInFarmArray.quantity
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_farmbox: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+
+                const indsInMergedProds = mergeProducts.map((data) => Number(data.id_farm_box))
+
+                const includeOthersFromFarm = prodFarmArr.filter((e) => !indsInMergedProds.includes(e.input_id))
+                console.log('not indcludes: ', includeOthersFromFarm)
+                console.log('ids Includes: ', indsInMergedProds)
+
+                const prodFromFarmAdjust = includeOthersFromFarm.map((data) => {
+                    return ({
+                        descricao_produto: data.name,
+                        quantity_farmbox: data.quantity,
+                        id_farm_box: data.input_id
+                    })
+                })
+                const finalArrayOfProds = [...mergeProducts.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)), ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
+
+                setprotDataToTable(finalArrayOfProds)
+
+            }
+
         }
     }, [dataFromFam, dataFromProtheus]);
 
@@ -181,14 +216,15 @@ const InsumosBioPage = () => {
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
+                    marginTop: '30px'
                     // alignItems: "center",
                 }}
             >
-                <Typography color={colors.textColor[100]} variant="h1">Insumos Bio Page</Typography>
+                <Typography color={colors.textColor[100]} variant="h1">Biológicos</Typography>
             </Box>
             <Box
                 sx={{
-                    width: "80%",
+                    width: "100%",
                     justifyContent: "center",
                     display: 'flex',
                     // backgroundColor: 'red'
