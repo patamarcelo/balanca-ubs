@@ -74,16 +74,23 @@ const formatProds = (data) => {
 export const dataFromFarm = (data) => {
     if (data.length > 0) {
         const getData = data.map((farms) => {
+
             console.log('code', farms.code)
             const sought_area = farms.plantations.reduce((acc, curr) => {
-               return acc += curr.sought_area
-            },0)
+                return acc += curr.sought_area
+            }, 0)
             const applied_area = farms.plantations.reduce((acc, curr) => {
                 return acc += curr.applied_area
-            },0)
+            }, 0)
             console.log('solicitado: ', sought_area, 'Aplicado: ', applied_area)
 
+            return ({
+                sought_area: sought_area,
+                applied_area: applied_area
+            })
         })
+
+        return getData
 
     }
     return data
