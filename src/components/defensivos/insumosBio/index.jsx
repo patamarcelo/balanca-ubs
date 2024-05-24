@@ -16,7 +16,7 @@ import biofarm from './bio-farm.json'
 import TableBio from "./table-bio";
 
 
-import formatProds from './support-bio.js'
+import formatProds, { dataFromFarm } from './support-bio.js'
 
 const dataToTable = [
     { prod: 'a', title: 2 }, { prod: 'b', title: 4 }
@@ -53,7 +53,6 @@ const InsumosBioPage = () => {
                         }
                     })
                     .then(res => {
-                        console.log('biológicos', res.data)
                         setdataFromProtheus(res.data.itens);
                         setloadingDataProtheus(false);
                     }).catch((err) => {
@@ -110,9 +109,13 @@ const InsumosBioPage = () => {
 
     useEffect(() => {
         if(dataFromFam && dataFromFam.length > 0) {
-        // console.log("dataFromFarm", dataFromFam);
-        const prodsArr = formatProds(dataFromProtheus)
-        setprotDataToTable(prodsArr)
+            //data from protheus
+            const prodsArr = formatProds(dataFromProtheus)
+            setprotDataToTable(prodsArr)
+
+            //data from farmbox
+            const prodFarmArr = dataFromFarm(dataFromFam)
+            
         }
     }, [dataFromFam, dataFromProtheus]);
 

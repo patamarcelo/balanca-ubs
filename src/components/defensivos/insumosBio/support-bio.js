@@ -58,7 +58,7 @@ const formatProds = (data) => {
             const getIndex = acc.findIndex(findIndexOf);
             acc[getIndex]["quantidade"] += curr.quantidade
             const getValue = acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`] === undefined ? curr.quantidade : acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`]
-            if(acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`]){
+            if (acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`]) {
                 acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`] += getValue
             } else {
                 acc[getIndex][`${curr.cod_filial}-${curr.id_farm_box}`] = getValue
@@ -69,5 +69,24 @@ const formatProds = (data) => {
     return consProds
 }
 
+
+
+export const dataFromFarm = (data) => {
+    if (data.length > 0) {
+        const getData = data.map((farms) => {
+            console.log('code', farms.code)
+            const sought_area = farms.plantations.reduce((acc, curr) => {
+               return acc += curr.sought_area
+            },0)
+            const applied_area = farms.plantations.reduce((acc, curr) => {
+                return acc += curr.applied_area
+            },0)
+            console.log('solicitado: ', sought_area, 'Aplicado: ', applied_area)
+
+        })
+
+    }
+    return data
+}
 
 export default formatProds

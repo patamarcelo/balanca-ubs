@@ -620,8 +620,8 @@
             {
                 "id": 2007404,
                 "sought_area": 41.62,
-                "applied_area": 0,
-                "updated_at": "2024-05-07T14:08:34.000-03:00",
+                "applied_area": 41.62,
+                "updated_at": "2024-05-23T19:06:54.000-03:00",
                 "plantation": {
                     "id": 263228,
                     "variety_id": 24434,
@@ -726,8 +726,8 @@
             {
                 "id": 2007406,
                 "sought_area": 18.02,
-                "applied_area": 0,
-                "updated_at": "2024-05-07T14:08:35.000-03:00",
+                "applied_area": 18.02,
+                "updated_at": "2024-05-23T19:06:55.000-03:00",
                 "plantation": {
                     "id": 263232,
                     "variety_id": 22547,
@@ -1113,6 +1113,61 @@
                         "area": 38.01
                     }
                 ]
+            },
+            {
+                "id": 826634,
+                "area": 59.64,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T19:06:55.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-21T19:06:16.000-03:00",
+                "equipment": {
+                    "id": 10859,
+                    "name": "PV 12-0006",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263228,
+                        "area": 41.62
+                    },
+                    {
+                        "plantation_id": 263232,
+                        "area": 18.02
+                    }
+                ]
             }
         ],
         "reopened_reference_id": null,
@@ -1125,7 +1180,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-20T14:05:12.000-03:00"
+        "updated_at": "2024-05-23T19:06:55.000-03:00"
     },
     {
         "_id": "663c9cc71967e5011658c1ae",
@@ -2278,868 +2333,6 @@
         "updated_at": "2024-05-14T11:53:20.000-03:00"
     },
     {
-        "_id": "663cd5ba1967e501169ed85d",
-        "id": 782375,
-        "activity_type": null,
-        "closed_date": null,
-        "code": "AP4",
-        "created_at": "2024-05-09T10:25:33.000-03:00",
-        "date": "2024-05-09",
-        "end_date": "2024-05-13",
-        "equipments": [
-            {
-                "id": 734975,
-                "pressure": null,
-                "pressure_unit": "bar",
-                "solution": 30,
-                "velocity": null,
-                "tank_volume": 3000,
-                "area": 267.23,
-                "equipment": {
-                    "id": 7050,
-                    "name": "PV 12-0011",
-                    "type": "land",
-                    "tank_volume": 3000,
-                    "disabled": false,
-                    "farms": [
-                        {
-                            "id": 11942,
-                            "name": "Fazenda Lago Verde"
-                        }
-                    ]
-                }
-            }
-        ],
-        "first_movimentation_date": null,
-        "input_movimentations": [],
-        "inputs": [
-            {
-                "id": 2959434,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-09T10:25:41.000-03:00",
-                "position": 1,
-                "applied_unit": "un",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "un_ha",
-                "sought_dosage_value": 1,
-                "sought_dosage_unit": "un_ha",
-                "sought_quantity": 267.23,
-                "sought_quantity_unit": "un",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 191464,
-                    "name": "Pré Emergente",
-                    "formulation": "unity",
-                    "input_type_name": "Operação",
-                    "input_type_id": 42,
-                    "register": null,
-                    "updated_at": "2024-01-22T10:39:34.000-03:00",
-                    "dosage_unit": "un_ha"
-                }
-            },
-            {
-                "id": 2959435,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-09T10:25:41.000-03:00",
-                "position": 2,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.5,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 133.615,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 176739,
-                    "name": "BionD Sollum Amy",
-                    "formulation": "liquid",
-                    "input_type_name": "Biológico",
-                    "input_type_id": 35,
-                    "register": "",
-                    "updated_at": "2023-12-22T14:40:01.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2959436,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-09T10:25:41.000-03:00",
-                "position": 3,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.5,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 133.615,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 154213,
-                    "name": "BionD Sollum Bm",
-                    "formulation": "liquid",
-                    "input_type_name": "Biológico",
-                    "input_type_id": 35,
-                    "register": "",
-                    "updated_at": "2024-01-26T16:53:56.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2959437,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-09T10:25:41.000-03:00",
-                "position": 4,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 1,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 267.23,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 154211,
-                    "name": "BionD Sollum Bs",
-                    "formulation": "liquid",
-                    "input_type_name": "Biológico",
-                    "input_type_id": 35,
-                    "register": "",
-                    "updated_at": "2024-01-26T16:53:56.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2959438,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-09T10:25:42.000-03:00",
-                "position": 5,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.05,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 13.3615,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 154204,
-                    "name": "Fortmex",
-                    "formulation": "liquid",
-                    "input_type_name": "Adjuvante",
-                    "input_type_id": 7,
-                    "register": null,
-                    "updated_at": "2024-02-05T08:18:04.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2959440,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-10T11:10:38.000-03:00",
-                "position": 6,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.5,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 133.615,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 209941,
-                    "name": "S-Metolacloro",
-                    "formulation": "liquid",
-                    "input_type_name": "Herbicida",
-                    "input_type_id": 5,
-                    "register": "6023",
-                    "input_classification": {
-                        "toxicological": "5 - Categoria 5 - Produto Improvável de Causar Dano Agudo",
-                        "toxicological_color": "#0000FF",
-                        "environmental": "II - Produto Muito Perigoso ao Meio Ambiente"
-                    },
-                    "updated_at": "2024-02-03T08:33:14.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2959441,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-10T11:10:38.000-03:00",
-                "position": 7,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.12,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 32.0676,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 173270,
-                    "name": "CIPERMETRINA",
-                    "formulation": "liquid",
-                    "input_type_name": "Inseticida",
-                    "input_type_id": 2,
-                    "register": null,
-                    "updated_at": "2024-02-01T14:51:17.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
-                "id": 2968644,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-14T11:52:51.000-03:00",
-                "position": 8,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.5,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 133.615,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 217984,
-                    "name": "DEFENSIVO DIQUAT",
-                    "formulation": "liquid",
-                    "input_type_name": "Herbicida",
-                    "input_type_id": 5,
-                    "register": null,
-                    "updated_at": "2024-01-22T16:24:33.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            }
-        ],
-        "last_movimentation_date": null,
-        "observations": null,
-        "plantations": [
-            {
-                "id": 2010764,
-                "sought_area": 12.24,
-                "applied_area": 12.24,
-                "updated_at": "2024-05-12T06:44:58.000-03:00",
-                "plantation": {
-                    "id": 265061,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-11",
-                    "planned_date": "2024-05-13T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 12.24,
-                    "name": "B02a",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.89780653652913,
-                        "lng": -49.771954601208726
-                    },
-                    "harvest_prediction_date": "2024-08-18",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:21:55.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010765,
-                "sought_area": 9.98,
-                "applied_area": 0,
-                "updated_at": "2024-05-09T10:25:33.000-03:00",
-                "plantation": {
-                    "id": 263526,
-                    "variety_id": null,
-                    "planned_variety_id": 31316,
-                    "culture_id": null,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": null,
-                    "planned_date": "2024-05-13T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 9.98,
-                    "name": "B03",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": null,
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.895699587967691,
-                        "lng": -49.767594194045145
-                    },
-                    "harvest_prediction_date": "2024-08-20",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:21:51.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010766,
-                "sought_area": 13.57,
-                "applied_area": 13.57,
-                "updated_at": "2024-05-12T06:44:58.000-03:00",
-                "plantation": {
-                    "id": 263528,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-11",
-                    "planned_date": "2024-05-13T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 13.57,
-                    "name": "B04",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.897658294653937,
-                        "lng": -49.7659504120177
-                    },
-                    "harvest_prediction_date": "2024-08-18",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:21:59.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010767,
-                "sought_area": 65.23,
-                "applied_area": 65.23,
-                "updated_at": "2024-05-12T06:44:58.000-03:00",
-                "plantation": {
-                    "id": 263529,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-10",
-                    "planned_date": "2024-05-14T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 65.23,
-                    "name": "B05",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.90125426176287,
-                        "lng": -49.768809722857746
-                    },
-                    "harvest_prediction_date": "2024-08-17",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:05.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010768,
-                "sought_area": 30.24,
-                "applied_area": 30.24,
-                "updated_at": "2024-05-14T07:44:46.000-03:00",
-                "plantation": {
-                    "id": 263530,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-12",
-                    "planned_date": "2024-05-13T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 30.24,
-                    "name": "B06",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.906730060178115,
-                        "lng": -49.77103989656514
-                    },
-                    "harvest_prediction_date": "2024-08-19",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:02.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010769,
-                "sought_area": 20.27,
-                "applied_area": 20.27,
-                "updated_at": "2024-05-14T07:44:46.000-03:00",
-                "plantation": {
-                    "id": 263532,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-12",
-                    "planned_date": "2024-05-15T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 20.27,
-                    "name": "B07",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.908010714511134,
-                        "lng": -49.767212263702554
-                    },
-                    "harvest_prediction_date": "2024-08-19",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:09.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010770,
-                "sought_area": 37.47,
-                "applied_area": 37.47,
-                "updated_at": "2024-05-18T10:02:58.000-03:00",
-                "plantation": {
-                    "id": 263533,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-14",
-                    "planned_date": "2024-05-16T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 37.47,
-                    "name": "B08",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.913152850619113,
-                        "lng": -49.76738706115308
-                    },
-                    "harvest_prediction_date": "2024-08-21",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:15.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010771,
-                "sought_area": 23.61,
-                "applied_area": 23.61,
-                "updated_at": "2024-05-18T10:02:59.000-03:00",
-                "plantation": {
-                    "id": 263534,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-14",
-                    "planned_date": "2024-05-17T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 23.61,
-                    "name": "B09",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.911408806121502,
-                        "lng": -49.77277009409468
-                    },
-                    "harvest_prediction_date": "2024-08-21",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:19.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            },
-            {
-                "id": 2010772,
-                "sought_area": 54.62,
-                "applied_area": 54.62,
-                "updated_at": "2024-05-18T10:02:59.000-03:00",
-                "plantation": {
-                    "id": 263524,
-                    "variety_id": 31316,
-                    "planned_variety_id": 31316,
-                    "culture_id": 5,
-                    "planned_culture_id": 5,
-                    "state": "active",
-                    "date": "2024-05-15",
-                    "planned_date": "2024-05-17T23:59:59.000-03:00",
-                    "emergence_date": null,
-                    "activation_date": "2024-04-17",
-                    "area": 54.62,
-                    "name": "B10",
-                    "farm_name": "Fazenda Lago Verde",
-                    "variety_name": "Mungo Preto",
-                    "planned_variety_name": "Mungo Preto",
-                    "culture_name": "Feijão",
-                    "culture_unit": "Sc",
-                    "culture_unit_per_ha": "Sc / Ha",
-                    "planned_culture_name": "Feijão",
-                    "harvest_name": "2024/2025",
-                    "centroid": {
-                        "lat": -10.916685723140608,
-                        "lng": -49.77183198454541
-                    },
-                    "harvest_prediction_date": "2024-08-22",
-                    "cycle": 1,
-                    "observations": null,
-                    "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:25.000-03:00",
-                    "productivity": null,
-                    "farm": {
-                        "id": 11942,
-                        "name": "Fazenda Lago Verde",
-                        "cnpj_cpf": "",
-                        "ie": "",
-                        "city": null
-                    },
-                    "harvest": {
-                        "id": 3840,
-                        "name": "2024/2025",
-                        "start_date": "2024-04-01",
-                        "end_date": "2025-04-30",
-                        "rain_start_date": "2024-04-01",
-                        "rain_end_date": "2025-04-30"
-                    }
-                }
-            }
-        ],
-        "progresses": [
-            {
-                "id": 820043,
-                "area": 91.04,
-                "wind_speed": null,
-                "humidity": null,
-                "temperature": null,
-                "wind_direction": null,
-                "pressure": null,
-                "solution": 30,
-                "velocity": null,
-                "updated_at": "2024-05-12T06:44:58.000-03:00",
-                "comment": "",
-                "initial_hour_meter": null,
-                "final_hour_meter": null,
-                "date": "2024-05-11T06:43:00.000-03:00",
-                "equipment": {
-                    "id": 7050,
-                    "name": "PV 12-0011",
-                    "type": "land",
-                    "tank_volume": 3000,
-                    "disabled": false,
-                    "farms": [
-                        {
-                            "id": 11942,
-                            "name": "Fazenda Lago Verde"
-                        }
-                    ]
-                },
-                "plantations": [
-                    {
-                        "plantation_id": 265061,
-                        "area": 12.24
-                    },
-                    {
-                        "plantation_id": 263528,
-                        "area": 13.57
-                    },
-                    {
-                        "plantation_id": 263529,
-                        "area": 65.23
-                    }
-                ]
-            },
-            {
-                "id": 821054,
-                "area": 50.51,
-                "wind_speed": null,
-                "humidity": null,
-                "temperature": null,
-                "wind_direction": null,
-                "pressure": null,
-                "solution": 30,
-                "velocity": null,
-                "updated_at": "2024-05-14T07:44:46.000-03:00",
-                "comment": "",
-                "initial_hour_meter": null,
-                "final_hour_meter": null,
-                "date": "2024-05-14T07:44:00.000-03:00",
-                "equipment": {
-                    "id": 7050,
-                    "name": "PV 12-0011",
-                    "type": "land",
-                    "tank_volume": 3000,
-                    "disabled": false,
-                    "farms": [
-                        {
-                            "id": 11942,
-                            "name": "Fazenda Lago Verde"
-                        }
-                    ]
-                },
-                "plantations": [
-                    {
-                        "plantation_id": 263530,
-                        "area": 30.24
-                    },
-                    {
-                        "plantation_id": 263532,
-                        "area": 20.27
-                    }
-                ]
-            },
-            {
-                "id": 823447,
-                "area": 115.7,
-                "wind_speed": null,
-                "humidity": null,
-                "temperature": null,
-                "wind_direction": null,
-                "pressure": null,
-                "solution": 30,
-                "velocity": null,
-                "updated_at": "2024-05-18T10:02:59.000-03:00",
-                "comment": "",
-                "initial_hour_meter": null,
-                "final_hour_meter": null,
-                "date": "2024-05-15T10:01:00.000-03:00",
-                "equipment": {
-                    "id": 7050,
-                    "name": "PV 12-0011",
-                    "type": "land",
-                    "tank_volume": 3000,
-                    "disabled": false,
-                    "farms": [
-                        {
-                            "id": 11942,
-                            "name": "Fazenda Lago Verde"
-                        }
-                    ]
-                },
-                "plantations": [
-                    {
-                        "plantation_id": 263533,
-                        "area": 37.47
-                    },
-                    {
-                        "plantation_id": 263534,
-                        "area": 23.61
-                    },
-                    {
-                        "plantation_id": 263524,
-                        "area": 54.62
-                    }
-                ]
-            }
-        ],
-        "reopened_reference_id": null,
-        "responsible": {
-            "id": 13737,
-            "name": "Alex Andrade dos Santos",
-            "username": "alex.santos",
-            "email": "alexdossantos1399@gmail.com",
-            "crea": ""
-        },
-        "retroactive": false,
-        "status": "sought",
-        "updated_at": "2024-05-18T10:02:59.000-03:00"
-    },
-    {
         "_id": "663f472c3650411a878a348e",
         "id": 783038,
         "activity_type": null,
@@ -3760,8 +2953,8 @@
             {
                 "id": 2012785,
                 "sought_area": 18.42,
-                "applied_area": 0,
-                "updated_at": "2024-05-10T12:59:28.000-03:00",
+                "applied_area": 18.42,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
                 "plantation": {
                     "id": 263261,
                     "variety_id": 31965,
@@ -3813,8 +3006,8 @@
             {
                 "id": 2012786,
                 "sought_area": 10.2,
-                "applied_area": 0,
-                "updated_at": "2024-05-10T12:59:28.000-03:00",
+                "applied_area": 10.2,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
                 "plantation": {
                     "id": 263260,
                     "variety_id": 31965,
@@ -3866,8 +3059,8 @@
             {
                 "id": 2012787,
                 "sought_area": 12.47,
-                "applied_area": 0,
-                "updated_at": "2024-05-10T12:59:29.000-03:00",
+                "applied_area": 12.47,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
                 "plantation": {
                     "id": 263259,
                     "variety_id": 31965,
@@ -3919,8 +3112,8 @@
             {
                 "id": 2012788,
                 "sought_area": 15.83,
-                "applied_area": 0,
-                "updated_at": "2024-05-10T12:59:29.000-03:00",
+                "applied_area": 15.83,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
                 "plantation": {
                     "id": 263257,
                     "variety_id": 31965,
@@ -3972,8 +3165,8 @@
             {
                 "id": 2012789,
                 "sought_area": 23.27,
-                "applied_area": 0,
-                "updated_at": "2024-05-10T12:59:29.000-03:00",
+                "applied_area": 23.27,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
                 "plantation": {
                     "id": 263256,
                     "variety_id": 31965,
@@ -4255,6 +3448,73 @@
                         "area": 14.9
                     }
                 ]
+            },
+            {
+                "id": 826633,
+                "area": 80.19,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T19:05:05.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-23T19:03:48.000-03:00",
+                "equipment": {
+                    "id": 10859,
+                    "name": "PV 12-0006",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263261,
+                        "area": 18.42
+                    },
+                    {
+                        "plantation_id": 263260,
+                        "area": 10.2
+                    },
+                    {
+                        "plantation_id": 263259,
+                        "area": 12.47
+                    },
+                    {
+                        "plantation_id": 263257,
+                        "area": 15.83
+                    },
+                    {
+                        "plantation_id": 263256,
+                        "area": 23.27
+                    }
+                ]
             }
         ],
         "reopened_reference_id": null,
@@ -4267,7 +3527,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-16T11:04:24.000-03:00"
+        "updated_at": "2024-05-23T19:05:05.000-03:00"
     },
     {
         "_id": "664219d93650411a8736dc22",
@@ -4523,34 +3783,34 @@
                 "updated_at": "2024-05-13T10:20:00.000-03:00",
                 "plantation": {
                     "id": 263187,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-26T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 37.54,
                     "name": "B06",
                     "farm_name": "Fazenda Tucano",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.682878706716924,
                         "lng": -49.82611849831189
                     },
-                    "harvest_prediction_date": "2024-09-02",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:56.000-03:00",
+                    "updated_at": "2024-05-24T07:54:43.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11937,
@@ -5925,7 +5185,7 @@
                 "solution": null,
                 "velocity": null,
                 "tank_volume": 2500,
-                "area": 299.19,
+                "area": 349.22,
                 "equipment": {
                     "id": 7045,
                     "name": "PV 12-0006",
@@ -5948,14 +5208,14 @@
                 "id": 2968180,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T11:21:10.000-03:00",
+                "updated_at": "2024-05-24T06:27:43.000-03:00",
                 "position": 1,
                 "applied_unit": "un",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "un_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "un_ha",
-                "sought_quantity": 299.19,
+                "sought_quantity": 349.22,
                 "sought_quantity_unit": "un",
                 "cost_on_harvest": null,
                 "input": {
@@ -5973,14 +5233,14 @@
                 "id": 2968181,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T11:21:10.000-03:00",
+                "updated_at": "2024-05-24T06:27:43.000-03:00",
                 "position": 2,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.05,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 14.9595,
+                "sought_quantity": 17.461,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -5998,14 +5258,14 @@
                 "id": 2968182,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T11:21:11.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 3,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 149.595,
+                "sought_quantity": 174.61,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6023,14 +5283,14 @@
                 "id": 2968183,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T11:21:11.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 4,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 149.595,
+                "sought_quantity": 174.61,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6048,14 +5308,14 @@
                 "id": 2968184,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T11:21:11.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 5,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 299.19,
+                "sought_quantity": 349.22,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6073,14 +5333,14 @@
                 "id": 2968186,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-18T17:04:13.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 6,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 149.595,
+                "sought_quantity": 174.61,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6103,14 +5363,14 @@
                 "id": 2968187,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-18T17:04:13.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.12,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 35.9028,
+                "sought_quantity": 41.9064,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6128,14 +5388,14 @@
                 "id": 2968654,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-18T17:04:13.000-03:00",
+                "updated_at": "2024-05-24T06:27:44.000-03:00",
                 "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 149.595,
+                "sought_quantity": 174.61,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": null,
                 "input": {
@@ -6523,6 +5783,59 @@
                         "rain_end_date": "2025-04-30"
                     }
                 }
+            },
+            {
+                "id": 2033894,
+                "sought_area": 50.03,
+                "applied_area": 20,
+                "updated_at": "2024-05-24T06:28:33.000-03:00",
+                "plantation": {
+                    "id": 263372,
+                    "variety_id": 31316,
+                    "planned_variety_id": 31316,
+                    "culture_id": 5,
+                    "planned_culture_id": 5,
+                    "state": "active",
+                    "date": "2024-05-23",
+                    "planned_date": "2024-05-19T23:59:59.000-03:00",
+                    "emergence_date": null,
+                    "activation_date": "2024-04-17",
+                    "area": 50.03,
+                    "name": "C03",
+                    "farm_name": "Fazenda Benção de Deus",
+                    "variety_name": "Mungo Preto",
+                    "planned_variety_name": "Mungo Preto",
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
+                    "planned_culture_name": "Feijão",
+                    "harvest_name": "2024/2025",
+                    "centroid": {
+                        "lat": -11.170142570084096,
+                        "lng": -49.642255013911054
+                    },
+                    "harvest_prediction_date": "2024-08-30",
+                    "cycle": 1,
+                    "observations": null,
+                    "irrigated": false,
+                    "updated_at": "2024-05-24T04:59:53.000-03:00",
+                    "productivity": null,
+                    "farm": {
+                        "id": 11946,
+                        "name": "Fazenda Benção de Deus",
+                        "cnpj_cpf": "",
+                        "ie": "",
+                        "city": null
+                    },
+                    "harvest": {
+                        "id": 3840,
+                        "name": "2024/2025",
+                        "start_date": "2024-04-01",
+                        "end_date": "2025-04-30",
+                        "rain_start_date": "2024-04-01",
+                        "rain_end_date": "2025-04-30"
+                    }
+                }
             }
         ],
         "progresses": [
@@ -6564,6 +5877,41 @@
                         "area": 16.98
                     }
                 ]
+            },
+            {
+                "id": 826675,
+                "area": 20,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-24T06:28:33.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-24T06:28:20.000-03:00",
+                "equipment": {
+                    "id": 7045,
+                    "name": "PV 12-0006",
+                    "type": "land",
+                    "tank_volume": 2500,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11946,
+                            "name": "Fazenda Benção de Deus"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263372,
+                        "area": 20
+                    }
+                ]
             }
         ],
         "reopened_reference_id": null,
@@ -6576,7 +5924,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-20T07:11:21.000-03:00"
+        "updated_at": "2024-05-24T06:28:34.000-03:00"
     },
     {
         "_id": "66436dc33650411a87ff678f",
@@ -6621,7 +5969,7 @@
                 "updated_at": "2024-05-14T10:00:49.000-03:00",
                 "position": 1,
                 "applied_unit": "un",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "un_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "un_ha",
@@ -6671,7 +6019,7 @@
                 "updated_at": "2024-05-14T10:00:49.000-03:00",
                 "position": 3,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -6696,7 +6044,7 @@
                 "updated_at": "2024-05-14T10:00:49.000-03:00",
                 "position": 4,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -6721,7 +6069,7 @@
                 "updated_at": "2024-05-14T10:00:49.000-03:00",
                 "position": 5,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "l_ha",
@@ -6746,7 +6094,7 @@
                 "updated_at": "2024-05-14T10:00:49.000-03:00",
                 "position": 6,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -6801,7 +6149,7 @@
                 "updated_at": "2024-05-14T11:58:44.000-03:00",
                 "position": 8,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -6936,34 +6284,34 @@
                 "updated_at": "2024-05-14T10:00:50.000-03:00",
                 "plantation": {
                     "id": 264605,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-06-02T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 29.52,
                     "name": "B07",
                     "farm_name": "Fazenda Benção de Deus",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -11.139374460138086,
                         "lng": -49.633614291702166
                     },
-                    "harvest_prediction_date": "2024-09-09",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:18:43.000-03:00",
+                    "updated_at": "2024-05-24T05:00:35.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11946,
@@ -7659,7 +7007,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:34.000-03:00",
+                    "updated_at": "2024-05-23T17:33:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -7712,7 +7060,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:55.000-03:00",
+                    "updated_at": "2024-05-23T17:33:45.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -8162,34 +7510,34 @@
                 "updated_at": "2024-05-16T17:47:29.000-03:00",
                 "plantation": {
                     "id": 263113,
-                    "variety_id": null,
+                    "variety_id": 21266,
                     "planned_variety_id": 21266,
-                    "culture_id": null,
+                    "culture_id": 2,
                     "planned_culture_id": 2,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-06T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 33.38,
                     "name": "C02",
                     "farm_name": "Fazenda Campo Guapo",
-                    "variety_name": null,
+                    "variety_name": "ANsc 83 022",
                     "planned_variety_name": "ANsc 83 022",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Soja",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Soja",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.875725659143944,
                         "lng": -49.93183095485149
                     },
-                    "harvest_prediction_date": "2024-08-28",
+                    "harvest_prediction_date": "2024-09-14",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:11.000-03:00",
+                    "updated_at": "2024-05-24T07:50:08.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -8215,34 +7563,34 @@
                 "updated_at": "2024-05-16T17:47:29.000-03:00",
                 "plantation": {
                     "id": 263114,
-                    "variety_id": null,
+                    "variety_id": 21266,
                     "planned_variety_id": 21266,
-                    "culture_id": null,
+                    "culture_id": 2,
                     "planned_culture_id": 2,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-06T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 31.94,
                     "name": "C03",
                     "farm_name": "Fazenda Campo Guapo",
-                    "variety_name": null,
+                    "variety_name": "ANsc 83 022",
                     "planned_variety_name": "ANsc 83 022",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Soja",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Soja",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.872596643086668,
                         "lng": -49.93174554188699
                     },
-                    "harvest_prediction_date": "2024-08-28",
+                    "harvest_prediction_date": "2024-09-14",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:26.000-03:00",
+                    "updated_at": "2024-05-24T07:50:32.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -9973,7 +9321,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:48.000-03:00",
+                    "updated_at": "2024-05-23T12:26:56.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -11800,36 +11148,11 @@
                 }
             },
             {
-                "id": 2975182,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-17T14:32:50.000-03:00",
-                "position": 7,
-                "applied_unit": "l",
-                "applied_dosage_value": 0,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.15,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 42.114,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": null,
-                "input": {
-                    "id": 173286,
-                    "name": "KAISO 250",
-                    "formulation": "liquid",
-                    "input_type_name": "Inseticida",
-                    "input_type_id": 2,
-                    "register": null,
-                    "updated_at": "2023-12-19T16:23:42.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
                 "id": 2975183,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T14:32:50.000-03:00",
-                "position": 8,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
@@ -11853,8 +11176,8 @@
                 "id": 2975184,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T14:32:50.000-03:00",
-                "position": 9,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
@@ -11878,8 +11201,8 @@
                 "id": 2975185,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T14:32:50.000-03:00",
-                "position": 10,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 9,
                 "applied_unit": "l",
                 "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
@@ -11903,10 +11226,10 @@
                 "id": 2975186,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T14:32:51.000-03:00",
-                "position": 11,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 10,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.6,
                 "sought_dosage_unit": "l_ha",
@@ -11933,10 +11256,10 @@
                 "id": 2975187,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-17T14:32:51.000-03:00",
-                "position": 12,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 11,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "l_ha",
@@ -11951,6 +11274,36 @@
                     "input_type_id": 35,
                     "register": "",
                     "updated_at": "2024-01-08T17:40:55.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2984914,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T11:25:58.000-03:00",
+                "position": 13,
+                "applied_unit": "l",
+                "applied_dosage_value": 0,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.16,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 44.9216,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 228333,
+                    "name": "Jambtrin",
+                    "formulation": "liquid",
+                    "input_type_name": "Inseticida",
+                    "input_type_id": 2,
+                    "register": "18317",
+                    "input_classification": {
+                        "toxicological": "2 - Categoria 2 - Produto Altamente Tóxico",
+                        "toxicological_color": "#FF0000",
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
+                    },
+                    "updated_at": "2024-04-22T17:06:51.000-03:00",
                     "dosage_unit": "l_ha"
                 }
             }
@@ -12363,7 +11716,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T19:44:14.000-03:00",
+                    "updated_at": "2024-05-23T12:26:56.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -12575,7 +11928,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T19:44:15.000-03:00",
+                    "updated_at": "2024-05-23T21:27:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -12681,7 +12034,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:47.000-03:00",
+                    "updated_at": "2024-05-23T12:26:55.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -12925,7 +12278,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-20T11:12:49.000-03:00"
+        "updated_at": "2024-05-23T11:26:00.000-03:00"
     },
     {
         "_id": "6648b4343b274552a53907d0",
@@ -12947,7 +12300,7 @@
                 "updated_at": "2024-05-18T17:41:18.000-03:00",
                 "position": 1,
                 "applied_unit": "un",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "un_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "un_ha",
@@ -12997,7 +12350,7 @@
                 "updated_at": "2024-05-18T17:41:19.000-03:00",
                 "position": 3,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -13022,7 +12375,7 @@
                 "updated_at": "2024-05-18T17:41:19.000-03:00",
                 "position": 4,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -13047,7 +12400,7 @@
                 "updated_at": "2024-05-18T17:41:19.000-03:00",
                 "position": 5,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "l_ha",
@@ -13072,7 +12425,7 @@
                 "updated_at": "2024-05-18T17:41:19.000-03:00",
                 "position": 6,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -13122,7 +12475,7 @@
                 "updated_at": "2024-05-18T17:41:20.000-03:00",
                 "position": 8,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -13495,38 +12848,38 @@
             {
                 "id": 2025289,
                 "sought_area": 17.88,
-                "applied_area": 0,
-                "updated_at": "2024-05-18T10:52:33.000-03:00",
+                "applied_area": 17.88,
+                "updated_at": "2024-05-24T08:05:53.000-03:00",
                 "plantation": {
                     "id": 263513,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-11T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 17.88,
                     "name": "A22",
                     "farm_name": "Fazenda Lago Verde",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.914219732625556,
                         "lng": -49.781896937499425
                     },
-                    "harvest_prediction_date": "2024-08-18",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:21:07.000-03:00",
+                    "updated_at": "2024-05-24T07:41:30.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11942,
@@ -13919,8 +13272,8 @@
             {
                 "id": 2025297,
                 "sought_area": 4.08,
-                "applied_area": 0,
-                "updated_at": "2024-05-18T10:52:34.000-03:00",
+                "applied_area": 4.08,
+                "updated_at": "2024-05-24T08:05:53.000-03:00",
                 "plantation": {
                     "id": 263522,
                     "variety_id": 31316,
@@ -13972,8 +13325,8 @@
             {
                 "id": 2025298,
                 "sought_area": 15.83,
-                "applied_area": 0,
-                "updated_at": "2024-05-18T10:52:34.000-03:00",
+                "applied_area": 15.83,
+                "updated_at": "2024-05-24T08:05:53.000-03:00",
                 "plantation": {
                     "id": 263523,
                     "variety_id": 31316,
@@ -14375,6 +13728,49 @@
                         "area": 12.19
                     }
                 ]
+            },
+            {
+                "id": 826715,
+                "area": 37.79,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": 10,
+                "velocity": null,
+                "updated_at": "2024-05-24T08:05:53.000-03:00",
+                "comment": "",
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-24T08:03:00.000-03:00",
+                "equipment": {
+                    "id": 7050,
+                    "name": "PV 12-0011",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11942,
+                            "name": "Fazenda Lago Verde"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263522,
+                        "area": 4.08
+                    },
+                    {
+                        "plantation_id": 263523,
+                        "area": 15.83
+                    },
+                    {
+                        "plantation_id": 263513,
+                        "area": 17.88
+                    }
+                ]
             }
         ],
         "reopened_reference_id": null,
@@ -14387,7 +13783,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-22T17:22:09.000-03:00"
+        "updated_at": "2024-05-24T08:05:54.000-03:00"
     },
     {
         "_id": "664b53ee3b274552a58d9915",
@@ -14578,36 +13974,11 @@
                 }
             },
             {
-                "id": 2977726,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-21T15:17:58.000-03:00",
-                "position": 4,
-                "applied_unit": "l",
-                "applied_dosage_value": null,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.05,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 23.049,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": 0,
-                "input": {
-                    "id": 231443,
-                    "name": "cobre",
-                    "formulation": "liquid",
-                    "input_type_name": "Nutrição ",
-                    "input_type_id": 31,
-                    "register": null,
-                    "updated_at": "2024-05-20T10:34:37.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
                 "id": 2977727,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:58.000-03:00",
-                "position": 5,
+                "updated_at": "2024-05-23T11:38:25.000-03:00",
+                "position": 4,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -14631,8 +14002,8 @@
                 "id": 2977728,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:59.000-03:00",
-                "position": 6,
+                "updated_at": "2024-05-23T11:38:25.000-03:00",
+                "position": 5,
                 "applied_unit": "kg",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "kg_ha",
@@ -14656,8 +14027,8 @@
                 "id": 2977730,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:59.000-03:00",
-                "position": 7,
+                "updated_at": "2024-05-23T11:38:25.000-03:00",
+                "position": 6,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -14681,8 +14052,8 @@
                 "id": 2977731,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:59.000-03:00",
-                "position": 8,
+                "updated_at": "2024-05-23T11:38:25.000-03:00",
+                "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -14706,8 +14077,8 @@
                 "id": 2977732,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:18:00.000-03:00",
-                "position": 9,
+                "updated_at": "2024-05-23T11:38:26.000-03:00",
+                "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -14731,8 +14102,8 @@
                 "id": 2980389,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:18:00.000-03:00",
-                "position": 11,
+                "updated_at": "2024-05-23T11:38:26.000-03:00",
+                "position": 9,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -14754,6 +14125,36 @@
                         "environmental": "II - Produto Muito Perigoso ao Meio Ambiente"
                     },
                     "updated_at": "2024-04-25T10:42:11.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2986601,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-24T08:19:51.000-03:00",
+                "position": 10,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.18,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 82.9764,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 232249,
+                    "name": "Ankor",
+                    "formulation": "liquid",
+                    "input_type_name": "Inseticida",
+                    "input_type_id": 2,
+                    "register": "34618",
+                    "input_classification": {
+                        "toxicological": "4 - Categoria 4 - Produto Pouco Tóxico",
+                        "toxicological_color": "#0000FF",
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
+                    },
+                    "updated_at": "2024-05-24T08:18:51.000-03:00",
                     "dosage_unit": "l_ha"
                 }
             }
@@ -15060,7 +14461,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:18:11.000-03:00",
+                    "updated_at": "2024-05-23T17:33:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -15166,7 +14567,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:17:58.000-03:00",
+                    "updated_at": "2024-05-23T17:33:26.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -15378,7 +14779,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:17:20.000-03:00",
+                    "updated_at": "2024-05-23T17:33:22.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -15696,7 +15097,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:18:59.000-03:00",
+                    "updated_at": "2024-05-23T17:33:23.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -15855,7 +15256,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:32.000-03:00",
+                    "updated_at": "2024-05-23T17:33:22.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -16173,7 +15574,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:03.000-03:00",
+                    "updated_at": "2024-05-23T17:33:22.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -16363,7 +15764,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-21T15:18:00.000-03:00"
+        "updated_at": "2024-05-24T08:19:51.000-03:00"
     },
     {
         "_id": "664b8e6f3b274552a5256d4d",
@@ -16590,8 +15991,8 @@
             {
                 "id": 2026896,
                 "sought_area": 23.91,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:52.000-03:00",
+                "applied_area": 23.91,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263499,
                     "variety_id": 31316,
@@ -16749,8 +16150,8 @@
             {
                 "id": 2026899,
                 "sought_area": 17.28,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:57.000-03:00",
+                "applied_area": 17.28,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263496,
                     "variety_id": 31316,
@@ -16802,8 +16203,8 @@
             {
                 "id": 2026900,
                 "sought_area": 17.67,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:57.000-03:00",
+                "applied_area": 17.67,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263494,
                     "variety_id": 31316,
@@ -16855,8 +16256,8 @@
             {
                 "id": 2026901,
                 "sought_area": 27.48,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:57.000-03:00",
+                "applied_area": 27.48,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263495,
                     "variety_id": 31316,
@@ -16908,8 +16309,8 @@
             {
                 "id": 2026902,
                 "sought_area": 18.9,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:57.000-03:00",
+                "applied_area": 18.9,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263491,
                     "variety_id": 31316,
@@ -16961,8 +16362,8 @@
             {
                 "id": 2026903,
                 "sought_area": 18.39,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:57.000-03:00",
+                "applied_area": 18.39,
+                "updated_at": "2024-05-23T19:01:33.000-03:00",
                 "plantation": {
                     "id": 263493,
                     "variety_id": 31316,
@@ -17283,34 +16684,34 @@
                 "updated_at": "2024-05-20T13:21:58.000-03:00",
                 "plantation": {
                     "id": 263487,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-20T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 28.34,
                     "name": "B02",
                     "farm_name": "Fazenda Cervo",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.626718182392379,
                         "lng": -49.816304484701824
                     },
-                    "harvest_prediction_date": "2024-08-27",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:58.000-03:00",
+                    "updated_at": "2024-05-24T07:52:46.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11941,
@@ -17336,34 +16737,34 @@
                 "updated_at": "2024-05-20T13:21:58.000-03:00",
                 "plantation": {
                     "id": 263485,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-20T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 20.75,
                     "name": "B01",
                     "farm_name": "Fazenda Cervo",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.63004467207845,
                         "lng": -49.81482520402179
                     },
-                    "harvest_prediction_date": "2024-08-27",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:48.000-03:00",
+                    "updated_at": "2024-05-24T07:52:26.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11941,
@@ -17438,8 +16839,8 @@
             {
                 "id": 2026912,
                 "sought_area": 32.23,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:58.000-03:00",
+                "applied_area": 32.23,
+                "updated_at": "2024-05-23T19:01:34.000-03:00",
                 "plantation": {
                     "id": 263501,
                     "variety_id": 31316,
@@ -17491,8 +16892,8 @@
             {
                 "id": 2026913,
                 "sought_area": 29.13,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:59.000-03:00",
+                "applied_area": 29.13,
+                "updated_at": "2024-05-23T10:27:24.000-03:00",
                 "plantation": {
                     "id": 263502,
                     "variety_id": 31316,
@@ -17544,8 +16945,8 @@
             {
                 "id": 2026914,
                 "sought_area": 19.26,
-                "applied_area": 0,
-                "updated_at": "2024-05-20T13:21:59.000-03:00",
+                "applied_area": 19.26,
+                "updated_at": "2024-05-23T10:27:24.000-03:00",
                 "plantation": {
                     "id": 263503,
                     "variety_id": 31316,
@@ -17707,34 +17108,34 @@
                 "updated_at": "2024-05-20T13:21:59.000-03:00",
                 "plantation": {
                     "id": 263505,
-                    "variety_id": null,
+                    "variety_id": 31316,
                     "planned_variety_id": 31316,
-                    "culture_id": null,
+                    "culture_id": 5,
                     "planned_culture_id": 5,
                     "state": "active",
-                    "date": null,
+                    "date": "2024-05-23",
                     "planned_date": "2024-05-19T23:59:59.000-03:00",
                     "emergence_date": null,
                     "activation_date": "2024-04-17",
                     "area": 21.59,
                     "name": "A09",
                     "farm_name": "Fazenda Cervo",
-                    "variety_name": null,
+                    "variety_name": "Mungo Preto",
                     "planned_variety_name": "Mungo Preto",
-                    "culture_name": null,
-                    "culture_unit": null,
-                    "culture_unit_per_ha": null,
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
                     "planned_culture_name": "Feijão",
                     "harvest_name": "2024/2025",
                     "centroid": {
                         "lat": -10.608905464893615,
                         "lng": -49.81210462290697
                     },
-                    "harvest_prediction_date": "2024-08-26",
+                    "harvest_prediction_date": "2024-08-30",
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:26.000-03:00",
+                    "updated_at": "2024-05-24T07:52:04.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11941,
@@ -18343,6 +17744,140 @@
                         "area": 30.96
                     }
                 ]
+            },
+            {
+                "id": 826127,
+                "area": 48.39,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T10:27:24.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-23T10:24:48.000-03:00",
+                "equipment": {
+                    "id": 10859,
+                    "name": "PV 12-0006",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263502,
+                        "area": 29.13
+                    },
+                    {
+                        "plantation_id": 263503,
+                        "area": 19.26
+                    }
+                ]
+            },
+            {
+                "id": 826629,
+                "area": 155.86,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T19:01:34.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-23T18:59:38.000-03:00",
+                "equipment": {
+                    "id": 7044,
+                    "name": "PV 12-0005",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        },
+                        {
+                            "id": 11943,
+                            "name": "Fazenda Praia Alta"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263499,
+                        "area": 23.91
+                    },
+                    {
+                        "plantation_id": 263496,
+                        "area": 17.28
+                    },
+                    {
+                        "plantation_id": 263494,
+                        "area": 17.67
+                    },
+                    {
+                        "plantation_id": 263495,
+                        "area": 27.48
+                    },
+                    {
+                        "plantation_id": 263491,
+                        "area": 18.9
+                    },
+                    {
+                        "plantation_id": 263493,
+                        "area": 18.39
+                    },
+                    {
+                        "plantation_id": 263501,
+                        "area": 32.23
+                    }
+                ]
             }
         ],
         "reopened_reference_id": null,
@@ -18355,7 +17890,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-20T13:51:57.000-03:00"
+        "updated_at": "2024-05-23T19:01:34.000-03:00"
     },
     {
         "_id": "664ca5063b274552a5e73120",
@@ -18806,7 +18341,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:23:19.000-03:00",
+                    "updated_at": "2024-05-23T17:33:23.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -18859,7 +18394,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:11.000-03:00",
+                    "updated_at": "2024-05-23T17:33:26.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -19081,36 +18616,11 @@
                 }
             },
             {
-                "id": 2979511,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-21T15:17:25.000-03:00",
-                "position": 4,
-                "applied_unit": "l",
-                "applied_dosage_value": null,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.05,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 5.452,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": 0,
-                "input": {
-                    "id": 231443,
-                    "name": "cobre",
-                    "formulation": "liquid",
-                    "input_type_name": "Nutrição ",
-                    "input_type_id": 31,
-                    "register": null,
-                    "updated_at": "2024-05-20T10:34:37.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
                 "id": 2979512,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:25.000-03:00",
-                "position": 5,
+                "updated_at": "2024-05-23T11:38:49.000-03:00",
+                "position": 4,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -19134,8 +18644,8 @@
                 "id": 2979513,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:25.000-03:00",
-                "position": 6,
+                "updated_at": "2024-05-23T11:38:49.000-03:00",
+                "position": 5,
                 "applied_unit": "kg",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "kg_ha",
@@ -19159,8 +18669,8 @@
                 "id": 2979515,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:25.000-03:00",
-                "position": 7,
+                "updated_at": "2024-05-23T11:38:49.000-03:00",
+                "position": 6,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -19184,8 +18694,8 @@
                 "id": 2979516,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:25.000-03:00",
-                "position": 8,
+                "updated_at": "2024-05-23T11:38:49.000-03:00",
+                "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -19209,8 +18719,8 @@
                 "id": 2979517,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:26.000-03:00",
-                "position": 9,
+                "updated_at": "2024-05-23T11:38:49.000-03:00",
+                "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -19234,8 +18744,8 @@
                 "id": 2980388,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:17:26.000-03:00",
-                "position": 11,
+                "updated_at": "2024-05-23T11:38:50.000-03:00",
+                "position": 9,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -19257,6 +18767,36 @@
                         "environmental": "II - Produto Muito Perigoso ao Meio Ambiente"
                     },
                     "updated_at": "2024-04-25T10:42:11.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2986612,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-24T08:23:15.000-03:00",
+                "position": 10,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.18,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 19.6272,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 232249,
+                    "name": "Ankor",
+                    "formulation": "liquid",
+                    "input_type_name": "Inseticida",
+                    "input_type_id": 2,
+                    "register": "34618",
+                    "input_classification": {
+                        "toxicological": "4 - Categoria 4 - Produto Pouco Tóxico",
+                        "toxicological_color": "#0000FF",
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
+                    },
+                    "updated_at": "2024-05-24T08:18:51.000-03:00",
                     "dosage_unit": "l_ha"
                 }
             }
@@ -19351,7 +18891,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:47.000-03:00",
+                    "updated_at": "2024-05-23T17:33:26.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -19457,7 +18997,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:55.000-03:00",
+                    "updated_at": "2024-05-23T17:33:45.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -19722,7 +19262,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:22:34.000-03:00",
+                    "updated_at": "2024-05-23T17:33:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11944,
@@ -19753,7 +19293,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-21T15:17:26.000-03:00"
+        "updated_at": "2024-05-24T08:23:15.000-03:00"
     },
     {
         "_id": "664ce0a53b274552a5a0f41e",
@@ -20312,36 +19852,11 @@
                 }
             },
             {
-                "id": 2980139,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-21T14:17:29.000-03:00",
-                "position": 4,
-                "applied_unit": "l",
-                "applied_dosage_value": null,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.05,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 1.9395,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": 0,
-                "input": {
-                    "id": 231443,
-                    "name": "cobre",
-                    "formulation": "liquid",
-                    "input_type_name": "Nutrição ",
-                    "input_type_id": 31,
-                    "register": null,
-                    "updated_at": "2024-05-20T10:34:37.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
                 "id": 2980140,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T14:17:30.000-03:00",
-                "position": 5,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 4,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -20365,8 +19880,8 @@
                 "id": 2980141,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T14:17:30.000-03:00",
-                "position": 6,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 5,
                 "applied_unit": "kg",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "kg_ha",
@@ -20390,8 +19905,8 @@
                 "id": 2980143,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:19:24.000-03:00",
-                "position": 7,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 6,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -20415,8 +19930,8 @@
                 "id": 2980144,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:19:24.000-03:00",
-                "position": 8,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -20440,8 +19955,8 @@
                 "id": 2980145,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:19:24.000-03:00",
-                "position": 9,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -20462,32 +19977,62 @@
                 }
             },
             {
-                "id": 2980391,
+                "id": 2984915,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:19:24.000-03:00",
-                "position": 11,
+                "updated_at": "2024-05-23T11:39:12.000-03:00",
+                "position": 9,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 1,
+                "sought_dosage_value": 0.16,
                 "sought_dosage_unit": "l_ha",
-                "sought_quantity": 38.79,
+                "sought_quantity": 6.2064,
                 "sought_quantity_unit": "l",
                 "cost_on_harvest": 0,
                 "input": {
-                    "id": 227500,
-                    "name": "Clorpirifós",
+                    "id": 228333,
+                    "name": "Jambtrin",
                     "formulation": "liquid",
                     "input_type_name": "Inseticida",
                     "input_type_id": 2,
-                    "register": "12419",
+                    "register": "18317",
+                    "input_classification": {
+                        "toxicological": "2 - Categoria 2 - Produto Altamente Tóxico",
+                        "toxicological_color": "#FF0000",
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
+                    },
+                    "updated_at": "2024-04-22T17:06:51.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2986613,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-24T08:23:57.000-03:00",
+                "position": 10,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.18,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 6.9822,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 232249,
+                    "name": "Ankor",
+                    "formulation": "liquid",
+                    "input_type_name": "Inseticida",
+                    "input_type_id": 2,
+                    "register": "34618",
                     "input_classification": {
                         "toxicological": "4 - Categoria 4 - Produto Pouco Tóxico",
                         "toxicological_color": "#0000FF",
-                        "environmental": "II - Produto Muito Perigoso ao Meio Ambiente"
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
                     },
-                    "updated_at": "2024-04-25T10:42:11.000-03:00",
+                    "updated_at": "2024-05-24T08:18:51.000-03:00",
                     "dosage_unit": "l_ha"
                 }
             }
@@ -20529,7 +20074,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:20.000-03:00",
+                    "updated_at": "2024-05-23T21:26:45.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -20635,7 +20180,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:01.000-03:00",
+                    "updated_at": "2024-05-23T12:26:54.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -20666,7 +20211,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-21T15:19:24.000-03:00"
+        "updated_at": "2024-05-24T08:23:57.000-03:00"
     },
     {
         "_id": "664ce0a63b274552a5a0fcfc",
@@ -20969,7 +20514,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T19:44:15.000-03:00",
+                    "updated_at": "2024-05-23T21:27:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -21022,7 +20567,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:20.000-03:00",
+                    "updated_at": "2024-05-23T21:26:45.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -21128,7 +20673,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:47.000-03:00",
+                    "updated_at": "2024-05-23T12:26:55.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -21287,7 +20832,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T19:44:14.000-03:00",
+                    "updated_at": "2024-05-23T12:26:56.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11939,
@@ -22932,7 +22477,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:30.000-03:00",
+                    "updated_at": "2024-05-23T12:26:57.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11938,
@@ -23038,7 +22583,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:20:25.000-03:00",
+                    "updated_at": "2024-05-23T12:26:58.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11938,
@@ -23250,7 +22795,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T19:44:14.000-03:00",
+                    "updated_at": "2024-05-23T12:26:57.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11938,
@@ -23642,36 +23187,11 @@
                 }
             },
             {
-                "id": 2980294,
-                "applied": 0,
-                "consumed": 0,
-                "updated_at": "2024-05-21T14:48:35.000-03:00",
-                "position": 4,
-                "applied_unit": "l",
-                "applied_dosage_value": null,
-                "applied_dosage_unit": "l_ha",
-                "sought_dosage_value": 0.05,
-                "sought_dosage_unit": "l_ha",
-                "sought_quantity": 24.9995,
-                "sought_quantity_unit": "l",
-                "cost_on_harvest": 0,
-                "input": {
-                    "id": 231443,
-                    "name": "cobre",
-                    "formulation": "liquid",
-                    "input_type_name": "Nutrição ",
-                    "input_type_id": 31,
-                    "register": null,
-                    "updated_at": "2024-05-20T10:34:37.000-03:00",
-                    "dosage_unit": "l_ha"
-                }
-            },
-            {
                 "id": 2980295,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T14:48:35.000-03:00",
-                "position": 5,
+                "updated_at": "2024-05-23T11:39:54.000-03:00",
+                "position": 4,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -23695,8 +23215,8 @@
                 "id": 2980296,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T14:48:35.000-03:00",
-                "position": 6,
+                "updated_at": "2024-05-23T11:39:54.000-03:00",
+                "position": 5,
                 "applied_unit": "kg",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "kg_ha",
@@ -23720,8 +23240,8 @@
                 "id": 2980298,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:12:44.000-03:00",
-                "position": 7,
+                "updated_at": "2024-05-23T11:39:54.000-03:00",
+                "position": 6,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -23745,8 +23265,8 @@
                 "id": 2980299,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:12:44.000-03:00",
-                "position": 8,
+                "updated_at": "2024-05-23T11:39:54.000-03:00",
+                "position": 7,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -23770,8 +23290,8 @@
                 "id": 2980300,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-21T15:12:45.000-03:00",
-                "position": 9,
+                "updated_at": "2024-05-23T11:39:54.000-03:00",
+                "position": 8,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -23795,8 +23315,8 @@
                 "id": 2984123,
                 "applied": 0,
                 "consumed": 0,
-                "updated_at": "2024-05-23T08:47:58.000-03:00",
-                "position": 11,
+                "updated_at": "2024-05-23T11:39:55.000-03:00",
+                "position": 9,
                 "applied_unit": "l",
                 "applied_dosage_value": null,
                 "applied_dosage_unit": "l_ha",
@@ -23818,6 +23338,36 @@
                         "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
                     },
                     "updated_at": "2024-04-22T17:06:51.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2986614,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-24T08:24:57.000-03:00",
+                "position": 10,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.18,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 89.9982,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 232249,
+                    "name": "Ankor",
+                    "formulation": "liquid",
+                    "input_type_name": "Inseticida",
+                    "input_type_id": 2,
+                    "register": "34618",
+                    "input_classification": {
+                        "toxicological": "4 - Categoria 4 - Produto Pouco Tóxico",
+                        "toxicological_color": "#0000FF",
+                        "environmental": "I - Produto Altamente Perigoso ao Meio Ambiente"
+                    },
+                    "updated_at": "2024-05-24T08:18:51.000-03:00",
                     "dosage_unit": "l_ha"
                 }
             }
@@ -24367,7 +23917,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-23T08:47:58.000-03:00"
+        "updated_at": "2024-05-24T08:24:57.000-03:00"
     },
     {
         "_id": "664dd3b33b274552a54b25fd",
@@ -24389,7 +23939,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 1,
                 "applied_unit": "un",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "un_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "un_ha",
@@ -24414,7 +23964,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 2,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.03,
                 "sought_dosage_unit": "l_ha",
@@ -24439,7 +23989,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 3,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -24464,7 +24014,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 4,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -24489,7 +24039,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 5,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 1,
                 "sought_dosage_unit": "l_ha",
@@ -24514,7 +24064,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 6,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.5,
                 "sought_dosage_unit": "l_ha",
@@ -24569,7 +24119,7 @@
                 "updated_at": "2024-05-21T15:28:41.000-03:00",
                 "position": 8,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.6,
                 "sought_dosage_unit": "l_ha",
@@ -24599,7 +24149,7 @@
                 "updated_at": "2024-05-21T15:28:42.000-03:00",
                 "position": 9,
                 "applied_unit": "l",
-                "applied_dosage_value": null,
+                "applied_dosage_value": 0,
                 "applied_dosage_unit": "l_ha",
                 "sought_dosage_value": 0.12,
                 "sought_dosage_unit": "l_ha",
@@ -24624,8 +24174,8 @@
             {
                 "id": 2029368,
                 "sought_area": 24.47,
-                "applied_area": 0,
-                "updated_at": "2024-05-21T15:28:40.000-03:00",
+                "applied_area": 24.47,
+                "updated_at": "2024-05-23T19:08:05.000-03:00",
                 "plantation": {
                     "id": 263167,
                     "variety_id": 24434,
@@ -24677,8 +24227,8 @@
             {
                 "id": 2029369,
                 "sought_area": 27.38,
-                "applied_area": 0,
-                "updated_at": "2024-05-21T15:28:42.000-03:00",
+                "applied_area": 27.38,
+                "updated_at": "2024-05-23T19:08:05.000-03:00",
                 "plantation": {
                     "id": 263168,
                     "variety_id": 24434,
@@ -24730,8 +24280,8 @@
             {
                 "id": 2029370,
                 "sought_area": 17.72,
-                "applied_area": 0,
-                "updated_at": "2024-05-21T15:28:42.000-03:00",
+                "applied_area": 17.72,
+                "updated_at": "2024-05-23T19:08:29.000-03:00",
                 "plantation": {
                     "id": 263182,
                     "variety_id": 24434,
@@ -24783,8 +24333,8 @@
             {
                 "id": 2029371,
                 "sought_area": 9.29,
-                "applied_area": 0,
-                "updated_at": "2024-05-21T15:28:42.000-03:00",
+                "applied_area": 9.29,
+                "updated_at": "2024-05-23T19:08:29.000-03:00",
                 "plantation": {
                     "id": 263183,
                     "variety_id": 24434,
@@ -24836,8 +24386,8 @@
             {
                 "id": 2029372,
                 "sought_area": 14.36,
-                "applied_area": 0,
-                "updated_at": "2024-05-21T15:28:43.000-03:00",
+                "applied_area": 14.36,
+                "updated_at": "2024-05-23T19:08:05.000-03:00",
                 "plantation": {
                     "id": 263184,
                     "variety_id": 24434,
@@ -24887,7 +24437,126 @@
                 }
             }
         ],
-        "progresses": [],
+        "progresses": [
+            {
+                "id": 826635,
+                "area": 66.21,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T19:08:05.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-23T19:07:19.000-03:00",
+                "equipment": {
+                    "id": 7044,
+                    "name": "PV 12-0005",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        },
+                        {
+                            "id": 11943,
+                            "name": "Fazenda Praia Alta"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263167,
+                        "area": 24.47
+                    },
+                    {
+                        "plantation_id": 263168,
+                        "area": 27.38
+                    },
+                    {
+                        "plantation_id": 263184,
+                        "area": 14.36
+                    }
+                ]
+            },
+            {
+                "id": 826636,
+                "area": 27.01,
+                "wind_speed": null,
+                "humidity": null,
+                "temperature": null,
+                "wind_direction": null,
+                "pressure": null,
+                "solution": null,
+                "velocity": null,
+                "updated_at": "2024-05-23T19:08:29.000-03:00",
+                "comment": null,
+                "initial_hour_meter": null,
+                "final_hour_meter": null,
+                "date": "2024-05-23T19:08:09.000-03:00",
+                "equipment": {
+                    "id": 10859,
+                    "name": "PV 12-0006",
+                    "type": "land",
+                    "tank_volume": 3000,
+                    "disabled": false,
+                    "farms": [
+                        {
+                            "id": 11937,
+                            "name": "Fazenda Tucano"
+                        },
+                        {
+                            "id": 11938,
+                            "name": "Fazenda Jacaré"
+                        },
+                        {
+                            "id": 11939,
+                            "name": "Fazenda Capivara"
+                        },
+                        {
+                            "id": 11940,
+                            "name": "Fazenda Tuiuiu"
+                        },
+                        {
+                            "id": 11941,
+                            "name": "Fazenda Cervo"
+                        }
+                    ]
+                },
+                "plantations": [
+                    {
+                        "plantation_id": 263182,
+                        "area": 17.72
+                    },
+                    {
+                        "plantation_id": 263183,
+                        "area": 9.29
+                    }
+                ]
+            }
+        ],
         "reopened_reference_id": null,
         "responsible": {
             "id": 13730,
@@ -24898,7 +24567,7 @@
         },
         "retroactive": false,
         "status": "sought",
-        "updated_at": "2024-05-21T15:28:43.000-03:00"
+        "updated_at": "2024-05-23T19:08:29.000-03:00"
     },
     {
         "_id": "664e1d293b274552a536b049",
@@ -26365,7 +26034,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:17:58.000-03:00",
+                    "updated_at": "2024-05-23T17:33:26.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -26630,7 +26299,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:18:11.000-03:00",
+                    "updated_at": "2024-05-23T17:33:21.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -26683,7 +26352,7 @@
                     "cycle": 1,
                     "observations": null,
                     "irrigated": false,
-                    "updated_at": "2024-05-22T15:19:32.000-03:00",
+                    "updated_at": "2024-05-23T17:33:22.000-03:00",
                     "productivity": null,
                     "farm": {
                         "id": 11945,
@@ -26821,5 +26490,392 @@
         "retroactive": false,
         "status": "sought",
         "updated_at": "2024-05-22T16:40:43.000-03:00"
+    },
+    {
+        "_id": "664f951a3b274552a50b87c9",
+        "id": 789078,
+        "activity_type": null,
+        "closed_date": null,
+        "code": "AP12",
+        "created_at": "2024-05-23T13:21:27.000-03:00",
+        "date": "2024-05-23",
+        "end_date": "2024-05-23",
+        "equipments": [],
+        "first_movimentation_date": null,
+        "input_movimentations": [],
+        "inputs": [
+            {
+                "id": 2985121,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:31.000-03:00",
+                "position": 1,
+                "applied_unit": "un",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "un_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "un_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "un",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 231602,
+                    "name": "15 Dias",
+                    "formulation": "unity",
+                    "input_type_name": "Operação",
+                    "input_type_id": 42,
+                    "register": null,
+                    "updated_at": "2024-05-21T10:06:58.000-03:00",
+                    "dosage_unit": "un_ha"
+                }
+            },
+            {
+                "id": 2985122,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:31.000-03:00",
+                "position": 2,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 0.2,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 7.564,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 154220,
+                    "name": "Óleo Mineral",
+                    "formulation": "liquid",
+                    "input_type_name": "Óleo Mineral/Vegetal",
+                    "input_type_id": 39,
+                    "register": null,
+                    "updated_at": "2023-12-04T00:09:52.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985123,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:31.000-03:00",
+                "position": 3,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 194841,
+                    "name": "BionD Protec Btk",
+                    "formulation": "liquid",
+                    "input_type_name": "Biológico",
+                    "input_type_id": 35,
+                    "register": "",
+                    "updated_at": "2024-01-08T17:40:55.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985124,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:31.000-03:00",
+                "position": 4,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 154251,
+                    "name": "BionD Protec Bv",
+                    "formulation": "liquid",
+                    "input_type_name": "Biológico",
+                    "input_type_id": 35,
+                    "register": "",
+                    "updated_at": "2024-01-11T10:53:52.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985125,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:31.000-03:00",
+                "position": 5,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 231610,
+                    "name": "BionD Protec Iz",
+                    "formulation": "liquid",
+                    "input_type_name": "Biológico",
+                    "input_type_id": 35,
+                    "register": null,
+                    "updated_at": "2024-05-21T10:20:00.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985126,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:32.000-03:00",
+                "position": 6,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 154252,
+                    "name": "BionD Protec Meta",
+                    "formulation": "liquid",
+                    "input_type_name": "Biológico",
+                    "input_type_id": 35,
+                    "register": "",
+                    "updated_at": "2024-01-13T11:04:35.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985127,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:32.000-03:00",
+                "position": 7,
+                "applied_unit": "l",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "l_ha",
+                "sought_dosage_value": 1,
+                "sought_dosage_unit": "l_ha",
+                "sought_quantity": 37.82,
+                "sought_quantity_unit": "l",
+                "cost_on_harvest": 0,
+                "input": {
+                    "id": 231429,
+                    "name": "Biond Sollum Rmp",
+                    "formulation": "liquid",
+                    "input_type_name": "Biológico",
+                    "input_type_id": 35,
+                    "register": null,
+                    "updated_at": "2024-05-20T10:24:32.000-03:00",
+                    "dosage_unit": "l_ha"
+                }
+            },
+            {
+                "id": 2985128,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:32.000-03:00",
+                "position": 8,
+                "applied_unit": "kg",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "kg_ha",
+                "sought_dosage_value": 2,
+                "sought_dosage_unit": "kg_ha",
+                "sought_quantity": 75.64,
+                "sought_quantity_unit": "kg",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 154225,
+                    "name": "Sulfato MG Hepta",
+                    "formulation": "solid",
+                    "input_type_name": "Micronutrientes",
+                    "input_type_id": 33,
+                    "register": "",
+                    "updated_at": "2024-01-31T15:29:41.000-03:00",
+                    "dosage_unit": "kg_ha"
+                }
+            },
+            {
+                "id": 2985129,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:32.000-03:00",
+                "position": 9,
+                "applied_unit": "kg",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "kg_ha",
+                "sought_dosage_value": 0.6,
+                "sought_dosage_unit": "kg_ha",
+                "sought_quantity": 22.692,
+                "sought_quantity_unit": "kg",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 178423,
+                    "name": "Sulfato de Manganês",
+                    "formulation": "solid",
+                    "input_type_name": "Nutrição ",
+                    "input_type_id": 31,
+                    "register": null,
+                    "updated_at": "2024-02-05T08:25:33.000-03:00",
+                    "dosage_unit": "kg_ha"
+                }
+            },
+            {
+                "id": 2985130,
+                "applied": 0,
+                "consumed": 0,
+                "updated_at": "2024-05-23T13:21:32.000-03:00",
+                "position": 10,
+                "applied_unit": "kg",
+                "applied_dosage_value": null,
+                "applied_dosage_unit": "kg_ha",
+                "sought_dosage_value": 0.3,
+                "sought_dosage_unit": "kg_ha",
+                "sought_quantity": 11.346,
+                "sought_quantity_unit": "kg",
+                "cost_on_harvest": null,
+                "input": {
+                    "id": 156862,
+                    "name": "Sulfato ZN",
+                    "formulation": "solid",
+                    "input_type_name": "Nutrição ",
+                    "input_type_id": 31,
+                    "register": "",
+                    "updated_at": "2024-04-26T11:36:41.000-03:00",
+                    "dosage_unit": "kg_ha"
+                }
+            }
+        ],
+        "last_movimentation_date": null,
+        "observations": "Aplicação Aberta via integração",
+        "plantations": [
+            {
+                "id": 2033119,
+                "sought_area": 12.98,
+                "applied_area": 0,
+                "updated_at": "2024-05-23T13:21:27.000-03:00",
+                "plantation": {
+                    "id": 264602,
+                    "variety_id": 31316,
+                    "planned_variety_id": 31316,
+                    "culture_id": 5,
+                    "planned_culture_id": 5,
+                    "state": "active",
+                    "date": "2024-05-17",
+                    "planned_date": "2024-05-18T23:59:59.000-03:00",
+                    "emergence_date": null,
+                    "activation_date": "2024-04-17",
+                    "area": 16.98,
+                    "name": "B03",
+                    "farm_name": "Fazenda Benção de Deus",
+                    "variety_name": "Mungo Preto",
+                    "planned_variety_name": "Mungo Preto",
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
+                    "planned_culture_name": "Feijão",
+                    "harvest_name": "2024/2025",
+                    "centroid": {
+                        "lat": -11.137047400043338,
+                        "lng": -49.62352903655901
+                    },
+                    "harvest_prediction_date": "2024-08-24",
+                    "cycle": 1,
+                    "observations": null,
+                    "irrigated": false,
+                    "updated_at": "2024-05-22T15:18:19.000-03:00",
+                    "productivity": null,
+                    "farm": {
+                        "id": 11946,
+                        "name": "Fazenda Benção de Deus",
+                        "cnpj_cpf": "",
+                        "ie": "",
+                        "city": null
+                    },
+                    "harvest": {
+                        "id": 3840,
+                        "name": "2024/2025",
+                        "start_date": "2024-04-01",
+                        "end_date": "2025-04-30",
+                        "rain_start_date": "2024-04-01",
+                        "rain_end_date": "2025-04-30"
+                    }
+                }
+            },
+            {
+                "id": 2033120,
+                "sought_area": 24.84,
+                "applied_area": 0,
+                "updated_at": "2024-05-23T13:21:29.000-03:00",
+                "plantation": {
+                    "id": 264601,
+                    "variety_id": 31316,
+                    "planned_variety_id": 31316,
+                    "culture_id": 5,
+                    "planned_culture_id": 5,
+                    "state": "active",
+                    "date": "2024-05-18",
+                    "planned_date": "2024-05-18T23:59:59.000-03:00",
+                    "emergence_date": null,
+                    "activation_date": "2024-04-17",
+                    "area": 26.84,
+                    "name": "B02",
+                    "farm_name": "Fazenda Benção de Deus",
+                    "variety_name": "Mungo Preto",
+                    "planned_variety_name": "Mungo Preto",
+                    "culture_name": "Feijão",
+                    "culture_unit": "Sc",
+                    "culture_unit_per_ha": "Sc / Ha",
+                    "planned_culture_name": "Feijão",
+                    "harvest_name": "2024/2025",
+                    "centroid": {
+                        "lat": -11.135775606034239,
+                        "lng": -49.627434143842564
+                    },
+                    "harvest_prediction_date": "2024-08-25",
+                    "cycle": 1,
+                    "observations": null,
+                    "irrigated": false,
+                    "updated_at": "2024-05-22T15:18:12.000-03:00",
+                    "productivity": null,
+                    "farm": {
+                        "id": 11946,
+                        "name": "Fazenda Benção de Deus",
+                        "cnpj_cpf": "",
+                        "ie": "",
+                        "city": null
+                    },
+                    "harvest": {
+                        "id": 3840,
+                        "name": "2024/2025",
+                        "start_date": "2024-04-01",
+                        "end_date": "2025-04-30",
+                        "rain_start_date": "2024-04-01",
+                        "rain_end_date": "2025-04-30"
+                    }
+                }
+            }
+        ],
+        "progresses": [],
+        "reopened_reference_id": null,
+        "responsible": {
+            "id": 13722,
+            "name": "Guibson Moreira Rodrigues",
+            "username": "guibson.r",
+            "email": "guibson.rodrigues@diamanteagricola.com.br",
+            "crea": ""
+        },
+        "retroactive": false,
+        "status": "sought",
+        "updated_at": "2024-05-23T13:21:32.000-03:00"
     }
 ]
