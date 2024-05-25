@@ -131,4 +131,28 @@ export const dataFromFarm = (data) => {
     return data
 }
 
+
+export const dataFromDjangoArr = (data) => {
+    const totalhere = data.reduce((acc, curr) => acc += curr['quantidade aplicar'],0)
+    console.log('total: ',totalhere)
+    console.log('tamanho do array: ', data.length)
+    const consolidate = data.reduce((acc, curr) => {
+        if(acc.filter((data) => data.id_farm_box === curr.id_farmbox).length === 0){
+            const objToAdd = {
+                id_farm_box: curr.id_farmbox,
+                orig: 'django_planted',
+                quantity_planted_django: curr['quantidade aplicar'],
+                descricao_produto: curr.produto
+            }
+            acc.push(objToAdd)
+        } else {
+            const findIndexOf = f => f.id_farm_box === curr.id_farmbox
+            const getIndex = acc.findIndex(findIndexOf)
+            acc[getIndex]['quantity_planted_django'] += curr['quantidade aplicar']
+        }
+        return acc
+    },[])
+    return consolidate
+
+}
 export default formatProds

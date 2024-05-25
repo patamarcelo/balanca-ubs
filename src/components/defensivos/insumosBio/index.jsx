@@ -8,16 +8,16 @@ import { useEffect, useState } from "react";
 import { selectCurrentUser } from "../../../store/user/user.selector";
 import { useSelector } from "react-redux";
 
-import { nodeServerSrd, nodeServer } from "../../../utils/axios/axios.utils";
+import djangoApi, { nodeServerSrd, nodeServer } from "../../../utils/axios/axios.utils";
 
-import biofarm from './bio-farm.json'
-import bioprot from './bio-prot.json'
-import biodjango from './bio-django-plant.json'
+// import biofarm from './bio-farm.json'
+// import bioprot from './bio-prot.json'
+// import biodjango from './bio-django-plant.json'
 
 import TableBio from "./table-bio";
 
 
-import formatProds, { dataFromFarm } from './support-bio.js'
+import formatProds, { dataFromFarm, dataFromDjangoArr } from './support-bio.js'
 
 const InsumosBioPage = () => {
     const theme = useTheme();
@@ -100,6 +100,33 @@ const InsumosBioPage = () => {
         };
         getTrueApi();
     }, [user]);
+    
+    useEffect(() => {
+        const getTrueApi = async () => {
+            try {
+                setloadingDataDjango(true);
+                await djangoApi
+                    .get("/plantio/get_bio_prods_open_and_planted", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+                        }
+                        // params: {
+                        // 	safraCiclo
+                        // }
+                    })
+                    .then((res) => {
+                        console.log('data bio from django: ' + res.data.data)
+                        setDataFromDjango(res.data.data);
+                    })
+                    .catch((err) => console.log(err));
+            } catch (err) {
+                console.log("Erro ao consumir a API", err);
+            } finally {
+                setloadingDataDjango(false);
+            }
+        };
+        getTrueApi();
+    }, [user]);
 
 
     // useEffect(() => {
@@ -113,13 +140,6 @@ const InsumosBioPage = () => {
     // }, []);
 
     useEffect(() => {
-        if(dataFromDjango.length > 0){
-            console.log('from django: ', dataFromDjango)
-        }
-    }, [dataFromDjango]);
-
-
-    useEffect(() => {
         if (dataFromFam && dataFromFam.length > 0) {
             //data from protheus
             const prodsArr = formatProds(dataFromProtheus)
@@ -127,6 +147,7 @@ const InsumosBioPage = () => {
 
             //data from farmbox
             const prodFarmArr = dataFromFarm(dataFromFam)
+            let constArr = prodsArr
 
             if (prodsArr.length > 0 && prodFarmArr.length > 0) {
                 const mergeProducts = prodsArr.map((prods) => {
@@ -157,11 +178,47 @@ const InsumosBioPage = () => {
                 const finalArrayOfProds = [...mergeProducts.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)), ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
 
                 setprotDataToTable(finalArrayOfProds)
+                constArr = finalArrayOfProds
 
             }
+            if(dataFromDjango.length > 0){
+                console.log('finalArr: ', constArr)
+                const djangoData = dataFromDjangoArr(dataFromDjango)
+                console.log('data From Django: ', djangoData)
+
+                const mergeDjangoProd = constArr.map((prods) => {
+                    const findInFarmArray = djangoData.find((farm) => farm.id_farm_box === Number(prods.id_farm_box))
+                    let objToAdd = {}
+                    if (findInFarmArray) {
+                        objToAdd = {
+                            quantity_planted_django: findInFarmArray.quantity_planted_django
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_planted_django: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+                const indsInMergedProdsDjango = mergeDjangoProd.map((data) => Number(data.id_farm_box))
+                const includeOthersFromDjango = djangoData.filter((e) => !indsInMergedProdsDjango.includes(e.id_farm_box))
+                const prodFromFarmAdjust = includeOthersFromDjango.map((data) => {
+                    return ({
+                        descricao_produto: data.produto,
+                        quantity_planted_django: data["quantidade aplicar"],
+                        id_farm_box: data.id_farm_box
+                    })
+                })
+
+                const finalDjangoMergArr = [...mergeDjangoProd, ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
+                setprotDataToTable(finalDjangoMergArr)
+            }
+
 
         }
-    }, [dataFromFam, dataFromProtheus]);
+    }, [dataFromFam, dataFromProtheus, dataFromDjango]);
 
     useEffect(() => {
         if (dataFromProtheus.length > 0) {
@@ -184,7 +241,7 @@ const InsumosBioPage = () => {
         }
     }, [dataFromProtheus]);
 
-    if (loadingData || loadingDataProtheus) {
+    if (loadingData || loadingDataProtheus || loadingDataDjango) {
         return (
             <Box
                 sx={{
@@ -216,7 +273,7 @@ const InsumosBioPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: useThemeHere !== 'dark' && "whitesmoke",
+                backgroundColor: useThemeHere !== 'dark' ? "whitesmoke": colors.primary[500],
                 borderRadius: "8px",
             }}
         >
