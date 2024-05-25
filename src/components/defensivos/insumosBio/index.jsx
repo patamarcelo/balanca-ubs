@@ -10,7 +10,9 @@ import { useSelector } from "react-redux";
 
 import { nodeServerSrd, nodeServer } from "../../../utils/axios/axios.utils";
 
-
+import biofarm from './bio-farm.json'
+import bioprot from './bio-prot.json'
+import biodjango from './bio-django-plant.json'
 
 import TableBio from "./table-bio";
 
@@ -30,9 +32,15 @@ const InsumosBioPage = () => {
     const [loadingDataProtheus, setloadingDataProtheus] = useState(true);
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
 
+    const [dataFromDjango, setDataFromDjango] = useState([]);
+    const [loadingDataDjango, setloadingDataDjango] = useState(true);
+
     const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [protDataToTable, setprotDataToTable] = useState([]);
+
+    
+    
     useEffect(() => {
         const handleSearch = async () => {
             setloadingDataProtheus(true);
@@ -94,12 +102,21 @@ const InsumosBioPage = () => {
     }, [user]);
 
 
+    // useEffect(() => {
+    //     setDataFromFam(biofarm)
+    //     setdataFromProtheus(bioprot.itens)
+    //     setDataFromDjango(biodjango.data)
+
+    //     setloadingDataDjango(false)
+    //     setLoadinData(false);
+    //     setloadingDataProtheus(false)
+    // }, []);
+
     useEffect(() => {
-        // setDataFromFam(biofarm)
-        // setdataFromProtheus(bioprot.itens)
-        // setLoadinData(false);
-        // setloadingDataProtheus(false)
-    }, []);
+        if(dataFromDjango.length > 0){
+            console.log('from django: ', dataFromDjango)
+        }
+    }, [dataFromDjango]);
 
 
     useEffect(() => {
@@ -110,9 +127,6 @@ const InsumosBioPage = () => {
 
             //data from farmbox
             const prodFarmArr = dataFromFarm(dataFromFam)
-            console.log('array of prods from farm: ', prodFarmArr)
-            console.log('array of prods from protheus: ', prodsArr)
-
 
             if (prodsArr.length > 0 && prodFarmArr.length > 0) {
                 const mergeProducts = prodsArr.map((prods) => {
@@ -131,13 +145,8 @@ const InsumosBioPage = () => {
                         ...prods, ...objToAdd
                     })
                 })
-
                 const indsInMergedProds = mergeProducts.map((data) => Number(data.id_farm_box))
-
                 const includeOthersFromFarm = prodFarmArr.filter((e) => !indsInMergedProds.includes(e.input_id))
-                console.log('not indcludes: ', includeOthersFromFarm)
-                console.log('ids Includes: ', indsInMergedProds)
-
                 const prodFromFarmAdjust = includeOthersFromFarm.map((data) => {
                     return ({
                         descricao_produto: data.name,
@@ -230,7 +239,7 @@ const InsumosBioPage = () => {
                     // backgroundColor: 'red'
                 }}
             >
-                <TableBio data={protDataToTable} />
+                <TableBio data={protDataToTable}/>
             </Box>
         </Box>
     );

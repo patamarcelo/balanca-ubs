@@ -23,47 +23,56 @@ const TableBio = (props) => {
     }
 
     const formatEstoque = (fazendinha, ubs) => {
-        if(!fazendinha && !ubs) return "-"
-        if(fazendinha > 0 && !ubs) return fazendinha
-        if(!fazendinha && ubs) return ubs
-        const total = fazendinha + ubs 
+        if (!fazendinha && !ubs) return "-"
+        if (fazendinha > 0 && !ubs) return fazendinha
+        if (!fazendinha && ubs) return ubs
+        const total = fazendinha + ubs
         return total
     }
 
-        
+    const futureDay = () => {
+        const today = new Date()
+        const futureDay = new Date()
+        futureDay.setDate(today.getDate() + 15)
+        return futureDay.toLocaleString("pt-BR").split(',')[0]
+    }
+
+    const futDate = futureDay()
+
+
 
     useEffect(() => {
         const getTotal = () => {
             const totalData = data.reduce((acc, curr) => {
                 const fazendinha = `0207-${curr.id_farm_box}`
-                const quantityFaz = curr[fazendinha] !== undefined ?  curr[fazendinha] : 0
+                const quantityFaz = curr[fazendinha] !== undefined ? curr[fazendinha] : 0
 
                 const ubs = `0209-${curr.id_farm_box}`
-                const quantityUbs = curr[ubs] !== undefined ?  curr[ubs] : 0
+                const quantityUbs = curr[ubs] !== undefined ? curr[ubs] : 0
 
 
-                if(acc['0209'] > 0 ){
+                if (acc['0209'] > 0) {
                     acc['0209'] += quantityUbs
                 } else {
                     acc['0209'] = quantityUbs
                 }
-                
-                if(acc['0207'] > 0 ){
+
+                if (acc['0207'] > 0) {
                     acc['0207'] += quantityFaz
                 } else {
                     acc['0207'] = quantityFaz
                 }
 
-                if(acc['quant_farm'] > 0){
+                if (acc['quant_farm'] > 0) {
                     acc["quant_farm"] += curr.quantity_farmbox
                 } else {
                     acc["quant_farm"] = curr.quantity_farmbox
                 }
 
                 return acc
-        },{})
-        return totalData
-    }    
+            }, {})
+            return totalData
+        }
         const total = getTotal()
         setTotalData(total)
     }, [data]);
@@ -92,7 +101,7 @@ const TableBio = (props) => {
                         <th>UBS</th>
                         <th>Estoque Total</th>
                         <th>Necessidade FarmBox</th>
-                        <th>Previsto Plantado</th>
+                        <th>Previsto Plantado - {futDate}</th>
                         <th>Previsto Planejado</th>
                         <th>id Farm</th>
                     </tr>
@@ -103,7 +112,7 @@ const TableBio = (props) => {
                             const fazendinha = `0207-${data.id_farm_box}`
                             const ubs = `0209-${data.id_farm_box}`
                             const estoqueTotal = formatEstoque(data[fazendinha], data[ubs])
-                            
+
                             return (
                                 <tr
                                     key={i}
@@ -127,7 +136,7 @@ const TableBio = (props) => {
                         <th>Totais</th>
                         <th className={styles.numberRow}><span>{totalData['0207'] && formatNumber(totalData['0207'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['0209'] && formatNumber(totalData['0209'])}</span></th>
-                        <th className={styles.numberRow}><span>{formatNumber(formatEstoque(totalData['0207'],totalData['0209']))}</span></th>
+                        <th className={styles.numberRow}><span>{formatNumber(formatEstoque(totalData['0207'], totalData['0209']))}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quant_farm'] && formatNumber(totalData['quant_farm'])}</span></th>
                         <th colSpan={"4"}></th>
                     </tr>
