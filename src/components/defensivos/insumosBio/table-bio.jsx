@@ -61,8 +61,10 @@ const TableBio = (props) => {
                     acc['0207'] = quantityFaz
                 }
 
-                if (acc['quant_farm'] > 0) {
-                    acc["quant_farm"] += curr.quantity_farmbox
+                if (acc['quant_farm'] > 0 ) {
+                    if(!isNaN(curr.quantity_farmbox)){    
+                        acc["quant_farm"] += curr.quantity_farmbox
+                    }
                 } else {
                     acc["quant_farm"] = curr.quantity_farmbox
                 }

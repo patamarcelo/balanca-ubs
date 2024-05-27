@@ -133,9 +133,6 @@ export const dataFromFarm = (data) => {
 
 
 export const dataFromDjangoArr = (data) => {
-    const totalhere = data.reduce((acc, curr) => acc += curr['quantidade aplicar'],0)
-    console.log('total: ',totalhere)
-    console.log('tamanho do array: ', data.length)
     const consolidate = data.reduce((acc, curr) => {
         if(acc.filter((data) => data.id_farm_box === curr.id_farmbox).length === 0){
             const objToAdd = {

@@ -88,7 +88,6 @@ const InsumosBioPage = () => {
                         // }
                     })
                     .then((res) => {
-                        console.log('data bio from farm: ' + res.data)
                         setDataFromFam(res.data);
                     })
                     .catch((err) => console.log(err));
@@ -115,7 +114,6 @@ const InsumosBioPage = () => {
                         // }
                     })
                     .then((res) => {
-                        console.log('data bio from django: ' + res.data.data)
                         setDataFromDjango(res.data.data);
                     })
                     .catch((err) => console.log(err));
@@ -182,10 +180,7 @@ const InsumosBioPage = () => {
 
             }
             if(dataFromDjango.length > 0){
-                console.log('finalArr: ', constArr)
                 const djangoData = dataFromDjangoArr(dataFromDjango)
-                console.log('data From Django: ', djangoData)
-
                 const mergeDjangoProd = constArr.map((prods) => {
                     const findInFarmArray = djangoData.find((farm) => farm.id_farm_box === Number(prods.id_farm_box))
                     let objToAdd = {}
@@ -205,10 +200,12 @@ const InsumosBioPage = () => {
                 const indsInMergedProdsDjango = mergeDjangoProd.map((data) => Number(data.id_farm_box))
                 const includeOthersFromDjango = djangoData.filter((e) => !indsInMergedProdsDjango.includes(e.id_farm_box))
                 const prodFromFarmAdjust = includeOthersFromDjango.map((data) => {
+                    console.log('data', data)
                     return ({
-                        descricao_produto: data.produto,
-                        quantity_planted_django: data["quantidade aplicar"],
-                        id_farm_box: data.id_farm_box
+                        descricao_produto: data.descricao_produto,
+                        quantity_planted_django: data.quantity_planted_django,
+                        id_farm_box: data.id_farm_box,
+                        quantity_farmbox: 0
                     })
                 })
 
