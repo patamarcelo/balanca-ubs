@@ -38,6 +38,7 @@ const InsumosBioPage = () => {
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
 
     const [dataFromDjango, setDataFromDjango] = useState([]);
+    const [dataFromDjangoGeral, setDataFromDjangoGeral] = useState([]);
     const [loadingDataDjango, setloadingDataDjango] = useState(true);
 
     const [dataFromDjangoProjetado, setDataFromDjangoProjetado] = useState([]);
@@ -146,6 +147,7 @@ const InsumosBioPage = () => {
                     })
                     .then((res) => {
                         setDataFromDjango(res.data.data);
+                        setDataFromDjangoGeral(res.data.data_geral);
                     })
                     .catch((err) => console.log(err));
             } catch (err) {
@@ -240,6 +242,7 @@ const InsumosBioPage = () => {
 
             }
             if(dataFromDjango.length > 0){
+                //limit Data
                 const djangoData = dataFromDjangoArr(dataFromDjango)
                 const mergeDjangoProd = constArr.map((prods) => {
                     const findInFarmArray = djangoData.find((farm) => farm.id_farm_box === Number(prods.id_farm_box))
@@ -266,13 +269,50 @@ const InsumosBioPage = () => {
                         id_farm_box: data.id_farm_box,
                         quantity_farmbox: 0,
                         quantity_projeted_django: 0, 
-                        quantity_projeted_django_all: 0
+                        quantity_projeted_django_all: 0,
+                        quantity_planted_django_geral: 0
                     })
                 })
 
                 const finalDjangoMergArr = [...mergeDjangoProd, ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
                 setprotDataToTable(finalDjangoMergArr)
                 constArr = finalDjangoMergArr
+            }
+            if(dataFromDjangoGeral.length > 0){
+                const djangoDataGeral = dataFromDjangoArr(dataFromDjangoGeral)
+                const mergeDjangoProdGeral = constArr.map((prods) => {
+                    const findInFarmArray = djangoDataGeral.find((farm) => farm.id_farm_box === Number(prods.id_farm_box))
+                    let objToAdd = {}
+                    if (findInFarmArray) {
+                        objToAdd = {
+                            quantity_planted_django_geral: findInFarmArray.quantity_planted_django
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_planted_django_geral: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+                const indsInMergedProdsDjangoGeral = mergeDjangoProdGeral.map((data) => Number(data.id_farm_box))
+                const includeOthersFromDjangoGeral = djangoDataGeral.filter((e) => !indsInMergedProdsDjangoGeral.includes(e.id_farm_box))
+                const prodFromFarmAdjustGeral = includeOthersFromDjangoGeral.map((data) => {
+                    return ({
+                        descricao_produto: data.descricao_produto,
+                        quantity_planted_django: data.quantity_planted_django,
+                        id_farm_box: data.id_farm_box,
+                        quantity_farmbox: 0,
+                        quantity_projeted_django: 0, 
+                        quantity_projeted_django_all: 0,
+                        quantity_planted_django_geral: 0
+                    })
+                })
+
+                const finalDjangoMergArrGeral = [...mergeDjangoProdGeral, ...prodFromFarmAdjustGeral.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
+                setprotDataToTable(finalDjangoMergArrGeral)
+                constArr = finalDjangoMergArrGeral
             }
             if(dataFromDjangoProjetado?.app_date?.length > 0) {
                 //LIMIT BY DATE
@@ -302,7 +342,8 @@ const InsumosBioPage = () => {
                         id_farm_box: data.id_farmbox,
                         quantity_farmbox: 0,
                         quantity_planted_django: 0,
-                        quantity_projeted_django_all: 0
+                        quantity_projeted_django_all: 0,
+                        quantity_planted_django_geral: 0
                     })
                 })
                 const finalProjDajngo = [...mergeDjangoProdProjetado, ...prodFromFarmAdjust]
@@ -334,7 +375,8 @@ const InsumosBioPage = () => {
                         id_farm_box: data.id_farmbox,
                         quantity_farmbox: 0,
                         quantity_planted_django: 0,
-                        quantity_projeted_django_all: data.quantidade
+                        quantity_projeted_django_all: data.quantidade,
+                        quantity_planted_django_geral: 0
                     })
                 })
                 const finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
@@ -343,7 +385,7 @@ const InsumosBioPage = () => {
 
 
         }
-    }, [dataFromFam, dataFromProtheus, dataFromDjango, dataFromDjangoProjetado, futDate]);
+    }, [dataFromFam, dataFromProtheus, dataFromDjango, dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
 
     // useEffect(() => {
     //     if (dataFromProtheus.length > 0) {
