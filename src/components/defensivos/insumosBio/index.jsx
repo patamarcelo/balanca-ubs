@@ -19,7 +19,7 @@ import djangoApi, { nodeServerSrd, nodeServer } from "../../../utils/axios/axios
 import TableBio from "./table-bio";
 
 
-import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr } from './support-bio.js'
+import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr, dataFromDjangoProjetadoArrAll } from './support-bio.js'
 
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector.js";
 
@@ -273,6 +273,7 @@ const InsumosBioPage = () => {
                 constArr = finalDjangoMergArr
             }
             if(dataFromDjangoProjetado?.app_date?.length > 0) {
+                //LIMIT BY DATE
                 const djangoProjet = dataFromDjangoProjetadoArr(dataFromDjangoProjetado, futDate)
                 const mergeDjangoProdProjetado = constArr.map((prods) => {
                     const findInFarmArray = djangoProjet.find((farm) => farm.id_farmbox === Number(prods.id_farm_box))
@@ -298,11 +299,43 @@ const InsumosBioPage = () => {
                         quantity_projeted_django: data.quantidade,
                         id_farm_box: data.id_farmbox,
                         quantity_farmbox: 0,
-                        quantity_planted_django: 0
+                        quantity_planted_django: 0,
+                        quantity_projeted_django_all: 0
                     })
                 })
                 const finalProjDajngo = [...mergeDjangoProdProjetado, ...prodFromFarmAdjust]
-                setprotDataToTable(finalProjDajngo)
+                constArr = finalProjDajngo
+                //whitout limit by date
+                const djangoProjetAll = dataFromDjangoProjetadoArrAll(dataFromDjangoProjetado, futDate)
+                const mergeDjangoProdProjetadoAll = constArr.map((prods) => {
+                    const findInFarmArray = djangoProjetAll.find((farm) => farm.id_farmbox === Number(prods.id_farm_box))
+                    let objToAdd = {}
+                    if (findInFarmArray) {
+                        objToAdd = {
+                            quantity_projeted_django_all: findInFarmArray.quantidade
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_projeted_django_all: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+                const indsInMergedProdsDjangoPlanedAll = mergeDjangoProdProjetadoAll.map((data) => Number(data.id_farm_box))
+                const includeOthersFromDjangoPlanedAll = djangoProjetAll.filter((e) => !indsInMergedProdsDjangoPlanedAll.includes(e.id_farmbox))
+                const prodFromFarmAdjustAll = includeOthersFromDjangoPlanedAll.map((data) => {
+                    return ({
+                        descricao_produto: data.produto,
+                        quantity_projeted_django: data.quantidade,
+                        id_farm_box: data.id_farmbox,
+                        quantity_farmbox: 0,
+                        quantity_planted_django: 0
+                    })
+                })
+                const finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
+                setprotDataToTable(finalProjDajngoAll)
             }
 
 
