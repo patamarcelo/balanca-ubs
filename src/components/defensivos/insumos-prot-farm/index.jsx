@@ -389,7 +389,7 @@ const InsumosProtFarm = () => {
                     sx={{
                         margin: "0px 10px",
                         color: (theme) =>
-                            colors.greenAccent[theme.palette.mode === "dark" ? 200 : 800]
+                            colors.greenAccent[theme.palette.mode === "dark" ? 200 : 200]
                     }}
                 />
             </Box>

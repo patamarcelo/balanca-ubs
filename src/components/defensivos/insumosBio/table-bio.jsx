@@ -120,6 +120,7 @@ const TableBio = (props) => {
                         <th>Estoque Total</th>
                         <th>Necessidade FarmBox</th>
                         <th>Previsto Plantado - {futDate}</th>
+                        <th>Previsto Plantado - Geral</th>
                         <th>Previsto Planejado - {futDate}</th>
                         <th>Previsto Planejado - Geral</th>
                         <th>id Farm</th>
@@ -144,6 +145,7 @@ const TableBio = (props) => {
                                     <td className={styles.numberRow}><span>{formatNumber(estoqueTotal)}</span></td>
                                     <td className={styles.numberRow}><span>{data?.quantity_farmbox ? formatNumber(data.quantity_farmbox) : '-'}</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_planted_django ? formatNumber(data.quantity_planted_django) : '-'}</span> </td>
+                                    <td className={styles.numberRow}><span>-</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_projeted_django ? formatNumber(data.quantity_projeted_django) : '-'}</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_projeted_django_all ? formatNumber(data.quantity_projeted_django_all) : '-'}</span> </td>
                                     <td>{data.id_farm_box}</td>
@@ -159,9 +161,10 @@ const TableBio = (props) => {
                         <th className={styles.numberRow}><span>{formatNumber(formatEstoque(totalData['0207'], totalData['0209']))}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quant_farm'] && formatNumber(totalData['quant_farm'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quant_django_planted'] && formatNumber(totalData['quant_django_planted'])}</span></th>
+                        <th className={styles.numberRow}><span>-</span></th>
                         <th className={styles.numberRow}><span>{totalData['quantity_projeted_django'] && formatNumber(totalData['quantity_projeted_django'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quantity_projeted_django_all'] && formatNumber(totalData['quantity_projeted_django_all'])}</span></th>
-                        <th colSpan={"2"}></th>
+                        <th colSpan={"1"}></th>
                     </tr>
                 </tfoot>
             </Table>

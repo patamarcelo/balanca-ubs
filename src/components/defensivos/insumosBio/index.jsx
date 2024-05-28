@@ -264,7 +264,9 @@ const InsumosBioPage = () => {
                         descricao_produto: data.descricao_produto,
                         quantity_planted_django: data.quantity_planted_django,
                         id_farm_box: data.id_farm_box,
-                        quantity_farmbox: 0
+                        quantity_farmbox: 0,
+                        quantity_projeted_django: 0, 
+                        quantity_projeted_django_all: 0
                     })
                 })
 
@@ -328,10 +330,11 @@ const InsumosBioPage = () => {
                 const prodFromFarmAdjustAll = includeOthersFromDjangoPlanedAll.map((data) => {
                     return ({
                         descricao_produto: data.produto,
-                        quantity_projeted_django: data.quantidade,
+                        quantity_projeted_django: 0,
                         id_farm_box: data.id_farmbox,
                         quantity_farmbox: 0,
-                        quantity_planted_django: 0
+                        quantity_planted_django: 0,
+                        quantity_projeted_django_all: data.quantidade
                     })
                 })
                 const finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
@@ -379,7 +382,7 @@ const InsumosBioPage = () => {
                     sx={{
                         margin: "0px 10px",
                         color: (theme) =>
-                            colors.greenAccent[theme.palette.mode === "dark" ? 200 : 800]
+                            colors.greenAccent[theme.palette.mode === "dark" ? 200 : 200]
                     }}
                 />
             </Box>
