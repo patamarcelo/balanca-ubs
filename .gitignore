@@ -22,3 +22,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+bio-django-plant.json
+bio-django-proj.json
+bio-farm.json
+bio-prot.json

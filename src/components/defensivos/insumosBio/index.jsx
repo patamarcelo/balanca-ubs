@@ -13,16 +13,21 @@ import djangoApi, { nodeServerSrd, nodeServer } from "../../../utils/axios/axios
 // import biofarm from './bio-farm.json'
 // import bioprot from './bio-prot.json'
 // import biodjango from './bio-django-plant.json'
+// import bioDjangoProje from './bio-django-proj.json'
+
 
 import TableBio from "./table-bio";
 
 
-import formatProds, { dataFromFarm, dataFromDjangoArr } from './support-bio.js'
+import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr } from './support-bio.js'
+
+import { selectSafraCiclo } from "../../../store/plantio/plantio.selector.js";
 
 const InsumosBioPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const useThemeHere = theme.palette.mode
+    const safraCiclo = useSelector(selectSafraCiclo);
 
     const user = useSelector(selectCurrentUser);
 
@@ -35,9 +40,35 @@ const InsumosBioPage = () => {
     const [dataFromDjango, setDataFromDjango] = useState([]);
     const [loadingDataDjango, setloadingDataDjango] = useState(true);
 
-    const [filteredProdcuts, setFilteredProdcuts] = useState([]);
+    const [dataFromDjangoProjetado, setDataFromDjangoProjetado] = useState([]);
+    const [isLoadingDjangoProjetado, setIsLoadingDjangoProjetado] = useState(true);
+
+    // const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [protDataToTable, setprotDataToTable] = useState([]);
+
+    const futureDay = () => {
+        const today = new Date()
+        const futureDay = new Date()
+        futureDay.setDate(today.getDate() + 15)
+        return futureDay.toLocaleString("pt-BR").split(',')[0].split('/').reverse().join('-')
+    }
+
+    const futDate = futureDay()
+
+    const [params, setParams] = useState({
+		safra: safraCiclo.safra,
+		ciclo: safraCiclo.ciclo,
+	});
+
+
+	useEffect(() => {
+		setParams({
+			safra: safraCiclo.safra,
+			ciclo: safraCiclo.ciclo,
+		});
+	}, [safraCiclo]);
+
 
     
     
@@ -126,15 +157,44 @@ const InsumosBioPage = () => {
         getTrueApi();
     }, [user]);
 
+    useEffect(() => {
+        const getTrueApi = async () => {
+            try {
+                await djangoApi
+                    .post("plantio/get_plantio_operacoes_detail/", safraCiclo, {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                        }
+                    })
+                    .then((res) => {
+                        // console.log(res.data);
+                        setDataFromDjangoProjetado(res.data);
+                    })
+                    .catch((err) => console.log(err));
+
+                    setIsLoadingDjangoProjetado(false)
+            } catch (err) {
+                console.log("Erro ao consumir a API", err);
+                setIsLoadingDjangoProjetado(false)
+            } finally {
+                setIsLoadingDjangoProjetado(false)
+                // console.log("Finally statement");
+            }
+        };
+        getTrueApi()
+    }, [safraCiclo]);
+
 
     // useEffect(() => {
     //     setDataFromFam(biofarm)
     //     setdataFromProtheus(bioprot.itens)
     //     setDataFromDjango(biodjango.data)
+    //     setDataFromDjangoProjetado(bioDjangoProje)
 
     //     setloadingDataDjango(false)
     //     setLoadinData(false);
     //     setloadingDataProtheus(false)
+    //     setIsLoadingDjangoProjetado(false)
     // }, []);
 
     useEffect(() => {
@@ -200,7 +260,6 @@ const InsumosBioPage = () => {
                 const indsInMergedProdsDjango = mergeDjangoProd.map((data) => Number(data.id_farm_box))
                 const includeOthersFromDjango = djangoData.filter((e) => !indsInMergedProdsDjango.includes(e.id_farm_box))
                 const prodFromFarmAdjust = includeOthersFromDjango.map((data) => {
-                    console.log('data', data)
                     return ({
                         descricao_produto: data.descricao_produto,
                         quantity_planted_django: data.quantity_planted_django,
@@ -211,34 +270,67 @@ const InsumosBioPage = () => {
 
                 const finalDjangoMergArr = [...mergeDjangoProd, ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
                 setprotDataToTable(finalDjangoMergArr)
+                constArr = finalDjangoMergArr
+            }
+            if(dataFromDjangoProjetado?.app_date?.length > 0) {
+                const djangoProjet = dataFromDjangoProjetadoArr(dataFromDjangoProjetado, futDate)
+                const mergeDjangoProdProjetado = constArr.map((prods) => {
+                    const findInFarmArray = djangoProjet.find((farm) => farm.id_farmbox === Number(prods.id_farm_box))
+                    let objToAdd = {}
+                    if (findInFarmArray) {
+                        objToAdd = {
+                            quantity_projeted_django: findInFarmArray.quantidade
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_projeted_django: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+                const indsInMergedProdsDjangoPlaned = mergeDjangoProdProjetado.map((data) => Number(data.id_farm_box))
+                const includeOthersFromDjangoPlaned = djangoProjet.filter((e) => !indsInMergedProdsDjangoPlaned.includes(e.id_farmbox))
+                const prodFromFarmAdjust = includeOthersFromDjangoPlaned.map((data) => {
+                    return ({
+                        descricao_produto: data.produto,
+                        quantity_projeted_django: data.quantidade,
+                        id_farm_box: data.id_farmbox,
+                        quantity_farmbox: 0,
+                        quantity_planted_django: 0
+                    })
+                })
+                const finalProjDajngo = [...mergeDjangoProdProjetado, ...prodFromFarmAdjust]
+                setprotDataToTable(finalProjDajngo)
             }
 
 
         }
-    }, [dataFromFam, dataFromProtheus, dataFromDjango]);
+    }, [dataFromFam, dataFromProtheus, dataFromDjango, dataFromDjangoProjetado, futDate]);
 
-    useEffect(() => {
-        if (dataFromProtheus.length > 0) {
-            const filiais = [{ cod_filial: '0209', des_filial: 'UBS' }];
-            const newArr = dataFromProtheus?.map((item) => {
-                const newArr = item.filiais;
-                let hasHere = false;
-                let farmProd = {};
-                let farmOrigName;
-                newArr.forEach((filial) => {
-                    if (filiais.filter((data) => data.cod_filial === filial.cod_filial).length === 0) {
-                        const objToAdd = { cod_filial: filial.cod_filial, des_filial: filial.desc_filial }
-                        filiais.push(objToAdd)
-                    }
-                });
-                return { ...item, hasHere, ...farmProd, farmOrigName };
-            });
-            // console.log('Filiais: ', filiais)
-            setFilteredProdcuts(newArr);
-        }
-    }, [dataFromProtheus]);
+    // useEffect(() => {
+    //     if (dataFromProtheus.length > 0) {
+    //         const filiais = [{ cod_filial: '0209', des_filial: 'UBS' }];
+    //         const newArr = dataFromProtheus?.map((item) => {
+    //             const newArr = item.filiais;
+    //             let hasHere = false;
+    //             let farmProd = {};
+    //             let farmOrigName;
+    //             newArr.forEach((filial) => {
+    //                 if (filiais.filter((data) => data.cod_filial === filial.cod_filial).length === 0) {
+    //                     const objToAdd = { cod_filial: filial.cod_filial, des_filial: filial.desc_filial }
+    //                     filiais.push(objToAdd)
+    //                 }
+    //             });
+    //             return { ...item, hasHere, ...farmProd, farmOrigName };
+    //         });
+    //         // console.log('Filiais: ', filiais)
+    //         setFilteredProdcuts(newArr);
+    //     }
+    // }, [dataFromProtheus]);
 
-    if (loadingData || loadingDataProtheus || loadingDataDjango) {
+    if (loadingData || loadingDataProtheus || loadingDataDjango || isLoadingDjangoProjetado) {
         return (
             <Box
                 sx={{

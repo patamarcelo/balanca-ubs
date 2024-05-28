@@ -152,4 +152,35 @@ export const dataFromDjangoArr = (data) => {
     return consolidate
 
 }
+
+export const dataFromDjangoProjetadoArr = (data, filterDate) => {
+    const filterBio = data.app_date.map((prods) => {
+        const dateApp = prods.data
+        const onlyBio = prods.produtos.filter((pro) => pro.tipo === 'biologico').map((app) => {
+            return ({
+                ...app, 
+                data: dateApp
+            })
+        })
+        return onlyBio
+    } )
+    const filteredDate = filterBio.flat().filter((date) => date.data <= filterDate)
+
+    //consolidate prods
+    const consolidateBio = filteredDate.reduce((acc, cur) =>{
+        if(acc.filter((data) => data.id_farmbox === cur.id_farmbox).length === 0){
+            acc.push(cur);
+        } else {
+            const findIndexOf = f => f.id_farmbox === cur.id_farmbox
+            const getIndex = acc.findIndex(findIndexOf);
+            acc[getIndex]['quantidade'] +=  cur.quantidade;
+        }
+        return acc
+    },[])
+
+    // const totalProd = consolidateBio.reduce((acc, cur) => acc += cur.quantidade,0)
+    // console.log('totalProd',totalProd)
+
+    return consolidateBio
+}
 export default formatProds
