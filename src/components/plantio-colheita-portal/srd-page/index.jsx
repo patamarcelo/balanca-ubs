@@ -133,8 +133,7 @@ const SRDPage = () => {
     useEffect(() => {
         if (filterImp > 0) {
             console.log(filterImp)
-            const filterArr = dataArray.filter((data) => parseFloat(data.IMPUREZA_ENTRADA).toFixed(2) >= parseFloat(filterImp).toFixed(2) || data.IMPUREZA_ENTRADA === filterImp)
-            filterArr.forEach((data) => console.log(data))
+            const filterArr = dataArray.filter((data) => parseFloat(data.IMPUREZA_ENTRADA) >= parseFloat(filterImp))
             setFilterDataArray(filterArr)
         } else {
             setFilterDataArray(dataArray)
@@ -273,7 +272,11 @@ const SRDPage = () => {
                                     })}
                             </Box>
                             <Box width={"100%"} display={"flex"} justifyContent={"end"}>
-                                <ResumoGeral dest={"Geral"} data={filterDataArray} />
+                                {
+                                    destArr && destArr.length > 1 && (
+                                        <ResumoGeral dest={"Geral"} data={filterDataArray} />
+                                    )
+                                }
                             </Box>
                         </Box>
                     }

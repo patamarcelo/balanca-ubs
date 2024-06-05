@@ -200,7 +200,14 @@ const TableDataPage = (props) => {
 				})
 				.then((res) => {
 					console.log(res.data);
+					console.log(res);
 					setDisplayMap(res.data);
+					const img = new Image();
+					img.src = res.data;
+					img.onload = () => {
+					console.log('img heihg: ', img.height);
+					console.log('img width: ', img.width);
+					};
 				});
 		} catch (err) {
 			console.log("Erro ao alterar as aplicações", err);
@@ -420,17 +427,17 @@ const TableDataPage = (props) => {
 						</Box>
 					)}
 					{displayMap && (
-						<Box>
-							<Box display={"flex"} justifyContent={"center"}>
+						<Box display={"flex"} justifyContent={"center"} >						
 								<img
 									src={displayMap}
 									alt="Italian Trulli"
 									style={{
 										transform: `rotate(${rotateDir}deg)`,
-										width: "400px"
+										width: "500px",
+										height: '500px',
+										objectFit: "contain"
 									}}
 								/>
-							</Box>
 							<Box>
 								<FontAwesomeIcon
 									onClick={handleRotateDir}

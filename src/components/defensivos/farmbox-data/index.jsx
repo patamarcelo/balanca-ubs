@@ -65,7 +65,7 @@ const FarmBoxPage = () => {
 	const dispatch = useDispatch();
 	const openApp = useSelector(selectApp);
 	const dictSelect = useSelector(createDict);
-	// const dictSelectFarm = useSelector(createDictFarmBox);
+	const dictSelectFarm = useSelector(createDictFarmBox);
 	const onlyFarms = useSelector(onlyFarm);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
@@ -264,7 +264,7 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpen()} color="success">
 						Gerar Tabela
 					</Button>
-					<Button onClick={() => handleOpenFarm()} color="success">
+					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelectFarm.length === 0 && true} >
 						Farm Reunião
 					</Button>
 					<Button onClick={() => handleOpenColheitaPage()} color="success">

@@ -205,7 +205,7 @@ const ColheitaPage = () => {
                                                 <Typography
                                                     color={colors.textColor[100]}
                                                     variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right" }}
+                                                    sx={{ width: "150px", textAlign: "right", color:  data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold' }}
                                                 >
                                                     {data.areaFazenda.toLocaleString("pt-br", {
                                                         minimumFractionDigits: 2,
@@ -215,7 +215,7 @@ const ColheitaPage = () => {
                                                 <Typography
                                                     color={colors.textColor[100]}
                                                     variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right" }}
+                                                    sx={{ width: "150px", textAlign: "right", color:  data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold'}}
                                                 >
                                                     {data.areaAplicada.toLocaleString("pt-br", {
                                                         minimumFractionDigits: 2,
