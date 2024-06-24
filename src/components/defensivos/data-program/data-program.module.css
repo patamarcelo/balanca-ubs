@@ -222,7 +222,7 @@
     justify-content: flex-start;
     align-items: center;
     flex-direction: row;
-    gap: 30px;
+    gap: 0px;
     font-weight: bold;
     margin-top: 15px;
     /* width: 80%; */

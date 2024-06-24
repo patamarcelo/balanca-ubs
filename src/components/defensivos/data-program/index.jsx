@@ -676,7 +676,7 @@ const DataProgramPage = (props) => {
 							</span>
 						</div>
 						<div style={{ fontFamily: "Times New Roman" }}>
-							{farmSelected}
+							{farmSelected.replace('Projeto', '')}
 							<FontAwesomeIcon
 								icon={!onlyOpenApp ? faCheckDouble : faClock}
 								color={

@@ -41,7 +41,8 @@ const MapPage = ({
 	totalSelected,
 	setTotalSelected,
 	handleSUm,
-	printPage
+	printPage,
+	showVarOrArea
 }) => {
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -270,9 +271,10 @@ Third line of text`;
 						}
 					);
 					const variedade = dataF.data.data.variedade;
+					// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
 					const finalizado =
 						dataF.finalizadoPlantio && !dataF.descontinuado;
-					const label = `${dataF.parcela} \n ${area} ha`;
+					const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
 					// const label = `${dataF.parcela} \n marce`;
 					const newLabel = {
 						text: finalizado ? label : label,

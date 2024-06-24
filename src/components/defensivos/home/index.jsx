@@ -311,7 +311,14 @@ const HomeDefensivoPage = (props) => {
 							);
 						})}
 					</Box>
-					<Box>
+					<Box
+						sx={{
+							position: 'fixed',
+							top: '0',
+							marginTop: '15px !important',
+							marginLeft: '100px !important'
+						}}
+					>
 						<SafraCicloComp />
 					</Box>
 					{isOpenProductsProgram && (
@@ -320,7 +327,7 @@ const HomeDefensivoPage = (props) => {
 								flexGrow: 1,
 								display: "flex",
 								justifyContent: "center",
-								margin: "5px"
+								margin: "5px",
 							}}
 						>
 							<div className={classes["date-picker"]}>

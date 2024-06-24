@@ -26,6 +26,11 @@ import Switch from "@mui/material/Switch";
 import CircularProgress from "@mui/material/CircularProgress";
 import "./printPage.css";
 
+import Filter1Icon from '@mui/icons-material/Filter1';
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
@@ -59,6 +64,12 @@ const ProdutividadePage = () => {
 	const [sumTotalSelected, setSumTotalSelected] = useState(0);
 
 	const [totalSelected, setTotalSelected] = useState([]);
+
+	const [showVarOrArea, setShowVarOrArea] = useState(false);
+
+	const handleValueMap = () => {
+		setShowVarOrArea(prev => !prev)
+	}
 
 	const handleSUm = (selected) => {
 		const findItem = totalSelected.filter(
@@ -277,6 +288,19 @@ const ProdutividadePage = () => {
 					inputProps={{ "aria-label": "controlled" }}
 					color="success"
 				/>
+				<ToggleButtonGroup
+					value={showVarOrArea}
+					exclusive
+					onChange={handleValueMap}
+					aria-label="text alignment"
+				>
+					<ToggleButton value={true} aria-label="left aligned">
+						<SortByAlphaIcon />
+					</ToggleButton>
+					<ToggleButton value={false} aria-label="centered">
+						<Filter1Icon />
+					</ToggleButton>
+				</ToggleButtonGroup>
 			</Box>
 			<Box
 				sx={{
@@ -337,6 +361,7 @@ const ProdutividadePage = () => {
 									handleSUm={handleSUm}
 									totalSelected={totalSelected}
 									setTotalSelected={setTotalSelected}
+									showVarOrArea={showVarOrArea}
 								/>
 							</Box>
 							{printPage ? (
