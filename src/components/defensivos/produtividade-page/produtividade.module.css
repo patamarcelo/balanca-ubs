@@ -180,7 +180,11 @@ border-radius: 8px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     width: 90px;
-    height: 40px;
+    /* height: 40px; */
+}
+
+.popUpMap button{
+    height: 10px !important;
 }
 
 .popUpMapInfo {

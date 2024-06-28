@@ -432,7 +432,6 @@ const TableDataPage = (props) => {
 									src={displayMap}
 									alt="Italian Trulli"
 									style={{
-										transform: `rotate(${rotateDir}deg)`,
 										width: "500px",
 										height: '500px',
 										objectFit: "contain"

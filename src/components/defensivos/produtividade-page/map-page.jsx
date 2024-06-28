@@ -270,7 +270,7 @@ Third line of text`;
 							maximumFractionDigits: 2
 						}
 					);
-					const variedade = dataF.data.data.variedade;
+					const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
 					// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
 					const finalizado =
 						dataF.finalizadoPlantio && !dataF.descontinuado;

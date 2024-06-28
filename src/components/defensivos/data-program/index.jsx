@@ -369,11 +369,25 @@ const DataProgramPage = (props) => {
 				return cronArr.filter((data) => data !== undefined);
 			}
 		});
+		const compare = (a,b) => {
+			// if(new Date(a.dataPrevApp) < new Date(b.dataPrevApp)) return -1;
+			// if(new Date(a.dataPrevApp) > new Date(b.dataPrevApp)) return 1;
+			if(a.dapApp < b.dapApp) return -1;
+			if(a.dapApp > b.dapApp) return 1;
+			// if(a.cultura < b.cultura) return -1;
+			// if(a.cultura > b.cultura) return 1;
+
+			// if(a.variedade < b.variedade) return -1;
+			// if(a.variedade > b.variedade) return 1;
+		
+		}
 		const filtArray = filtParcelas
 			.flat()
-			.sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp))
-			.sort((a, b) => a.dapApp - b.dapApp)
-			.sort((a, b) => a.variedade.localeCompare(b.variedade));
+			.sort(compare)
+			.sort((a, b) => a.estagio.split('|')[1].localeCompare(b.estagio.split('|')[1]))
+			// .sort((a, b) => a.cultura.localeCompare(b.cultura))
+			// .sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp) || )
+			// .sort((a, b) => a.dapApp - b.dapApp)
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
 			const dapApp = curr.dapApp;
@@ -1063,8 +1077,8 @@ const DataProgramPage = (props) => {
 													>
 														{dat.totais
 															.sort((a, b) =>
-																a.produto.localeCompare(
-																	b.produto
+																a.tipo.localeCompare(
+																	b.tipo
 																)
 															)
 															.filter((tipos) => tipos.tipo !== 'operacao')
