@@ -176,6 +176,7 @@ export const FAZENDA_ORIGEM = [
 	{ id: 46, local: "Diamante", user: "diamante" },
 	{ id: 45, local: "UBS", user: "ubs" },
 	{ id: 55, local: "Confinamento", user: "outros" },
+	{ id: 56, local: "Indústria - Paraíso", user: "outros" },
 	{ id: "D3", local: "Fazenda Biguá", user: "outros" },
 	{ id: "D4", local: "Fazendão", user: "outros" },
 	{ id: "D9", local: "Uniraça", user: "outros" },

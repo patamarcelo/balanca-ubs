@@ -23,6 +23,7 @@ export const PROJETOS_FAZENDAS = [
 	{ id: 6, local: "Projeto Tuiuiu" },
 	{ id: 45, local: "UBS" },
 	{ id: 55, local: "Confinamento" },
+	{ id: 56, local: "Indústria - Paraíso" },
 	{ id: 47, local: "Outros" },
 	{ id: "D3", local: "Fazenda Biguá" },
 	{ id: "D4", local: "Fazendão" },
