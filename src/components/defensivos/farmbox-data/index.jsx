@@ -1,7 +1,7 @@
 import classes from "./farmbox.module.css";
-import { nodeServer } from "../../../utils/axios/axios.utils";
+import djangoApi, { nodeServer } from "../../../utils/axios/axios.utils";
 import { useEffect, useState, useCallback } from "react";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, CircularProgress, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import {
@@ -74,6 +74,8 @@ const FarmBoxPage = () => {
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
+
+	const [IsloadingDbFarm, setIsloadingDbFarm] = useState(false);
 
 	const [isOpenedAll, setIsOpenedAll] = useState(false);
 
@@ -241,13 +243,43 @@ const FarmBoxPage = () => {
 	}
 	const hojeH = (new Date()).toLocaleString('pt-BR')
 
+	const handleUpdateFarmDb = async () => {
+		console.log('Atualizar banco de dados')
+		setIsloadingDbFarm(true)
+		try {
+			await djangoApi
+				.get("/defensivo/update_farmbox_mongodb_data/", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+					}
+				})
+				.then((res) => {
+					if (res.status === 200) {
+						console.log('Tudo Certo', 'Aplicações Atualizadas com sucesso!!')
+						// alert('Tudo Certo', 'Aplicações Atualizadas com sucesso!!')
+					}
+				})
+				.catch((err) => console.log(err));
+
+		} catch (error) {
+			console.error('erro ao atualziar os dados: ', error);
+			setIsloadingDbFarm(false)
+			// alert('Problema em atualizar o banco de dados', `Erro: ${error}`)
+		} finally {
+			setIsloadingDbFarm(false)
+		}
+		console.log('update farmOperations...')
+	}
+
 
 	return (
 		<Box
 			className={classes.mainDiv}
-			sx={{ scrollBehavior: "smooth !important" }}
+			sx={{ scrollBehavior: "smooth !important", height: (loadingData || IsloadingDbFarm) && '100%',
+				display: 'flex', flexDirection: 'row'
+			}}
 		>
-			{!loadingData && (
+			{(!loadingData || !IsloadingDbFarm )&&  (
 				<Box
 					p={1}
 					sx={{
@@ -270,12 +302,15 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpenColheitaPage()} color="success">
 						Colheita de Grãos
 					</Button>
+					<Button onClick={() => handleUpdateFarmDb()} color="success">
+						Atualizar DB
+					</Button>
 					<ModalDataFarmbox open={open} handleClose={handleClose} />
 				</Box>
 			)}
-			{loadingData && (
-				<Box sx={{ width: "100%" }}>
-					<LinearProgress color="success" />
+			{(loadingData || IsloadingDbFarm) && (
+				<Box sx={{ width: "100%", justifyContent: 'center', alignItems: 'center', height: '100%', display: 'flex' }}>
+					<CircularProgress color="success" />
 				</Box>
 			)}
 
