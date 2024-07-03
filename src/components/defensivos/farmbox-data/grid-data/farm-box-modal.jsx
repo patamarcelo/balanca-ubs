@@ -255,7 +255,7 @@ const ModalDataFarmbox = (props) => {
 
 	useEffect(() => {
 		if (dictSelectFarm.length > 0) {
-			console.log("dictSelect Farm: ", dictSelectFarm);
+			// console.log("dictSelect Farm: ", dictSelectFarm);
 			getArray();
 		}
 	}, [dictSelectFarm, onlyAppNotProducts]);

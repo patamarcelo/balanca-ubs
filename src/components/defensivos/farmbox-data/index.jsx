@@ -55,6 +55,7 @@ import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ColheitaModalPage from "./colheita-modal";
 import ColheitaPage from "./colheita-section/colheita-index-data";
+import ProdutosConsolidados from "./produtos-consolidados";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
@@ -275,11 +276,12 @@ const FarmBoxPage = () => {
 	return (
 		<Box
 			className={classes.mainDiv}
-			sx={{ scrollBehavior: "smooth !important", height: (loadingData || IsloadingDbFarm) && '100%',
+			sx={{
+				scrollBehavior: "smooth !important", height: (loadingData || IsloadingDbFarm) && '100%',
 				display: 'flex', flexDirection: 'row'
 			}}
 		>
-			{(!loadingData || !IsloadingDbFarm )&&  (
+			{(!loadingData || !IsloadingDbFarm) && (
 				<Box
 					p={1}
 					sx={{
@@ -296,7 +298,7 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpen()} color="success">
 						Gerar Tabela
 					</Button>
-					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelectFarm.length === 0 && true} >
+					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelect.length === 0 && true} >
 						Farm Reunião
 					</Button>
 					<Button onClick={() => handleOpenColheitaPage()} color="success">
@@ -313,6 +315,22 @@ const FarmBoxPage = () => {
 					<CircularProgress color="success" />
 				</Box>
 			)}
+			{
+				dictSelect.length > 0 &&
+				<Box
+					sx={{
+						marginTop: '10px',
+						width: "100%",
+						minWidth: "1200px",
+						height: 'calc(100% - 10px)',
+						padding: '10px',
+						display: "flex",
+						// border: `1px solid ${colors.primary[200]}`
+					}}
+				>
+					<ProdutosConsolidados />
+				</Box>
+			}
 
 			<IndexModalDataFarmbox
 				open={openFarm}
