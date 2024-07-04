@@ -281,6 +281,19 @@ const DataProgramPage = (props) => {
 		setFiltData(!filtData);
 	};
 
+	const addDaysToDate = (dateStr, daysToAdd) => {
+		// Convert the date string to a Date object
+		const date = new Date(dateStr);
+	  
+		// Add the specified number of days
+		date.setDate(date.getDate() + daysToAdd);
+	  
+		// Format the new date back to "yyyy-mm-dd"
+		const newDateStr = date.toISOString().split('T')[0];
+	  
+		return newDateStr;
+	  }
+
 	useEffect(() => {
 		const filtParcelas = filteredList.map((data, i) => {
 			const initialDate = initialDateForm;
@@ -301,11 +314,14 @@ const DataProgramPage = (props) => {
 			const responsible_id = data.dados?.responsavel_id_farmbox ? data.dados?.responsavel_id_farmbox : id_marcelo_pata
 			const charge_id = data.dados?.encarregado_id_farmbox ? data.dados?.encarregado_id_farmbox : id_marcelo_pata
 			const today = (new Date()).toLocaleDateString('pt-BR').split('/').reverse().join('-')
+			const endDate = addDaysToDate(today, 6)
+			
 			const plantations = []
 			const inputs = []
 
 			const objSendToFarm = {
 				date: today,
+				end_date: endDate,
 				harvest_id,
 				farm_id,
 				responsible_id,

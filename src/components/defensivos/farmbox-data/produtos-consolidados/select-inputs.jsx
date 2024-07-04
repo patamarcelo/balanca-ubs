@@ -37,7 +37,11 @@ const SelectInputs = (props) => {
             if(label === "Ap"){
                 if(selectedProecj && selectedProecj.length > 0){
                     const farmNameArr = selectedProecj.map((farm) => farm.replace('Fazenda ', ''))
-                    const filtApps = inputsArr.filter((filtApss) => farmNameArr.includes(filtApss.split("-")[0].trim()))
+                    const filterDatas = selectedData?.Data ? selectedData?.Data : []
+                    const filtApps = inputsArr.filter((filtApss) => farmNameArr.includes(filtApss.split("-")[0].trim())).filter((apps) => filterDatas.includes((apps.split(' | ')[1])))
+                    console.log('filtAppss: ', filtApps)
+                    console.log('data Selected: ', selectedData?.Data)
+
                     setarrToMap(filtApps)    
                     setDisabledForm(false)
                 } else {
@@ -53,7 +57,7 @@ const SelectInputs = (props) => {
     const MenuProps = {
         PaperProps: {
             style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                maxHeight: 450,
                 width: 250,
             },
         },
@@ -80,7 +84,9 @@ const SelectInputs = (props) => {
     }, [selectedData]);
 
 
-
+    const formatApName = (ap) => {
+        return ap.split(' | ')[0]
+    }
   
     
     return (
@@ -97,7 +103,7 @@ const SelectInputs = (props) => {
                     input={<OutlinedInput label={label} />}
                     MenuProps={MenuProps}
                     size='small'
-                    disabled={disabledForm}
+                    disabled={disabledForm || arrToMap.length === 0}
                 >
                     {arrToMap && arrToMap.map((name) => {
                         const labelValue = label === 'Data' ? name.split('-').reverse().join('/') : name
@@ -107,7 +113,7 @@ const SelectInputs = (props) => {
                                 value={name}
                             // style={getStyles(name, personName, theme)}
                             >
-                                {labelValue?.replace('Fazenda ', '')}
+                                {formatApName(labelValue?.replace('Fazenda ', ''))}
                             </MenuItem>
                         )
                     }

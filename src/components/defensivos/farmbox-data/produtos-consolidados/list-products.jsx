@@ -23,17 +23,21 @@ const ListProducts = (props) => {
         });
     }
 
+    const formatApName = (ap) => {
+        return ap.split(' | ')[0]
+    }
+
     useEffect(() => {
-        if (Object.keys(selectedData).length > 0) {
+        if (selectedData?.Data?.length > 0 && selectedData?.Projeto?.length > 0 && selectedData?.Ap?.length > 0) {
             const newData = productsArr.filter((item) => {
                 const dateFilter = Data?.length === 0 || Data?.includes(item.date)
                 const projetoFilter = Projeto?.length === 0 || Projeto?.includes(item.farmName)
-                const apFilter = Ap?.length === 0 || Ap?.includes(item.finalCode)
+                const apFilter = Ap?.length === 0 || Ap?.map((data) => formatApName(data))?.includes(item.finalCode)
                 const tipoFilter = Tipo?.length === 0 || !Tipo?.includes(item.inputType)
                 return dateFilter && projetoFilter && apFilter && tipoFilter
             })
             console.log('newData: ', newData)
-            const newProds = newData.reduce((acc, curr) => {
+            const newProds = newData.filter((data) => data.inputType !== 'Operação').reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
                     const objToAdd = {
                         insumo: curr.inputName,
@@ -68,15 +72,21 @@ const ListProducts = (props) => {
 
     const borderColor = colors.textColor[100]
 
+    
     const getAreaAp = (ap) => {
-        const filteredArea = productsArr.filter((data) => data.finalCode === ap).filter((data) => data.inputType === 'Operação')[0]
-        const { quantity } = filteredArea
-        return formatNumber(quantity)
+        const filteredArea = productsArr.filter((data) => data.finalCode === formatApName(ap)).filter((data) => data.inputType === 'Operação')[0]
+        if(filteredArea){
+            const { quantity } = filteredArea
+            if(quantity){
+                return formatNumber(quantity)
+            }
+        }
+        return 0
     }
 
     useEffect(() => {
         if (Ap?.length > 0) {
-            const filteredArea = productsArr.filter((data) => Ap?.includes(data.finalCode)).filter((data) => data.inputType === 'Operação')
+            const filteredArea = productsArr.filter((data) => Ap?.map((data) => formatApName(data)).includes(data.finalCode)).filter((data) => data.inputType === 'Operação')
             const totalValue = filteredArea.reduce((acc, curr) => acc += curr.quantity, 0)
             setTotalAreaAps(totalValue)
         }
@@ -95,7 +105,7 @@ const ListProducts = (props) => {
             }}
         >
             <Box>
-                <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Projetos</Typography>
+                <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Projeto{Projeto?.length !== 1 && 's'}</Typography>
                 {
                     Projeto && Projeto.length > 0 && Projeto.map((projetos, index) => {
                         return (
@@ -118,12 +128,12 @@ const ListProducts = (props) => {
                                     flexDirection: 'row',
                                     paddingRight: '10px',
                                 }}
-                            ><span>{aps}</span><span>{getAreaAp(aps)}</span> </Box>
+                            ><span>{formatApName(aps)}</span><span>{getAreaAp(aps)}</span> </Box>
                         )
                     })
                 }
                 {
-                    Ap && Ap.length > 0 && (
+                    Ap && Ap.length > 1 && (
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -135,7 +145,7 @@ const ListProducts = (props) => {
                         }}
                         >
                             <b>
-                                <span>Total:</span> </b><b><span>{formatNumber(totalAreaAps)}</span>
+                                <span> </span> </b><b><span>{formatNumber(totalAreaAps)}</span>
                             </b>
                         </Box>
                     )
@@ -169,7 +179,7 @@ const ListProducts = (props) => {
                                     fontWeight: 'bold',
                                 }}
                             >
-                                Total:
+                                
                             </Box>
                         </Box>
                         <Box sx={{ textAlign: 'right' }}>

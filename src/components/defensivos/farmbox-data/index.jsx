@@ -290,7 +290,8 @@ const FarmBoxPage = () => {
 						backgroundColor: colors.blueOrigin[800],
 						borderRadius: "8px",
 						paddingTop: "4px",
-						paddingBottom: "4px"
+						paddingBottom: "4px",
+						boxShadow: !isDark && `rgba(0, 0, 0, 0.35) 0px 5px 15px` 
 					}}
 				>
 					<Button onClick={() => refreshData()} color="success">
@@ -329,7 +330,8 @@ const FarmBoxPage = () => {
 						display: "flex",
 						borderRadius: '8px',
 						// border: `1px solid ${colors.primary[200]}`
-						backgroundColor: !isDark && 'whitesmoke'
+						backgroundColor: !isDark && 'whitesmoke',
+						boxShadow: !isDark ? `rgba(0, 0, 0, 0.35) 0px 5px 15px` : `rgba(245,245,245,0.1) 0px 5px 15px`
 					}}
 				>
 					<ProdutosConsolidados />

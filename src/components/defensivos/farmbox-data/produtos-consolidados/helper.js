@@ -28,7 +28,8 @@ export const generalAppsGeneral = (data) => {
     const getApps = data.filter((sta) => sta.status === "sought").map((apps) => {
         const number = apps.code
         const farmName = apps.plantations[0].plantation.farm_name
-        const finalName = `${farmName?.replace('Fazenda ', '')} - ${number}`
+        const appDate = apps.date
+        const finalName = `${farmName?.replace('Fazenda ', '')} - ${number} | ${appDate}`
         return finalName
     })
     const flatTypes = getApps.flat()
