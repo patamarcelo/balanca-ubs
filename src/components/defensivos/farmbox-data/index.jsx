@@ -62,6 +62,8 @@ const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
+	const isDark = theme.palette.mode === 'dark'
+
 	const [loadingData, setLoadinData] = useState(false);
 	const dispatch = useDispatch();
 	const openApp = useSelector(selectApp);
@@ -325,7 +327,9 @@ const FarmBoxPage = () => {
 						height: 'calc(100% - 10px)',
 						padding: '10px',
 						display: "flex",
+						borderRadius: '8px',
 						// border: `1px solid ${colors.primary[200]}`
+						backgroundColor: !isDark && 'whitesmoke'
 					}}
 				>
 					<ProdutosConsolidados />

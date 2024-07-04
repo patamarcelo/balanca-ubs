@@ -25,6 +25,7 @@ const SelectInputs = (props) => {
     const [personName, setPersonName] = useState([]);
     const [arrToMap, setarrToMap] = useState([]);
     const [disabledForm, setDisabledForm] = useState(true);
+
     
     
     const ITEM_HEIGHT = 48;
@@ -72,15 +73,12 @@ const SelectInputs = (props) => {
         }))
     };
 
-    const names = [
-        'Sem Opções',
-    ];
-
     useEffect(() => {
         if(Object.keys(selectedData).length === 0) {
             setPersonName([])
         }
     }, [selectedData]);
+
 
 
   

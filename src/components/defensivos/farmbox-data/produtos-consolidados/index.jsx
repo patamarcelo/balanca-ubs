@@ -1,5 +1,7 @@
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography, IconButton, useTheme } from '@mui/material'
 import SelectInputs from './select-inputs';
+
+import { tokens } from '../../../../theme';
 
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,6 +12,8 @@ import { generalDataArr, generalProjecs, generalTypesProds, generalAppsGeneral, 
 import ListProducts from './list-products';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 const ProdutosConsolidados = () => {
+    const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
 
     const openApp = useSelector(selectApp);
 
@@ -65,8 +69,8 @@ const ProdutosConsolidados = () => {
                     alignItems: 'center',
                 }}
             >
-                <SelectInputs label="Data" inputsArr={onlyDates} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Projeto" inputsArr={onlyProjetos} setSelectedData={setSelectedData} selectedData={selectedData} />
+                <SelectInputs label="Data" inputsArr={onlyDates} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Ap" inputsArr={onlyApps} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Tipo" inputsArr={onlyTypes} setSelectedData={setSelectedData} selectedData={selectedData} />
                 {
@@ -78,9 +82,13 @@ const ProdutosConsolidados = () => {
                     </Box>
                 }
             </Box>
-            <Box>
-                <ListProducts selectedData={selectedData} productsArr={productsArr} />
-            </Box>
+            {
+                Object.keys(selectedData).length > 0 &&
+                    <Box>
+                        <ListProducts selectedData={selectedData} productsArr={productsArr} />
+                    </Box>
+            }
+
         </Box>
     );
 }

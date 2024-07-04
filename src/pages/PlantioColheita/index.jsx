@@ -263,7 +263,7 @@ const PlantioColheitaPage = () => {
 						/>
 					</Box>
 				)}
-				{!isLoading && dataArray.length > 0 && (
+				{!isLoading && (
 					<PlantioColheitaPortal
 						setOpenDrawer={setOpenDrawer}
 						openDrawer={openDrawer}
