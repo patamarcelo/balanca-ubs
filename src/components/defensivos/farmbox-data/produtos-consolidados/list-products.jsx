@@ -91,7 +91,7 @@ const ListProducts = (props) => {
                 paddingLeft: '20px',
                 marginBottom: '20px',
                 paddingBottom: '20px',
-                columnGap: '5px'
+                columnGap: '25px'
             }}
         >
             <Box>
@@ -133,7 +133,11 @@ const ListProducts = (props) => {
                             marginTop: '10px',
                             borderTop: `1px dotted ${colors.textColor[100]}`
                         }}
-                    ><span>Total:</span><span>{formatNumber(totalAreaAps)}</span> </Box>
+                        >
+                            <b>
+                                <span>Total:</span> </b><b><span>{formatNumber(totalAreaAps)}</span>
+                            </b>
+                        </Box>
                     )
                 }
             </Box>
@@ -162,6 +166,7 @@ const ListProducts = (props) => {
                                 sx={{
                                     borderTop: `1px dotted ${borderColor}`,
                                     marginTop: '5px',
+                                    fontWeight: 'bold',
                                 }}
                             >
                                 Total:
@@ -180,6 +185,7 @@ const ListProducts = (props) => {
                                 sx={{
                                     borderTop: `1px dotted ${borderColor}`,
                                     marginTop: '5px',
+                                    fontWeight: 'bold',
                                 }}
                             >
                                 {formatNumber(totalValueProds)}
