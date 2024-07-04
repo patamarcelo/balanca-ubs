@@ -37,7 +37,7 @@ const ListProducts = (props) => {
                 return dateFilter && projetoFilter && apFilter && tipoFilter
             })
             console.log('newData: ', newData)
-            const newProds = newData.filter((data) => data.inputType !== 'Operação').reduce((acc, curr) => {
+            const newProds = newData.reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
                     const objToAdd = {
                         insumo: curr.inputName,
@@ -126,7 +126,7 @@ const ListProducts = (props) => {
                                     justifyContent: 'space-between',
                                     width: '100%',
                                     flexDirection: 'row',
-                                    paddingRight: '10px',
+                                    // paddingRight: '0px',
                                 }}
                             ><span>{formatApName(aps)}</span><span>{getAreaAp(aps)}</span> </Box>
                         )
@@ -139,8 +139,8 @@ const ListProducts = (props) => {
                             justifyContent: 'space-between',
                             width: '100%',
                             flexDirection: 'row',
-                            paddingRight: '10px',
-                            marginTop: '10px',
+                            // paddingRight: '2px',
+                            // marginTop: '10px',
                             borderTop: `1px dotted ${colors.textColor[100]}`
                         }}
                         >
@@ -168,14 +168,15 @@ const ListProducts = (props) => {
                             {
                                 filteredDataList.map((inputs, i) => {
                                     return (
-                                        <Typography key={i}>{inputs.insumo}</Typography>
+                                        <Typography 
+                                        sx={{borderBottom: `0.1px dotted ${borderColor}`}}
+                                        key={i}>{inputs.insumo}</Typography>
                                     )
                                 })
                             }
                             <Box
                                 sx={{
-                                    borderTop: `1px dotted ${borderColor}`,
-                                    marginTop: '5px',
+                                    marginTop: '2px',
                                     fontWeight: 'bold',
                                 }}
                             >
@@ -186,15 +187,16 @@ const ListProducts = (props) => {
                             {
                                 filteredDataList.map((inputs, i) => {
                                     return (
-                                        <Typography key={i}>{formatNumber(inputs.quantidade)}</Typography>
+                                        <Typography
+                                        sx={{borderBottom: `0.1px dotted ${borderColor}`}}
+                                        key={i}>{formatNumber(inputs.quantidade)}</Typography>
                                     )
                                 })
                             }
 
                             <Box
                                 sx={{
-                                    borderTop: `1px dotted ${borderColor}`,
-                                    marginTop: '5px',
+                                    marginTop: '2px',
                                     fontWeight: 'bold',
                                 }}
                             >
