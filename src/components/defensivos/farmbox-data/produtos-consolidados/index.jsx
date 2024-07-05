@@ -1,5 +1,6 @@
 import { Box, Typography, IconButton, useTheme } from '@mui/material'
 import SelectInputs from './select-inputs';
+import DateTimeSelector from './date-time-select';
 
 import { tokens } from '../../../../theme';
 
@@ -64,7 +65,7 @@ const ProdutosConsolidados = () => {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 250px)',
+                    gridTemplateColumns: 'repeat(5, 200px) 10px',
                     columnGap: '20px',
                     alignItems: 'center',
                 }}
@@ -73,6 +74,7 @@ const ProdutosConsolidados = () => {
                 <SelectInputs label="Data" inputsArr={onlyDates} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Ap" inputsArr={onlyApps} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Tipo" inputsArr={onlyTypes} setSelectedData={setSelectedData} selectedData={selectedData} />
+                <DateTimeSelector label="DateTime" setSelectedData={setSelectedData} selectedData={selectedData}/>
                 {
                     Object.keys(selectedData).length > 0 &&
                     <Box>

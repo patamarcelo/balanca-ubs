@@ -58,7 +58,7 @@ const SelectInputs = (props) => {
         PaperProps: {
             style: {
                 maxHeight: 450,
-                width: 250,
+                width: 200,
             },
         },
     };
@@ -91,7 +91,7 @@ const SelectInputs = (props) => {
     
     return (
         <Box>
-            <FormControl sx={{ m: 1, width: 250 }}>
+            <FormControl sx={{ m: 1, width: 200 }}>
                 <InputLabel 
                 size='small' id="demo-multiple-name-label">{label}</InputLabel>
                 <Select

@@ -37,7 +37,8 @@ const ListProducts = (props) => {
                 return dateFilter && projetoFilter && apFilter && tipoFilter
             })
             console.log('newData: ', newData)
-            const newProds = newData.reduce((acc, curr) => {
+            const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData 
+            const newProds = filtData.reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
                     const objToAdd = {
                         insumo: curr.inputName,
@@ -117,7 +118,7 @@ const ListProducts = (props) => {
             <Box>
                 <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Ap's</Typography>
                 {
-                    Ap && Ap.length > 0 && Ap.map((aps, ind) => {
+                    Ap && Ap.length > 0 && Ap.sort((a,b) => a.localeCompare(b)).map((aps, ind) => {
 
                         return (
                             <Box key={ind}
@@ -157,7 +158,7 @@ const ListProducts = (props) => {
                     // border: `1px solid ${colors.primary[200]}`
                 }}
             >
-                <Typography sx={{ textAlign: 'center', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Insumos</Typography>
+                <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Insumos</Typography>
                 {
                     filteredDataList && filteredDataList.length > 0 &&
                     <Box sx={{
