@@ -324,6 +324,10 @@
     vertical-align: top;
 }
 
+.parcela-duplicated {
+    color: yellow !important;
+}
+
 
 
 .parcelas-detail-div:has(.parcela-div .parcela-icon-div:hover) {

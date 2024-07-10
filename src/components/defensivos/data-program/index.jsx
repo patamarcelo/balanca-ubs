@@ -65,6 +65,7 @@ const DataProgramPage = (props) => {
 	const [farmList, setFarmList] = useState([]);
 	const [objList, setObjList] = useState([]);
 	const [objResumValues, setObjResumValues] = useState([]);
+	const [filteredAndDucplicatedParcelas, setfilteredAndDucplicatedParcelas] = useState([]);
 
 	const [filteredList, setFilteredList] = useState([]);
 	const [farmSelected, setFarmSelected] = useState("");
@@ -512,12 +513,30 @@ const DataProgramPage = (props) => {
 		}, 0);
 		setAreaFiltTotal(sum);
 		setObjResumValues(filtArr);
+
+		console.log('arrays of parcelas: ', filtArr)
+		const parcelasArr = filtArr.map((data) => {
+			const parcelasHere = data.data.cronograma.map((parcela) => parcela.parcela)
+			return parcelasHere.flat()
+		})
+		console.log('arrays of parcelas: ', parcelasArr.flat())
+		setfilteredAndDucplicatedParcelas(parcelasArr.flat())
+
 	}, [objList]);
 
 	const formatName = () => {
 		const saveFile = farmSelected;
 		return saveFile;
 	};
+
+	const hasduplicated = (ele) => {
+		if(filteredAndDucplicatedParcelas.length > 0) {
+			const moreThanOne = filteredAndDucplicatedParcelas.filter((data) => data === ele).length
+			const hasDuplicated = moreThanOne > 1 ? true : false
+			return hasDuplicated
+		}
+		return false
+	}
 
 	const generatePDF = async () => {
 		const pdf = new JsPDF("portrait", "pt", "a4", false);
@@ -1296,14 +1315,15 @@ const DataProgramPage = (props) => {
 																	<div
 																		className={
 																			classes[
-																			"parcela-div"
+																			`${"parcela-div"}`
+																			
 																			]
 																		}
 																	>
 																		<div
 																			className={
 																				classes[
-																				"parcela-icon-div"
+																				`${"parcela-icon-div"}`
 																				]
 																			}
 																			onClick={() =>
@@ -1325,9 +1345,11 @@ const DataProgramPage = (props) => {
 																				}}
 																			/>
 																		</div>
+																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated"}`]}>
 																		{
 																			data.parcela
 																		}
+																		</span>
 																	</div>
 																	<div
 																		style={{
