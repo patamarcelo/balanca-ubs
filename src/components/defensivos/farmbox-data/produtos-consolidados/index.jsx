@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, useTheme } from '@mui/material'
+import { Box, Button, Typography, IconButton, useTheme } from '@mui/material'
 import SelectInputs from './select-inputs';
 import DateTimeSelector from './date-time-select';
 
@@ -14,7 +14,7 @@ import ListProducts from './list-products';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 const ProdutosConsolidados = () => {
     const theme = useTheme();
-	const colors = tokens(theme.palette.mode);
+    const colors = tokens(theme.palette.mode);
 
     const openApp = useSelector(selectApp);
 
@@ -60,12 +60,16 @@ const ProdutosConsolidados = () => {
         }
     }, [openApp]);
 
+    const handlerStProtheus = () => {
+        console.log('Enviar dados para o protheus')
+    }
+
     return (
         <Box>
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 200px) 10px',
+                    gridTemplateColumns: 'repeat(5, 200px) 100px 10px',
                     columnGap: '20px',
                     alignItems: 'center',
                 }}
@@ -74,21 +78,32 @@ const ProdutosConsolidados = () => {
                 <SelectInputs label="Data" inputsArr={onlyDates} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Ap" inputsArr={onlyApps} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Tipo" inputsArr={onlyTypes} setSelectedData={setSelectedData} selectedData={selectedData} />
-                <DateTimeSelector label="DateTime" setSelectedData={setSelectedData} selectedData={selectedData}/>
+                <DateTimeSelector label="DateTime" setSelectedData={setSelectedData} selectedData={selectedData} />
                 {
                     Object.keys(selectedData).length > 0 &&
-                    <Box>
-                        <IconButton aria-label="delete" onClick={handleClear} color="error">
-                            <CancelPresentationIcon />
-                        </IconButton>
-                    </Box>
+                    <>
+
+                        <Box>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={handlerStProtheus}
+                                disabled={false}
+                            >Gerar St</Button>
+                        </Box>
+                        <Box>
+                            <IconButton aria-label="delete" onClick={handleClear} color="error">
+                                <CancelPresentationIcon />
+                            </IconButton>
+                        </Box>
+                    </>
                 }
             </Box>
             {
                 Object.keys(selectedData).length > 0 &&
-                    <Box>
-                        <ListProducts selectedData={selectedData} productsArr={productsArr} />
-                    </Box>
+                <Box>
+                    <ListProducts selectedData={selectedData} productsArr={productsArr} />
+                </Box>
             }
 
         </Box>

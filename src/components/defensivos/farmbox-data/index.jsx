@@ -92,12 +92,12 @@ const FarmBoxPage = () => {
 
 	const isNonMobile = useMediaQuery("(min-width: 1200px)");
 
-	const ITEM_HEIGHT = 48;
-	const ITEM_PADDING_TOP = 8;
+	// const ITEM_HEIGHT = 48;
+	// const ITEM_PADDING_TOP = 8;
 	const MenuProps = {
 		PaperProps: {
 			style: {
-				maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+				maxHeight: 450,
 				width: 250
 			}
 		}
@@ -325,7 +325,7 @@ const FarmBoxPage = () => {
 						marginTop: '10px',
 						width: "100%",
 						minWidth: "1200px",
-						height: 'calc(100% - 10px)',
+						minHeight: 'calc(100% - 10px)',
 						padding: '10px',
 						display: "flex",
 						borderRadius: '8px',
@@ -380,7 +380,7 @@ const FarmBoxPage = () => {
 											value={farm}
 										//   style={getStyles(name, personName, theme)}
 										>
-											{farm}
+											{farm.replace('Fazenda ', '')}
 										</MenuItem>
 									))}
 							</Select>

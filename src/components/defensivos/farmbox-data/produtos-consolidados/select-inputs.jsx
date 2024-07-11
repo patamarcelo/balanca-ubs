@@ -26,26 +26,31 @@ const SelectInputs = (props) => {
     const [arrToMap, setarrToMap] = useState([]);
     const [disabledForm, setDisabledForm] = useState(true);
 
-    
-    
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
+
+
+    // const ITEM_HEIGHT = 48;
+    // const ITEM_PADDING_TOP = 8;
 
     useEffect(() => {
-        if(inputsArr.length > 0){
+        if (inputsArr.length > 0) {
             const selectedProecj = selectedData?.Projeto
-            if(label === "Ap"){
-                if(selectedProecj && selectedProecj.length > 0){
+            if (label === "Ap") {
+                if (selectedProecj && selectedProecj.length > 0) {
                     const farmNameArr = selectedProecj.map((farm) => farm.replace('Fazenda ', ''))
                     const filterDatas = selectedData?.Data ? selectedData?.Data : []
                     const filtApps = inputsArr.filter((filtApss) => farmNameArr.includes(filtApss.split("-")[0].trim())).filter((apps) => filterDatas.includes((apps.split(' | ')[1])))
                     console.log('filtAppss: ', filtApps)
                     console.log('data Selected: ', selectedData?.Data)
 
-                    setarrToMap(filtApps)    
+                    setarrToMap(filtApps)
                     setDisabledForm(false)
                 } else {
                     setDisabledForm(true)
+                }
+            } else if (label === 'Data') {
+                if (selectedProecj && selectedProecj.length > 0) {
+                    setarrToMap(inputsArr)
+                    setDisabledForm(false)
                 }
             } else {
                 setarrToMap(inputsArr)
@@ -78,7 +83,7 @@ const SelectInputs = (props) => {
     };
 
     useEffect(() => {
-        if(Object.keys(selectedData).length === 0) {
+        if (Object.keys(selectedData).length === 0) {
             setPersonName([])
         }
     }, [selectedData]);
@@ -87,13 +92,13 @@ const SelectInputs = (props) => {
     const formatApName = (ap) => {
         return ap.split(' | ')[0]
     }
-  
-    
+
+
     return (
         <Box>
             <FormControl sx={{ m: 1, width: 200 }}>
-                <InputLabel 
-                size='small' id="demo-multiple-name-label">{label}</InputLabel>
+                <InputLabel
+                    size='small' id="demo-multiple-name-label">{label}</InputLabel>
                 <Select
                     labelId="demo-multiple-name-label"
                     id="demo-multiple-name"
