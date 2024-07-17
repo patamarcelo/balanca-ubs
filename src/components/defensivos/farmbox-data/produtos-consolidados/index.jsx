@@ -23,10 +23,12 @@ const ProdutosConsolidados = () => {
     const [onlyProjetos, setOnlyProjetos] = useState([]);
     const [onlyTypes, setOnlyTypes] = useState([]);
     const [onlyApps, setOnlyApps] = useState([]);
+    const [showDateTime, setShowDateTime] = useState(null);
 
     const [selectedData, setSelectedData] = useState({});
 
     const [productsArr, setProductsArr] = useState([]);
+    const [prodcutsToProtheus, setprodcutsToProtheus] = useState([]);
 
     // useEffect(() => {
     //     console.log('selectedData', selectedData);
@@ -62,7 +64,30 @@ const ProdutosConsolidados = () => {
 
     const handlerStProtheus = () => {
         console.log('Enviar dados para o protheus')
+        const dataToSend = {
+            ...selectedData,
+            produtos: prodcutsToProtheus
+        }
+        console.log('dados Selecionados: ', dataToSend)
     }
+
+    useEffect(() => {
+        const getCurrentDateTime = () => {
+            const now = new Date();
+            const pad = (num) => num.toString().padStart(2, '0');
+            const day = pad(now.getDate());
+            const month = pad(now.getMonth() + 1); // Months are zero-based
+            // const year = now.getFullYear().toString().slice(-2); // Get last 2 digits of year
+            const year = now.getFullYear().toString(); // Get last 2 digits of year
+            const hours = pad(now.getHours());
+            const minutes = pad(now.getMinutes());
+        
+            return `${day}/${month}/${year} - ${hours}:${minutes}`;
+        };        
+        if(selectedData) {
+            setShowDateTime(getCurrentDateTime());
+        }
+    }, [selectedData]);
 
     return (
         <Box>
@@ -102,7 +127,15 @@ const ProdutosConsolidados = () => {
             {
                 Object.keys(selectedData).length > 0 &&
                 <Box>
-                    <ListProducts selectedData={selectedData} productsArr={productsArr} />
+                    <Box
+                    sx={{
+                        paddingLeft: '20px',
+                        marginTop: '5px',
+                    }}
+                    >
+                        <Typography sx={{fontSize: '12px'}} color={colors.textColor[100]}>{showDateTime}</Typography>
+                    </Box>
+                    <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus}/>
                 </Box>
             }
 

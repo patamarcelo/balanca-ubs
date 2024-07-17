@@ -294,20 +294,20 @@ const FarmBoxPage = () => {
 						boxShadow: !isDark && `rgba(0, 0, 0, 0.35) 0px 5px 15px` 
 					}}
 				>
-					<Button onClick={() => refreshData()} color="success">
+					<Button onClick={() => refreshData()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Atualizar
 					</Button>
 
-					<Button onClick={() => handleOpen()} color="success">
+					<Button onClick={() => handleOpen()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Gerar Tabela
 					</Button>
-					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelect.length === 0 && true} >
+					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelect.length === 0 || IsloadingDbFarm || loadingData} >
 						Farm Reunião
 					</Button>
-					<Button onClick={() => handleOpenColheitaPage()} color="success">
+					<Button onClick={() => handleOpenColheitaPage()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Colheita de Grãos
 					</Button>
-					<Button onClick={() => handleUpdateFarmDb()} color="success">
+					<Button onClick={() => handleUpdateFarmDb()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Atualizar DB
 					</Button>
 					<ModalDataFarmbox open={open} handleClose={handleClose} />

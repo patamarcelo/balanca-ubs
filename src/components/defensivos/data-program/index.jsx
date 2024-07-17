@@ -1345,7 +1345,7 @@ const DataProgramPage = (props) => {
 																				}}
 																			/>
 																		</div>
-																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated"}`]}>
+																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]}>
 																		{
 																			data.parcela
 																		}

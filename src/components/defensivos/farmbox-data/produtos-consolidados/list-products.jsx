@@ -13,7 +13,7 @@ const ListProducts = (props) => {
     const [filteredDataList, setFilteredDataList] = useState([]);
     const [totalValueProds, setTotalValueProds] = useState(0);
     const [totalAreaAps, setTotalAreaAps] = useState(0);
-    const { selectedData, productsArr } = props
+    const { selectedData, productsArr, setprodcutsToProtheus } = props
     const { Data, Projeto, Ap, Tipo } = selectedData
 
     const formatNumber = number => {
@@ -40,9 +40,13 @@ const ListProducts = (props) => {
             const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData 
             const newProds = filtData.reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
+                    // console.log(curr)
                     const objToAdd = {
                         insumo: curr.inputName,
-                        quantidade: curr.quantity
+                        quantidade: curr.quantity,
+                        inputId: curr.inputId,
+                        inputType: curr.inputType,
+                        inputLastUpdated: curr.inputLastUpdated
                     }
                     acc.push(objToAdd)
                 } else {
@@ -57,9 +61,11 @@ const ListProducts = (props) => {
 
             const sortedProds = newProds.sort((a, b) => a.insumo.localeCompare(b.insumo))
             setFilteredDataList(sortedProds)
+            setprodcutsToProtheus(sortedProds)
             const setTotalValue = newProds.reduce((acc, curr) => acc += curr.quantidade, 0)
             setTotalValueProds(setTotalValue)
         } else {
+            setprodcutsToProtheus([])
             setFilteredDataList([])
             setTotalValueProds(0)
         }
@@ -142,7 +148,7 @@ const ListProducts = (props) => {
                             flexDirection: 'row',
                             // paddingRight: '2px',
                             // marginTop: '10px',
-                            borderTop: `1px dotted ${colors.textColor[100]}`
+                            borderTop: `1px dashed ${colors.textColor[100]}`
                         }}
                         >
                             <b>
@@ -163,14 +169,15 @@ const ListProducts = (props) => {
                     filteredDataList && filteredDataList.length > 0 &&
                     <Box sx={{
                         display: 'grid',
-                        gridTemplateColumns: '70% auto'
+                        gridTemplateColumns: '70% auto',
+                        columnGap: '2px'
                     }}>
                         <Box>
                             {
                                 filteredDataList.map((inputs, i) => {
                                     return (
                                         <Typography 
-                                        sx={{borderBottom: `0.1px dotted ${borderColor}`}}
+                                        sx={{borderBottom: `0.1px dashed ${borderColor}`}}
                                         key={i}>{inputs.insumo}</Typography>
                                     )
                                 })
@@ -189,7 +196,7 @@ const ListProducts = (props) => {
                                 filteredDataList.map((inputs, i) => {
                                     return (
                                         <Typography
-                                        sx={{borderBottom: `0.1px dotted ${borderColor}`}}
+                                        sx={{borderBottom: `0.1px dashed ${borderColor}`}}
                                         key={i}>{formatNumber(inputs.quantidade)}</Typography>
                                     )
                                 })

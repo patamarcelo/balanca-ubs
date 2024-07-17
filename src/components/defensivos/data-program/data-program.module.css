@@ -324,8 +324,11 @@
     vertical-align: top;
 }
 
-.parcela-duplicated {
+.parcela-duplicated-dark {
     color: yellow !important;
+}
+.parcela-duplicated-light {
+    color: #8B8000 !important;
 }
 
 
