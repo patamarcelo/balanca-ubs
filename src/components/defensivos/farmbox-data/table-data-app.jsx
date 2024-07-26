@@ -8,7 +8,8 @@ import {
 	TextField,
 	InputAdornment,
 	Button,
-	IconButton
+	IconButton,
+	Typography
 } from "@mui/material";
 import Grow from "@mui/material/Grow";
 
@@ -43,7 +44,7 @@ import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 const TableDataPage = (props) => {
 	const { dataF, openAll } = props;
-	
+
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -65,7 +66,7 @@ const TableDataPage = (props) => {
 	const safraCiclo = useSelector(selectSafraCiclo);
 
 	useEffect(() => {
-		if(openAll){
+		if (openAll) {
 			setShowDetail(true)
 		} else {
 			setShowDetail(false)
@@ -79,7 +80,7 @@ const TableDataPage = (props) => {
 
 
 
-	
+
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -127,7 +128,7 @@ const TableDataPage = (props) => {
 
 	const containerRef = useRef(null);
 
-	const handlerSelectAllParcelas = ()=>{
+	const handlerSelectAllParcelas = () => {
 		setParcelaSelected(dataF.parcelas)
 	}
 
@@ -205,8 +206,8 @@ const TableDataPage = (props) => {
 					const img = new Image();
 					img.src = res.data;
 					img.onload = () => {
-					console.log('img heihg: ', img.height);
-					console.log('img width: ', img.width);
+						console.log('img heihg: ', img.height);
+						console.log('img width: ', img.width);
 					};
 				});
 		} catch (err) {
@@ -332,6 +333,15 @@ const TableDataPage = (props) => {
 							openAll={openAll}
 						/>
 					</Box>
+					<Box
+					sx={{
+						padding: '10px'
+					}}
+					>
+						<Typography sx={{fontStyle: 'italic'}} variant="h6" color={colors.grey[200]}>
+							{dataF.observations === 'Aplicação Aberta via integração' ? '' : dataF.observations}
+						</Typography>
+					</Box>
 					{sumArea > 0 ? (
 						<Box
 							sx={{
@@ -402,18 +412,18 @@ const TableDataPage = (props) => {
 								</IconButton>
 							</Box>
 						</Box>
-					) : 
-					<Box className={classes.areaTotalSumDiv}>
-								<span
-									onClick={handlerSelectAllParcelas}
-									style={{ cursor: "pointer" }}
-								>
-									<FontAwesomeIcon
-										icon={faCheckCircle}
-										color={colors.greenAccent[300]}
-										style={{ marginRight: "10px" }}
-									/>
-									</span></Box>
+					) :
+						<Box className={classes.areaTotalSumDiv}>
+							<span
+								onClick={handlerSelectAllParcelas}
+								style={{ cursor: "pointer" }}
+							>
+								<FontAwesomeIcon
+									icon={faCheckCircle}
+									color={colors.greenAccent[300]}
+									style={{ marginRight: "10px" }}
+								/>
+							</span></Box>
 					}
 					{loadingMap && (
 						<Box
@@ -427,16 +437,16 @@ const TableDataPage = (props) => {
 						</Box>
 					)}
 					{displayMap && (
-						<Box display={"flex"} justifyContent={"center"} >						
-								<img
-									src={displayMap}
-									alt="Italian Trulli"
-									style={{
-										width: "500px",
-										height: '500px',
-										objectFit: "contain"
-									}}
-								/>
+						<Box display={"flex"} justifyContent={"center"} >
+							<img
+								src={displayMap}
+								alt="Italian Trulli"
+								style={{
+									width: "500px",
+									height: '500px',
+									objectFit: "contain"
+								}}
+							/>
 							<Box>
 								<FontAwesomeIcon
 									onClick={handleRotateDir}

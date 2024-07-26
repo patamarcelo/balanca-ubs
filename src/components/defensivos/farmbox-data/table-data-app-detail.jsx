@@ -84,7 +84,6 @@ const DetailAppData = (props) => {
 			setParcelaSelected((prev) => [...prev, parcelaDetail]);
 		}
 	};
-
 	
 	// Selecionar todas as parcelas ao abrir todas as APs
 	// useEffect(() => {
@@ -211,6 +210,7 @@ const DetailAppData = (props) => {
 						)}
 					</Box>
 				)}
+				{data.observations}
 				{data.insumos
 					.sort((a, b) => a.tipo.localeCompare(b.tipo))
 					.map((data, i) => {

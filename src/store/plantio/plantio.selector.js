@@ -308,6 +308,7 @@ export const createDict = (state) => {
 		const areaSolicitada = data.plantations.map((data) => data.sought_area);
 		const areaAplicada = data.plantations.map((data) => data.applied_area);
 		const status = data.status;
+		const observations = data.observations
 
 		const operacaoTipoFil = data.inputs.filter(
 			(input) => input.input.input_type_name === "Operação"
@@ -375,6 +376,7 @@ export const createDict = (state) => {
 			fazenda_box_id: farm_id,
 			app: code,
 			status: status,
+			observations: observations, 
 			progresso: percentApp.toFixed(2),
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
