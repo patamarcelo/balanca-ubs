@@ -22,6 +22,18 @@ export const generalTypesProds = (data) => {
     return conslidateArr
 }
 
+export const generalProds = (data) => {
+    const newArr = data.map((datas) => {
+        const onlyProds = datas.inputs.map((input) => {
+            return input.input.name
+        })
+        return onlyProds
+    })
+    const flatProds = newArr.flat()
+    const conslidateArr = [...new Set(flatProds.sort((a,b) => a.localeCompare(b)))]
+    return conslidateArr
+}
+
 
 
 export const generalAppsGeneral = (data) => {

@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectApp } from '../../../../store/plantio/plantio.selector';
 
-import { generalDataArr, generalProjecs, generalTypesProds, generalAppsGeneral, getInsumosList } from './helper';
+import { generalDataArr, generalProjecs, generalTypesProds,generalProds, generalAppsGeneral, getInsumosList } from './helper';
 
 import ListProducts from './list-products';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
@@ -22,6 +22,7 @@ const ProdutosConsolidados = () => {
     const [onlyDates, setOnlyDates] = useState([]);
     const [onlyProjetos, setOnlyProjetos] = useState([]);
     const [onlyTypes, setOnlyTypes] = useState([]);
+    const [onlyProdutcts, setOnlyProdutcts] = useState([]);
     const [onlyApps, setOnlyApps] = useState([]);
     const [showDateTime, setShowDateTime] = useState(null);
 
@@ -47,6 +48,7 @@ const ProdutosConsolidados = () => {
             const getDates = generalDataArr(openApp)
             const getProjetos = generalProjecs(openApp)
             const getTypes = generalTypesProds(openApp)
+            const getProds = generalProds(openApp)
             const getApps = generalAppsGeneral(openApp)
             const getProducts = getInsumosList(openApp)
 
@@ -55,6 +57,7 @@ const ProdutosConsolidados = () => {
                 setOnlyDates(getDates);
                 setOnlyProjetos(getProjetos);
                 setOnlyTypes(getTypes)
+                setOnlyProdutcts(getProds)
                 setOnlyApps(getApps)
                 setProductsArr([])
                 setProductsArr(getProducts)
@@ -94,7 +97,7 @@ const ProdutosConsolidados = () => {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(5, 200px) 100px 10px',
+                    gridTemplateColumns: 'repeat(6, 200px) 100px 10px',
                     columnGap: '20px',
                     alignItems: 'center',
                 }}
@@ -103,6 +106,7 @@ const ProdutosConsolidados = () => {
                 <SelectInputs label="Data" inputsArr={onlyDates} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Ap" inputsArr={onlyApps} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <SelectInputs label="Tipo" inputsArr={onlyTypes} setSelectedData={setSelectedData} selectedData={selectedData} />
+                <SelectInputs label="Insumo" inputsArr={onlyProdutcts} setSelectedData={setSelectedData} selectedData={selectedData} />
                 <DateTimeSelector label="DateTime" setSelectedData={setSelectedData} selectedData={selectedData} />
                 {
                     Object.keys(selectedData).length > 0 &&

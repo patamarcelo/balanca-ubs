@@ -14,7 +14,7 @@ const ListProducts = (props) => {
     const [totalValueProds, setTotalValueProds] = useState(0);
     const [totalAreaAps, setTotalAreaAps] = useState(0);
     const { selectedData, productsArr, setprodcutsToProtheus } = props
-    const { Data, Projeto, Ap, Tipo } = selectedData
+    const { Data, Projeto, Ap, Tipo, Insumo } = selectedData
 
     const formatNumber = number => {
         return number?.toLocaleString("pt-br", {
@@ -34,7 +34,8 @@ const ListProducts = (props) => {
                 const projetoFilter = Projeto?.length === 0 || Projeto?.includes(item.farmName)
                 const apFilter = Ap?.length === 0 || Ap?.map((data) => formatApName(data))?.includes(item.finalCode)
                 const tipoFilter = Tipo?.length === 0 || !Tipo?.includes(item.inputType)
-                return dateFilter && projetoFilter && apFilter && tipoFilter
+                const prodFilter = Insumo?.length === 0 || !Insumo?.includes(item.inputName)
+                return dateFilter && projetoFilter && apFilter && tipoFilter && prodFilter
             })
             console.log('newData: ', newData)
             const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData 
