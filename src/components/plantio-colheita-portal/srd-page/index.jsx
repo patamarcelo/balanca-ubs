@@ -139,7 +139,7 @@ const SRDPage = () => {
             setFilterDataArray(dataArray)
         }
         console.log('dados from SRD: ', dataArray)
-        if (dataArray.length > 0) {
+        if (dataArray?.length > 0) {
             const csvData = formatData(dataArray)
             setcsvData(csvData)
         }
