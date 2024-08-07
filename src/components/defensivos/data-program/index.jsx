@@ -537,7 +537,6 @@ const DataProgramPage = (props) => {
 		}
 		return false
 	}
-
 	const generatePDF = async () => {
 		const pdf = new JsPDF("portrait", "pt", "a4", false);
 		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
@@ -564,7 +563,8 @@ const DataProgramPage = (props) => {
 			});
 	};
 
-	const hiddenApps = (appNameToHdie, totalArea) => {
+	const hiddenApps = (appNameToHdie, totalArea, parcelas) => {
+		const parcelasToHide = parcelas.cronograma.map((parcelas) => parcelas.parcela)
 		const formatArea = parseFloat(
 			totalArea.replace(".", "").replace(",", ".")
 		);
@@ -575,10 +575,25 @@ const DataProgramPage = (props) => {
 			setHidenAppsArr(excludeApp);
 			const newArea = parseFloat(areaFiltTotal) + formatArea;
 			setAreaFiltTotal(newArea);
+			const reinsertParcelas = [...filteredAndDucplicatedParcelas, ...parcelasToHide]
+
+			console.log('colocando')
+			setfilteredAndDucplicatedParcelas(reinsertParcelas);
 		} else {
 			setHidenAppsArr((prev) => [...prev, appNameToHdie]);
 			const newArea = parseFloat(areaFiltTotal) - formatArea;
 			setAreaFiltTotal(newArea);
+
+			console.log('retirando')
+			setfilteredAndDucplicatedParcelas(prev => {
+				parcelasToHide.forEach(item => {
+					const index = prev.indexOf(item);
+					if(index > -1) {
+						prev.splice(index, 1);
+					}
+				})
+				return prev
+			})
 		}
 	};
 
@@ -917,7 +932,8 @@ const DataProgramPage = (props) => {
 											onClick={() =>
 												hiddenApps(
 													hiddenAppName,
-													data.total
+													data.total,
+													data
 												)
 											}
 											aria-label="delete"

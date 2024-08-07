@@ -4,6 +4,8 @@ const handlerDataColheita = (data) => {
     });
 
     const newArr = data.map((details) => {
+        const cultureName = details?.plantations[0]?.plantation?.culture_name
+        const varietyName = details?.plantations[0]?.plantation?.variety_name
         const codeAp = details.code;
         const farmName = details.plantations[0].plantation.farm_name;
         const talhoesArr = details.plantations.map((talhao) => {
@@ -21,7 +23,9 @@ const handlerDataColheita = (data) => {
                 codeAp,
                 farmName,
                 lastUpdate,
-                parcelaId
+                parcelaId,
+                varietyName,
+                cultureName
             };
         });
         return talhoesArr.flat();
@@ -139,14 +143,16 @@ const handlerDataColheita = (data) => {
         0
     );
     const onlyAps = sortedArr.map((data) => {
-        const apName = `${data.codeAp};${data.farmName}`;
+        const apName = `${data.codeAp};${data.farmName};${data.cultureName};${data.varietyName}`;
         return apName;
     });
     const filtAps = [...new Set(onlyAps)];
     const onlyFormatAps = filtAps.map((data) => {
         const codeAp = data.split(";")[0];
         const farmName = data.split(";")[1];
-        return { codeAp: codeAp, farmName: farmName };
+        const cultureName = data.split(";")[2];
+        const varietyName = data.split(";")[3];
+        return { codeAp: codeAp, farmName: farmName, cultureName, varietyName };
     });
 
     return {

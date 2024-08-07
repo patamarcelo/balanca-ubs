@@ -24,6 +24,11 @@ import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
+import beans from "../../../../utils/assets/icons/beans2.png";
+import soy from "../../../../utils/assets/icons/soy.png";
+import rice from "../../../../utils/assets/icons/rice.png";
+import cotton from '../../../../utils/assets/icons/cotton.png'
+
 const ColheitaPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -37,6 +42,40 @@ const ColheitaPage = () => {
     const [formatedApsName, setFormatedApsName] = useState([]);
     const [formatedExtratoCsv, setFormatedExtratoCsv] = useState([]);
     const [totalGeralData, setTotalGeralData] = useState(0);
+
+    const formatNumber = number => number?.toLocaleString("pt-br", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    const iconDict = [
+        { cultura: "Feijão", icon: beans, alt: "feijao" },
+        { cultura: "Arroz", icon: rice, alt: "arroz" },
+        { cultura: "Soja", icon: soy, alt: "soja" },
+        { cultura: "Algodão", icon: cotton, alt: "algodao" },
+    ];
+
+    const filteredIcon = (data) => {
+        const filtered = iconDict.filter(
+            (dictD) => dictD.cultura === data
+        );
+
+        if (filtered.length > 0) {
+            return filtered[0].icon;
+        }
+        return "";
+    };
+
+    const filteredAlt = (data) => {
+        const filtered = iconDict.filter(
+            (dictD) => dictD.cultura === data
+        );
+
+        if (filtered.length > 0) {
+            return filtered[0].alt;
+        }
+        return "";
+    };
 
     const getPlantioData = async () => {
         try {
@@ -148,22 +187,22 @@ const ColheitaPage = () => {
                 height: "100%"
             }}
         >
-            <Box mt={5} sp={2} pb={0} width={"100%"} 
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between'
-            }}
+            <Box mt={5} sp={2} pb={0} width={"100%"}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between'
+                }}
             >
                 <Box>
 
-                <CSVLink
-                    data={formatedExtratoCsv}
-                    separator={";"}
-                    filename={"Farm-Colheita.csv"}
+                    <CSVLink
+                        data={formatedExtratoCsv}
+                        separator={";"}
+                        filename={"Farm-Colheita.csv"}
                     >
-                    <FontAwesomeIcon icon={faFileExcel} color={colors.greenAccent[500]} size="xl" style={{paddingLeft: '5px'}} />
-                </CSVLink>
-                    </Box>
+                        <FontAwesomeIcon icon={faFileExcel} color={colors.greenAccent[500]} size="xl" style={{ paddingLeft: '5px' }} />
+                    </CSVLink>
+                </Box>
                 <Button onClick={handleRefresh} variant="outlined" color="success">
                     Atualizar
                 </Button>
@@ -193,7 +232,7 @@ const ColheitaPage = () => {
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1-content"
                                                 id="panel1-header"
-                                                sx={{backgroundColor: colors.blueOrigin[800]}}
+                                                sx={{ backgroundColor: colors.blueOrigin[800] }}
                                             >
                                                 <Typography
                                                     color={colors.textColor[100]}
@@ -205,7 +244,7 @@ const ColheitaPage = () => {
                                                 <Typography
                                                     color={colors.textColor[100]}
                                                     variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right", color:  data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold' }}
+                                                    sx={{ width: "150px", textAlign: "right", color: data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold' }}
                                                 >
                                                     {data.areaFazenda.toLocaleString("pt-br", {
                                                         minimumFractionDigits: 2,
@@ -215,7 +254,7 @@ const ColheitaPage = () => {
                                                 <Typography
                                                     color={colors.textColor[100]}
                                                     variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right", color:  data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold'}}
+                                                    sx={{ width: "150px", textAlign: "right", color: data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold' }}
                                                 >
                                                     {data.areaAplicada.toLocaleString("pt-br", {
                                                         minimumFractionDigits: 2,
@@ -232,21 +271,63 @@ const ColheitaPage = () => {
                                                     formatedApsName
                                                         .filter((apps) => apps.farmName === data.farmName)
                                                         .map((aps, i) => {
+                                                            console.log('dataAps: ', aps)
+                                                            let totalSol = 0
+                                                            let totalAplyed = 0
+                                                            let totalOpen = 0
+                                                            dataColheita.filter((data) => data.codeAp === aps.codeAp && data.farmName === aps.farmName).forEach((apDetail) => {
+                                                                totalSol += apDetail.areaSolicitada
+                                                                totalAplyed += apDetail.areaAplicada
+                                                            })
+                                                            totalOpen = totalSol - totalAplyed
                                                             return (
                                                                 <>
-                                                                    <Box key={i} sx={{ marginLeft: "-8px" }}>
-                                                                        <Typography
-                                                                            variant="h5"
-                                                                            sx={{
-                                                                                backgroundColor: colors.blueOrigin[900],
-                                                                                borderRadius: "8px",
-                                                                                width: "100px",
-                                                                                padding: "5px",
-                                                                                textAlign: "center"
-                                                                            }}
-                                                                        >
-                                                                            {aps.codeAp.replace("AP", "AP - ")}
-                                                                        </Typography>
+                                                                    <Box key={i}
+                                                                        sx={{
+                                                                            marginLeft: "-8px",
+                                                                            display: 'flex',
+                                                                            flexDirection: 'row',
+                                                                            gap: '30px',
+                                                                            alignItems: 'flex-end',
+                                                                            justifyContent: 'space-between'
+                                                                        }}>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    backgroundColor: colors.blueOrigin[900],
+                                                                                    borderRadius: "8px",
+                                                                                    width: "140px",
+                                                                                    padding: "5px",
+                                                                                    textAlign: "center",
+                                                                                    flexDirection: "row",
+                                                                                    display: 'flex',
+                                                                                    justifyContent: 'center',
+                                                                                    gap: '30px'
+                                                                                }}
+                                                                            >
+                                                                                <Typography variant="h5">
+                                                                                    {aps.codeAp.replace("AP", "AP - ")}
+                                                                                </Typography>
+
+                                                                                <img
+                                                                                    src={filteredIcon(
+                                                                                        aps.cultureName
+                                                                                    )}
+                                                                                    alt={filteredAlt(
+                                                                                        aps.cultureName
+                                                                                    )}
+                                                                                    style={{
+                                                                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+                                                                                        width: '20px',
+                                                                                        height: '20px'
+
+                                                                                    }}
+                                                                                />
+                                                                        </Box>
+                                                                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '30px' }}>
+                                                                            <Typography variant="h6"> Total: {formatNumber(totalSol)}</Typography>
+                                                                            <Typography variant="h6"> Colhido: {formatNumber(totalAplyed)}</Typography>
+                                                                            <Typography variant="h6"> A Colher: {formatNumber(totalOpen)}</Typography>
+                                                                        </Box>
                                                                     </Box>
                                                                     <Box
                                                                         key={`${aps.codeAp}-${aps.farmName}`}
@@ -369,7 +450,7 @@ const ColheitaPage = () => {
                                                                                         <Typography
                                                                                             color={colors.textColor[100]}
                                                                                             variant="h5"
-                                                                                            sx={{ textAlign: "right", paddingRight: "15px"}}
+                                                                                            sx={{ textAlign: "right", paddingRight: "15px" }}
                                                                                         >
                                                                                             {saldoAcolher === 0
                                                                                                 ? "-"

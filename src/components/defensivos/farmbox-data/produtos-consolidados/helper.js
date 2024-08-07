@@ -82,3 +82,35 @@ export const getInsumosList = (data) => {
     console.log('newArrData', finalArr)
     return finalArr
 }
+
+
+export const farmDictCOde = [
+    {projeto: 'Fazenda Benção de Deus', code: "0206"},
+    {projeto: 'Fazenda Cacique', code: "0208"},
+    {projeto: 'Fazenda Campo Guapo', code: "0208"},
+    {projeto: 'Fazenda Capivara', code: "0202"},
+    {projeto: "Fazenda Cervo", code: "0202"},
+    {projeto: "Fazenda Eldorado", code: "0207"},
+    {projeto: "Fazenda Jacaré", code: "0202"},
+    {projeto: "Fazenda Lago Verde", code: "0207"},
+    {projeto: "Fazenda Safira", code: "0208"},
+    {projeto: "Fazenda Santa Maria", code: "0207"},
+    {projeto: "Fazenda Tucano", code: "0202"},
+    {projeto: "Fazenda Tuiuiu", code: "0202"},
+]
+
+export const armazemDictCode = [
+    {projeto: 'Fazenda Benção de Deus', code: "0"},
+    {projeto: 'Fazenda Cacique', code: "0"},
+    {projeto: 'Fazenda Campo Guapo', code: "0"},
+    {projeto: 'Fazenda Capivara', code: "0"},
+    {projeto: "Fazenda Cervo", code: "0"},
+    {projeto: "Fazenda Eldorado", code: "17"},
+    {projeto: "Fazenda Jacaré", code: "0"},
+    {projeto: "Fazenda Lago Verde", code: "14"},
+    {projeto: "Fazenda Safira", code: "0"},
+    {projeto: "Fazenda Santa Maria", code: "19"},
+    {projeto: "Fazenda Tucano", code: "0"},
+    {projeto: "Fazenda Tuiuiu", code: "0"},
+]
+

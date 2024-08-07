@@ -1,0 +1,97 @@
+{
+    "Projeto": [
+        "Fazenda Lago Verde"
+    ],
+    "Data": [
+        "2024-07-29",
+        "2024-07-26",
+        "2024-07-25",
+        "2024-07-24",
+        "2024-07-23",
+        "2024-07-22",
+        "2024-07-20",
+        "2024-07-19"
+    ],
+    "Ap": [
+        "Lago Verde - AP55 | 2024-07-23",
+        "Lago Verde - AP57 | 2024-07-23",
+        "Lago Verde - AP58 | 2024-07-29"
+    ],
+    "Tipo": [
+        "Operação"
+    ],
+    "produtos": [
+        {
+            "insumo": "BionD Protec Bv",
+            "quantidade": 227.29500000000002,
+            "inputId": 154251,
+            "inputType": "Biológico",
+            "inputLastUpdated": "2024-07-26T10:36:44.000-03:00"
+        },
+        {
+            "insumo": "BionD Protec Is",
+            "quantidade": 110.075,
+            "inputId": 154250,
+            "inputType": "Biológico",
+            "inputLastUpdated": "2024-07-26T10:36:44.000-03:00"
+        },
+        {
+            "insumo": "Copa",
+            "quantidade": 45.459,
+            "inputId": 232512,
+            "inputType": "Inseticida",
+            "inputLastUpdated": "2024-07-26T11:39:06.000-03:00"
+        },
+        {
+            "insumo": "Fipronil 800",
+            "quantidade": 9.3776,
+            "inputId": 154240,
+            "inputType": "Inseticida",
+            "inputLastUpdated": "2024-07-26T11:40:47.000-03:00"
+        },
+        {
+            "insumo": "Fomesafen CCAB 250 SL",
+            "quantidade": 99.211,
+            "inputId": 237787,
+            "inputType": "Herbicida",
+            "inputLastUpdated": "2024-07-29T07:41:40.000-03:00"
+        },
+        {
+            "insumo": "Isaria",
+            "quantidade": 117.22,
+            "inputId": 227501,
+            "inputType": "Inseticida",
+            "inputLastUpdated": "2024-07-26T11:40:47.000-03:00"
+        },
+        {
+            "insumo": "LEGAT REDUCE",
+            "quantidade": 22.7295,
+            "inputId": 178653,
+            "inputType": "Adjuvante",
+            "inputLastUpdated": "2024-07-26T10:36:44.000-03:00"
+        },
+        {
+            "insumo": "Óleo Mineral",
+            "quantidade": 51.79,
+            "inputId": 154220,
+            "inputType": "Óleo Mineral/Vegetal",
+            "inputLastUpdated": "2024-07-26T10:36:46.000-03:00"
+        },
+        {
+            "insumo": "Samurai",
+            "quantidade": 54.550799999999995,
+            "inputId": 235405,
+            "inputType": "Inseticida",
+            "inputLastUpdated": "2024-07-26T11:39:05.000-03:00"
+        },
+        {
+            "insumo": "SUPA SILICA",
+            "quantidade": 44.03,
+            "inputId": 173272,
+            "inputType": "Fungicida",
+            "inputLastUpdated": "2024-07-26T11:39:05.000-03:00"
+        }
+    ],
+    "fazendaDestino": "0207",
+    "armazemDestino": "33"
+}
