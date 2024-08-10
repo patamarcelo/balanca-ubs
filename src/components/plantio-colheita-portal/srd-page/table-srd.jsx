@@ -93,7 +93,8 @@ const TableSrd = ({data}) => {
                         console.log('parcela dada', parcela)
                         return (
                             <tr key={i}
-                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${(parcela.UMIDADE_ENTRADA > 25 || parcela.IMPUREZA_ENTRADA > 3) && styles.warningRow}`}
+                            // className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${(parcela.UMIDADE_ENTRADA > 25 || parcela.IMPUREZA_ENTRADA > 3) && styles.warningRow}`}
+                            className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
                             >
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
                                 <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.trim().split('-').reverse().join('/')}</td>

@@ -229,7 +229,7 @@ const SRDPage = () => {
                 <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
                 <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
                 {
-                    filterDataArray.length > 0 &&
+                    filterDataArray?.length > 0 &&
                     <>
                         <Button onClick={() => setFilterImp(3)}>
                             <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
@@ -273,7 +273,7 @@ const SRDPage = () => {
                             </Box>
                             <Box width={"100%"} display={"flex"} justifyContent={"end"}>
                                 {
-                                    destArr && destArr.length > 1 && (
+                                    destArr && destArr?.length > 1 && (
                                         <ResumoGeral dest={"Geral"} data={filterDataArray} />
                                     )
                                 }
@@ -297,7 +297,7 @@ const SRDPage = () => {
                                 display={"flex"}
                                 justifyContent={"center"}
                                 flexDirection={"column"}
-                                pb={i === destArr.length - 1 && 5}
+                                pb={i === destArr?.length - 1 && 5}
                             >
                                 <Divider textAlign="center">
                                     <Typography
@@ -306,7 +306,7 @@ const SRDPage = () => {
                                         variant="h1"
                                         color={colors.textColor[100]}
                                     >
-                                        {destino.length > 6
+                                        {destino?.length > 6
                                             ? destino.charAt(0).toUpperCase() +
                                             destino.slice(1).toLowerCase()
                                             : destino}
@@ -371,7 +371,7 @@ const SRDPage = () => {
                                                                 variant="h5"
                                                                 color={colors.textColor[100]}
                                                             >
-                                                                <b>{lengthArr.length}{lengthArr.length === 1 ? " Carga" : " Cargas"}</b>
+                                                                <b>{lengthArr?.length}{lengthArr?.length === 1 ? " Carga" : " Cargas"}</b>
                                                             </Typography>
                                                             <Typography
                                                                 variant="h5"

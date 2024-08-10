@@ -324,7 +324,7 @@ const FarmBoxPage = () => {
 					sx={{
 						marginTop: '10px',
 						width: "100%",
-						minWidth: "1200px",
+						minWidth: "1500px",
 						minHeight: 'calc(100% - 10px)',
 						padding: '10px',
 						display: "flex",

@@ -100,9 +100,9 @@ const ProdutosConsolidados = () => {
                 .then((res) => {
                     console.log(res);
                     if (res.status === 201) {
-                        const { st_number } = res.data
+                        const { st_number, sent_by_email } = res.data
                         console.log('tudo certo', res.data.st_number)
-                        toast.success(`ST Aberta com Suscesso: ${st_number}`, {
+                        toast.success(`ST Aberta com Suscesso: ${st_number}\nEnviada por E-mail: ${sent_by_email}`, {
                             position: "top-center",
                             duration: 6000,
                         }
@@ -149,7 +149,7 @@ const ProdutosConsolidados = () => {
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(6, 200px) 100px 10px',
+                    gridTemplateColumns: 'repeat(6, 200px) 90px 10px',
                     columnGap: '20px',
                     alignItems: 'center',
                 }}

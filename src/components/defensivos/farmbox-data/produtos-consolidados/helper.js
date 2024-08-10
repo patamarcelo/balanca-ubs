@@ -100,17 +100,17 @@ export const farmDictCOde = [
 ]
 
 export const armazemDictCode = [
-    {projeto: 'Fazenda Benção de Deus', code: "0"},
-    {projeto: 'Fazenda Cacique', code: "0"},
-    {projeto: 'Fazenda Campo Guapo', code: "0"},
-    {projeto: 'Fazenda Capivara', code: "0"},
-    {projeto: "Fazenda Cervo", code: "0"},
+    {projeto: 'Fazenda Benção de Deus', code: "01"},
+    {projeto: 'Fazenda Cacique', code: "01"},
+    {projeto: 'Fazenda Campo Guapo', code: "01"},
+    {projeto: 'Fazenda Capivara', code: "01"},
+    {projeto: "Fazenda Cervo", code: "01"},
     {projeto: "Fazenda Eldorado", code: "17"},
-    {projeto: "Fazenda Jacaré", code: "0"},
+    {projeto: "Fazenda Jacaré", code: "01"},
     {projeto: "Fazenda Lago Verde", code: "14"},
-    {projeto: "Fazenda Safira", code: "0"},
+    {projeto: "Fazenda Safira", code: "01"},
     {projeto: "Fazenda Santa Maria", code: "19"},
-    {projeto: "Fazenda Tucano", code: "0"},
-    {projeto: "Fazenda Tuiuiu", code: "0"},
+    {projeto: "Fazenda Tucano", code: "01"},
+    {projeto: "Fazenda Tuiuiu", code: "01"},
 ]
 

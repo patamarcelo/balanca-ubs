@@ -623,7 +623,8 @@ const DataProgramPage = (props) => {
 						toast.success(
 							`AP Aberta com Sucesso: ${code} `,
 							{
-								position: "top-center"
+								position: "top-center",
+								duration: 5000,
 							}
 						);
 						parcelasToUp.forEach((parcela) => {
