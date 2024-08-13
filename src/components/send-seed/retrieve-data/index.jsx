@@ -57,8 +57,8 @@ const RetrieveData = () => {
 		const formatFormDateHoje = [formyear, formmonth, formday].join("-");
 
 		const filteredData = dataArr.filter((data) => {
-			if (data["Data Solicitação"].length > 4) {
-				if (data["Data Envio"].length > 4) {
+			if (data["Data Solicitação"]?.length > 4) {
+				if (data["Data Envio"]?.length > 4) {
 					var sendData = data["Data Envio"]
 						.split("(")[1]
 						.split(")")[0];

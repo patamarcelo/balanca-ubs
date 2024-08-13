@@ -210,7 +210,6 @@ const DetailAppData = (props) => {
 						)}
 					</Box>
 				)}
-				{data.observations}
 				{data.insumos
 					.sort((a, b) => a.tipo.localeCompare(b.tipo))
 					.map((data, i) => {

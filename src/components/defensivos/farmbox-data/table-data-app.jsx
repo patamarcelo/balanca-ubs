@@ -334,13 +334,28 @@ const TableDataPage = (props) => {
 						/>
 					</Box>
 					<Box
-					sx={{
-						padding: '10px'
-					}}
+						sx={{
+							padding: '10px'
+						}}
 					>
-						<Typography sx={{fontStyle: 'italic'}} variant="h6" color={colors.grey[200]}>
+						<Typography sx={{ fontStyle: 'italic' }} variant="h6" color={colors.grey[200]}>
 							{dataF.observations === 'Aplicação Aberta via integração' ? '' : dataF.observations}
 						</Typography>
+					</Box>
+					<Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: '-50px', paddingRight: '10px' }}>
+						<IconButton
+							onClick={() =>
+								handleShowMap(dataF.fazenda_box_id)
+							}
+						>
+							<FontAwesomeIcon
+								icon={faMap}
+								color={colors.textColor[100]}
+								style={{
+									cursor: "pointer"
+								}}
+							/>
+						</IconButton>
 					</Box>
 					{sumArea > 0 ? (
 						<Box
@@ -397,7 +412,7 @@ const TableDataPage = (props) => {
 								</Box>
 							</Box>
 							<Box>
-								<IconButton
+								{/* <IconButton
 									onClick={() =>
 										handleShowMap(dataF.fazenda_box_id)
 									}
@@ -409,7 +424,7 @@ const TableDataPage = (props) => {
 											cursor: "pointer"
 										}}
 									/>
-								</IconButton>
+								</IconButton> */}
 							</Box>
 						</Box>
 					) :

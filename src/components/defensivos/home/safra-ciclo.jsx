@@ -78,9 +78,9 @@ const SafraCicloComp = () => {
 						onChange={handleChange}
 						label="Safra"
 					>
-						<MenuItem value="">
+						{/* <MenuItem value="">
 							<em>Safra</em>
-						</MenuItem>
+						</MenuItem> */}
 						<MenuItem value={safraDict.first}>2022/2023</MenuItem>
 						<MenuItem value={safraDict.second}>2023/2024</MenuItem>
 						<MenuItem value={safraDict.third}>2024/2025</MenuItem>
@@ -101,9 +101,9 @@ const SafraCicloComp = () => {
 						onChange={handleChangeCiclo}
 						label="Ciclo"
 					>
-						<MenuItem value="">
+						{/* <MenuItem value="">
 							<em>Ciclo</em>
-						</MenuItem>
+						</MenuItem> */}
 						<MenuItem value={cicloDict.first}>
 							{cicloDict.first}
 						</MenuItem>

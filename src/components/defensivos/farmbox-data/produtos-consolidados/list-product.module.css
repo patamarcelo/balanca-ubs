@@ -1,0 +1,10 @@
+.testediv {
+    height: 190px;
+    overflow: hidden;
+    transition: height ease-in-out 0.4s;
+}
+.testedivina {
+    height: 0;
+    overflow: hidden;
+    transition: height ease-in-out 0.4s;
+}

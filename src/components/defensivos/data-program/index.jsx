@@ -79,7 +79,7 @@ const DataProgramPage = (props) => {
 	const [filtData, setFiltData] = useState(false);
 
 	const [mapArray, setMapArray] = useState([]);
-	const [mapArrayIds, setMapArrayIds] = useState([]);
+	// const [mapArrayIds, setMapArrayIds] = useState([]);
 	const [dataToMap, setDataToMap] = useState([]);
 
 	const [areaFiltTotal, setAreaFiltTotal] = useState(0);
@@ -182,7 +182,7 @@ const DataProgramPage = (props) => {
 				setShowMapps(true);
 			}, 500);
 		}
-	}, [farmSelected]);
+	}, [farmSelected, showMapps]);
 
 	useEffect(() => {
 		handlerShowMaps();
@@ -741,7 +741,7 @@ const DataProgramPage = (props) => {
 							</span>
 						</div>
 						<div style={{ fontFamily: "Times New Roman" }}>
-							{farmSelected.replace('Projeto', '')}
+							{farmSelected?.replace('Projeto', '')}
 							<FontAwesomeIcon
 								icon={!onlyOpenApp ? faCheckDouble : faClock}
 								color={

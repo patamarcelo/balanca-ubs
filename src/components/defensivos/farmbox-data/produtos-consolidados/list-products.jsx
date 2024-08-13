@@ -1,19 +1,28 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, IconButton } from '@mui/material'
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../../../theme';
 
 import { useEffect, useState } from 'react';
 
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+import classes from './list-product.module.css'
+
+
 const ListProducts = (props) => {
     const theme = useTheme()
     const colors = tokens(theme.palette.mode)
 
-    const isDark = theme.palette.mode === 'dark'
+    // const isDark = theme.palette.mode === 'dark'
 
     const [filteredDataList, setFilteredDataList] = useState([]);
     const [totalValueProds, setTotalValueProds] = useState(0);
     const [totalAreaAps, setTotalAreaAps] = useState(0);
-    const { selectedData, productsArr, setprodcutsToProtheus } = props
+
+    const [addObs, setAddObs] = useState(false);
+
+    const { selectedData, productsArr, setprodcutsToProtheus, setObservations, observations } = props
     const { Data, Projeto, Ap, Tipo, Insumo } = selectedData
 
     const formatNumber = number => {
@@ -27,6 +36,19 @@ const ListProducts = (props) => {
         return ap.split(' | ')[0]
     }
 
+
+    const handlerObserv = (event) => {
+        console.log(event.target.value)
+        setObservations(event.target.value)
+    }
+
+    const handlerObsOpen = () => {
+        setAddObs(!addObs)
+        if (addObs) {
+            setObservations('')
+        }
+    }
+
     useEffect(() => {
         if (selectedData?.Data?.length > 0 && selectedData?.Projeto?.length > 0 && selectedData?.Ap?.length > 0) {
             const newData = productsArr.filter((item) => {
@@ -38,7 +60,7 @@ const ListProducts = (props) => {
                 return dateFilter && projetoFilter && apFilter && tipoFilter && prodFilter
             })
             console.log('newData: ', newData)
-            const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData 
+            const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData
             const newProds = filtData.reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
                     // console.log(curr)
@@ -80,12 +102,12 @@ const ListProducts = (props) => {
 
     const borderColor = colors.textColor[100]
 
-    
+
     const getAreaAp = (ap) => {
         const filteredArea = productsArr.filter((data) => data.finalCode === formatApName(ap)).filter((data) => data.inputType === 'Operação')[0]
-        if(filteredArea){
+        if (filteredArea) {
             const { quantity } = filteredArea
-            if(quantity){
+            if (quantity) {
                 return formatNumber(quantity)
             }
         }
@@ -104,7 +126,7 @@ const ListProducts = (props) => {
         <Box
             sx={{
                 display: 'grid',
-                gridTemplateColumns: '150px 250px 300px',
+                gridTemplateColumns: '150px 250px 300px 400px',
                 marginTop: '10px',
                 paddingLeft: '20px',
                 marginBottom: '20px',
@@ -125,7 +147,7 @@ const ListProducts = (props) => {
             <Box>
                 <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Ap's</Typography>
                 {
-                    Ap && Ap.length > 0 && Ap.sort((a,b) => a.localeCompare(b)).map((aps, ind) => {
+                    Ap && Ap.length > 0 && Ap.sort((a, b) => a.localeCompare(b)).map((aps, ind) => {
 
                         return (
                             <Box key={ind}
@@ -177,9 +199,9 @@ const ListProducts = (props) => {
                             {
                                 filteredDataList.map((inputs, i) => {
                                     return (
-                                        <Typography 
-                                        sx={{borderBottom: `0.1px dashed ${borderColor}`}}
-                                        key={i}>{inputs.insumo}</Typography>
+                                        <Typography
+                                            sx={{ borderBottom: `0.1px dashed ${borderColor}` }}
+                                            key={i}>{inputs.insumo}</Typography>
                                     )
                                 })
                             }
@@ -189,7 +211,7 @@ const ListProducts = (props) => {
                                     fontWeight: 'bold',
                                 }}
                             >
-                                
+
                             </Box>
                         </Box>
                         <Box sx={{ textAlign: 'right' }}>
@@ -197,8 +219,8 @@ const ListProducts = (props) => {
                                 filteredDataList.map((inputs, i) => {
                                     return (
                                         <Typography
-                                        sx={{borderBottom: `0.1px dashed ${borderColor}`}}
-                                        key={i}>{formatNumber(inputs.quantidade)}</Typography>
+                                            sx={{ borderBottom: `0.1px dashed ${borderColor}` }}
+                                            key={i}>{formatNumber(inputs.quantidade)}</Typography>
                                     )
                                 })
                             }
@@ -214,6 +236,35 @@ const ListProducts = (props) => {
 
                         </Box>
                     </Box>
+                }
+            </Box>
+            <Box sx={{ width: '100%' }}>
+                <Box
+                    sx={{
+                        width: '100%'
+                    }}
+                    className={addObs ? classes["testediv"] : classes["testedivina"]}
+                >
+                    <Typography sx={{ textAlign: 'left', fontWeight: 'bold' }}>Observações</Typography>
+                    <textarea
+                        name="obsprduct"
+                        rows={15}
+                        style={{ padding: '10px', width: '90%', fontSize: '12px' }}
+                        onChange={handlerObserv}
+                        value={observations}
+                    />
+                </Box>
+
+
+                {
+                    !addObs ?
+                        <IconButton aria-label="add" onClick={handlerObsOpen} color="success" sx={{ marginLeft: '-8px' }}>
+                            <AddCircleOutlineIcon />
+                        </IconButton>
+                        :
+                        <IconButton aria-label="delete" onClick={handlerObsOpen} color="error" sx={{ marginLeft: '-8px' }}>
+                            <CancelPresentationIcon />
+                        </IconButton>
                 }
             </Box>
         </Box>

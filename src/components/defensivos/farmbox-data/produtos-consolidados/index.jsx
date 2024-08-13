@@ -36,9 +36,12 @@ const ProdutosConsolidados = () => {
     const [showDateTime, setShowDateTime] = useState(null);
 
     const [selectedData, setSelectedData] = useState({});
+    const [observations, setObservations] = useState("");
 
     const [productsArr, setProductsArr] = useState([]);
     const [prodcutsToProtheus, setprodcutsToProtheus] = useState([]);
+
+    const [stOpened, setStOpened] = useState(null);
 
 
     const [isLoadingBtn, setIsLoadingBtn] = useState(false);
@@ -51,6 +54,8 @@ const ProdutosConsolidados = () => {
     const handleClear = () => {
         console.log('clear')
         setSelectedData({})
+        setStOpened(null)
+        setObservations("")
     }
 
     useEffect(() => {
@@ -85,7 +90,8 @@ const ProdutosConsolidados = () => {
             ...selectedData,
             produtos: prodcutsToProtheus,
             fazendaDestino: getCode,
-            armazemDestino: getArmazenCode
+            armazemDestino: getArmazenCode,
+            observacao: observations
         }
         console.log('dados Selecionados: ', dataToSend)
         const params = JSON.stringify(dataToSend)
@@ -101,7 +107,8 @@ const ProdutosConsolidados = () => {
                     console.log(res);
                     if (res.status === 201) {
                         const { st_number, sent_by_email } = res.data
-                        console.log('tudo certo', res.data.st_number)
+                        console.log('tudo certo', st_number)
+                        // setStOpened(st_number)
                         toast.success(`ST Aberta com Suscesso: ${st_number}\nEnviada por E-mail: ${sent_by_email}`, {
                             position: "top-center",
                             duration: 6000,
@@ -191,8 +198,14 @@ const ProdutosConsolidados = () => {
                         }}
                     >
                         <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
+                        {
+                            stOpened &&
+                            <Typography sx={{ marginLeft: '-30px', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '5px 40px 0px 30px',  }} color={colors.textColor[200]}>Solicitação: 
+                                <span style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '10px', marginLeft: '10px', }} color={colors.textColor[100]}>{123}</span>
+                            </Typography>
+                        }
                     </Box>
-                    <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} />
+                    <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                 </Box>
             }
 

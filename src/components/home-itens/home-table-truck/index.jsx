@@ -243,6 +243,8 @@ const HomeTableTruck = (props) => {
 									size="3x"
 								/>
 							)} */}
+						
+						{/* <Typography sx={{fontSize: '8px'}} color={colors.grey[100]}>{data.userDataApp && data.userDataApp}</Typography> */}
 						</Box>
 						<Box
 							display={!isNonMobile ? "flex" : "grid"}
