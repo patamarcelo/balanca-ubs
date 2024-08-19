@@ -48,6 +48,23 @@ const InsumosBioPage = () => {
 
     const [protDataToTable, setprotDataToTable] = useState([]);
 
+    const [showDateTime, setShowDateTime] = useState(null);
+    useEffect(() => {
+        const getCurrentDateTime = () => {
+            const now = new Date();
+            const pad = (num) => num.toString().padStart(2, '0');
+            const day = pad(now.getDate());
+            const month = pad(now.getMonth() + 1); // Months are zero-based
+            // const year = now.getFullYear().toString().slice(-2); // Get last 2 digits of year
+            const year = now.getFullYear().toString(); // Get last 2 digits of year
+            const hours = pad(now.getHours());
+            const minutes = pad(now.getMinutes());
+
+            return `${day}/${month}/${year} - ${hours}:${minutes}`;
+        };
+            setShowDateTime(getCurrentDateTime());
+    }, []);
+
     const futureDay = () => {
         const today = new Date()
         const futureDay = new Date()
@@ -463,7 +480,7 @@ const InsumosBioPage = () => {
                     // backgroundColor: 'red'
                 }}
             >
-                <TableBio data={protDataToTable}/>
+                <TableBio data={protDataToTable} showDateTime={showDateTime}/>
             </Box>
         </Box>
     );

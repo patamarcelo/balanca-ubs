@@ -463,14 +463,14 @@ const TableDataPage = (props) => {
 								}}
 							/>
 							<Box>
-								<FontAwesomeIcon
+								{/* <FontAwesomeIcon
 									onClick={handleRotateDir}
 									icon={faArrowRotateRight}
 									color={colors.textColor[100]}
 									style={{
 										cursor: "pointer"
 									}}
-								/>
+								/> */}
 							</Box>
 						</Box>
 					)}

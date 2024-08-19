@@ -26,6 +26,8 @@ const COLORS_TABLE = {
 	Caupi: "rgb(119,63,27, 0.7)",
 	"de Ouro": "rgb(119,63,27, 0.5)",
 	"Mungo Verde": "rgb(119,63,27, 0.3)",
+	"Mungo Preto": "rgb(119,63,27, 0.3)",
+	"Algodão": "rgb(245,245,245, 0.3)",
 	Soja: "rgb(51,205,50, 0.7)",
 	Arroz: "rgb(251,192,115, 0.7)"
 };
@@ -34,6 +36,7 @@ const CalendarDonePage = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const { cultFilt } = props;
 	const calendarDone = useSelector(selecCalendarArray(cultFilt));
+	console.log('Calendar Done: ', calendarDone)
 
 	return (
 		<Box
@@ -55,7 +58,7 @@ const CalendarDonePage = (props) => {
 				<thead>
 					<tr>
 						<th className={styles.projetoTile}>Projeto</th>
-						{calendarDone.headerTable.map((data, i) => {
+						{calendarDone.headerTable.sort((a,b) => a.month - b.month).sort((a,b) => a.year - b.year).map((data, i) => {
 							return (
 								<th
 									key={i}
@@ -70,7 +73,7 @@ const CalendarDonePage = (props) => {
 											: data.cultura}
 									</p>
 									<p style={{ marginTop: 2 }}>
-										{MONTHS[data.month - 1]}
+										{MONTHS[data.month - 1]}{data.cultura !== 'Totais' && " / " +  data.year}
 									</p>
 								</th>
 							);
@@ -83,7 +86,7 @@ const CalendarDonePage = (props) => {
 						return (
 							<tr key={i}>
 								<td>{data.replace("Projeto", "")}</td>
-								{calendarDone.headerTable.map((header, iH) => {
+								{calendarDone.headerTable.sort((a,b) => a.month - b.month).sort((a,b) => a.year - b.year).map((header, iH) => {
 									const totalArr = calendarDone.table.filter(
 										(dataCal) => dataCal.fazenda === data
 									);

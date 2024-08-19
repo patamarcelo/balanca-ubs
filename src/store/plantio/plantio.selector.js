@@ -269,7 +269,7 @@ export const selecCalendarArray = (filterVar) => (state) => {
 	const totalValue = headerTable.reduce((acc, curr) => (acc += curr.area), 0);
 	const addTotalHeader = [
 		...headerTable,
-		{ cultura: "Totais", month: 0, area: totalValue, year: 23 }
+		{ cultura: "Totais", month: 13, area: totalValue, year: 2100 }
 	];
 
 	return {

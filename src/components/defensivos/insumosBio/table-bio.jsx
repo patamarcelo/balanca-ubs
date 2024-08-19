@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import Table from "react-bootstrap/Table";
 import styles from './table-bio-styles.module.css'
 
@@ -10,15 +10,15 @@ const TableBio = (props) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const { data } = props
+    const { data, showDateTime } = props
 
 
     const [totalData, setTotalData] = useState({});
 
     const formatNumber = number => {
         return number.toLocaleString("pt-br", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         })
     }
 
@@ -102,7 +102,8 @@ const TableBio = (props) => {
 
 
     return (
-        <Box m={2} width={"100%"} p={2}>
+        <Box m={2} mt={1} width={"100%"} p={2} pt={1}>
+            <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
             <Table
                 striped
                 bordered
