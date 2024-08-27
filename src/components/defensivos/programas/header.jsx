@@ -4,11 +4,14 @@ import { tokens } from "../../../theme";
 import Logo from "../../../utils/assets/img/logo.jpg";
 
 import styles from "./programas-styles.module.css";
+import { useEffect, useState } from "react";
+
 
 const HeaderComp = (props) => {
 	const { data, quantidadeTotal } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
 
 	return (
 		<Box

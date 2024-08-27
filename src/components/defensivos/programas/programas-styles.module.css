@@ -175,3 +175,16 @@ align-self: flex-end;
     font-size: 1em;
     /* font-weight: 600; */
 }
+
+
+.headerSticky{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+    transform: scale(0.2); /* Shrink the header */
+    transition: all 0.3s ease;   
+}

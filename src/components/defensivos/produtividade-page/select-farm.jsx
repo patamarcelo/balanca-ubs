@@ -14,7 +14,7 @@ const SelectFarm = (props) => {
 		ml
 	} = props;
 	return (
-		<FormControl sx={{ mb: 1, mt: 2, minWidth: width, marginLeft: ml }}>
+		<FormControl sx={{ mb: 1, mt: 1, minWidth: width, marginLeft: ml }}>
 			<InputLabel id="demo-simple-select-label">{title}</InputLabel>
 			<Select
 				labelId="demo-simple-select-label"
@@ -23,6 +23,7 @@ const SelectFarm = (props) => {
 				label={title}
 				onChange={handleChange}
 				multiple={multiple}
+				// size="small"
 			>
 				{projetos.map((data, i) => {
 					return (

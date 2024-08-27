@@ -17,6 +17,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		id: "google-map-script",
 		googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY
 	});
+	console.log('Google Maps API Loaded:', isLoaded);
 
 	const [paths, setPaths] = useState([]);
 	const [center, setCenter] = useState({});
@@ -34,7 +35,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		fullscreenControl: true,
 		scrollwheel: false,
 		zoom: zoomMap,
-		mapTypeId: "terrain"
+		mapTypeId: "terrain",
 	};
 
 	useEffect(() => {
@@ -85,12 +86,15 @@ const MapPage = ({ mapArray, filtData }) => {
 		const calCenterlng =
 			(getCenterLng[0] + getCenterLng[getCenterLng.length - 1]) / 2;
 		const centerDict = { lat: calCenterlat, lng: calCenterlng };
+		console.log('coordsL ', centerDict);
 		setCenter(centerDict);
+		console.log('onlyPaths ', onlyPaths);
 		setPaths(onlyPaths);
 	}, [mapArray]);
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
+			console.log(data.path);
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
@@ -104,7 +108,7 @@ const MapPage = ({ mapArray, filtData }) => {
 		setAppArray(updateColorArray);
 	}, [mapArray, filtData, parcelasApp, paths]);
 
-	return isLoaded && center ? (
+	return isLoaded && center.lat && center.lng ? (
 		<GoogleMap
 			mapContainerStyle={containerStyle}
 			center={center}
@@ -115,7 +119,7 @@ const MapPage = ({ mapArray, filtData }) => {
 				new window.google.maps.LatLngBounds();
 			}}
 		>
-			{appArray &&
+			{appArray.length > 0 &&
 				appArray.map((data, i) => {
 					return (
 						<PolygonF

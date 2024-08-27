@@ -16,6 +16,7 @@ const TableSrd = ({data}) => {
 
     const iconDict = [
 		{ cultura: "FEIJAO", icon: beans, alt: "feijao" },
+		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "ARROZ", icon: rice, alt: "arroz" },
 		{ cultura: "SOJA", icon: soy, alt: "soja" },
 		{ cultura: "Algodão", icon: cotton, alt: "algodao" },

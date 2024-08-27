@@ -280,7 +280,7 @@ const FarmBoxPage = () => {
 			className={classes.mainDiv}
 			sx={{
 				scrollBehavior: "smooth !important", height: (loadingData || IsloadingDbFarm) && '100%',
-				display: 'flex', flexDirection: 'row'
+				display: 'flex', flexDirection: 'row',
 			}}
 		>
 			{(!loadingData || !IsloadingDbFarm) && (
@@ -291,7 +291,7 @@ const FarmBoxPage = () => {
 						borderRadius: "8px",
 						paddingTop: "4px",
 						paddingBottom: "4px",
-						boxShadow: !isDark && `rgba(0, 0, 0, 0.35) 0px 5px 15px` 
+						boxShadow: !isDark && `rgba(0, 0, 0, 0.35) 0px 5px 15px`
 					}}
 				>
 					<Button onClick={() => refreshData()} color="success" disabled={IsloadingDbFarm || loadingData}>
@@ -319,23 +319,45 @@ const FarmBoxPage = () => {
 				</Box>
 			)}
 			{
+				openColheitaModal &&
+				<ColheitaPage />
+			}
+			{
 				dictSelect.length > 0 &&
+				<>
 				<Box
-					sx={{
-						marginTop: '10px',
-						width: "100%",
-						minWidth: "1500px",
-						minHeight: 'calc(100% - 10px)',
-						padding: '10px',
-						display: "flex",
-						borderRadius: '8px',
-						// border: `1px solid ${colors.primary[200]}`
-						backgroundColor: !isDark && 'whitesmoke',
-						boxShadow: !isDark ? `rgba(0, 0, 0, 0.35) 0px 5px 15px` : `rgba(245,245,245,0.1) 0px 5px 15px`
-					}}
+				sx={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					flexDirection: 'column',
+					width: '100%',
+					backgroundColor: colors.blueOrigin[800],
+					borderRadius: '12px'
+				}}
+				p={2}
+				mt={4}
 				>
-					<ProdutosConsolidados />
+					<Typography variant="h2" color={colors.textColor[100]} fontWeight='600' >Insumos Consolidados</Typography>
 				</Box>
+					<Box
+						sx={{
+							marginTop: '10px',
+							marginBottom: '10px',
+							width: "100%",
+							minWidth: "1500px",
+							minHeight: 'calc(100% - 10px)',
+							padding: '10px',
+							display: "flex",
+							borderRadius: '8px',
+							// border: `1px solid ${colors.primary[200]}`
+							backgroundColor: !isDark && 'whitesmoke',
+							boxShadow: !isDark ? `rgba(0, 0, 0, 0.35) 0px 5px 15px` : `rgba(245,245,245,0.1) 0px 5px 15px`
+						}}
+					>
+						<ProdutosConsolidados />
+					</Box>
+				</>
 			}
 
 			<IndexModalDataFarmbox
@@ -586,10 +608,7 @@ const FarmBoxPage = () => {
 					</Box>
 				)}
 			</IndexModalDataFarmbox>
-			{
-				openColheitaModal &&
-				<ColheitaPage />
-			}
+
 		</Box>
 	);
 };

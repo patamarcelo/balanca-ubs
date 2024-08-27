@@ -1,7 +1,7 @@
 const handlerDataColheita = (data) => {
-    data.forEach((element) => {
-        console.log(element);
-    });
+    // data.forEach((element) => {
+    //     console.log(element);
+    // });
 
     const newArr = data.map((details) => {
         const cultureName = details?.plantations[0]?.plantation?.culture_name
@@ -75,7 +75,6 @@ const handlerDataColheita = (data) => {
     });
 
     const formatExtratoColheitaCsv = newExtratoArr.flat();
-    console.log(formatExtratoColheitaCsv);
     const formatExtratoColheita = [
         ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId"]
     ];
@@ -107,7 +106,6 @@ const handlerDataColheita = (data) => {
         ];
         formatExtratoColheita.push(arrToAdd);
     });
-    console.log(formatExtratoColheita);
 
     // ARRAY COM OS TOTAIS DE PARCELAS E FAZENDAS
     const sortedArr = newArr

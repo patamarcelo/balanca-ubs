@@ -67,6 +67,7 @@ const RomaneiosTable = (props) => {
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
+		{ cultura: "FEIJAO MUNGO", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Algodão", icon: cotton, alt: "algodao" },

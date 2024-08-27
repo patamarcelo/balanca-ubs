@@ -1,4 +1,6 @@
 import { Box, useTheme, Typography, Button } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
+
 import CircularProgress from "@mui/material/CircularProgress";
 import { tokens } from "../../../../theme";
 
@@ -29,6 +31,8 @@ import soy from "../../../../utils/assets/icons/soy.png";
 import rice from "../../../../utils/assets/icons/rice.png";
 import cotton from '../../../../utils/assets/icons/cotton.png'
 
+import djangoApi from "../../../../utils/axios/axios.utils";
+
 const ColheitaPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -42,6 +46,12 @@ const ColheitaPage = () => {
     const [formatedApsName, setFormatedApsName] = useState([]);
     const [formatedExtratoCsv, setFormatedExtratoCsv] = useState([]);
     const [totalGeralData, setTotalGeralData] = useState(0);
+
+    const [areaTotalgeral, setAreaTotalgeral] = useState(0);
+    const [areaTotalgeralColhido, setAreaTotalgeralColhido] = useState(0);
+    const [areaTotalSaldo, setAreaTotalSaldo] = useState(0);
+
+    const [isLoadingDjango, setIsLoadingDjango] = useState(false);
 
     const formatNumber = number => number?.toLocaleString("pt-br", {
         minimumFractionDigits: 2,
@@ -92,7 +102,6 @@ const ColheitaPage = () => {
                     }
                 })
                 .then((res) => {
-                    console.log(res.data);
                     const {
                         sortedArr,
                         totalByFarm,
@@ -133,9 +142,7 @@ const ColheitaPage = () => {
                         }
                     })
                     .then((res) => {
-                        console.log(res.data)
                         const { sortedArr, totalByFarm, totalGeral, onlyFormatAps, formatExtratoColheita } = handlerDataColheita(res.data)
-                        console.log(sortedArr)
                         setDataColheita(sortedArr)
                         setTotalByFarmData(totalByFarm)
                         setTotalGeralData(totalGeral)
@@ -151,6 +158,74 @@ const ColheitaPage = () => {
         };
         getPlantioData()
     }, []);
+
+    const hadleUpdateDjangoTable = async () => {
+        const headers = formatedExtratoCsv[0]
+        const getNewArr = formatedExtratoCsv.slice(1)
+        const formatObj = getNewArr.map((data, i) => {
+            const newObj = {}
+            headers.forEach((key, index) => {
+                // console.log('key', key)
+                // console.log('index', index)
+                newObj[key] = data[index]
+            })
+            return (
+                newObj
+            )
+        })
+        const params = JSON.stringify(
+            formatObj
+        )
+        try {
+            setIsLoadingDjango(true)
+            await djangoApi
+                .post("extratocolheitaarea/update_colheita_area_from_farmbox/", params, {
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data);
+
+                });
+            setIsLoadingDjango(false)
+        } catch (err) {
+            console.log("Erro ao alterar os dados da colheita", err);
+            setIsLoadingDjango(false)
+        } finally {
+            // pass
+        }
+    }
+
+    const getSaldoArea = (areaTotal, areaAplicada) => {
+        const areaSaldo = areaTotal - areaAplicada
+        const formatArea = areaSaldo.toLocaleString("pt-br", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })
+        return formatArea 
+    }
+
+    useEffect(() => {
+        const getTotals = () => {
+            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaFazenda ,0)
+            return areaTotalGeral
+        }
+        const area = getTotals()
+        setAreaTotalgeral(area)
+        
+        const getTotalsColhido = () => {
+            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaAplicada ,0)
+            return areaTotalGeral
+        }
+        const areaColhido = getTotalsColhido()
+        setAreaTotalgeralColhido(areaColhido)
+
+        const saldoAcolher = area - areaColhido
+        setAreaTotalSaldo(saldoAcolher)
+
+    }, [totalByFarmData]);
+    
 
     if (isLoading) {
         return (
@@ -184,7 +259,7 @@ const ColheitaPage = () => {
                 justifyContent: "flex-start",
                 alignItems: "baseline",
                 width: "100%",
-                height: "100%"
+                minHeight: "80%"
             }}
         >
             <Box mt={5} sp={2} pb={0} width={"100%"}
@@ -203,9 +278,25 @@ const ColheitaPage = () => {
                         <FontAwesomeIcon icon={faFileExcel} color={colors.greenAccent[500]} size="xl" style={{ paddingLeft: '5px' }} />
                     </CSVLink>
                 </Box>
-                <Button onClick={handleRefresh} variant="outlined" color="success">
-                    Atualizar
-                </Button>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: "30px",
+                        marginBottom: "10px",
+                        marginTop: "10px",
+                    }}
+                >
+
+                    <LoadingButton onClick={hadleUpdateDjangoTable} loading={isLoadingDjango} variant="outlined" color="warning" size="small">
+                        Django Update
+                    </LoadingButton>
+                    <Button onClick={handleRefresh} variant="outlined" color="success" size="small">
+                        Atualizar
+                    </Button>
+                </Box>
             </Box>
             {totalByFarmData?.length > 0 && (
                 <Box
@@ -220,9 +311,49 @@ const ColheitaPage = () => {
                 >
                     <Box
                         sx={{
-                            width: "100%"
+                            width: "100%",
                         }}
                     >
+                        <Accordion  sx={{ width: "100%" }}
+                            disabled={true}
+                            expanded={false}
+                        >
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1-content"
+                                                id="panel1-header"
+                                                sx={{ backgroundColor: colors.blueOrigin[800] }}
+                                            >
+                                                <Typography
+                                                    color={colors.textColor[100]}
+                                                    variant="h4"
+                                                    sx={{ width: "220px" }}
+                                                >
+                                                    Fazenda
+                                                </Typography>{" "}
+                                                <Typography
+                                                    color={colors.textColor[100]}
+                                                    variant="h4"
+                                                    sx={{ width: "150px", textAlign: "right" }}
+                                                >
+                                                    Area Total: <br />{formatNumber(areaTotalgeral)}
+                                                </Typography>
+                                                <Typography
+                                                    color={colors.textColor[100]}
+                                                    variant="h4"
+                                                    sx={{ width: "150px", textAlign: "right" }}
+                                                >
+                                                    Colhido: <br /> {formatNumber(areaTotalgeralColhido)}
+                                                </Typography>
+                                                <Typography
+                                                    color={colors.textColor[100]}
+                                                    variant="h4"
+                                                    sx={{ width: "150px", textAlign: "right" }}
+                                                >
+                                                    Saldo <br /> {formatNumber(areaTotalSaldo)}
+                                                </Typography>
+                                            </AccordionSummary>
+                                </Accordion>
                         {totalByFarmData?.length > 0 &&
                             totalByFarmData.map((data, index) => {
                                 return (
@@ -261,6 +392,13 @@ const ColheitaPage = () => {
                                                         maximumFractionDigits: 2
                                                     })}
                                                 </Typography>
+                                                <Typography
+                                                    color={colors.textColor[100]}
+                                                    variant="h4"
+                                                    sx={{ width: "150px", textAlign: "right", color: data.areaAplicada === data.areaFazenda && 'green', textTransform: data.areaAplicada === data.areaFazenda && 'underline', fontWeight: data.areaAplicada === data.areaFazenda && 'bold' }}
+                                                >
+                                                    {getSaldoArea(data.areaFazenda, data.areaAplicada)}
+                                                </Typography>
                                             </AccordionSummary>
                                             <AccordionDetails
                                                 sx={{
@@ -271,7 +409,6 @@ const ColheitaPage = () => {
                                                     formatedApsName
                                                         .filter((apps) => apps.farmName === data.farmName)
                                                         .map((aps, i) => {
-                                                            console.log('dataAps: ', aps)
                                                             let totalSol = 0
                                                             let totalAplyed = 0
                                                             let totalOpen = 0
@@ -291,37 +428,37 @@ const ColheitaPage = () => {
                                                                             alignItems: 'flex-end',
                                                                             justifyContent: 'space-between'
                                                                         }}>
-                                                                            <Box
-                                                                                sx={{
-                                                                                    backgroundColor: colors.blueOrigin[900],
-                                                                                    borderRadius: "8px",
-                                                                                    width: "140px",
-                                                                                    padding: "5px",
-                                                                                    textAlign: "center",
-                                                                                    flexDirection: "row",
-                                                                                    display: 'flex',
-                                                                                    justifyContent: 'center',
-                                                                                    gap: '30px'
+                                                                        <Box
+                                                                            sx={{
+                                                                                backgroundColor: colors.blueOrigin[900],
+                                                                                borderRadius: "8px",
+                                                                                width: "140px",
+                                                                                padding: "5px",
+                                                                                textAlign: "center",
+                                                                                flexDirection: "row",
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                gap: '30px'
+                                                                            }}
+                                                                        >
+                                                                            <Typography variant="h5">
+                                                                                {aps.codeAp.replace("AP", "AP - ")}
+                                                                            </Typography>
+
+                                                                            <img
+                                                                                src={filteredIcon(
+                                                                                    aps.cultureName
+                                                                                )}
+                                                                                alt={filteredAlt(
+                                                                                    aps.cultureName
+                                                                                )}
+                                                                                style={{
+                                                                                    filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+                                                                                    width: '20px',
+                                                                                    height: '20px'
+
                                                                                 }}
-                                                                            >
-                                                                                <Typography variant="h5">
-                                                                                    {aps.codeAp.replace("AP", "AP - ")}
-                                                                                </Typography>
-
-                                                                                <img
-                                                                                    src={filteredIcon(
-                                                                                        aps.cultureName
-                                                                                    )}
-                                                                                    alt={filteredAlt(
-                                                                                        aps.cultureName
-                                                                                    )}
-                                                                                    style={{
-                                                                                        filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
-                                                                                        width: '20px',
-                                                                                        height: '20px'
-
-                                                                                    }}
-                                                                                />
+                                                                            />
                                                                         </Box>
                                                                         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '30px' }}>
                                                                             <Typography variant="h6"> Total: {formatNumber(totalSol)}</Typography>
@@ -478,9 +615,9 @@ const ColheitaPage = () => {
                         sx={{
                             width: "30%",
                             flexGrow: 1,
-                            alignSelf: "center",
+                            alignSelf: "baseline",
                             textAlign: "center",
-                            padding: "20px"
+                            padding: "20px",
                         }}
                         ml={2}
                         mr={2}
