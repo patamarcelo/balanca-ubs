@@ -25,7 +25,10 @@ const HeaderComp = (props) => {
 				backgroundColor: colors.blueOrigin[500],
 				marginBottom: "20px",
 				borderRadius: "8px",
-				boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px"
+				boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
+				position: 'sticky',
+				top: "0",
+
 			}}
 		>
 			<Box

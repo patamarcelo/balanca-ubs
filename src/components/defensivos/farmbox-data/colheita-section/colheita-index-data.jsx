@@ -312,6 +312,7 @@ const ColheitaPage = () => {
                     <Box
                         sx={{
                             width: "100%",
+                            paddingBottom: '32px'
                         }}
                     >
                         <Accordion  sx={{ width: "100%" }}
@@ -618,6 +619,8 @@ const ColheitaPage = () => {
                             alignSelf: "baseline",
                             textAlign: "center",
                             padding: "20px",
+                            position: "sticky",
+                            top: "0"
                         }}
                         ml={2}
                         mr={2}

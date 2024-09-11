@@ -309,7 +309,7 @@ const ProgramasSection = () => {
 							<Box
 								id="printDivProgram"
 								sx={{
-									fontFamily: "Times New Roman !important"
+									fontFamily: "Times New Roman !important",
 								}}
 							>
 								{version && (
