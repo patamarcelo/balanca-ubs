@@ -113,10 +113,10 @@ const ProdutosConsolidados = () => {
                         setStOpened(st_number)
                         Swal.fire({
                             title: "Feito!!",
-                            text: `<b>ST Aberta com Suscesso: ${st_number}</b> <br> Enviada por E-mail: ${sent_by_email}`,
+                            html: `<b>ST Aberta com Suscesso: ${st_number}</b> <br> Enviada por E-mail: ${sent_by_email}`,
                             icon: "success"
                         });
-                    } else if (res.status === 208){
+                    } else if (res.status === 208) {
                         const { msg, error } = res.data
                         Swal.fire({
                             title: `${msg}`,
@@ -184,9 +184,9 @@ const ProdutosConsolidados = () => {
                     <>
 
                         <Box
-                        sx={{
-                            justifySelf: 'center',
-                        }}
+                            sx={{
+                                justifySelf: 'center',
+                            }}
                         >
                             <LoadingButton
                                 variant="contained"
@@ -197,9 +197,9 @@ const ProdutosConsolidados = () => {
                             >Gerar St</LoadingButton>
                         </Box>
                         <Box
-                        sx={{
-                            justifySelf: 'center',
-                        }}
+                            sx={{
+                                justifySelf: 'center',
+                            }}
                         >
                             <IconButton aria-label="delete" onClick={handleClear} color="error">
                                 <CancelPresentationIcon />
@@ -220,12 +220,13 @@ const ProdutosConsolidados = () => {
                     >
                         <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
                         {
-                            stOpened && stOpened !== 0 ?
-                            <Typography sx={{ marginLeft: '-30px',fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 30px',  }} color={colors.textColor[200]}>Pré ST: 
+                            stOpened && stOpened !== 0 &&
+                            <Typography sx={{ marginLeft: '-30px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 30px', }} color={colors.textColor[200]}>Pré ST:
                                 <span style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '10px', marginLeft: '10px', }} color={colors.textColor[100]}>{stOpened}</span>
                             </Typography>
-                            :
-                            <Typography sx={{ marginLeft: '-30px',fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'red', padding: '0px 40px 0px 30px',  }} color={colors.textColor[200]}>Erro ao abrir Pré ST
+                        }
+                        {stOpened && stOpened === 0 &&
+                            <Typography sx={{ marginLeft: '-30px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'red', padding: '0px 40px 0px 30px', }} color={colors.textColor[200]}>Erro ao abrir Pré ST
                             </Typography>
 
                         }

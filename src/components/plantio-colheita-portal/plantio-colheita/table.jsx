@@ -25,6 +25,7 @@ const TableColheita = ({ data, idsPending }) => {
 			</thead>
 			<tbody>
 				{data.map((carga, i) => {
+					console.log('table dataL ', carga)
 					const areaParcial = carga.area_parcial
 						? carga.area_parcial
 						: 0;
@@ -60,7 +61,8 @@ const TableColheita = ({ data, idsPending }) => {
 								carga.romaneios > 0 || areaParcial > 0 || romaneiosPending > 0
 									? styles.colheitaRow
 									: styles.notColheitaRow
-							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && styles.closedParcela} 
+							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 === 0 && styles.closedParcelaOdd} 
+							${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 !== 0 && styles.closedParcelaEven} 
 							${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
 						>
 							<td>{carga.talhao__id_talhao}</td>

@@ -59,7 +59,11 @@
     cursor: pointer;
 }
 
-.closedParcela {
-    background-color: rgba(11,156,49,0.3);
+.closedParcelaOdd {
+    background-color: rgba(11,156,49,0.4);
+}
+
+.closedParcelaEven {
+    background-color: rgba(11,156,49,0.2);
     
 }
