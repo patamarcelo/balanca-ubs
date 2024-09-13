@@ -15,7 +15,7 @@ const SheetFields = (props) => {
 		<>
 			<Typography
 				variant="h4"
-				color={colors.blueOrigin[400]}
+				color={colors.blueOrigin[200]}
 				mt="20px"
 				sx={{
 					fontStyle: "italic"

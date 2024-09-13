@@ -8,7 +8,7 @@ const DateIntervalPage = ({ setInitialDate, initialDateForm, label }) => {
 		return !isNaN(new Date(dateStr));
 	};
 	return (
-		<LocalizationProvider dateAdapter={AdapterDayjs}>
+		<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
 			<DatePicker
 				label={label}
 				value={initialDateForm}

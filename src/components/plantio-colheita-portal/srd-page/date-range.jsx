@@ -31,7 +31,7 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
     }, [finalDate, initialDate, setParamsQuery, ticketApi]);
     return (
         <Box display={"flex"} flexDirection={"row"} gap={2} ml={2}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DatePicker
                     label="Data"
                     renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
@@ -40,7 +40,7 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
                     value={initialDate}
                 />
             </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DatePicker
                     label="Data"
                     renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
