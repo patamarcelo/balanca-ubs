@@ -66,7 +66,6 @@ const ColheitaAtual = (props) => {
 			flexDirection={"column"}
 			paddingLeft={6}
 			paddingRight={6}
-			paddingTop={2}
 			paddingBottom={2}
 			sx={{
 				minWidth: '1200px'
@@ -101,7 +100,7 @@ const ColheitaAtual = (props) => {
 			<Grid container spacing={2} sx={{ mb: 3, minWidth: '1200px' }}>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent>
+						<CardContent sx={{paddingBottom: '16px !important'}}>
 							<Typography variant="h6" fontWeight={"bold"}>Área Disponível</Typography>
 							<Typography variant="body1">{areaDisponivel} Hectares</Typography>
 						</CardContent>
@@ -109,7 +108,7 @@ const ColheitaAtual = (props) => {
 				</Grid>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent>
+						<CardContent sx={{paddingBottom: '16px !important'}}>
 							<Typography variant="h6" fontWeight={"bold"}>Parcelas</Typography>
 							<Typography variant="body1">{parcelasTotal}</Typography>
 						</CardContent>
@@ -117,7 +116,7 @@ const ColheitaAtual = (props) => {
 				</Grid>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent>
+						<CardContent sx={{paddingBottom: '16px !important'}}>
 							<Typography variant="h6" fontWeight={"bold"}>Romaneios Pendentes</Typography>
 							<Typography variant="body1">{resumeFarmRomaneios[selectedFarm] ? resumeFarmRomaneios[selectedFarm] : ' - '}</Typography>
 						</CardContent>

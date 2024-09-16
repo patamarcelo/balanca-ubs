@@ -66,7 +66,7 @@ const PlantioColheitaPortal = (props) => {
 						icon={faArrowAltCircleLeft}
 						color={colors.greenAccent[500]}
 						onClick={() => setOpenDrawer(false)}
-						style={{ cursor: 'pointer', marginLeft: '10px' }}
+						style={{ cursor: 'pointer', marginLeft: '10px', position: 'fixed' }}
 					/>
 
 					:
@@ -74,7 +74,7 @@ const PlantioColheitaPortal = (props) => {
 						icon={faArrowAltCircleRight}
 						color={colors.greenAccent[500]}
 						onClick={() => setOpenDrawer(true)}
-						style={{ cursor: 'pointer', marginLeft: '10px' }}
+						style={{ cursor: 'pointer', marginLeft: '10px', position: 'fixed' }}
 					/>
 
 

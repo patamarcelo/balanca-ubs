@@ -56,6 +56,8 @@ import FarmIcon from '../../../utils/assets/icons/farmbox.svg'
 import toast from "react-hot-toast";
 import LinearProgress from "@mui/material/LinearProgress";
 
+import Swal from "sweetalert2";
+
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -620,13 +622,11 @@ const DataProgramPage = (props) => {
 					if (res.data.status === 201) {
 						const dataFromServer = JSON.parse(res.data.result)
 						const { code } = dataFromServer;
-						toast.success(
-							`AP Aberta com Sucesso: ${code} `,
-							{
-								position: "top-center",
-								duration: 5000,
-							}
-						);
+						Swal.fire({
+                            title: "Feito!!",
+                            html: `AP Aberta com Sucesso: <b>${code}</b> `,
+                            icon: "success"
+                        });
 						parcelasToUp.forEach((parcela) => {
 							handleSetApp(parcela.id, parcela.estagio)
 						})
