@@ -25,7 +25,6 @@ const TableColheita = ({ data, idsPending }) => {
 			</thead>
 			<tbody>
 				{data.map((carga, i) => {
-					console.log('table dataL ', carga)
 					const areaParcial = carga.area_parcial
 						? carga.area_parcial
 						: 0;

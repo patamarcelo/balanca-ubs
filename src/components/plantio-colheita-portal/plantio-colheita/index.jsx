@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
 
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+
 const ColheitaAtual = (props) => {
 	const { filteredFarm, selectedFarm, handlerFilter, selectedFilteredData, idsPending, resumeFarmRomaneios } =
 		props;
@@ -24,6 +27,8 @@ const ColheitaAtual = (props) => {
 	const [areaColhidaParcial, setAreaColhidaParcial] = useState(0);
 	const [areaDisponivel, setAreaDisponivel] = useState(0);
 	const [newDayNow, setNewDayNow] = useState("");
+
+	const [checkedColheita, setCheckedColheita] = useState(true);
 
 	const [dateSort, setDateSort] = useState(false);
 
@@ -57,6 +62,11 @@ const ColheitaAtual = (props) => {
 	const handleFilterTable = () => {
 		setDateSort(!dateSort);
 	};
+
+	const handleChangeCheck = (event) => {
+		setCheckedColheita(event.target.checked);
+	}
+
 	return (
 		<Box
 			width={"100%"}
@@ -100,7 +110,7 @@ const ColheitaAtual = (props) => {
 			<Grid container spacing={2} sx={{ mb: 3, minWidth: '1200px' }}>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent sx={{paddingBottom: '16px !important'}}>
+						<CardContent sx={{ paddingBottom: '16px !important' }}>
 							<Typography variant="h6" fontWeight={"bold"}>Área Disponível</Typography>
 							<Typography variant="body1">{areaDisponivel} Hectares</Typography>
 						</CardContent>
@@ -108,7 +118,7 @@ const ColheitaAtual = (props) => {
 				</Grid>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent sx={{paddingBottom: '16px !important'}}>
+						<CardContent sx={{ paddingBottom: '16px !important' }}>
 							<Typography variant="h6" fontWeight={"bold"}>Parcelas</Typography>
 							<Typography variant="body1">{parcelasTotal}</Typography>
 						</CardContent>
@@ -116,7 +126,7 @@ const ColheitaAtual = (props) => {
 				</Grid>
 				<Grid item xs={2}>
 					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
-						<CardContent sx={{paddingBottom: '16px !important'}}>
+						<CardContent sx={{ paddingBottom: '16px !important' }}>
 							<Typography variant="h6" fontWeight={"bold"}>Romaneios Pendentes</Typography>
 							<Typography variant="body1">{resumeFarmRomaneios[selectedFarm] ? resumeFarmRomaneios[selectedFarm] : ' - '}</Typography>
 						</CardContent>
@@ -139,16 +149,34 @@ const ColheitaAtual = (props) => {
 					{newDayNow}
 				</Typography>
 
-				<FontAwesomeIcon
-					icon={faArrowDownAZ}
-					color={colors.greenAccent[500]}
-					size="sm"
-					style={{
-						margin: "0px 0px",
-						cursor: "pointer"
-					}}
-					onClick={() => handleFilterTable()}
-				/>
+				<Box sx={{
+					display: 'flex',
+					gap: '30px',
+					alignItems: 'center',
+				}}>
+					<FontAwesomeIcon
+						icon={faArrowDownAZ}
+						color={colors.greenAccent[500]}
+						size="sm"
+						style={{
+							margin: "0px 0px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleFilterTable()}
+					/>
+					<FormControlLabel 
+						control={
+						<Switch
+							color="secondary"
+							checked={checkedColheita}
+							onChange={handleChangeCheck}
+						/>
+					} 
+						label="Colheita Andamento" 
+						sx={{color: colors.textColor[100]}}
+					/>
+				</Box>
+
 			</Box>
 			<Box
 				sx={{
@@ -176,7 +204,7 @@ const ColheitaAtual = (props) => {
 					theme={theme}
 					colors={colors}
 					idsPending={idsPending}
-					data={selectedFilteredData.sort((b, a) =>
+					data={selectedFilteredData.filter((data) => checkedColheita ? data.finalizado_colheita === false : data.finalizado_colheita !== null).sort((b, a) =>
 						dateSort
 							? b.talhao__id_talhao.localeCompare(
 								a.talhao__id_talhao
