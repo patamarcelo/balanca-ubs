@@ -1,4 +1,9 @@
 import { Alert, Box, Typography, useTheme } from "@mui/material";
+import { Button, Stack, Grid, Card, CardContent, Paper, IconButton } from '@mui/material';
+// import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+// import CancelIcon from '@mui/icons-material/Cancel';
+// import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { tokens } from "../../../theme";
 import HeaderFarm from "./header-farm";
 import TableColheita from "./table";
@@ -63,6 +68,9 @@ const ColheitaAtual = (props) => {
 			paddingRight={6}
 			paddingTop={2}
 			paddingBottom={2}
+			sx={{
+				minWidth: '1200px'
+			}}
 		>
 			<Box
 				sx={{
@@ -72,7 +80,8 @@ const ColheitaAtual = (props) => {
 					gap: "10px",
 					alignItems: "flex-start",
 					width: "100%",
-					marginBottom: "20px"
+					marginBottom: "20px",
+					minWidth: '1200px'
 				}}
 			>
 				{filteredFarm
@@ -83,22 +92,38 @@ const ColheitaAtual = (props) => {
 								selectedFarm={selectedFarm}
 								farm={farm}
 								key={i}
+								index={i}
 								handlerFilter={handlerFilter}
 							/>
 						);
 					})}
 			</Box>
-			<Box display={"flex"} flexDirection="row" gap={10} mb={2} sx={{color: colors.textColor[100]}}>
-				<span>
-					<b>Área Disponível:</b> <br /> {areaDisponivel} Hectares
-				</span>
-				<span>
-					<b>Parcelas:</b> <br />{parcelasTotal}
-				</span>
-				<span>
-					<b>Romaneios Pendentes:</b> <br />{resumeFarmRomaneios[selectedFarm] ? resumeFarmRomaneios[selectedFarm] : ' - '}
-				</span>
-			</Box>
+			<Grid container spacing={2} sx={{ mb: 3, minWidth: '1200px' }}>
+				<Grid item xs={2}>
+					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
+						<CardContent>
+							<Typography variant="h6" fontWeight={"bold"}>Área Disponível</Typography>
+							<Typography variant="body1">{areaDisponivel} Hectares</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={2}>
+					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
+						<CardContent>
+							<Typography variant="h6" fontWeight={"bold"}>Parcelas</Typography>
+							<Typography variant="body1">{parcelasTotal}</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={2}>
+					<Card sx={{ backgroundColor: theme.palette.mode === 'light' && 'whitesmoke' }}>
+						<CardContent>
+							<Typography variant="h6" fontWeight={"bold"}>Romaneios Pendentes</Typography>
+							<Typography variant="body1">{resumeFarmRomaneios[selectedFarm] ? resumeFarmRomaneios[selectedFarm] : ' - '}</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+			</Grid>
 			<Box
 				display="flex"
 				flexDirection="row-reverse"
@@ -135,7 +160,7 @@ const ColheitaAtual = (props) => {
 					// backgroundColor: "rgba(128,128,128,0.4)",
 					backgroundColor: colors.blueOrigin[400],
 					// backgroundColor:'blue',
-					padding: "10px"
+					padding: "10px",
 				}}
 			>
 				<Typography
@@ -155,8 +180,8 @@ const ColheitaAtual = (props) => {
 					data={selectedFilteredData.sort((b, a) =>
 						dateSort
 							? b.talhao__id_talhao.localeCompare(
-									a.talhao__id_talhao
-							  )
+								a.talhao__id_talhao
+							)
 							: a.dap - b.dap
 					)}
 				/>

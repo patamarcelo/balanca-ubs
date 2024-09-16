@@ -97,7 +97,7 @@ const FarmBoxPage = () => {
 	const MenuProps = {
 		PaperProps: {
 			style: {
-				maxHeight: 450,
+				maxHeight: 490,
 				width: 250
 			}
 		}
