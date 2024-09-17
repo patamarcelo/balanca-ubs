@@ -7,6 +7,10 @@ import { tokens } from "../../../theme";
 
 import { useState, useEffect } from "react";
 
+import Tooltip from '@mui/material/Tooltip';
+import Zoom from '@mui/material/Zoom';
+
+
 const colorDict = [
 	{
 		tipo: "Inseticida",
@@ -84,7 +88,7 @@ const DetailAppData = (props) => {
 			setParcelaSelected((prev) => [...prev, parcelaDetail]);
 		}
 	};
-	
+
 	// Selecionar todas as parcelas ao abrir todas as APs
 	// useEffect(() => {
 	// 	if(openAll && data.parcelas.length > 0){
@@ -137,6 +141,10 @@ const DetailAppData = (props) => {
 				{data.parcelas
 					.sort((a, b) => b.aplicado - a.aplicado)
 					.map((data, i) => {
+						const getArea = data.areaAplicada > 0 ? data.areaAplicada : data.area
+						const notFinished = (data.area - getArea) > 0 ? true : false
+						const getPercent = ((data.areaAplicada / data.area) * 100)
+						const tooltipTile = getPercent.toFixed(0) + "%  - " + data.areaAplicada + " Ha"
 						return (
 							<Box
 								m={1}
@@ -144,26 +152,46 @@ const DetailAppData = (props) => {
 								onClick={() => handlerSumArea(data)}
 							>
 								{/* {<IconDetail color={data.aplicado} />} */}
-								<span
-									className={
-										checkIsInArr(data) && classes.isInArr
-									}
-									style={{
-										backgroundColor: data.aplicado
-											? "rgba(0,250,0, 0.6)"
-											: "rgba(238,75,43, 0.6)",
-										padding: "3px 10px",
-										borderRadius: "12px",
-										fontWeight: "bold",
-										whiteSpace: "nowrap"
-									}}
+								<Tooltip title={<h2> {tooltipTile}</h2>} arrow
+								TransitionComponent={Zoom}
 								>
-									{data.parcela} -{" "}
-									{data.area
-										.toFixed(2)
-										.toString()
-										.replace(".", ",")}
-								</span>
+									<Box
+										className={
+											checkIsInArr(data) && classes.isInArr
+										}
+										style={{
+											backgroundColor: colors.blueOrigin[600],
+											// backgroundColor: notFinished ? 'rgba(248,198,0,0.8)' : data.aplicado
+											// 	? "rgba(0,250,0, 0.6)"
+											// 	: "rgba(238,75,43, 0.6)",
+											// border: '1px solid rgba(255,255,255,0.1)',
+											width: "100%",
+											borderRadius: "12px",
+										}}
+									>
+										<Box
+											sx={{
+												width: data.aplicado ? `${getPercent}%` : '100%',
+												padding: "3px 10px",
+												borderRadius: notFinished ? "" : "12px",
+												borderTopLeftRadius: notFinished && "12px",
+												borderBottomLeftRadius: notFinished && "12px",
+												fontWeight: "bold",
+												whiteSpace: "nowrap",
+												backgroundColor: notFinished ? 'rgba(248,198,0,0.6)' : data.aplicado
+													? "rgba(0,250,0, 0.6)"
+													: "rgba(238,75,43, 0.6)",
+											}}
+										>
+
+											{data.parcela} -{" "}
+											{data.area
+												.toFixed(2)
+												.toString()
+												.replace(".", ",")}
+										</Box>
+									</Box>
+								</Tooltip>
 								{/* <progress value={20} max={data.area}></progress> */}
 							</Box>
 						);
@@ -287,7 +315,7 @@ const DetailAppData = (props) => {
 												{" "}
 												{parseFloat(
 													Number(data.dose) *
-														bombArr[1].bomby
+													bombArr[1].bomby
 												).toLocaleString("pt-br", {
 													minimumFractionDigits: 2,
 													maximumFractionDigits: 2

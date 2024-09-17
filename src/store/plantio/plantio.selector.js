@@ -335,7 +335,8 @@ export const createDict = (state) => {
 			return {
 				parcela: data.plantation.name,
 				id_plantation: data.plantation.id,
-				area: data.plantation.area,
+				area: data.sought_area,
+				areaAplicada: data.applied_area,
 				variedade: data.plantation.variety_name,
 				cultura: data.plantation.culture_name,
 				aplicado: aplicado,
