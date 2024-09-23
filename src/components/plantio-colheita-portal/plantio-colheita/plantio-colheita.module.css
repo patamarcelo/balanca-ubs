@@ -18,6 +18,7 @@
 .colheitaRow {
     /* background-color: rgba(0,128,0,0.5); */
     color: rgb(9, 137, 9);
+    color: rgb(124, 124, 124) !important;
     font-weight: bold;
 }
 

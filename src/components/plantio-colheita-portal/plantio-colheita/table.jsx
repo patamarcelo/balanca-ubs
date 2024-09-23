@@ -3,9 +3,47 @@ import styles from "./plantio-colheita.module.css";
 import { useTheme } from '@mui/material'
 import { tokens } from '../../../theme'
 
+import beans from "../../../utils/assets/icons/beans2.png";
+import soy from "../../../utils/assets/icons/soy.png";
+import rice from "../../../utils/assets/icons/rice.png";
+import cotton from '../../../utils/assets/icons/cotton.png'
+import question from '../../../utils/assets/icons/question.png'
+
 const TableColheita = ({ data, idsPending }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+
+	const iconDict = [
+		{ cultura: "Feijão", icon: beans, alt: "feijao" },
+		{ cultura: "FEIJAO MUNGO", icon: beans, alt: "feijao" },
+		{ cultura: "Arroz", icon: rice, alt: "arroz" },
+		{ cultura: "Soja", icon: soy, alt: "soja" },
+		{ cultura: "Algodão", icon: cotton, alt: "algodao" },
+	];
+
+	const filteredIcon = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].icon;
+		}
+		return question;
+	};
+
+	const filteredAlt = (data) => {
+		const filtered = iconDict.filter(
+			(dictD) => dictD.cultura === data
+		);
+
+		if (filtered.length > 0) {
+			return filtered[0].alt;
+		}
+		return question;
+	};
+
+	console.log('dataTable', data);
 
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
@@ -14,6 +52,8 @@ const TableColheita = ({ data, idsPending }) => {
 					<th>Parcela</th>
 					<th>Data Plantio</th>
 					<th>Dap</th>
+					<th>Cultura</th>
+					<th>Variedade</th>
 					{/* <th>Projeto</th> */}
 					<th>Area</th>
 					<th>Area Colhida</th>
@@ -67,6 +107,23 @@ const TableColheita = ({ data, idsPending }) => {
 							<td>{carga.talhao__id_talhao}</td>
 							<td>{formatDate(carga.data_plantio)}</td>
 							<td>{carga.dap}</td>
+							<td>
+										<img
+											src={filteredIcon(
+												carga.variedade__cultura__cultura
+											)}
+											alt={filteredAlt(
+												carga.variedade__cultura__cultura
+											)}
+											style={{
+												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+												width: '20px',
+												height: '20px'
+											}}
+										/>
+									</td>
+									<td>{carga.variedade__nome_fantasia}</td>
+							
 							{/* <td>
 								{carga.talhao__fazenda__nome.replace(
 									"Projeto",
