@@ -5,7 +5,7 @@ const INITIAL_STATE = {
 	plantioMapAll: [],
 	app: [],
 	appFarmBox: [],
-	safraCiclo: { safra: "2024/2025", ciclo: "1" },
+	safraCiclo: { safra: "2024/2025", ciclo: "2" },
 	pluvi: [],
 	plantioCalendarDone: []
 };

@@ -9,6 +9,8 @@ import rice from "../../../utils/assets/icons/rice.png";
 import cotton from '../../../utils/assets/icons/cotton.png'
 import question from '../../../utils/assets/icons/question.png'
 
+import { useEffect } from "react";
+
 const TableColheita = ({ data, idsPending }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -42,6 +44,8 @@ const TableColheita = ({ data, idsPending }) => {
 		}
 		return question;
 	};
+
+
 
 	console.log('dataTable', data);
 
