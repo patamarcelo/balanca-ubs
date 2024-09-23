@@ -56,6 +56,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ColheitaModalPage from "./colheita-modal";
 import ColheitaPage from "./colheita-section/colheita-index-data";
 import ProdutosConsolidados from "./produtos-consolidados";
+import PreStPage from "./pre-st";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
@@ -82,11 +83,14 @@ const FarmBoxPage = () => {
 
 	const [isOpenedAll, setIsOpenedAll] = useState(false);
 
+
 	const safraCiclo = useSelector(selectSafraCiclo);
 
 	const [filterPreaproSolo, setFilterPreaproSolo] = useState(false);
 
 	const [openColheitaModal, setOpenColheitaModal] = useState(false);
+
+	const [openPreStPage, setOpenPreStPage] = useState(false);
 
 	const user = useSelector(selectCurrentUser);
 
@@ -203,6 +207,11 @@ const FarmBoxPage = () => {
 		setOpenColheitaModal(false)
 	}
 
+	const handleOpenPreStPage = () => {
+		console.log('Abrindo pre st page')
+		setOpenPreStPage(true)
+	}
+
 	useEffect(() => {
 		let saldoAplicar = 0;
 		filtFarm.forEach((data, index) => {
@@ -307,6 +316,9 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpenColheitaPage()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Colheita de Grãos
 					</Button>
+					<Button onClick={() => handleOpenPreStPage()} color="success" disabled={IsloadingDbFarm || loadingData}>
+						Pré ST
+					</Button>
 					<Button onClick={() => handleUpdateFarmDb()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Atualizar DB
 					</Button>
@@ -325,6 +337,12 @@ const FarmBoxPage = () => {
 			{
 				dictSelect.length > 0 &&
 				<>
+					{
+					openPreStPage &&
+					<PreStPage 
+						closePage={setOpenPreStPage}
+					/> 
+				}
 				<Box
 				sx={{
 					display: 'flex',
