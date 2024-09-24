@@ -48,11 +48,11 @@ const TableComponent = ({ data, onlyFarmsArr }) => {
                     <th>Total Geral</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style={{color: colors.textColor[100]}}>
                 {
-                    onlyFarmsArr.map((farms) => {
+                    onlyFarmsArr.map((farms, i) => {
                         return (
-                            <tr>
+                            <tr className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light' && i % 2 !== 0 && styles.oddRowLight}`}>
                                 <td>{farms?.replace('Projeto', '')}</td>
                                 {data.map((dataProj, i) => {
                                     const getValue = dataProj.projects[farms] ? formatNumber(dataProj.projects[farms]) : ' - '
@@ -67,9 +67,9 @@ const TableComponent = ({ data, onlyFarmsArr }) => {
 
                 }
             </tbody>
-            <tfoot>
+            <tfoot style={{color: colors.textColor[100], borderTop: theme.palette.mode === 'light' ? 'black 1px solid' : 'whitesmoke 1px solid'}}>
                 <tr>
-                    <th scope="row" style={{ fontWeight: 'bold' }}>Totais</th>
+                    <th scope="row" style={{ fontWeight: 'bold' }}></th>
                     {
                         totals.map((total) => {
                             return (
@@ -77,7 +77,7 @@ const TableComponent = ({ data, onlyFarmsArr }) => {
                             )
                         })
                     }
-                    <td>{formatNumber(totalGeral)}</td>
+                    <td style={{textAlign: 'right', fontWeight: 'bold'}}>{formatNumber(totalGeral)}</td>
                 </tr>
 
             </tfoot>

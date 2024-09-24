@@ -13,7 +13,6 @@
 .table th,
 .table td {
   padding: 12px;
-  border-bottom: 1px solid #ddd;
 }
 
 .table thead {
@@ -21,27 +20,30 @@
   color: #fff;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
 
-tbody tr:hover {
+.table tbody tr:hover {
   background-color: #e6f7ff;
   cursor: pointer;
+  color: black;
+
 }
 
-tbody td {
-  color: #333;
-}
-
-th {
+.table th {
   text-align: center;
 }
 
-td {
+.table td {
   text-align: center;
 }
 
-tfoot tr th , tfoot tr td {
+.table tfoot tr th , tfoot tr td {
   border-right: 0px !important;
+}
+
+
+.oddRow {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+.evenRowLight {
+    background-color: rgba(248,248,248,1.0);
 }

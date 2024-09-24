@@ -78,7 +78,7 @@ const PlantioAtual = () => {
             paddingRight={6}
             paddingBottom={2}
             sx={{
-                minWidth: "1200px",
+                minWidth: "1365px",
             }}
         >
             {
@@ -88,13 +88,13 @@ const PlantioAtual = () => {
                         display={"flex"}
                         justifyContent={"center"}
                         p={1}
-                        mb={1}
                         mt={3}
                         sx={{
                             backgroundColor: colors.blueOrigin[400],
-                            color: colors.grey[900]
+                            color: colors.grey[900],
+                            minWidth: "1365px",
+                            width: '100%',
                         }}
-                        width={"100%"}
                     >
                         <Typography
                             variant="h1"
