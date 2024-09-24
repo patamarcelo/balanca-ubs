@@ -1,8 +1,10 @@
-import ColheitaAtual from "./plantio-colheita";
 import { useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
+
+import ColheitaAtual from "./plantio-colheita";
 import RomaneiosPage from "./romaneios";
 import SRDPage from "./srd-page";
+import PlantioAtual from "./plantio-atual";
 
 import { tokens } from "../../theme";
 
@@ -30,6 +32,13 @@ const PlantioColheitaPortal = (props) => {
 		{
 			route: "rota 1",
 			component: (
+				<PlantioAtual
+				/>
+			)
+		},
+		{
+			route: "rota 2",
+			component: (
 				<ColheitaAtual
 					filteredFarm={filteredFarm}
 					selectedFarm={selectedFarm}
@@ -41,13 +50,13 @@ const PlantioColheitaPortal = (props) => {
 			)
 		},
 		{
-			route: "rota 2",
+			route: "rota 3",
 			component: (
 				<RomaneiosPage />
 			)
 		},
 		{
-			route: "rota 3",
+			route: "rota 4",
 			component: (
 				<SRDPage />
 			)

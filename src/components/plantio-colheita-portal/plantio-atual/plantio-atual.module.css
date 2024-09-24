@@ -1,0 +1,47 @@
+.table {
+  color: black;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 12px;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table thead {
+  background-color: #333;
+  color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
+tbody td {
+  color: #333;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
+tfoot tr th , tfoot tr td {
+  border-right: 0px !important;
+}

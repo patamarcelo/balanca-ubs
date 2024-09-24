@@ -5,10 +5,15 @@ import { tokens } from '../../../../theme';
 // import CardTable from './card-to-show';
 import CompactTable from './table-to-show';
 import CompactTableSkeleton from './skeleton-table';
+import TableShow from './table-to-show-as-table';
 
 
 import { useEffect, useState } from 'react';
 import { nodeServerSrd } from '../../../../utils/axios/axios.utils';
+
+import CachedIcon from '@mui/icons-material/Cached';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 
 
 
@@ -21,20 +26,44 @@ const PreStPage = (props) => {
     const [dataFromProtheus, setDataFromProtheus] = useState([]);
 
     const { closePage } = props;
+    const handleSearch = async () => {
+        setloadingDataProtheus(true);
+        const query = { status: 'aberto' };
+        try {
+            nodeServerSrd
+                .get("/get-open-pre-st-srd", {
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                    },
+                    params: query
+                })
+                .then(res => {
+                    console.log(res?.data?.pre_sts)
+                    setDataFromProtheus(res?.data?.pre_sts)
+                    setloadingDataProtheus(false);
+                }).catch((err) => {
+                    setloadingDataProtheus(false)
+                    window.alert('erro ao pegar os dados: ', err)
+                })
+        } catch (error) {
+            console.log("erro ao pegar os dados: ", error);
+            setloadingDataProtheus(false);
+        } finally {
+            // setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         const handleSearch = async () => {
             setloadingDataProtheus(true);
-            const paramsQuery = { products: 'bio' }
+            const query = { status: 'aberto' };
             try {
                 nodeServerSrd
                     .get("/get-open-pre-st-srd", {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
                         },
-                        params: {
-                            paramsQuery
-                        }
+                        params: query
                     })
                     .then(res => {
                         console.log(res?.data?.pre_sts)
@@ -107,21 +136,38 @@ const PreStPage = (props) => {
                     flexDirection: 'row',
                     width: '100%',
                     backgroundColor: colors.blueOrigin[800],
-                    borderRadius: '12px'
+                    borderRadius: '12px',
+                    borderBottomLeftRadius: '0px',
+                    borderBottomRightRadius: '0px'
                 }}
             >
+                <Box
+                    sx={{
+                        top: '0',
+                        gap: '10px',
+                        display: 'flex',
+                    }}
+                >
+                    <IconButton variant='outlined' color='success' onClick={() => handleSearch()}>
+                        <CachedIcon />
+                    </IconButton>
+                </Box>
                 <Typography variant="h2" color={colors.textColor[100]}
-                sx={{
-                    margin: '0 auto',
-                    top: '0'
-                }}
+                    sx={{
+                        margin: '0 auto',
+                        top: '0'
+                    }}
                 >Pré St</Typography>
                 <Box
                     sx={{
-                        top: '0'
+                        top: '0',
+                        gap: '10px',
+                        display: 'flex',
                     }}
                 >
-                    <Button variant='outlined' color='error' onClick={() => closePage(false)}>X</Button>
+                    <IconButton variant='outlined' color='error' onClick={() => closePage(false)}>
+                        <HighlightOffIcon />
+                    </IconButton>
                 </Box>
             </Box>
 
@@ -132,13 +178,19 @@ const PreStPage = (props) => {
             }
             {
                 !loadingDataProtheus && dataFromProtheus?.length > 0 &&
+
+                <TableShow dataArr={dataFromProtheus} />
+
+            }
+            {/* {
+                !loadingDataProtheus && dataFromProtheus?.length > 0 &&
                 dataFromProtheus.filter((data) => data.status === '1' || data.status === '2').map((data => {
                     return (
                         <CompactTable data={data} />
                     )
                 }))
 
-            }
+            } */}
         </Box>
     );
 }

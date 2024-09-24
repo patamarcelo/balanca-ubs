@@ -1,102 +1,54 @@
+
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
-import { styled } from '@mui/system';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Skeleton } from '@mui/material';
 
-// Styled TableRow to remove default blue hover and set to white/black
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:hover': {
-        backgroundColor: '#ffffff', // White background on hover
-        color: '#000000', // Black text on hover
-    },
-}));
+const SkeletonTable = () => {
+    // Define the number of rows you want to display as skeletons
+    const numberOfSkeletonRows = 20;
 
-const CompactTableSkeleton = () => {
     return (
-        <TableContainer component={Paper} sx={{ marginTop: 2, padding: 2 }}>
-            <Typography variant="h6" component="div" gutterBottom>
-                Project Information
-            </Typography>
-            <Table size="small" aria-label="compact table skeleton">
+        <TableContainer component={Paper} style={{ marginTop: '20px', padding: '20px' }}>
+            <Table>
+                {/* Table Header */}
                 <TableHead>
-                    <StyledTableRow>
-                        <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>General Info</TableCell>
-                        <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Destination</TableCell>
-                        <TableCell colSpan={3} sx={{ fontWeight: 'bold' }}>Products</TableCell>
-                    </StyledTableRow>
+                    <TableRow>
+                        <TableCell align="center">Nº</TableCell>
+                        <TableCell align="center">Data</TableCell>
+                        <TableCell align="center">Projeto</TableCell>
+                        <TableCell align="center">Aps'</TableCell>
+                        <TableCell align="center">Produto </TableCell>
+                        <TableCell align="center"> Saldo</TableCell>
+                    </TableRow>
                 </TableHead>
+
+                {/* Table Body with Skeleton Loader */}
                 <TableBody>
-                    {/* Skeleton Row for Project Info */}
-                    <StyledTableRow>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">Project:</Typography>
-                            {/* Placeholder for project data */}
-                        </TableCell>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">Destination Branch:</Typography>
-                            {/* Placeholder for branch data */}
-                        </TableCell>
-                        <TableCell colSpan={3} rowSpan={5} sx={{ verticalAlign: 'top' }}>
-                            <Typography variant="subtitle2">Product List:</Typography>
-                            {/* Nested Table for products */}
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>ID</TableCell>
-                                        <TableCell>Product</TableCell>
-                                        <TableCell align="right">Remaining Quantity</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {/* Placeholder rows for product list */}
-                                    <TableRow>
-                                        <TableCell>Placeholder</TableCell>
-                                        <TableCell>Placeholder</TableCell>
-                                        <TableCell align="right">Placeholder</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableCell>
-                    </StyledTableRow>
-
-                    {/* Skeleton Row for Date and APS */}
-                    <StyledTableRow>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">Integration Date:</Typography>
-                            {/* Placeholder for integration date */}
-                        </TableCell>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">Warehouse Destination:</Typography>
-                            {/* Placeholder for warehouse data */}
-                        </TableCell>
-                    </StyledTableRow>
-
-                    {/* Skeleton Row for APS Information */}
-                    <StyledTableRow>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">APS:</Typography>
-                            {/* Placeholder for APS info */}
-                        </TableCell>
-                    </StyledTableRow>
-
-                    {/* Skeleton Row for Status */}
-                    <StyledTableRow>
-                        <TableCell colSpan={2}>
-                            <Typography variant="subtitle2">Status:</Typography>
-                            {/* Placeholder for status */}
-                        </TableCell>
-                    </StyledTableRow>
-
-                    {/* Skeleton Row for Observations */}
-                    <StyledTableRow>
-                        <TableCell colSpan={4} sx={{ whiteSpace: 'pre-line' }}>
-                            <Typography variant="subtitle2">Notes:</Typography>
-                            {/* Placeholder for observations */}
-                        </TableCell>
-                    </StyledTableRow>
+                    {[...Array(numberOfSkeletonRows)].map((_, index) => (
+                        <TableRow key={index}>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={30} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={80} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={80} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={80} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={80} height={20} />
+                            </TableCell>
+                            <TableCell align="center">
+                                <Skeleton variant="text" width={80} height={20} />
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>
     );
 };
 
-export default CompactTableSkeleton;
+export default SkeletonTable;

@@ -1,0 +1,17 @@
+.oddRow {
+  background-color: rgba(245, 245, 245, 0.2);
+}
+.evenRow {
+  background-color: rgba(245, 245, 245, 0.9);
+}
+
+.prodsLine {
+  border-bottom: 1px dotted grey;
+}
+
+tbody {
+  height: 40px !important;
+}
+tbody tr td {
+  height: auto !important;
+}

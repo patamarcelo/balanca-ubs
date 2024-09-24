@@ -20,7 +20,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faTractor,
 	faClipboard,
-	faSheetPlastic
+	faSheetPlastic,
+	faWheatAwn
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate } from "react-router-dom";
@@ -39,24 +40,31 @@ const PermanentDrawerLeft = ({
 
 	const handlerRota2 = () => console.log("handler Rota 2");
 	const handlerRota3 = () => console.log("handler Rota 3");
+	const handlerRotaPlantio = () => console.log("handler Rota Plantio");
 
 	const navigateList = [
 		{
+			icon: faWheatAwn,
+			title: "Plantio",
+			route: "rota 1",
+			func: handlerRotaPlantio
+		},
+		{
 			icon: faTractor,
 			title: "Colheita",
-			route: "rota 1",
+			route: "rota 2",
 			func: handlerRefresh
 		},
 		{
 			icon: faClipboard,
 			title: "Romaneios",
-			route: "rota 2",
+			route: "rota 3",
 			func: handlerRota2
 		},
 		{
 			icon: faSheetPlastic,
 			title: "SRD",
-			route: "rota 3",
+			route: "rota 4",
 			func: handlerRota3
 		}
 	];
