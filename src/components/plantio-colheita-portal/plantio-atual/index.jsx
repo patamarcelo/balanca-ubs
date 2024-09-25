@@ -2,9 +2,9 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from 'react'
 
 import { tokens } from "../../../theme";
-import MyBarChart from './chart-test'
+import BarPlantioPlanner from "./bar-chart-plantio-comp.jsx";
 
-import { dataPlannerHandler } from './data-handler.js'
+import { dataPlannerHandler, consolidateData } from './data-handler.js'
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -18,6 +18,9 @@ const PlantioAtual = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [dataFromApi, setDataFromApi] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
+    const [executedAreaArr, setExecutedAreaArr] = useState([]);
+
+    const [dataToBarChart, setDataToBarChart] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -33,6 +36,7 @@ const PlantioAtual = () => {
                         console.log('data planner: ', res.data);
                         const newData = dataPlannerHandler(res.data.dados.qs_planned)
                         setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
+                        setExecutedAreaArr(res.data.dados.qs_executed_area)
                         setDataFromApi(newData)
                     })
                     .catch((err) => console.log(err));
@@ -48,7 +52,12 @@ const PlantioAtual = () => {
 
     useEffect(() => {
         console.log('data from api', dataFromApi)
-    }, [dataFromApi]);
+        console.log('data from api', executedAreaArr)
+        if(executedAreaArr.length > 0 && dataFromApi.length > 0) {
+            const newArr = consolidateData(dataFromApi, executedAreaArr)
+            setDataToBarChart(newArr)
+        }
+    }, [dataFromApi, executedAreaArr]);
 
     if (isLoading) {
         return (
@@ -106,6 +115,33 @@ const PlantioAtual = () => {
                     </Box>
                     <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} />
                 </>
+            }
+            {
+                dataToBarChart && dataToBarChart.length > 0 && (
+                    <>
+                    <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        p={1}
+                        mt={3}
+                        sx={{
+                            backgroundColor: colors.blueOrigin[400],
+                            color: colors.grey[900],
+                            minWidth: "1365px",
+                            width: '100%',
+                        }}
+                    >
+                        <Typography
+                            variant="h1"
+                            color={"whitesmoke"}
+                            sx={{ alignSelf: "center", justifySelf: "center" }}
+                        >
+                            Acompanhamento Plantio
+                        </Typography>
+                    </Box>
+                        <BarPlantioPlanner data={dataToBarChart} />
+                    </>
+                )
             }
         </Box>
     );

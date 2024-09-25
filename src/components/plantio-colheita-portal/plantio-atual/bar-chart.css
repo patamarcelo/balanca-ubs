@@ -1,0 +1,9 @@
+/* Target the text elements in the axis using a CSS selector */
+.nivo-axis text {
+    white-space: pre-line; /* Forces the label text to wrap onto multiple lines */
+  }
+  
+  /* Adjust the label text to align better after wrapping */
+  .nivo-axis text {
+    text-anchor: middle; /* Center the text */
+  }

@@ -42,16 +42,41 @@ export const dataPlannerHandler = qs_planned => {
     ).map(([weekRange, entries]) => {
         const projectSums = entries.reduce((projectAcc, entry) => {
             const projectName = entry.talhao__fazenda__nome;
-
             if (!projectAcc[projectName]) {
                 projectAcc[projectName] = 0;
             }
             projectAcc[projectName] += entry.area_planejamento_plantio;
             return projectAcc;
         }, {});
-
-        return { weekRange, projects: projectSums };
+        const totalPlanned = entries.reduce((acc, curr) => {
+            acc += curr.area_planejamento_plantio
+            return acc
+        }, 0)
+        return { weekRange, totalPlanned: totalPlanned, projects: projectSums };
     });
 
     return summedByWeekAndProject;
+};
+
+
+export const consolidateData = (plannedData, executedData) => {
+    // Helper to check if a date falls within a given week range
+    const isDateInRange = (date, range) => {
+        const [start, end] = range.split(" - ").map(d => new Date(d.split("/").reverse().join("-")));
+        const d = new Date(date);
+        return d >= start && d <= end;
+    };
+
+    // Consolidate executed data into the planned week structure
+    return plannedData.map(week => {
+        const executedTotal = executedData
+            .filter(exec => isDateInRange(exec.data_plantio, week.weekRange))
+            .reduce((sum, exec) => sum + Number(exec.area_plantada), 0);
+
+        return {
+            week: week.weekRange,
+            Planejado: week.totalPlanned,
+            Realizado: executedTotal
+        };
+    });
 };
