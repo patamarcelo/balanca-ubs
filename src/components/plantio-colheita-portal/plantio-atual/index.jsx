@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { tokens } from "../../../theme";
 import BarPlantioPlanner from "./bar-chart-plantio-comp.jsx";
 
-import { dataPlannerHandler, consolidateData } from './data-handler.js'
+import { dataPlannerHandler, consolidateData, groupExecutedByWeek } from './data-handler.js'
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -53,7 +53,7 @@ const PlantioAtual = () => {
     useEffect(() => {
         console.log('data from api', dataFromApi)
         console.log('data from api', executedAreaArr)
-        if(executedAreaArr.length > 0 && dataFromApi.length > 0) {
+        if (executedAreaArr.length > 0 && dataFromApi.length > 0) {
             const newArr = consolidateData(dataFromApi, executedAreaArr)
             setDataToBarChart(newArr)
         }
@@ -113,19 +113,46 @@ const PlantioAtual = () => {
                             Planejamento Plantio
                         </Typography>
                     </Box>
-                    <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} />
+                    <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} />
                 </>
             }
             {
                 dataToBarChart && dataToBarChart.length > 0 && (
                     <>
+                        <Box
+                            display={"flex"}
+                            justifyContent={"center"}
+                            p={1}
+                            mt={3}
+                            sx={{
+                                backgroundColor: colors.blueOrigin[400],
+                                color: colors.grey[900],
+                                minWidth: "1365px",
+                                width: '100%',
+                            }}
+                        >
+                            <Typography
+                                variant="h1"
+                                color={"whitesmoke"}
+                                sx={{ alignSelf: "center", justifySelf: "center" }}
+                            >
+                                Acompanhamento Plantio
+                            </Typography>
+                        </Box>
+                        <BarPlantioPlanner data={dataToBarChart} />
+                    </>
+                )
+            }
+            {
+                dataFromApi && dataFromApi.length > 0 &&
+                <>
                     <Box
                         display={"flex"}
                         justifyContent={"center"}
                         p={1}
                         mt={3}
                         sx={{
-                            backgroundColor: colors.blueOrigin[400],
+                            backgroundColor: colors.greenAccent[300],
                             color: colors.grey[900],
                             minWidth: "1365px",
                             width: '100%',
@@ -136,12 +163,11 @@ const PlantioAtual = () => {
                             color={"whitesmoke"}
                             sx={{ alignSelf: "center", justifySelf: "center" }}
                         >
-                            Acompanhamento Plantio
+                            Realizado
                         </Typography>
                     </Box>
-                        <BarPlantioPlanner data={dataToBarChart} />
-                    </>
-                )
+                    <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)}/>
+                </>
             }
         </Box>
     );

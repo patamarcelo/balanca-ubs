@@ -1,5 +1,6 @@
+import moment from 'moment';
+
 export const dataPlannerHandler = qs_planned => {
-    console.log('data insideL ', qs_planned)
     qs_planned.sort(
         (a, b) =>
             new Date(a.data_prevista_plantio) - new Date(b.data_prevista_plantio)
@@ -13,7 +14,9 @@ export const dataPlannerHandler = qs_planned => {
 
     // Step 2: Group data by weeks
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
-        const entryDate = new Date(entry.data_prevista_plantio);
+        const entryDate = moment(entry.data_prevista_plantio)
+        // entryDate.add(1, 'days')
+
 
         // Find the week difference from the start of the first week
         const weekDiff = Math.floor(
@@ -28,6 +31,7 @@ export const dataPlannerHandler = qs_planned => {
 
         const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
 
+
         // Group by week range
         if (!acc[weekRange]) {
             acc[weekRange] = [];
@@ -35,7 +39,6 @@ export const dataPlannerHandler = qs_planned => {
         acc[weekRange].push(entry);
         return acc;
     }, {});
-
     // Step 3: Sum areas by week and project name
     const summedByWeekAndProject = Object.entries(
         groupByWeeks
@@ -80,3 +83,56 @@ export const consolidateData = (plannedData, executedData) => {
         };
     });
 };
+
+
+export const groupExecutedByWeek = (qs_executed_area) => {
+    // Helper function to format the date range string (week start and end)
+    const formatWeekRange = (startDate) => {
+        const start = new Date(startDate);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6); // 6 days ahead to get the full week range
+
+        // Format date as 'dd/mm/yyyy'
+        const formatDate = (date) =>
+            `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+
+        return `${formatDate(start)} - ${formatDate(end)}`;
+    };
+
+    // Group data by week ranges starting on Sunday
+    const groupedByWeek = {};
+
+    qs_executed_area.forEach((entry) => {
+        const plantioDate = new Date(entry.data_plantio);
+        const dayOfWeek = plantioDate.getDay(); // Get the day of the week (0 for Sunday, 6 for Saturday)
+        
+        // Calculate the previous Sunday to start the week
+        const weekStart = new Date(plantioDate);
+        weekStart.setDate(plantioDate.getDate() - dayOfWeek); // Subtract the day of the week to get Sunday
+
+        const weekRange = formatWeekRange(weekStart);
+        const project = entry.plantio__talhao__fazenda__nome;
+        const areaPlanted = entry.area_plantada;
+
+        // Initialize week range if not yet present
+        if (!groupedByWeek[weekRange]) {
+            groupedByWeek[weekRange] = {
+                weekRange: weekRange,
+                totalPlanned: 0,
+                projects: {}
+            };
+        }
+
+        // Add the planted area to the total for the week
+        groupedByWeek[weekRange].totalPlanned += areaPlanted;
+
+        // Add the planted area to the specific project within that week
+        if (!groupedByWeek[weekRange].projects[project]) {
+            groupedByWeek[weekRange].projects[project] = 0;
+        }
+        groupedByWeek[weekRange].projects[project] += areaPlanted;
+    });
+
+    // Convert grouped data to an array
+    return Object.values(groupedByWeek);
+}
