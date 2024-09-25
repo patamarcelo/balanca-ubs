@@ -67,7 +67,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                 {project.replace("-", "")}
                             </th>
                         ))}
-                        <th>Total Geral</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
 
@@ -140,7 +140,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                 {project.replace("-", "")}
                             </th>
                         ))}
-                        <th>Total Geral</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
 

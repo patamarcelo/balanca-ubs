@@ -19,7 +19,7 @@ import djangoApi, { nodeServerSrd, nodeServer } from "../../../utils/axios/axios
 import TableBio from "./table-bio";
 
 
-import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr, dataFromDjangoProjetadoArrAll } from './support-bio.js'
+import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr, dataFromDjangoProjetadoArrAll , formatPreSt} from './support-bio.js'
 
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector.js";
 
@@ -36,14 +36,16 @@ const InsumosBioPage = () => {
 
     const [loadingDataProtheus, setloadingDataProtheus] = useState(true);
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
-
+    
     const [dataFromDjango, setDataFromDjango] = useState([]);
     const [dataFromDjangoGeral, setDataFromDjangoGeral] = useState([]);
     const [loadingDataDjango, setloadingDataDjango] = useState(true);
-
+    
     const [dataFromDjangoProjetado, setDataFromDjangoProjetado] = useState([]);
     const [isLoadingDjangoProjetado, setIsLoadingDjangoProjetado] = useState(true);
-
+    
+    const [preStArray, setPreStArray] = useState([]);
+    const [loadingDataProtheusPreSt, setloadingDataProtheusPreSt] = useState(true);
     // const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [protDataToTable, setprotDataToTable] = useState([]);
@@ -88,7 +90,35 @@ const InsumosBioPage = () => {
 	}, [safraCiclo]);
 
 
-    
+    useEffect(() => {
+        const handleSearch = async () => {
+            setloadingDataProtheusPreSt(true);
+            const query = { status: 'aberto' };
+            try {
+                nodeServerSrd
+                    .get("/get-open-pre-st-srd", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                        },
+                        params: query
+                    })
+                    .then(res => {
+                        console.log('pre st open')
+                        console.log(res?.data?.pre_sts)
+                        setPreStArray(res?.data?.pre_sts)
+                    }).catch((err) => {
+                        setloadingDataProtheusPreSt(false)
+                        window.alert('erro ao pegar os dados: ', err)
+                    })
+            } catch (error) {
+                console.log("erro ao pegar os dados: ", error);
+                setloadingDataProtheusPreSt(false);
+            } finally {
+                // setIsLoading(false);
+            }
+        };
+        handleSearch()
+    }, [user]);
     
     useEffect(() => {
         const handleSearch = async () => {
@@ -383,6 +413,8 @@ const InsumosBioPage = () => {
                         ...prods, ...objToAdd
                     })
                 })
+                
+                // Code to check if is not in stock before 
                 const indsInMergedProdsDjangoPlanedAll = mergeDjangoProdProjetadoAll.map((data) => Number(data.id_farm_box))
                 const includeOthersFromDjangoPlanedAll = djangoProjetAll.filter((e) => !indsInMergedProdsDjangoPlanedAll.includes(e.id_farmbox))
                 const prodFromFarmAdjustAll = includeOthersFromDjangoPlanedAll.map((data) => {
@@ -396,13 +428,36 @@ const InsumosBioPage = () => {
                         quantity_planted_django_geral: 0
                     })
                 })
-                const finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
+                let finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
+
+                if(preStArray?.length > 0){
+                    const preStProds = formatPreSt(preStArray)
+                    const mergeStsProds = finalProjDajngoAll.map((prods) => {
+                        let objToAdd = {}
+                        const findInArr = preStProds.find((prod) => prod.cod_produto === prods.id_farm_box)
+                        if(findInArr){
+                            objToAdd = {
+                                quantity_sts_open: findInArr.quantity_sts
+                            }
+                        } else {
+                            objToAdd = {
+                                quantity_sts_open: 0
+                            }
+                        }
+                        return ({
+                            ...prods, ...objToAdd
+                        })
+                    })
+                    
+
+                    finalProjDajngoAll = mergeStsProds
+                }
                 setprotDataToTable(finalProjDajngoAll)
             }
 
 
         }
-    }, [dataFromFam, dataFromProtheus, dataFromDjango, dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
+    }, [dataFromFam, dataFromProtheus, dataFromDjango, preStArray ,  dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
 
     // useEffect(() => {
     //     if (dataFromProtheus.length > 0) {

@@ -208,9 +208,25 @@ export const dataFromDjangoProjetadoArrAll = (data, filterDate) => {
         return acc
     },[])
 
-    const totalProd = consolidateBio.reduce((acc, cur) => acc += cur.quantidade,0)
-    console.log('totalProd',totalProd)
+    // const totalProd = consolidateBio.reduce((acc, cur) => acc += cur.quantidade,0)
+    // console.log('totalProd',totalProd)
 
     return consolidateBio
 }
+
+
+export const formatPreSt = (data) => {
+    const typesBio = ["BIO DEFENSIVO", "INSUMOS BIOLOGICOS", "Biológico"]
+
+    const onlyProds =  data.map((produtos) => {
+        const prods = produtos.produtos.filter((prod) => typesBio.includes(prod.tipo_produto)).filter((quant) => Number(quant.quantidade_saldo) > 0).map((prods) => {
+            return (
+                {cod_produto: prods.id_produto, quantity_sts: prods.quantidade_saldo, descricao_produto: prods.produto}
+            )
+        })
+        return prods.flat()
+    })
+    return onlyProds.flat()
+}
+
 export default formatProds

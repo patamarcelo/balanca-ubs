@@ -11,6 +11,7 @@ const TableBio = (props) => {
     const colors = tokens(theme.palette.mode);
 
     const { data, showDateTime } = props
+    console.log('data here:', data)
 
 
     const [totalData, setTotalData] = useState({});
@@ -68,6 +69,13 @@ const TableBio = (props) => {
                 } else {
                     acc["quant_farm"] = curr.quantity_farmbox
                 }
+                if (acc['quantity_sts_open'] > 0 ) {
+                    if(!isNaN(curr.quantity_sts_open)){    
+                        acc["quantity_sts_open"] += curr.quantity_sts_open
+                    }
+                } else {
+                    acc["quantity_sts_open"] = curr.quantity_sts_open
+                }
                 
                 if (acc['quant_django_planted'] > 0) {
                     acc["quant_django_planted"] += curr.quantity_planted_django
@@ -124,7 +132,7 @@ const TableBio = (props) => {
                         <th>Fazendinha</th>
                         <th>UBS</th>
                         <th>Estoque Total</th>
-                        <th>Necessidade FarmBox</th>
+                        <th>Pré St</th>
                         <th>Previsto Plantado - {futDate}</th>
                         <th>Previsto Plantado - Geral</th>
                         <th>Previsto Planejado - {futDate}</th>
@@ -149,7 +157,7 @@ const TableBio = (props) => {
                                     <td className={styles.numberRow}><span>{data[fazendinha] ? formatNumber(data[fazendinha]) : ' - '}</span></td>
                                     <td className={styles.numberRow}><span>{data[ubs] ? formatNumber(data[ubs]) : ' - '}</span></td>
                                     <td className={styles.numberRow}><span>{formatNumber(estoqueTotal)}</span></td>
-                                    <td className={styles.numberRow}><span>{data?.quantity_farmbox ? formatNumber(data.quantity_farmbox) : '-'}</span> </td>
+                                    <td className={styles.numberRow}><span>{data?.quantity_sts_open ? formatNumber(data.quantity_sts_open) : '-'}</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_planted_django ? formatNumber(data.quantity_planted_django) : '-'}</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_planted_django_geral ? formatNumber(data.quantity_planted_django_geral) : '-'}</span> </td>
                                     <td className={styles.numberRow}><span>{data?.quantity_projeted_django ? formatNumber(data.quantity_projeted_django) : '-'}</span> </td>
@@ -165,7 +173,7 @@ const TableBio = (props) => {
                         <th className={styles.numberRow}><span>{totalData['0207'] && formatNumber(totalData['0207'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['0209'] && formatNumber(totalData['0209'])}</span></th>
                         <th className={styles.numberRow}><span>{formatNumber(formatEstoque(totalData['0207'], totalData['0209']))}</span></th>
-                        <th className={styles.numberRow}><span>{totalData['quant_farm'] && formatNumber(totalData['quant_farm'])}</span></th>
+                        <th className={styles.numberRow}><span>{totalData['quantity_sts_open'] && formatNumber(totalData['quantity_sts_open'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quant_django_planted'] && formatNumber(totalData['quant_django_planted'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quantity_planted_django_geral'] && formatNumber(totalData['quantity_planted_django_geral'])}</span></th>
                         <th className={styles.numberRow}><span>{totalData['quantity_projeted_django'] && formatNumber(totalData['quantity_projeted_django'])}</span></th>
