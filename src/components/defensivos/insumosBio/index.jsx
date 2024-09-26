@@ -19,7 +19,7 @@ import djangoApi, { nodeServerSrd, nodeServer } from "../../../utils/axios/axios
 import TableBio from "./table-bio";
 
 
-import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr, dataFromDjangoProjetadoArrAll , formatPreSt} from './support-bio.js'
+import formatProds, { dataFromFarm, dataFromDjangoArr, dataFromDjangoProjetadoArr, dataFromDjangoProjetadoArrAll, formatPreSt } from './support-bio.js'
 
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector.js";
 
@@ -36,14 +36,14 @@ const InsumosBioPage = () => {
 
     const [loadingDataProtheus, setloadingDataProtheus] = useState(true);
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
-    
+
     const [dataFromDjango, setDataFromDjango] = useState([]);
     const [dataFromDjangoGeral, setDataFromDjangoGeral] = useState([]);
     const [loadingDataDjango, setloadingDataDjango] = useState(true);
-    
+
     const [dataFromDjangoProjetado, setDataFromDjangoProjetado] = useState([]);
     const [isLoadingDjangoProjetado, setIsLoadingDjangoProjetado] = useState(true);
-    
+
     const [preStArray, setPreStArray] = useState([]);
     const [loadingDataProtheusPreSt, setloadingDataProtheusPreSt] = useState(true);
     // const [filteredProdcuts, setFilteredProdcuts] = useState([]);
@@ -64,7 +64,7 @@ const InsumosBioPage = () => {
 
             return `${day}/${month}/${year} - ${hours}:${minutes}`;
         };
-            setShowDateTime(getCurrentDateTime());
+        setShowDateTime(getCurrentDateTime());
     }, []);
 
     const futureDay = () => {
@@ -77,17 +77,17 @@ const InsumosBioPage = () => {
     const futDate = futureDay()
 
     const [params, setParams] = useState({
-		safra: safraCiclo.safra,
-		ciclo: safraCiclo.ciclo,
-	});
+        safra: safraCiclo.safra,
+        ciclo: safraCiclo.ciclo,
+    });
 
 
-	useEffect(() => {
-		setParams({
-			safra: safraCiclo.safra,
-			ciclo: safraCiclo.ciclo,
-		});
-	}, [safraCiclo]);
+    useEffect(() => {
+        setParams({
+            safra: safraCiclo.safra,
+            ciclo: safraCiclo.ciclo,
+        });
+    }, [safraCiclo]);
 
 
     useEffect(() => {
@@ -103,8 +103,6 @@ const InsumosBioPage = () => {
                         params: query
                     })
                     .then(res => {
-                        console.log('pre st open')
-                        console.log(res?.data?.pre_sts)
                         setPreStArray(res?.data?.pre_sts)
                     }).catch((err) => {
                         setloadingDataProtheusPreSt(false)
@@ -119,7 +117,7 @@ const InsumosBioPage = () => {
         };
         handleSearch()
     }, [user]);
-    
+
     useEffect(() => {
         const handleSearch = async () => {
             setloadingDataProtheus(true);
@@ -178,13 +176,13 @@ const InsumosBioPage = () => {
         };
         getTrueApi();
     }, [user]);
-    
+
     useEffect(() => {
         const getTrueApi = async () => {
             try {
                 setloadingDataDjango(true);
                 await djangoApi
-                    .get("/plantio/get_bio_prods_open_and_planted", {
+                    .post("/plantio/get_bio_prods_open_and_planted/",safraCiclo, {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
                         }
@@ -204,7 +202,7 @@ const InsumosBioPage = () => {
             }
         };
         getTrueApi();
-    }, [user]);
+    }, [safraCiclo]);
 
     useEffect(() => {
         const getTrueApi = async () => {
@@ -221,7 +219,7 @@ const InsumosBioPage = () => {
                     })
                     .catch((err) => console.log(err));
 
-                    setIsLoadingDjangoProjetado(false)
+                setIsLoadingDjangoProjetado(false)
             } catch (err) {
                 console.log("Erro ao consumir a API", err);
                 setIsLoadingDjangoProjetado(false)
@@ -288,7 +286,7 @@ const InsumosBioPage = () => {
                 constArr = finalArrayOfProds
 
             }
-            if(dataFromDjango.length > 0){
+            if (dataFromDjango.length > 0) {
                 //limit Data
                 const djangoData = dataFromDjangoArr(dataFromDjango)
                 const mergeDjangoProd = constArr.map((prods) => {
@@ -315,7 +313,7 @@ const InsumosBioPage = () => {
                         quantity_planted_django: data.quantity_planted_django,
                         id_farm_box: data.id_farm_box,
                         quantity_farmbox: 0,
-                        quantity_projeted_django: 0, 
+                        quantity_projeted_django: 0,
                         quantity_projeted_django_all: 0,
                         quantity_planted_django_geral: 0
                     })
@@ -325,7 +323,7 @@ const InsumosBioPage = () => {
                 setprotDataToTable(finalDjangoMergArr)
                 constArr = finalDjangoMergArr
             }
-            if(dataFromDjangoGeral.length > 0){
+            if (dataFromDjangoGeral.length > 0) {
                 const djangoDataGeral = dataFromDjangoArr(dataFromDjangoGeral)
                 const mergeDjangoProdGeral = constArr.map((prods) => {
                     const findInFarmArray = djangoDataGeral.find((farm) => farm.id_farm_box === Number(prods.id_farm_box))
@@ -351,7 +349,7 @@ const InsumosBioPage = () => {
                         quantity_planted_django: data.quantity_planted_django,
                         id_farm_box: data.id_farm_box,
                         quantity_farmbox: 0,
-                        quantity_projeted_django: 0, 
+                        quantity_projeted_django: 0,
                         quantity_projeted_django_all: 0,
                         quantity_planted_django_geral: 0
                     })
@@ -361,7 +359,7 @@ const InsumosBioPage = () => {
                 setprotDataToTable(finalDjangoMergArrGeral)
                 constArr = finalDjangoMergArrGeral
             }
-            if(dataFromDjangoProjetado?.app_date?.length > 0) {
+            if (dataFromDjangoProjetado?.app_date?.length > 0) {
                 //LIMIT BY DATE
                 const djangoProjet = dataFromDjangoProjetadoArr(dataFromDjangoProjetado, futDate)
                 const mergeDjangoProdProjetado = constArr.map((prods) => {
@@ -413,7 +411,7 @@ const InsumosBioPage = () => {
                         ...prods, ...objToAdd
                     })
                 })
-                
+
                 // Code to check if is not in stock before 
                 const indsInMergedProdsDjangoPlanedAll = mergeDjangoProdProjetadoAll.map((data) => Number(data.id_farm_box))
                 const includeOthersFromDjangoPlanedAll = djangoProjetAll.filter((e) => !indsInMergedProdsDjangoPlanedAll.includes(e.id_farmbox))
@@ -428,36 +426,39 @@ const InsumosBioPage = () => {
                         quantity_planted_django_geral: 0
                     })
                 })
-                let finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
-
-                if(preStArray?.length > 0){
-                    const preStProds = formatPreSt(preStArray)
-                    const mergeStsProds = finalProjDajngoAll.map((prods) => {
-                        let objToAdd = {}
-                        const findInArr = preStProds.find((prod) => prod.cod_produto === prods.id_farm_box)
-                        if(findInArr){
-                            objToAdd = {
-                                quantity_sts_open: findInArr.quantity_sts
-                            }
-                        } else {
-                            objToAdd = {
-                                quantity_sts_open: 0
-                            }
-                        }
-                        return ({
-                            ...prods, ...objToAdd
-                        })
-                    })
-                    
-
-                    finalProjDajngoAll = mergeStsProds
-                }
+                const finalProjDajngoAll = [...mergeDjangoProdProjetadoAll, ...prodFromFarmAdjustAll]
                 setprotDataToTable(finalProjDajngoAll)
+                constArr = finalProjDajngoAll
+            }
+            if (preStArray?.length > 0) {
+                const preStProds = formatPreSt(preStArray)
+                const mergeStsProds = constArr.map((prods) => {
+                    let objToAdd = {}
+                    const findInArr = preStProds.find((prod) => prod.cod_produto === prods.id_farm_box)
+                    if (findInArr) {
+                        objToAdd = {
+                            quantity_sts_open: findInArr.quantity_sts
+                        }
+                    } else {
+                        objToAdd = {
+                            quantity_sts_open: 0
+                        }
+                    }
+                    return ({
+                        ...prods, ...objToAdd
+                    })
+                })
+
+
+                const finalProjDajngoAll = mergeStsProds
+                setprotDataToTable(finalProjDajngoAll)
+                constArr = finalProjDajngoAll
+
             }
 
 
         }
-    }, [dataFromFam, dataFromProtheus, dataFromDjango, preStArray ,  dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
+    }, [dataFromFam, dataFromProtheus, dataFromDjango, preStArray, dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
 
     // useEffect(() => {
     //     if (dataFromProtheus.length > 0) {
@@ -512,7 +513,7 @@ const InsumosBioPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: useThemeHere !== 'dark' ? "whitesmoke": colors.primary[500],
+                backgroundColor: useThemeHere !== 'dark' ? "whitesmoke" : colors.primary[500],
                 borderRadius: "8px",
             }}
         >
@@ -535,7 +536,7 @@ const InsumosBioPage = () => {
                     // backgroundColor: 'red'
                 }}
             >
-                <TableBio data={protDataToTable} showDateTime={showDateTime}/>
+                <TableBio data={protDataToTable} showDateTime={showDateTime} />
             </Box>
         </Box>
     );

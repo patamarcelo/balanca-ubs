@@ -53,6 +53,8 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
     console.log('data to check project', data)
 
     const totalExec = dataExec?.reduce((acc, curr) => acc += curr.totalPlanned, 0)
+
+    // -----------------------------------PLANNED TABLE-----------------------------------
     if (type === "planner") {
         return (
             <table className={styles.table}>
@@ -110,9 +112,9 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                 >
                     <tr>
                         <th scope="row" style={{ fontWeight: "bold" }}></th>
-                        {totals.map((total) => {
+                        {totals.map((total, i ) => {
                             return (
-                                <td style={{ fontWeight: "bold" }}>
+                                <td style={{ fontWeight: "bold" }} key={i}>
                                     {formatNumber(total.total)}
                                 </td>
                             );
@@ -125,6 +127,8 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
             </table>
         );
     }
+    // -----------------------------------PLANNED TABLE-----------------------------------
+    // -----------------------------------EXEC TABLE-----------------------------------
     if (type === 'executed') {
         console.log('executed arr', dataExec)
         return (
@@ -194,7 +198,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     if(getValue){
                                         valueByFarm = getValue.totalPlanned ? getValue.totalPlanned : ' - '
                                     }
-                                    return <td key={i}>{valueByFarm}</td>;
+                                    return <td key={i} style={{ fontWeight: 'bold'}}>{valueByFarm}</td>;
                                 })}
                         <td style={{ textAlign: "right", fontWeight: "bold" }}>
                             {formatNumber(totalExec)}
@@ -204,6 +208,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
             </table>
         )
     }
+    // -----------------------------------EXEC TABLE-----------------------------------
 };
 
 export default TableComponent;

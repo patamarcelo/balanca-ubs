@@ -11,7 +11,6 @@ const TableBio = (props) => {
     const colors = tokens(theme.palette.mode);
 
     const { data, showDateTime } = props
-    console.log('data here:', data)
 
 
     const [totalData, setTotalData] = useState({});
