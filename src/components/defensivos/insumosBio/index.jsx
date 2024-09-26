@@ -31,8 +31,8 @@ const InsumosBioPage = () => {
 
     const user = useSelector(selectCurrentUser);
 
-    const [loadingData, setLoadinData] = useState(true);
-    const [dataFromFam, setDataFromFam] = useState([]);
+    // const [loadingData, setLoadinData] = useState(true);
+    // const [dataFromFam, setDataFromFam] = useState([]);
 
     const [loadingDataProtheus, setloadingDataProtheus] = useState(true);
     const [dataFromProtheus, setdataFromProtheus] = useState([]);
@@ -46,6 +46,7 @@ const InsumosBioPage = () => {
 
     const [preStArray, setPreStArray] = useState([]);
     const [loadingDataProtheusPreSt, setloadingDataProtheusPreSt] = useState(true);
+    
     // const [filteredProdcuts, setFilteredProdcuts] = useState([]);
 
     const [protDataToTable, setprotDataToTable] = useState([]);
@@ -104,6 +105,7 @@ const InsumosBioPage = () => {
                     })
                     .then(res => {
                         setPreStArray(res?.data?.pre_sts)
+                        setloadingDataProtheusPreSt(false)
                     }).catch((err) => {
                         setloadingDataProtheusPreSt(false)
                         window.alert('erro ao pegar os dados: ', err)
@@ -150,32 +152,32 @@ const InsumosBioPage = () => {
         handleSearch()
     }, [user]);
 
-    useEffect(() => {
-        const getTrueApi = async () => {
-            try {
-                setLoadinData(true);
-                await nodeServer
-                    .get("/data-open-apps-only-bio", {
-                        headers: {
-                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-                            "X-Firebase-AppCheck": user.accessToken
-                        }
-                        // params: {
-                        // 	safraCiclo
-                        // }
-                    })
-                    .then((res) => {
-                        setDataFromFam(res.data);
-                    })
-                    .catch((err) => console.log(err));
-            } catch (err) {
-                console.log("Erro ao consumir a API", err);
-            } finally {
-                setLoadinData(false);
-            }
-        };
-        getTrueApi();
-    }, [user]);
+    // useEffect(() => {
+    //     const getTrueApi = async () => {
+    //         try {
+    //             setLoadinData(true);
+    //             await nodeServer
+    //                 .get("/data-open-apps-only-bio", {
+    //                     headers: {
+    //                         Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+    //                         "X-Firebase-AppCheck": user.accessToken
+    //                     }
+    //                     // params: {
+    //                     // 	safraCiclo
+    //                     // }
+    //                 })
+    //                 .then((res) => {
+    //                     setDataFromFam(res.data);
+    //                 })
+    //                 .catch((err) => console.log(err));
+    //         } catch (err) {
+    //             console.log("Erro ao consumir a API", err);
+    //         } finally {
+    //             setLoadinData(false);
+    //         }
+    //     };
+    //     getTrueApi();
+    // }, [user]);
 
     useEffect(() => {
         const getTrueApi = async () => {
@@ -208,7 +210,7 @@ const InsumosBioPage = () => {
         const getTrueApi = async () => {
             try {
                 await djangoApi
-                    .post("plantio/get_plantio_operacoes_detail/", safraCiclo, {
+                    .post("plantio/get_plantio_operacoes_detail_biologico_api/", safraCiclo, {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
                         }
@@ -245,47 +247,47 @@ const InsumosBioPage = () => {
     // }, []);
 
     useEffect(() => {
-        if (dataFromFam && dataFromFam.length > 0) {
+        if (dataFromProtheus && dataFromProtheus.length > 0) {
             //data from protheus
             const prodsArr = formatProds(dataFromProtheus)
             setprotDataToTable(prodsArr)
 
             //data from farmbox
-            const prodFarmArr = dataFromFarm(dataFromFam)
+            // const prodFarmArr = dataFromFarm(dataFromFam)
             let constArr = prodsArr
 
-            if (prodsArr.length > 0 && prodFarmArr.length > 0) {
-                const mergeProducts = prodsArr.map((prods) => {
-                    const findInFarmArray = prodFarmArr.find((farm) => farm.input_id === Number(prods.id_farm_box))
-                    let objToAdd = {}
-                    if (findInFarmArray) {
-                        objToAdd = {
-                            quantity_farmbox: findInFarmArray.quantity
-                        }
-                    } else {
-                        objToAdd = {
-                            quantity_farmbox: 0
-                        }
-                    }
-                    return ({
-                        ...prods, ...objToAdd
-                    })
-                })
-                const indsInMergedProds = mergeProducts.map((data) => Number(data.id_farm_box))
-                const includeOthersFromFarm = prodFarmArr.filter((e) => !indsInMergedProds.includes(e.input_id))
-                const prodFromFarmAdjust = includeOthersFromFarm.map((data) => {
-                    return ({
-                        descricao_produto: data.name,
-                        quantity_farmbox: data.quantity,
-                        id_farm_box: data.input_id
-                    })
-                })
-                const finalArrayOfProds = [...mergeProducts.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)), ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
+            // if (prodsArr.length > 0 && prodFarmArr.length > 0) {
+            //     const mergeProducts = prodsArr.map((prods) => {
+            //         const findInFarmArray = prodFarmArr.find((farm) => farm.input_id === Number(prods.id_farm_box))
+            //         let objToAdd = {}
+            //         if (findInFarmArray) {
+            //             objToAdd = {
+            //                 quantity_farmbox: findInFarmArray.quantity
+            //             }
+            //         } else {
+            //             objToAdd = {
+            //                 quantity_farmbox: 0
+            //             }
+            //         }
+            //         return ({
+            //             ...prods, ...objToAdd
+            //         })
+            //     })
+            //     const indsInMergedProds = mergeProducts.map((data) => Number(data.id_farm_box))
+            //     const includeOthersFromFarm = prodFarmArr.filter((e) => !indsInMergedProds.includes(e.input_id))
+            //     const prodFromFarmAdjust = includeOthersFromFarm.map((data) => {
+            //         return ({
+            //             descricao_produto: data.name,
+            //             quantity_farmbox: data.quantity,
+            //             id_farm_box: data.input_id
+            //         })
+            //     })
+            //     const finalArrayOfProds = [...mergeProducts.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto)), ...prodFromFarmAdjust.sort((a, b) => a.descricao_produto.localeCompare(b.descricao_produto))]
 
-                setprotDataToTable(finalArrayOfProds)
-                constArr = finalArrayOfProds
+            //     setprotDataToTable(finalArrayOfProds)
+            //     constArr = finalArrayOfProds
 
-            }
+            // }
             if (dataFromDjango.length > 0) {
                 //limit Data
                 const djangoData = dataFromDjangoArr(dataFromDjango)
@@ -458,7 +460,7 @@ const InsumosBioPage = () => {
 
 
         }
-    }, [dataFromFam, dataFromProtheus, dataFromDjango, preStArray, dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
+    }, [dataFromProtheus, dataFromDjango, preStArray, dataFromDjangoGeral, dataFromDjangoProjetado, futDate]);
 
     // useEffect(() => {
     //     if (dataFromProtheus.length > 0) {
@@ -481,7 +483,7 @@ const InsumosBioPage = () => {
     //     }
     // }, [dataFromProtheus]);
 
-    if (loadingData || loadingDataProtheus || loadingDataDjango || isLoadingDjangoProjetado) {
+    if (loadingDataProtheus || loadingDataDjango || isLoadingDjangoProjetado || loadingDataProtheusPreSt) {
         return (
             <Box
                 sx={{

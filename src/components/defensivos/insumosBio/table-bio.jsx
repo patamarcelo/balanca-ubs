@@ -141,7 +141,7 @@ const TableBio = (props) => {
                 </thead>
                 <tbody>
                     {
-                        data.map((data, i) => {
+                        data?.sort((a,b) => a.descricao_produto.localeCompare(b.descricao_produto)).map((data, i) => {
                             const fazendinha = `0207-${data.id_farm_box}`
                             const ubs = `0209-${data.id_farm_box}`
                             const estoqueTotal = formatEstoque(data[fazendinha], data[ubs])

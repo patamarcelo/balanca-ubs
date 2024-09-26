@@ -76,14 +76,14 @@ export const dataFromFarm = (data) => {
         const getData = data.map((farms) => {
 
             const code = farms.code
-            const charged =  farms.responsible.name
+            const charged = farms.responsible.name
             // const sought_area = farms.plantations.reduce((acc, curr) => {
             //     return acc += curr.sought_area
             // }, 0)
             const applied_area = farms.plantations.reduce((acc, curr) => {
                 return acc += curr.applied_area
             }, 0)
-            
+
             const inputs_data = farms.inputs.map((input) => {
                 const type = input.input.input_type_name
                 const name = input.input.name
@@ -93,9 +93,9 @@ export const dataFromFarm = (data) => {
                 const input_applied_quantity = input_dose * applied_area
                 const input_remain_quantity = input_sought_quantity - input_applied_quantity
                 return ({
-                    code, 
+                    code,
                     charged,
-                    type, 
+                    type,
                     name,
                     input_id,
                     input_dose,
@@ -111,7 +111,7 @@ export const dataFromFarm = (data) => {
         })
 
         const consolidateProds = getData.flat().reduce((acc, curr) => {
-            if(acc.filter((data) => data.input_id === curr.input_id).length === 0){
+            if (acc.filter((data) => data.input_id === curr.input_id).length === 0) {
                 const objToAdd = {
                     input_id: curr.input_id,
                     quantity: curr.input_remain_quantity,
@@ -119,12 +119,12 @@ export const dataFromFarm = (data) => {
                 }
                 acc.push(objToAdd)
             } else {
-            const findIndexOf = f => f.input_id === curr.input_id;
-            const getIndex = acc.findIndex(findIndexOf);
-            acc[getIndex]["quantity"] += curr.input_remain_quantity
+                const findIndexOf = f => f.input_id === curr.input_id;
+                const getIndex = acc.findIndex(findIndexOf);
+                acc[getIndex]["quantity"] += curr.input_remain_quantity
             }
             return acc
-        },[])
+        }, [])
         return consolidateProds
 
     }
@@ -134,7 +134,7 @@ export const dataFromFarm = (data) => {
 
 export const dataFromDjangoArr = (data) => {
     const consolidate = data.reduce((acc, curr) => {
-        if(acc.filter((data) => data.id_farm_box === curr.id_farmbox).length === 0){
+        if (acc.filter((data) => data.id_farm_box === curr.id_farmbox).length === 0) {
             const objToAdd = {
                 id_farm_box: curr.id_farmbox,
                 orig: 'django_planted',
@@ -148,7 +148,7 @@ export const dataFromDjangoArr = (data) => {
             acc[getIndex]['quantity_planted_django'] += curr['quantidade aplicar']
         }
         return acc
-    },[])
+    }, [])
     return consolidate
 
 }
@@ -158,25 +158,25 @@ export const dataFromDjangoProjetadoArr = (data, filterDate) => {
         const dateApp = prods.data
         const onlyBio = prods.produtos.filter((pro) => pro.tipo === 'biologico').map((app) => {
             return ({
-                ...app, 
+                ...app,
                 data: dateApp
             })
         })
         return onlyBio
-    } )
+    })
     const filteredDate = filterBio.flat().filter((date) => date.data <= filterDate)
 
     //consolidate prods
-    const consolidateBio = filteredDate.reduce((acc, cur) =>{
-        if(acc.filter((data) => data.id_farmbox === cur.id_farmbox).length === 0){
+    const consolidateBio = filteredDate.reduce((acc, cur) => {
+        if (acc.filter((data) => data.id_farmbox === cur.id_farmbox).length === 0) {
             acc.push(cur);
         } else {
             const findIndexOf = f => f.id_farmbox === cur.id_farmbox
             const getIndex = acc.findIndex(findIndexOf);
-            acc[getIndex]['quantidade'] +=  cur.quantidade;
+            acc[getIndex]['quantidade'] += cur.quantidade;
         }
         return acc
-    },[])
+    }, [])
 
     // const totalProd = consolidateBio.reduce((acc, cur) => acc += cur.quantidade,0)
     // console.log('totalProd',totalProd)
@@ -188,25 +188,37 @@ export const dataFromDjangoProjetadoArrAll = (data, filterDate) => {
         const dateApp = prods.data
         const onlyBio = prods.produtos.filter((pro) => pro.tipo === 'biologico').map((app) => {
             return ({
-                ...app, 
+                ...app,
                 data: dateApp
             })
         })
         return onlyBio
-    } )
+    })
     const filteredDate = filterBio.flat()
 
     //consolidate prods
-    const consolidateBio = filteredDate.reduce((acc, cur) =>{
-        if(acc.filter((data) => data.id_farmbox === cur.id_farmbox).length === 0){
+    let totalBp = 0
+    let totalBpQuant = 0
+    const consolidateBio = filteredDate.reduce((acc, cur) => {
+        // console.log('current: ', cur)
+        if (cur.id_farmbox === 164990) {
+            if (totalBpQuant < 100 && totalBpQuant > 0) {
+                console.log('current: ', cur)
+                totalBp += cur.quantidade
+            }
+            totalBpQuant += 1
+        }
+        if (acc.filter((data) => data.id_farmbox === cur.id_farmbox).length === 0) {
             acc.push(cur);
         } else {
             const findIndexOf = f => f.id_farmbox === cur.id_farmbox
             const getIndex = acc.findIndex(findIndexOf);
-            acc[getIndex]['quantidade'] +=  cur.quantidade;
+            acc[getIndex]['quantidade'] += cur.quantidade;
         }
         return acc
-    },[])
+    }, [])
+    console.log('total BP: ', totalBp)
+    console.log('total BP QUanti: ', totalBpQuant)
 
     // const totalProd = consolidateBio.reduce((acc, cur) => acc += cur.quantidade,0)
     // console.log('totalProd',totalProd)
@@ -218,10 +230,10 @@ export const dataFromDjangoProjetadoArrAll = (data, filterDate) => {
 export const formatPreSt = (data) => {
     const typesBio = ["BIO DEFENSIVO", "INSUMOS BIOLOGICOS", "Biológico"]
 
-    const onlyProds =  data.map((produtos) => {
+    const onlyProds = data.map((produtos) => {
         const prods = produtos.produtos.filter((prod) => typesBio.includes(prod.tipo_produto)).filter((quant) => Number(quant.quantidade_saldo) > 0).map((prods) => {
             return (
-                {cod_produto: prods.id_produto, quantity_sts: prods.quantidade_saldo, descricao_produto: prods.produto}
+                { cod_produto: prods.id_produto, quantity_sts: prods.quantidade_saldo, descricao_produto: prods.produto }
             )
         })
         return prods.flat()
