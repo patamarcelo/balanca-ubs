@@ -13,9 +13,30 @@ export const dataPlannerHandler = qs_planned => {
     ); // Start of the week
 
     // Step 2: Group data by weeks
+    const weekRanges = [
+        "15/09/2024 - 21/09/2024",
+        "22/09/2024 - 28/09/2024",
+        // "29/09/2024 - 05/10/2024",
+        // "06/10/2024 - 12/10/2024",
+        "13/10/2024 - 19/10/2024",
+        "20/10/2024 - 26/10/2024",
+        "27/10/2024 - 02/11/2024",
+        "03/11/2024 - 09/11/2024",
+        "10/11/2024 - 16/11/2024",
+        "17/11/2024 - 23/11/2024",
+        "24/11/2024 - 30/11/2024",
+        "01/12/2024 - 07/12/2024",
+        "08/12/2024 - 14/12/2024",
+        "15/12/2024 - 21/12/2024",
+        "22/12/2024 - 28/12/2024",
+        "29/12/2024 - 04/01/2025",
+        "05/01/2025 - 11/01/2025",
+        "12/01/2025 - 18/01/2025",
+        "19/01/2025 - 25/01/2025"
+      ];
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
         const entryDate = moment(entry.data_prevista_plantio)
-        // entryDate.add(1, 'days')
+        entryDate.add(1, 'days')
 
 
         // Find the week difference from the start of the first week
@@ -39,9 +60,17 @@ export const dataPlannerHandler = qs_planned => {
         acc[weekRange].push(entry);
         return acc;
     }, {});
+    const result = weekRanges.reduce((acc, range) => {
+        if (!groupByWeeks[range]) {
+            acc[range] = []; // Initialize empty array for weeks with no data
+        } else {
+            acc[range] = groupByWeeks[range];
+        }
+        return acc;
+    }, {});
     // Step 3: Sum areas by week and project name
     const summedByWeekAndProject = Object.entries(
-        groupByWeeks
+        result
     ).map(([weekRange, entries]) => {
         const projectSums = entries.reduce((projectAcc, entry) => {
             const projectName = entry.talhao__fazenda__nome;
