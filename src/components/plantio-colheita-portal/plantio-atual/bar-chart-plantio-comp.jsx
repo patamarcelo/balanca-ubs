@@ -31,7 +31,7 @@ const BarPlantioPlanner = ({ data }) => {
 
     return (
 
-        <Box sx={{ height: '400px', minWidth: '1360px', width: "100%" }}>
+        <Box sx={{ height: '400px', minWidth: '1581px', width: "100%" }}>
 
             <ResponsiveBar
                 data={data}

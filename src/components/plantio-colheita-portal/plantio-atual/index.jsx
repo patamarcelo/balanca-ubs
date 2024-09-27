@@ -103,7 +103,7 @@ const PlantioAtual = () => {
                         sx={{
                             backgroundColor: colors.blueOrigin[400],
                             color: colors.grey[900],
-                            minWidth: "1365px",
+                            minWidth: "1581px",
                             width: '100%',
                         }}
                     >
@@ -129,7 +129,7 @@ const PlantioAtual = () => {
                             sx={{
                                 backgroundColor: colors.blueOrigin[400],
                                 color: colors.grey[900],
-                                minWidth: "1365px",
+                                minWidth: "1581px",
                                 width: '100%',
                             }}
                         >
@@ -156,7 +156,7 @@ const PlantioAtual = () => {
                         sx={{
                             backgroundColor: isDark ? colors.greenAccent[600] : colors.greenAccent[400],
                             color: colors.grey[900],
-                            minWidth: "1365px",
+                            minWidth: "1581px",
                             width: '100%',
                         }}
                     >

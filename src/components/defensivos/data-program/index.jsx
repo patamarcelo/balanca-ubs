@@ -671,6 +671,7 @@ const DataProgramPage = (props) => {
 							}}
 						>
 							<Typography
+								className={classes.hasitemInsideArr}
 								style={{
 									backgroundColor:
 										farmSelected === data

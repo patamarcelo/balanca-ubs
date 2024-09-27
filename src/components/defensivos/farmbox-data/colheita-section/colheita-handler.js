@@ -34,6 +34,7 @@ const handlerDataColheita = (data) => {
     const newExtratoArr = data.map((details) => {
         const codeAp = details.code;
         const farmName = details.plantations[0].plantation.farm_name;
+        const updatedAt = details.updated_at
         const talhoesArr = details.plantations.map((talhao) => {
             const areaAplicada = talhao.applied_area;
             const areaSolicitada = talhao.sought_area;
@@ -49,12 +50,14 @@ const handlerDataColheita = (data) => {
                 codeAp,
                 farmName,
                 lastUpdate,
-                parcelaId
+                parcelaId,
+                updatedAt
             };
         });
 
         const progressos = details.progresses.map((progress) => {
             const dataApplied = progress.date;
+            const updatedAt = progress.updated_at.split('T')[0];
             const eachProgress = progress.plantations.map((plantProgr) => {
                 const plantioId = plantProgr.plantation_id;
                 return {
@@ -66,7 +69,8 @@ const handlerDataColheita = (data) => {
                     parcela: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
                         ?.parcela,
                     totalApplied: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
-                        ?.areaAplicada
+                        ?.areaAplicada,
+                    updatedAt,
                 };
             });
             return eachProgress;
@@ -76,7 +80,7 @@ const handlerDataColheita = (data) => {
 
     const formatExtratoColheitaCsv = newExtratoArr.flat();
     const formatExtratoColheita = [
-        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId"]
+        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId", 'editado']
     ];
     formatExtratoColheitaCsv.forEach((element) => {
         const dateApp = element.dataApplied.split('T')[0]
@@ -102,7 +106,8 @@ const handlerDataColheita = (data) => {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             }),
-            element.plantationId
+            element.plantationId,
+            element.updatedAt,
         ];
         formatExtratoColheita.push(arrToAdd);
     });

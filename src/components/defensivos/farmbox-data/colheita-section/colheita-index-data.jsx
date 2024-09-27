@@ -173,6 +173,7 @@ const ColheitaPage = () => {
                 newObj
             )
         })
+        console.log('formated obj: ', formatObj)
         const params = JSON.stringify(
             formatObj
         )
@@ -359,7 +360,7 @@ const ColheitaPage = () => {
                             totalByFarmData.map((data, index) => {
                                 return (
                                     <>
-                                        <Accordion key={data.farmName} sx={{ width: "100%" }}>
+                                        <Accordion key={index} sx={{ width: "100%" }}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1-content"
