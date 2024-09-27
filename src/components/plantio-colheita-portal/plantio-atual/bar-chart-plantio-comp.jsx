@@ -53,6 +53,55 @@ const BarPlantioPlanner = ({ data }) => {
                         return `${startDate}`; // Format with a space, we will handle line-break in CSS
                     }
                 }}
+                theme={{
+                    // background: '#ffffff', // Custom background color for the chart area
+                    legends:{
+                        title:{
+                            fill: colors.textColor[100]
+                        },
+                        text:{
+                            fill: colors.textColor[100]
+                        }
+                    },
+                    axis: {
+                        domain: {
+                            line: {
+                                stroke: '#777777',
+                                strokeWidth: 1,
+                            },
+                        },
+                        ticks: {
+                            line: {
+                                stroke: '#777777',
+                                strokeWidth: 1,
+                            },
+                            text: {
+                                fill: colors.textColor[100],
+                                fontSize: 12,
+                            },
+                        },
+                        legend: {
+                            text: {
+                                fill: colors.textColor[100],
+                            },
+                        },
+                    },
+                    tooltip: {
+                        container: {
+                            background: '#333333', // Tooltip background color
+                            color: '#ffffff', // Tooltip text color
+                            fontSize: '14px',
+                            borderRadius: '4px',
+                            boxShadow: '0 3px 9px rgba(0, 0, 0, 0.5)',
+                            padding: '10px',
+                        },
+                    },
+                    grid: {
+                        line: {
+                            stroke: '#dddddd', // Grid line color
+                        },
+                    },
+                }}
                 axisLeft={{
                     tickSize: 5,
                     tickPadding: 5,
@@ -72,7 +121,7 @@ const BarPlantioPlanner = ({ data }) => {
                 animate={true}
                 motionStiffness={90}
                 motionDamping={15}
-                colors={({ id }) => (id === 'Planejado' ? 'rgb(233,217,164)' : colors.greenAccent[700] )} // Custom colors for each key
+                colors={({ id }) => (id === 'Planejado' ? 'rgb(233,217,164)' : colors.greenAccent[700])} // Custom colors for each key
                 // labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
                 legends={[
                     {
@@ -98,6 +147,19 @@ const BarPlantioPlanner = ({ data }) => {
                         ]
                     }
                 ]}
+                tooltip={({ id, value, indexValue, color }) => (
+                    <div
+                        style={{
+                            padding: '12px',
+                            background: '#222',
+                            color: '#fff',
+                            borderRadius: '5px',
+                        }}
+                    >
+                        <strong>{id}:</strong> {formatNumber(value)} ha<br />
+                        <strong>Semana:</strong> {indexValue}
+                    </div>
+                )}
             />
         </Box>
     )

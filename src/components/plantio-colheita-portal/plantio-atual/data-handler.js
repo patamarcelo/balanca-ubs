@@ -14,10 +14,10 @@ export const dataPlannerHandler = qs_planned => {
 
     // Step 2: Group data by weeks
     const weekRanges = [
-        "15/09/2024 - 21/09/2024",
+        // "15/09/2024 - 21/09/2024",
         "22/09/2024 - 28/09/2024",
-        // "29/09/2024 - 05/10/2024",
-        // "06/10/2024 - 12/10/2024",
+        "29/09/2024 - 05/10/2024",
+        "06/10/2024 - 12/10/2024",
         "13/10/2024 - 19/10/2024",
         "20/10/2024 - 26/10/2024",
         "27/10/2024 - 02/11/2024",
@@ -33,7 +33,7 @@ export const dataPlannerHandler = qs_planned => {
         "05/01/2025 - 11/01/2025",
         "12/01/2025 - 18/01/2025",
         "19/01/2025 - 25/01/2025"
-      ];
+    ];
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
         const entryDate = moment(entry.data_prevista_plantio)
         entryDate.add(1, 'days')
@@ -134,7 +134,7 @@ export const groupExecutedByWeek = (qs_executed_area) => {
     qs_executed_area.forEach((entry) => {
         const plantioDate = new Date(entry.data_plantio);
         const dayOfWeek = plantioDate.getDay(); // Get the day of the week (0 for Sunday, 6 for Saturday)
-        
+
         // Calculate the previous Sunday to start the week
         const weekStart = new Date(plantioDate);
         weekStart.setDate(plantioDate.getDate() - dayOfWeek); // Subtract the day of the week to get Sunday

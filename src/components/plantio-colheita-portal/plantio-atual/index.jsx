@@ -15,6 +15,8 @@ const PlantioAtual = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
+    const isDark = theme.palette.mode === 'dark'
+
     const [isLoading, setIsLoading] = useState(false);
     const [dataFromApi, setDataFromApi] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
@@ -152,7 +154,7 @@ const PlantioAtual = () => {
                         p={1}
                         mt={3}
                         sx={{
-                            backgroundColor: colors.greenAccent[300],
+                            backgroundColor: isDark ? colors.greenAccent[600] : colors.greenAccent[400],
                             color: colors.grey[900],
                             minWidth: "1365px",
                             width: '100%',
