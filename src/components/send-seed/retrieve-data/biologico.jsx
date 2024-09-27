@@ -135,11 +135,10 @@ const BiologicoTable = (props) => {
 					</tr>
 				</thead>
 				<tbody>
-					{filteredData
+					{filteredData && filteredData
 						.filter((data) => {
 							const newDateF = new Date(
-								data["BIOLÓGICOS Data Solicitação"]
-									.split("/")
+								data["BIOLÓGICOS Data Solicitação"]?.split("/")
 									.reverse()
 									.join("-")
 							);
