@@ -237,14 +237,16 @@ export default function FormDialog(props) {
 					"& .MuiPaper-root": {
 						minWidth: isNonMobile
 							? "60vw !important"
-							: "90vw !important"
+							: "98vw !important",
+						minBlockSize: !isNonMobile && '-webkit-fill-available',
+						margin: !isNonMobile && '0px !important'
 					},
 					"& .MuiChip-root": {
 						borderRadius: 1
 					},
 					"& .MuiDialogTitle-root , .MuiDialogActions-spacing": {
 						backgroundColor: colors.modal[700]
-					}
+					},
 				}}
 			>
 				<DialogTitle>
