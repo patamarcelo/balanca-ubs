@@ -239,7 +239,10 @@ export default function FormDialog(props) {
 							? "60vw !important"
 							: "98vw !important",
 						minBlockSize: !isNonMobile && '-webkit-fill-available',
-						margin: !isNonMobile && '0px !important'
+						margin: !isNonMobile && '10px 0px 20px 0px !important',
+						
+
+						
 					},
 					"& .MuiChip-root": {
 						borderRadius: 1
@@ -280,11 +283,12 @@ export default function FormDialog(props) {
 				</DialogContent>
 				<DialogActions
 					sx={{
-						paddingTop: "20px"
+						paddingTop: "20px",
+						gap: '15px'
 					}}
 				>
 					<Button
-						size="small"
+						// size="small"
 						color="warning"
 						onClick={handleCloseModal}
 						sx={{
@@ -297,7 +301,7 @@ export default function FormDialog(props) {
 
 					{dataModal.title === "Editar Carga" && (
 						<LoadingButton
-							size="small"
+							// size="small"
 							loading={isLoadingSubmit}
 							onClick={handleEditCarga}
 							// disabled={
@@ -316,7 +320,7 @@ export default function FormDialog(props) {
 					{(dataModal.title === "Carregando" ||
 						dataModal.title === "Descarregando") && (
 						<LoadingButton
-							size="small"
+							// size="small"
 							onClick={handleSaveData}
 							loading={isLoadingSubmit}
 							variant="outlined"
@@ -334,7 +338,7 @@ export default function FormDialog(props) {
 					)}
 					{dataModal.title === "Editar Carga - Full" && (
 						<LoadingButton
-							size="small"
+							// size="small"
 							loading={isLoadingSubmit}
 							onClick={handleEditCargaFull}
 							sx={{
