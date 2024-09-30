@@ -166,7 +166,6 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                 </td>
                                 {data.map((dataProj, i) => {
                                     const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
-                                    console.log('getValuehere', getValue)
                                     let valueByFarm = " - "
                                     if(getValue){
                                         valueByFarm = getValue.projects[farms] ? getValue.projects[farms] : ' - '

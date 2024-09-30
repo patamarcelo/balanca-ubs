@@ -41,7 +41,13 @@ const ColheitaAtual = (props) => {
 	const [areaTotal, setAreaTotal] = useState(0);
 	const [parcelasTotal, setparcelasTotal] = useState(0);
 	const [areaColhidaParcial, setAreaColhidaParcial] = useState(0);
+	
 	const [areaDisponivel, setAreaDisponivel] = useState(0);
+	const [areaColhida, setAreaColhida] = useState(0);
+	const [totalPesoCarregado, setTotalPesoCarregado] = useState(0);
+	const [totalProdutividade, setTotalProdutividade] = useState(0);
+	
+	
 	const [newDayNow, setNewDayNow] = useState("");
 
 	const [checkedColheita, setCheckedColheita] = useState(true);
@@ -63,6 +69,7 @@ const ColheitaAtual = (props) => {
 		let areaTotalSoma = 0;
 		let parcelasTotalCount = 0;
 		let areaColhida = 0;
+		let pesoTotal = 0
 		selectedFilteredData
 		.filter((data) => 
 			varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
@@ -74,14 +81,23 @@ const ColheitaAtual = (props) => {
 				: data.area_colheita !== null
 		)
 		.forEach((data) => {
+			console.log('data', data)
 			areaTotalSoma += data.area_colheita;
 			parcelasTotalCount += 1;
 			areaColhida += data.area_parcial;
+			pesoTotal += data.peso
 		});
 		const areaDisponivel = areaTotalSoma - areaColhida;
+		const areaTotalColhida = areaColhida;
+
+		const produtividade = (pesoTotal > 0 && areaTotalColhida  > 0)? ( (pesoTotal / 60) / areaTotalColhida) : 0
+
+		setTotalProdutividade(produtividade)
+		setTotalPesoCarregado(pesoTotal)
 		setAreaTotal(formatArea(areaTotalSoma));
 		setparcelasTotal(parcelasTotalCount);
 		setAreaColhidaParcial(formatArea(areaColhida));
+		setAreaColhida(formatArea(areaTotalColhida));
 		setAreaDisponivel(formatArea(areaDisponivel));
 	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect]);
 
@@ -183,25 +199,54 @@ const ColheitaAtual = (props) => {
 						);
 					})}
 			</Box>
-			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px" }}>
-				<Grid item xs={2}>
+			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'flex-start' }}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
-							backgroundColor: theme.palette.mode === "light" && "whitesmoke"
+							backgroundColor: colors.primary[900]
+							// backgroundColor: theme.palette.mode === "light" && colors.primary[900]
+						}}
+					>
+						<CardContent sx={{ paddingBottom: "16px !important" }}>
+							<Typography variant="h6" fontWeight={"bold"}>
+								Área Total
+							</Typography>
+							<Typography variant="body1">{areaTotal} Ha</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={1.5}>
+					<Card
+						sx={{
+							backgroundColor: colors.primary[900]
+						}}
+					>
+						<CardContent sx={{ paddingBottom: "16px !important" }}>
+							<Typography variant="h6" fontWeight={"bold"}>
+								Area Colhida
+							</Typography>
+							<Typography variant="body1">{areaColhida} Ha</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={1.5}>
+					<Card
+						sx={{
+							backgroundColor: colors.primary[900]
 						}}
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
 							<Typography variant="h6" fontWeight={"bold"}>
 								Área Disponível
 							</Typography>
-							<Typography variant="body1">{areaDisponivel} Hectares</Typography>
+							<Typography variant="body1">{areaDisponivel} Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={2}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
-							backgroundColor: theme.palette.mode === "light" && "whitesmoke"
+							backgroundColor: colors.primary[900]
 						}}
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
@@ -212,10 +257,38 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={2}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
-							backgroundColor: theme.palette.mode === "light" && "whitesmoke"
+							backgroundColor: colors.primary[900]
+						}}
+					>
+						<CardContent sx={{ paddingBottom: "16px !important" }}>
+							<Typography variant="h6" fontWeight={"bold"}>
+								Peso Carregado
+							</Typography>
+							<Typography variant="body1">{(formatArea(totalPesoCarregado / 60))} Scs</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={1.5}>
+					<Card
+						sx={{
+							backgroundColor: colors.primary[900]
+						}}
+					>
+						<CardContent sx={{ paddingBottom: "16px !important" }}>
+							<Typography variant="h6" fontWeight={"bold"}>
+								Produtividade 
+							</Typography>
+							<Typography variant="body1">{formatArea(totalProdutividade)} Scs/Ha</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={1.8}>
+					<Card
+						sx={{
+							backgroundColor: colors.primary[900]
 						}}
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>

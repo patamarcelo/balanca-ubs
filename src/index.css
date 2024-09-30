@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Josefin+Sans');
 
-
 html, 
 body,
 #root,
@@ -13,6 +12,19 @@ body,
   font-family: 'Segoe UI', sans-serif;
   position: fixed;
 }
+
+/* html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+} */
+
+/* #root { */
+  /* transform: scale(0.8); Scale down to 80% */
+  /* transform-origin: top left; Set origin to the top-left corner */
+  /* width: 125%; Adjust width to counteract the scale */
+  /* height: 125%; Adjust height to counteract the scale */
+/* } */
 
 .app {
   display: flex;

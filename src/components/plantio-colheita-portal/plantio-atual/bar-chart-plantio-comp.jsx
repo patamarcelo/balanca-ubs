@@ -28,6 +28,7 @@ const BarPlantioPlanner = ({ data }) => {
         )
     }
 
+    console.log('data chart: ', data)
 
     return (
 
