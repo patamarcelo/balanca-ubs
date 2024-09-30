@@ -132,12 +132,24 @@ export const groupExecutedByWeek = (qs_executed_area) => {
     const groupedByWeek = {};
 
     qs_executed_area.forEach((entry) => {
-        const plantioDate = new Date(entry.data_plantio);
-        const dayOfWeek = plantioDate.getDay(); // Get the day of the week (0 for Sunday, 6 for Saturday)
+        // const plantioDate = new Date(entry.data_plantio);
+        // console.log('plantio Date: ', plantioDate);
+        // const dayOfWeek = plantioDate.getDay(); // Get the day of the week (0 for Sunday, 6 for Saturday)
+
+        // // Calculate the previous Sunday to start the week
+        // const weekStart = new Date(plantioDate);
+        // weekStart.setDate(plantioDate.getDate() - dayOfWeek); // Subtract the day of the week to get Sunday
+
+        const plantioDate = moment(entry.data_plantio);
+        console.log('plantio Date: ', plantioDate.format()); // Print formatted plantioDate
+
+        // Get the day of the week (0 for Sunday, 6 for Saturday)
+        const dayOfWeek = plantioDate.day(); 
 
         // Calculate the previous Sunday to start the week
-        const weekStart = new Date(plantioDate);
-        weekStart.setDate(plantioDate.getDate() - dayOfWeek); // Subtract the day of the week to get Sunday
+        const weekStart = moment(plantioDate).subtract(dayOfWeek, 'days'); // Subtract the day of the week to get Sunday
+
+        console.log('Week start: ', weekStart.format()); // Print formatted weekStart (previous Sunday)
 
         const weekRange = formatWeekRange(weekStart);
         const project = entry.plantio__talhao__fazenda__nome;
