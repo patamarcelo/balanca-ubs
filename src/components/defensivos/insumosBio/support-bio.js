@@ -228,7 +228,7 @@ export const dataFromDjangoProjetadoArrAll = (data, filterDate) => {
 
 
 export const formatPreSt = (data) => {
-    const typesBio = ["BIO DEFENSIVO", "INSUMOS BIOLOGICOS", "Biológico"]
+    const typesBio = ["BIO DEFENSIVO", "INSUMOS BIOLOGICOS", "Biológico", "BIOLÓGICO"]
 
     const onlyProds = data.map((produtos) => {
         const prods = produtos.produtos.filter((prod) => typesBio.includes(prod.tipo_produto)).filter((quant) => Number(quant.quantidade_saldo) > 0).map((prods) => {

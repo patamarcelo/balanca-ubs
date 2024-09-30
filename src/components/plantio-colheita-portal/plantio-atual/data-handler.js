@@ -141,7 +141,6 @@ export const groupExecutedByWeek = (qs_executed_area) => {
         // weekStart.setDate(plantioDate.getDate() - dayOfWeek); // Subtract the day of the week to get Sunday
 
         const plantioDate = moment(entry.data_plantio);
-        console.log('plantio Date: ', plantioDate.format()); // Print formatted plantioDate
 
         // Get the day of the week (0 for Sunday, 6 for Saturday)
         const dayOfWeek = plantioDate.day(); 
