@@ -63,7 +63,17 @@ const ColheitaAtual = (props) => {
 		let areaTotalSoma = 0;
 		let parcelasTotalCount = 0;
 		let areaColhida = 0;
-		selectedFilteredData.forEach((data) => {
+		selectedFilteredData
+		.filter((data) => 
+			varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
+		data.variedade__nome_fantasia !== null
+		)
+		.filter((data) =>
+			chekedAreasAvaiable
+				? data.area_colheita - data.area_parcial !== 0
+				: data.area_colheita !== null
+		)
+		.forEach((data) => {
 			areaTotalSoma += data.area_colheita;
 			parcelasTotalCount += 1;
 			areaColhida += data.area_parcial;
@@ -73,7 +83,7 @@ const ColheitaAtual = (props) => {
 		setparcelasTotal(parcelasTotalCount);
 		setAreaColhidaParcial(formatArea(areaColhida));
 		setAreaDisponivel(formatArea(areaDisponivel));
-	}, [selectedFilteredData]);
+	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect]);
 
 	useEffect(() => {
 		setNewDayNow(new Date().toLocaleDateString());

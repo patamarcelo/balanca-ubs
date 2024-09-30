@@ -59,8 +59,9 @@ const TableColheita = ({ data, idsPending }) => {
 					<th>Cultura</th>
 					<th>Variedade</th>
 					{/* <th>Projeto</th> */}
-					<th>Area</th>
+					<th>Area Total</th>
 					<th>Area Colhida</th>
+					<th>Area A Colher</th>
 					<th>Peso Carregado / Scs</th>
 					<th>Romaneios Computados</th>
 					<th>Romaneios Pendentes</th>
@@ -72,6 +73,10 @@ const TableColheita = ({ data, idsPending }) => {
 					const areaParcial = carga.area_parcial
 						? carga.area_parcial
 						: 0;
+
+					const areaSaldoColher = carga.area_parcial
+						? (carga.area_colheita - carga.area_parcial)
+						: carga.area_colheita;
 					const formatDate = (data) => {
 						const newDate = new Date(data);
 						const formatedDate =
@@ -143,6 +148,11 @@ const TableColheita = ({ data, idsPending }) => {
 								}`}
 							>
 								{formatArea(areaParcial)}
+							</td>
+							<td
+								
+							>
+								{formatArea(areaSaldoColher)}
 							</td>
 							<td
 								className={`${
