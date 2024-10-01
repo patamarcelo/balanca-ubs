@@ -363,7 +363,7 @@ const FarmBoxPage = () => {
 							marginTop: '10px',
 							marginBottom: '10px',
 							width: "100%",
-							minWidth: "1500px",
+							minWidth: "1400px",
 							minHeight: 'calc(100% - 10px)',
 							padding: '10px',
 							display: "flex",
