@@ -150,7 +150,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
 
                 <tbody style={{ color: colors.textColor[100] }}>
                     {onlyFarmsArr.map((farms, i) => {
-                        const totalByFarm = projectTotalsDone[farms] ? projectTotalsDone[farms] : ' - '
+                        const totalByFarm = projectTotalsDone[farms] ? formatNumber(projectTotalsDone[farms]) : ' - '
                         return (
                             <tr
                                 className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === "light" &&
@@ -168,7 +168,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
                                     let valueByFarm = " - "
                                     if(getValue){
-                                        valueByFarm = getValue.projects[farms] ? getValue.projects[farms] : ' - '
+                                        valueByFarm = getValue.projects[farms] ? formatNumber(getValue.projects[farms]) : ' - '
                                     }
                                     return <td key={i}>{valueByFarm}</td>;
                                 })}
@@ -195,7 +195,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     console.log('getValuehere', getValue)
                                     let valueByFarm = " - "
                                     if(getValue){
-                                        valueByFarm = getValue.totalPlanned ? getValue.totalPlanned : ' - '
+                                        valueByFarm = getValue.totalPlanned ? formatNumber(getValue.totalPlanned) : ' - '
                                     }
                                     return <td key={i} style={{ fontWeight: 'bold'}}>{valueByFarm}</td>;
                                 })}

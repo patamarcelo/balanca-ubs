@@ -64,7 +64,7 @@ const TableShow = ({ dataArr }) => {
                         const isOdd = i % 2
                         return (
                             <TableBody key={i}
-                                className={isOdd ? styles.oddRow : styles.evenRow}
+                                className={isOdd && styles.oddRow }
                             >
                                 {data?.produtos?.filter((saldo) => saldo.quantidade_saldo > 0).map((prods, i) => {
                                     const totalProds = data.produtos.filter((saldo) => saldo.quantidade_saldo > 0).length
