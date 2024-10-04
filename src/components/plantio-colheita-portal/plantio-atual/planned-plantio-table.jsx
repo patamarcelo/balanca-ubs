@@ -50,7 +50,6 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
             projectTotalsDone[project] += value;
         });
     });
-    console.log('data to check project', data)
 
     const totalExec = dataExec?.reduce((acc, curr) => acc += curr.totalPlanned, 0)
 
@@ -130,7 +129,6 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
     // -----------------------------------PLANNED TABLE-----------------------------------
     // -----------------------------------EXEC TABLE-----------------------------------
     if (type === 'executed') {
-        console.log('executed arr', dataExec)
         return (
             <table className={styles.table}>
                 <thead style={{ backgroundColor: colors.blueOrigin[500] }}>
@@ -192,7 +190,6 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                         <th scope="row" style={{ fontWeight: "bold" }}></th>
                         {data.map((dataProj, i) => {
                                     const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
-                                    console.log('getValuehere', getValue)
                                     let valueByFarm = " - "
                                     if(getValue){
                                         valueByFarm = getValue.totalPlanned ? formatNumber(getValue.totalPlanned) : ' - '

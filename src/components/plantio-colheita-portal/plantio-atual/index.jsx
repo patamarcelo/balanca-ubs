@@ -9,6 +9,7 @@ import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import TableComonent from './planned-plantio-table'
+import DashboardTable from "./sent-seeds.jsx";
 
 
 const PlantioAtual = () => {
@@ -18,11 +19,14 @@ const PlantioAtual = () => {
     const isDark = theme.palette.mode === 'dark'
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingSeed, setIsLoadingSeed] = useState(false);
+
     const [dataFromApi, setDataFromApi] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
     const [executedAreaArr, setExecutedAreaArr] = useState([]);
 
     const [dataToBarChart, setDataToBarChart] = useState([]);
+    const [sentSeedsData, setsentSeedsData] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -53,6 +57,31 @@ const PlantioAtual = () => {
     }, []);
 
     useEffect(() => {
+        (async () => {
+            try {
+                setIsLoadingSeed(true)
+                await djangoApi
+                    .get("plantio/get_sent_seeds_data/", {
+                        headers: {
+                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                        }
+                    })
+                    .then((res) => {
+                        console.log('data sentSeed: ', res.data.dados);
+                        setsentSeedsData(res.data.dados.query_table);
+                    })
+                    .catch((err) => console.log(err));
+                setIsLoadingSeed(false);
+            } catch (err) {
+                console.log("Erro ao consumir a API", err);
+                setIsLoadingSeed(false);
+            } finally {
+                setIsLoadingSeed(false);
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         console.log('data from api', dataFromApi)
         console.log('data from api', executedAreaArr)
         if (executedAreaArr.length > 0 && dataFromApi.length > 0) {
@@ -61,7 +90,7 @@ const PlantioAtual = () => {
         }
     }, [dataFromApi, executedAreaArr]);
 
-    if (isLoading) {
+    if (isLoading || isLoadingSeed) {
         return (
             <Box
                 sx={{
@@ -92,6 +121,33 @@ const PlantioAtual = () => {
                 minWidth: "1365px",
             }}
         >
+
+            {
+                sentSeedsData && sentSeedsData.length > 0 &&
+                <>
+                    <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        p={1}
+                        mt={3}
+                        sx={{
+                            backgroundColor: colors.blueOrigin[400],
+                            color: colors.grey[900],
+                            minWidth: "1581px",
+                            width: '100%',
+                        }}
+                    >
+                        <Typography
+                            variant="h1"
+                            color={"whitesmoke"}
+                            sx={{ alignSelf: "center", justifySelf: "center" }}
+                        >
+                            Sementes
+                        </Typography>
+                    </Box>
+                    <DashboardTable data={sentSeedsData} isLoading={isLoadingSeed}/>
+                </>
+            }
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
@@ -168,7 +224,7 @@ const PlantioAtual = () => {
                             Realizado
                         </Typography>
                     </Box>
-                    <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)}/>
+                    <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
                 </>
             }
         </Box>

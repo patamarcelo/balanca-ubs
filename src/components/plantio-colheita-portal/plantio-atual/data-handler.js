@@ -148,7 +148,7 @@ export const groupExecutedByWeek = (qs_executed_area) => {
         // Calculate the previous Sunday to start the week
         const weekStart = moment(plantioDate).subtract(dayOfWeek, 'days'); // Subtract the day of the week to get Sunday
 
-        console.log('Week start: ', weekStart.format()); // Print formatted weekStart (previous Sunday)
+        // console.log('Week start: ', weekStart.format()); // Print formatted weekStart (previous Sunday)
 
         const weekRange = formatWeekRange(weekStart);
         const project = entry.plantio__talhao__fazenda__nome;
