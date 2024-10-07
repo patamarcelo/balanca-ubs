@@ -97,7 +97,7 @@ const DashboardTable = ({ data, isLoading }) => {
         }
     }
 
-    if(isLoading){
+    if (isLoading) {
         return <Typography>isLoading....</Typography>
     }
 
@@ -137,18 +137,15 @@ const DashboardTable = ({ data, isLoading }) => {
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">Utilizado (kg)</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">Área Plantada (ha)</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">Semente/Ha (kg)</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right"><span style={{paddingRight: '10px'}}>Última Regulagem</span></TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }} align="right"><span style={{ paddingRight: '10px' }}>Última Regulagem</span></TableCell>
                             </TableRow>
                         </TableHead>
 
                         {/* Table Body */}
                         <TableBody>
                             {filteredRows.map((row, index) => (
-                                <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }}
-                                    className={`${index % 2 !== 0 && styles.oddRow} ${theme.palette.mode === "light" &&
-                                        index % 2 !== 0 ?
-                                        styles.oddRowLight : styles.evenRowLight
-                                        }`}
+                                <TableRow key={index}
+                                    className={`${index % 2 !== 0 && styles.oddRow}`}
                                 >
                                     <TableCell><span style={{ paddingLeft: '5px' }}>{row.Destino.replace('Fazenda ', '')}</span></TableCell>
                                     <TableCell>{row.Produto}</TableCell>
@@ -158,7 +155,7 @@ const DashboardTable = ({ data, isLoading }) => {
                                     <TableCell align="right">{formatNumberWei(row.Utilizado)}</TableCell>
                                     <TableCell align="right">{formatNumber(row.Area_Plantada)}</TableCell>
                                     <TableCell align="right">{formatNumber(row.Semente_Ha)}</TableCell>
-                                    <TableCell align="right"><span style={{paddingRight: '10px'}}>{row.Ultima_Regulagem ? formatNumber(row.Ultima_Regulagem) : ' - '}</span></TableCell>
+                                    <TableCell align="right"><span style={{ paddingRight: '10px' }}>{row.Ultima_Regulagem ? formatNumber(row.Ultima_Regulagem) : ' - '}</span></TableCell>
                                 </TableRow>
                             ))}
 
@@ -172,7 +169,7 @@ const DashboardTable = ({ data, isLoading }) => {
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">{formatNumberWei(totalsArr?.Utilizado)}</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">{formatNumber(totalsArr?.Area_Plantada)}</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right"></TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right"><span style={{paddingRight: '10px'}}> - </span></TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }} align="right"></TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>

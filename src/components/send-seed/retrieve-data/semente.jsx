@@ -115,6 +115,7 @@ const SementeTable = (props) => {
 						<th>Bags</th>
 						<th>Peso</th>
 						<th>Peso Total</th>
+						<th>NF</th>
 						<th>Data Envio</th>
 						<th>Obs.</th>
 						<th>Situação</th>
@@ -192,6 +193,7 @@ const SementeTable = (props) => {
 										: " - "}
 								</th>
 
+								<th className="data-format">{data["Nº NF"]}</th>
 								<th className="data-format">{envDateFormat}</th>
 
 								<th>{data.OBS}</th>

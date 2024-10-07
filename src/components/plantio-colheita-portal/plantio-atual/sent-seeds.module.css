@@ -2,9 +2,14 @@
     font-weight: bold;
 }
 
+
 .oddRow {
-    background-color: rgba(128, 128, 128, 0.2);
+    background-color: rgba(248,248,248,0.2) !important;
 }
-.evenRowLight {
+.oddRowLight {
     background-color: rgba(248,248,248,0.2);
+}
+
+.evenRowLight {
+    background-color: rgba(248,248,248,0.1);
 }

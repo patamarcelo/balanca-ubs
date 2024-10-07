@@ -14,6 +14,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ptBR from "dayjs/locale/pt-br";
 
+import moment from 'moment'
+
 const RetrieveData = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -44,7 +46,6 @@ const RetrieveData = () => {
 	const [value, setValue] = useState("");
 
 	const handleChange = (newValue) => {
-		console.log(newValue);
 		const date = new Date(newValue);
 		let formatFfDateHoje = "";
 		let formatEnvioDate = "";
@@ -92,7 +93,8 @@ const RetrieveData = () => {
 	useEffect(() => {
 		if (dataArr) {
 			const diaNovo = new Date();
-			handleChange(diaNovo);
+			const last3Days = moment(diaNovo).subtract(3, 'days').toDate();
+			handleChange(last3Days);
 		}
 	}, [dataArr]);
 
@@ -193,7 +195,6 @@ const RetrieveData = () => {
 						newDict.push(newObj);
 					});
 					const filteredData = newDict.filter((data) => {
-						console.log(data);
 						const diaNovo = new Date();
 						// const ontem = "12/02/2023";
 						const hoje = diaNovo

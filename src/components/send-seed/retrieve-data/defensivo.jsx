@@ -11,7 +11,6 @@ const DefensivoTable = (props) => {
 	);
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
-	console.log(data);
 
 	if (data.length === 0) {
 		return (
