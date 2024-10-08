@@ -60,8 +60,8 @@ const PageData = ({ data }) => {
 				mb={5}
 				ml={-1}
 				sx={{
-					width: "30px",
-					height: "30px"
+					width: "40px",
+					height: "40px"
 				}}
 			>
 				<img src={Logo} alt="logo" />

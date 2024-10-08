@@ -73,6 +73,20 @@ const DashboardTable = ({ data, isLoading }) => {
         setTotalsArr(totalsRow)
     }, [filteredRows]);
 
+    const formatNumberRegulagem = (data) => {
+        const dataReg = data.split("-")[0]
+        if (data) {
+            return (dataReg)
+        }
+    }
+    
+    const formatQuantRegu = (data) => {
+        const quantiReg = data.split("-")[1]
+        if (data) {
+            return (quantiReg)
+        }
+    }
+    
     const formatNumber = (data) => {
         if (data) {
 
@@ -155,7 +169,7 @@ const DashboardTable = ({ data, isLoading }) => {
                                     <TableCell align="right">{formatNumberWei(row.Utilizado)}</TableCell>
                                     <TableCell align="right">{formatNumber(row.Area_Plantada)}</TableCell>
                                     <TableCell align="right">{formatNumber(row.Semente_Ha)}</TableCell>
-                                    <TableCell align="right"><span style={{ paddingRight: '10px' }}>{row.Ultima_Regulagem ? formatNumber(row.Ultima_Regulagem) : ' - '}</span></TableCell>
+                                    <TableCell align="right" sx={{display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px'}}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{width: '70px'}}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
                                 </TableRow>
                             ))}
 

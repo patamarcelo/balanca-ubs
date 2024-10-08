@@ -108,7 +108,7 @@ const PageRcData = ({ printValue }) => {
 					height="100%"
 				>
 					<Box mt={3}>
-						<img src={Logo} alt="logo" />
+						<img src={Logo} alt="logo" style={{width: '150px'}}/>
 					</Box>
 					<Box>
 						{[

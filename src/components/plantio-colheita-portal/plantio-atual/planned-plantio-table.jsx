@@ -38,8 +38,8 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
             projectTotals[project] += value;
         });
     });
-    
-    
+
+
     const projectTotalsDone = {};
 
     dataExec?.forEach((entry) => {
@@ -111,7 +111,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                 >
                     <tr>
                         <th scope="row" style={{ fontWeight: "bold" }}></th>
-                        {totals.map((total, i ) => {
+                        {totals.map((total, i) => {
                             return (
                                 <td style={{ fontWeight: "bold" }} key={i}>
                                     {formatNumber(total.total)}
@@ -163,12 +163,31 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     </span>
                                 </td>
                                 {data.map((dataProj, i) => {
+                                    const getValuePlanned = dataProj.projects[farms]
+                                        ? formatNumber(dataProj.projects[farms])
+                                        : " - ";
                                     const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
                                     let valueByFarm = " - "
-                                    if(getValue){
+                                    if (getValue) {
                                         valueByFarm = getValue.projects[farms] ? formatNumber(getValue.projects[farms]) : ' - '
+
+                                        const defineColor = () => {
+                                            if (getValuePlanned === "") {
+                                                return colors.textColor[100]
+                                            }
+                                            if (getValue?.projects[farms] > dataProj?.projects[farms]) {
+                                                return colors.greenAccent[400]
+                                            }
+                                            if (getValue?.projects[farms] < dataProj?.projects[farms]) {
+                                                return 'red'
+                                            }
+                                            return ''
+                                        }
+
+                                        return <td key={i}><span style={{ color: defineColor() }}>{valueByFarm}</span>{getValuePlanned && " / " + getValuePlanned}</td>;
+                                    } else {
+                                        return <td key={i}>-</td>;
                                     }
-                                    return <td key={i}>{valueByFarm}</td>;
                                 })}
                                 <td style={{ textAlign: "right" }}>
                                     {totalByFarm}
@@ -189,13 +208,13 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                     <tr>
                         <th scope="row" style={{ fontWeight: "bold" }}></th>
                         {data.map((dataProj, i) => {
-                                    const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
-                                    let valueByFarm = " - "
-                                    if(getValue){
-                                        valueByFarm = getValue.totalPlanned ? formatNumber(getValue.totalPlanned) : ' - '
-                                    }
-                                    return <td key={i} style={{ fontWeight: 'bold'}}>{valueByFarm}</td>;
-                                })}
+                            const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
+                            let valueByFarm = " - "
+                            if (getValue) {
+                                valueByFarm = getValue.totalPlanned ? formatNumber(getValue.totalPlanned) : ' - '
+                            }
+                            return <td key={i} style={{ fontWeight: 'bold' }}>{valueByFarm}</td>;
+                        })}
                         <td style={{ textAlign: "right", fontWeight: "bold" }}>
                             {formatNumber(totalExec)}
                         </td>

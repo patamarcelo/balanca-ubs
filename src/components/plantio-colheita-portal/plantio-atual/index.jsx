@@ -10,6 +10,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import TableComonent from './planned-plantio-table'
 import DashboardTable from "./sent-seeds.jsx";
+import TotalCOmp from "./planted-info.jsx";
+
+import Paper from '@mui/material/Paper';
 
 
 const PlantioAtual = () => {
@@ -28,6 +31,46 @@ const PlantioAtual = () => {
     const [dataToBarChart, setDataToBarChart] = useState([]);
     const [sentSeedsData, setsentSeedsData] = useState([]);
 
+    const [totalsSet, setTotalsSet] = useState({ planejado: null, plantado: null });
+
+
+
+    useEffect(() => {
+        if (dataFromApi.length > 0) {
+            function getTotalPlannedUntilCurrentWeek(data) {
+                // Get the current date and the start and end of the current week (Sunday to Saturday)
+                const today = new Date();
+                const endOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+
+                let totalPlannedSum = 0;
+
+                data.forEach(entry => {
+                    const [, endRange] = entry.weekRange.split(' - ').map(dateStr => {
+                        // Convert "dd/mm/yyyy" to Date objects
+                        const [day, month, year] = dateStr.split('/').map(Number);
+                        return new Date(year, month - 1, day); // month is 0-indexed in JavaScript
+                    });
+
+                    // Check if the weekRange is before or includes the current week
+                    if (endRange <= endOfWeek) {
+                        totalPlannedSum += entry.totalPlanned;
+                    }
+                });
+
+                return totalPlannedSum;
+            }
+
+            const totalPlanned = getTotalPlannedUntilCurrentWeek(dataFromApi)
+            const totalPlanted = executedAreaArr.reduce((acc, curr) => acc += curr.area_plantada, 0)
+            const newTotals = {
+                planejado: totalPlanned,
+                plantado: totalPlanted
+            }
+
+            setTotalsSet(newTotals)
+        }
+    }, [executedAreaArr, dataFromApi]);
+
     useEffect(() => {
         (async () => {
             try {
@@ -39,7 +82,6 @@ const PlantioAtual = () => {
                         }
                     })
                     .then((res) => {
-                        console.log('data planner: ', res.data);
                         const newData = dataPlannerHandler(res.data.dados.qs_planned)
                         setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
                         setExecutedAreaArr(res.data.dados.qs_executed_area)
@@ -67,7 +109,6 @@ const PlantioAtual = () => {
                         }
                     })
                     .then((res) => {
-                        console.log('data sentSeed: ', res.data.dados);
                         setsentSeedsData(res.data.dados.query_table);
                     })
                     .catch((err) => console.log(err));
@@ -82,8 +123,8 @@ const PlantioAtual = () => {
     }, []);
 
     useEffect(() => {
-        console.log('data from api', dataFromApi)
-        console.log('data from api', executedAreaArr)
+        // console.log('data from api', dataFromApi)
+        // console.log('data from api', executedAreaArr)
         if (executedAreaArr.length > 0 && dataFromApi.length > 0) {
             const newArr = consolidateData(dataFromApi, executedAreaArr)
             setDataToBarChart(newArr)
@@ -145,7 +186,7 @@ const PlantioAtual = () => {
                             Sementes
                         </Typography>
                     </Box>
-                    <DashboardTable data={sentSeedsData} isLoading={isLoadingSeed}/>
+                    <DashboardTable data={sentSeedsData} isLoading={isLoadingSeed} />
                 </>
             }
             {
@@ -197,7 +238,13 @@ const PlantioAtual = () => {
                                 Acompanhamento Plantio
                             </Typography>
                         </Box>
-                        <BarPlantioPlanner data={dataToBarChart} />
+                        <Paper elevation={3} sx={{ width: '100%', marginBottom: '10px' }}>
+                            <BarPlantioPlanner data={dataToBarChart} />
+                        </Paper>
+                        {
+                            totalsSet.planejado && totalsSet.plantado &&
+                            <TotalCOmp totalsSet={totalsSet} />
+                        }
                     </>
                 )
             }
