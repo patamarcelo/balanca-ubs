@@ -172,7 +172,7 @@ const DashboardTable = ({ data, isLoading }) => {
                                     <TableCell align="right">{row.Utilizado ? formatNumberWei(row.Utilizado) : ' - '}</TableCell>
                                     <TableCell align="right">{row.Area_Plantada ? formatNumber(row.Area_Plantada) : ' - '}</TableCell>
                                     <TableCell align="right">{row.Semente_Ha ? formatNumber(row.Semente_Ha) : ' - '}</TableCell>
-                                    <TableCell align="right" sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px' }}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{ width: '70px' }}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
+                                    <TableCell align="right" sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px', }}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{ width: '70px', marginRight: '10px' }}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
                                 </TableRow>
                             ))}
 
