@@ -79,14 +79,14 @@ const DashboardTable = ({ data, isLoading }) => {
             return (dataReg)
         }
     }
-    
+
     const formatQuantRegu = (data) => {
         const quantiReg = data.split("-")[1]
         if (data) {
             return (quantiReg)
         }
     }
-    
+
     const formatNumber = (data) => {
         if (data) {
 
@@ -160,16 +160,19 @@ const DashboardTable = ({ data, isLoading }) => {
                             {filteredRows.map((row, index) => (
                                 <TableRow key={index}
                                     className={`${index % 2 !== 0 && styles.oddRow}`}
+                                    sx={{
+                                        backgroundColor: (index % 2 !== 0 && !isDark ) && 'rgba(224,224,224,1) !important',
+                                    }}
                                 >
                                     <TableCell><span style={{ paddingLeft: '5px' }}>{row.Destino.replace('Fazenda ', '')}</span></TableCell>
                                     <TableCell>{row.Produto}</TableCell>
                                     <TableCell>{row.Cultura}</TableCell>
                                     <TableCell align="right">{formatNumberWei(row.Peso_Total)}</TableCell>
                                     <TableCell align="right">{row.Estoque ? formatNumberWei(row.Estoque) : " - "}</TableCell>
-                                    <TableCell align="right">{formatNumberWei(row.Utilizado)}</TableCell>
-                                    <TableCell align="right">{formatNumber(row.Area_Plantada)}</TableCell>
-                                    <TableCell align="right">{formatNumber(row.Semente_Ha)}</TableCell>
-                                    <TableCell align="right" sx={{display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px'}}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{width: '70px'}}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
+                                    <TableCell align="right">{row.Utilizado ? formatNumberWei(row.Utilizado) : ' - '}</TableCell>
+                                    <TableCell align="right">{row.Area_Plantada ? formatNumber(row.Area_Plantada) : ' - '}</TableCell>
+                                    <TableCell align="right">{row.Semente_Ha ? formatNumber(row.Semente_Ha) : ' - '}</TableCell>
+                                    <TableCell align="right" sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px' }}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{ width: '70px' }}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
                                 </TableRow>
                             ))}
 
