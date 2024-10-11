@@ -144,13 +144,13 @@ const DashboardTable = ({ data, isLoading }) => {
                                 }}
                             >
                                 <TableCell sx={{ fontWeight: 'bold' }}><span style={{ paddingLeft: '5px' }}>Destino</span></TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Semente</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Cultura</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Peso Total (kg)</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Estoque (kg)</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Utilizado (kg)</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Área Plantada (ha)</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Semente/Ha (kg)</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingLeft: '5px !important' }}>Semente</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingLeft: '5px !important' }}>Cultura</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingRight: '5px !important' }} align="right">Peso Total (kg)</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingRight: '5px !important' }} align="right">Estoque (kg)</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingRight: '5px !important' }} align="right">Utilizado (kg)</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingRight: '5px !important' }} align="right">Área Plantada (ha)</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold', paddingRight: '5px !important' }} align="right">Semente/Ha (kg)</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right"><span style={{ paddingRight: '10px' }}>Última Regulagem</span></TableCell>
                             </TableRow>
                         </TableHead>
@@ -161,23 +161,34 @@ const DashboardTable = ({ data, isLoading }) => {
                                 <TableRow key={index}
                                     className={`${index % 2 !== 0 && styles.oddRow}`}
                                     sx={{
-                                        backgroundColor: (index % 2 !== 0 && !isDark ) && 'rgba(224,224,224,1) !important',
+                                        backgroundColor: (index % 2 !== 0 && !isDark) && 'rgba(224,224,224,1) !important',
                                     }}
+
+                                // className={`${index % 2 !== 0 && styles.oddRow} ${theme.palette.mode === "light" &&
+                                //     index % 2 !== 0 &&
+                                //     styles.oddRowLight
+                                //     } ${theme.palette.mode === "light" &&
+                                //         index % 2 === 0 &&
+                                //         styles.evenRowLight
+                                //         }`}
+
                                 >
                                     <TableCell><span style={{ paddingLeft: '5px' }}>{row.Destino.replace('Fazenda ', '')}</span></TableCell>
                                     <TableCell>{row.Produto}</TableCell>
                                     <TableCell>{row.Cultura}</TableCell>
+
                                     <TableCell align="right">{formatNumberWei(row.Peso_Total)}</TableCell>
                                     <TableCell align="right">{row.Estoque ? formatNumberWei(row.Estoque) : " - "}</TableCell>
                                     <TableCell align="right">{row.Utilizado ? formatNumberWei(row.Utilizado) : ' - '}</TableCell>
                                     <TableCell align="right">{row.Area_Plantada ? formatNumber(row.Area_Plantada) : ' - '}</TableCell>
                                     <TableCell align="right">{row.Semente_Ha ? formatNumber(row.Semente_Ha) : ' - '}</TableCell>
                                     <TableCell align="right" sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px', }}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{ width: '70px', marginRight: '10px' }}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
+
                                 </TableRow>
                             ))}
 
                             {/* Totals Row */}
-                            <TableRow sx={{ backgroundColor: 'rgba(224,224,224,0.5)', fontWeight: 'bold' }}>
+                            <TableRow sx={{ backgroundColor: isDark ? 'rgba(224,224,224,0.2)' : 'rgba(224,224,224,0.5)', fontWeight: 'bold' }}>
                                 <TableCell sx={{ fontWeight: 'bold' }}><span style={{ paddingLeft: '5px' }}>{totalsArr?.Destino}</span></TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>{totalsArr?.Produto}</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>{totalsArr?.Cultura}</TableCell>
