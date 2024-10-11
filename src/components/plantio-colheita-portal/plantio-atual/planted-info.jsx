@@ -5,6 +5,9 @@ import Paper from '@mui/material/Paper';
 
 import { ResponsiveBar } from '@nivo/bar';
 
+import { Gauge } from '@mui/x-charts/Gauge';
+
+
 
 
 const TotalCOmp = (props) => {
@@ -26,18 +29,22 @@ const TotalCOmp = (props) => {
 
     const data = [
         {
+            category: 'Projetado',
+            value: totalsSet['projetado'].toFixed(0)
+        },
+        {
             category: 'Planejado',
             value: totalsSet['planejado'].toFixed(0)
         },
         {
             category: 'Plantado',
             value: totalsSet['plantado'].toFixed(0)
-        }
+        },
     ];
 
 
     return (
-        <Paper elevation={3}
+        <Paper elevation={8}
             sx={{
                 width: '100%',
                 padding: '20px',
@@ -59,24 +66,37 @@ const TotalCOmp = (props) => {
                         display: 'flex',
                         flexDirection: 'row',
                         gap: '30px',
-                        borderBottom: `1px solid ${colors.textColor[100]}`,
                     }}
                 >
                     <Typography variant="h6" color={colors.textColor[100]}
                         sx={{
                             backgroundColor: 'rgb(233,217,164,0.3)',
                             padding: '2px 10px',
+                            borderBottom: `1px solid ${colors.textColor[100]}`
                         }}
                     >
                         <b>Planejado: </b>{formatNumber(totalsSet['planejado'])}
                     </Typography>
+                    {/* <Box>
+                    <Gauge width={40} height={40} value={60} startAngle={-90} endAngle={90} />
+                    </Box> */}
                     <Typography variant="h6" color={colors.textColor[100]}
                         sx={{
                             backgroundColor: colors.greenAccent[700],
                             padding: '2px 10px',
+                            borderBottom: `1px solid ${colors.textColor[100]}`
                         }}
                     >
                         <b>Plantado: </b>{formatNumber(totalsSet['plantado'])}
+                    </Typography>
+                    <Typography variant="h6" color={colors.textColor[100]}
+                        sx={{
+                            backgroundColor: colors.primary[900],
+                            padding: '2px 10px',
+                            borderBottom: `1px solid ${colors.textColor[100]}`
+                        }}
+                    >
+                        <b>Projetado: </b>{formatNumber(totalsSet['projetado'])}
                     </Typography>
                 </Box>
                 <Box
@@ -89,14 +109,14 @@ const TotalCOmp = (props) => {
                         data={data}
                         keys={['value']}
                         indexBy="category"
-                        margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
+                        margin={{ top: 20, right: 20, bottom: 50, left: 72 }}
                         layout="horizontal"
                         padding={0.3}
-                        colors={({ id, data }) => (data.category === 'Planejado' ? 'rgb(233,217,164)' : colors.greenAccent[700])}
+                        colors={({ id, data }) => (data.category === 'Planejado' ? 'rgb(233,217,164)' : data.category === 'Projetado' ? "#d0d1d5" : colors.greenAccent[700])}
                         label={(d) => `${formatNumber(d.value)}`}
                         axisLeft={{
                             tickSize: 5,
-                            tickPadding: 5,
+                            tickPadding: 10,
                             tickRotation: 0,
                             legend: '',
                             legendPosition: 'middle',
@@ -119,21 +139,23 @@ const TotalCOmp = (props) => {
                             axis: {
                                 ticks: {
                                     text: {
-                                        fontSize: 10,
+                                        fontSize: 12,
                                         fontWeight: 'bold'  // Makes axis labels bold
                                     }
                                 },
                                 legend: {
                                     text: {
                                         fontSize: 12,
-                                        fontWeight: 'bold'  // Makes axis legend bold
+                                        fontWeight: 'bold',  // Makes axis legend bold
+                                        fill: 'red'
                                     }
                                 }
                             },
                             labels: {
                                 text: {
                                     fontSize: 14,
-                                    fontWeight: 'bold'  // Makes bar labels bold
+                                    fontWeight: 'bold',  // Makes bar labels bold
+                                    fill: 'red'
                                 }
                             }
                         }}
@@ -142,7 +164,9 @@ const TotalCOmp = (props) => {
                         enableGridY={false}
                         labelSkipWidth={12}
                         labelSkipHeight={12}
-                        labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+                        labelTextColor={'black'} // Set the color of the text inside the bars
+                        // labelTextColor={colors.textColor[100]} // Set the color of the text inside the bars
+                        // labelTextColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
                     />
                 </Box>
 

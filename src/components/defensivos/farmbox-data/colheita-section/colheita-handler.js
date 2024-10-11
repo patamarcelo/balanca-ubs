@@ -36,12 +36,15 @@ const handlerDataColheita = (data) => {
         const farmName = details.plantations[0].plantation.farm_name;
         const updatedAt = details.updated_at
         const talhoesArr = details.plantations.map((talhao) => {
+            console.log('talhao: ', talhao.plantation)
             const areaAplicada = talhao.applied_area;
             const areaSolicitada = talhao.sought_area;
             const areaTalhao = talhao.plantation.area;
             const parcela = talhao.plantation.name;
             const parcelaId = talhao.plantation.id;
             const lastUpdate = talhao.updated_at;
+            const cultura = talhao.plantation.culture_name;
+            const variedade = talhao.plantation.variety_name;
             return {
                 areaAplicada,
                 areaSolicitada,
@@ -51,10 +54,11 @@ const handlerDataColheita = (data) => {
                 farmName,
                 lastUpdate,
                 parcelaId,
-                updatedAt
+                updatedAt,
+                cultura, 
+                variedade
             };
         });
-
         const progressos = details.progresses.map((progress) => {
             const dataApplied = progress.date;
             const updatedAt = progress.updated_at.split('T')[0];
@@ -70,6 +74,10 @@ const handlerDataColheita = (data) => {
                         ?.parcela,
                     totalApplied: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
                         ?.areaAplicada,
+                    cultura: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
+                        ?.cultura,
+                    variedade: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
+                        ?.variedade,
                     updatedAt,
                 };
             });
@@ -80,7 +88,7 @@ const handlerDataColheita = (data) => {
 
     const formatExtratoColheitaCsv = newExtratoArr.flat();
     const formatExtratoColheita = [
-        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId", 'editado']
+        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId", 'editado', 'cultura', 'variedade']
     ];
     formatExtratoColheitaCsv.forEach((element) => {
         const dateApp = element.dataApplied.split('T')[0]
@@ -108,6 +116,8 @@ const handlerDataColheita = (data) => {
             }),
             element.plantationId,
             element.updatedAt,
+            element.cultura,
+            element.variedade
         ];
         formatExtratoColheita.push(arrToAdd);
     });

@@ -59,12 +59,15 @@ const PlantioAtual = () => {
 
                 return totalPlannedSum;
             }
+            console.log('datafromAPI::::', dataFromApi)
+            const totalProj = dataFromApi.reduce((acc, curr) => acc += curr.totalPlanned, 0)
 
             const totalPlanned = getTotalPlannedUntilCurrentWeek(dataFromApi)
             const totalPlanted = executedAreaArr.reduce((acc, curr) => acc += curr.area_plantada, 0)
             const newTotals = {
                 planejado: totalPlanned,
-                plantado: totalPlanted
+                plantado: totalPlanted,
+                projetado: totalProj
             }
 
             setTotalsSet(newTotals)
@@ -166,7 +169,7 @@ const PlantioAtual = () => {
             {
                 sentSeedsData && sentSeedsData.length > 0 &&
                 <>
-                    <Paper elevation={5}
+                    <Paper elevation={8}
                         sx={{
                             margin: '10px 0px',
                             width: '100%',
@@ -200,7 +203,7 @@ const PlantioAtual = () => {
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
-                    <Paper elevation={5}
+                    <Paper elevation={8}
                         sx={{
                             margin: '30px 0px 10px 0px',
                             width: '100%',
@@ -228,7 +231,7 @@ const PlantioAtual = () => {
                             </Typography>
                         </Box>
                     </Paper>
-                    <Paper elevation={3} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
+                    <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
                         <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} />
                     </Paper>
                 </>
@@ -236,7 +239,7 @@ const PlantioAtual = () => {
             {
                 dataToBarChart && dataToBarChart.length > 0 && (
                     <>
-                        <Paper elevation={5}
+                        <Paper elevation={8}
                             sx={{
                                 margin: '30px 0px 10px 0px',
                                 width: '100%',
@@ -265,7 +268,7 @@ const PlantioAtual = () => {
                                 </Typography>
                             </Box>
                         </Paper>
-                        <Paper elevation={3} sx={{ width: '100%', marginBottom: '10px' }}>
+                        <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px' }}>
                             <BarPlantioPlanner data={dataToBarChart} />
                         </Paper>
                         {
@@ -278,7 +281,7 @@ const PlantioAtual = () => {
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
-                    <Paper elevation={5}
+                    <Paper elevation={8}
                         sx={{
                             margin: '30px 0px 10px 0px',
                             width: '100%',
@@ -307,7 +310,7 @@ const PlantioAtual = () => {
                             </Typography>
                         </Box>
                     </Paper>
-                    <Paper elevation={3} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
+                    <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
                         <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
                     </Paper>
                 </>

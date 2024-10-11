@@ -97,6 +97,7 @@ export const farmDictCOde = [
     {projeto: "Fazenda Santa Maria", code: "0207"},
     {projeto: "Fazenda Tucano", code: "0202"},
     {projeto: "Fazenda Tuiuiu", code: "0202"},
+    {projeto: "Fazenda Fazendinha", code: "0207"},
 ]
 
 export const armazemDictCode = [
@@ -112,5 +113,6 @@ export const armazemDictCode = [
     {projeto: "Fazenda Santa Maria", code: "19"},
     {projeto: "Fazenda Tucano", code: "01"},
     {projeto: "Fazenda Tuiuiu", code: "01"},
+    {projeto: "Fazenda Fazendinha", code: "01"},
 ]
 

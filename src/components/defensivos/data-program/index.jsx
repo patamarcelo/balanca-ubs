@@ -275,7 +275,7 @@ const DataProgramPage = (props) => {
 		const filtList = plantioRedux.filter(
 			(data) =>
 				data.fazenda === farmName &&
-				data.dados.plantio_finalizado === true
+				(data.dados.plantio_finalizado === true)
 		);
 		setFilteredList(filtList);
 	};
@@ -287,15 +287,15 @@ const DataProgramPage = (props) => {
 	const addDaysToDate = (dateStr, daysToAdd) => {
 		// Convert the date string to a Date object
 		const date = new Date(dateStr);
-	  
+
 		// Add the specified number of days
 		date.setDate(date.getDate() + daysToAdd);
-	  
+
 		// Format the new date back to "yyyy-mm-dd"
 		const newDateStr = date.toISOString().split('T')[0];
-	  
+
 		return newDateStr;
-	  }
+	}
 
 	useEffect(() => {
 		const filtParcelas = filteredList.map((data, i) => {
@@ -318,7 +318,7 @@ const DataProgramPage = (props) => {
 			const charge_id = data.dados?.encarregado_id_farmbox ? data.dados?.encarregado_id_farmbox : id_marcelo_pata
 			const today = (new Date()).toLocaleDateString('pt-BR').split('/').reverse().join('-')
 			const endDate = addDaysToDate(today, 6)
-			
+
 			const plantations = []
 			const inputs = []
 
@@ -388,25 +388,25 @@ const DataProgramPage = (props) => {
 				return cronArr.filter((data) => data !== undefined);
 			}
 		});
-		const compare = (a,b) => {
+		const compare = (a, b) => {
 			// if(new Date(a.dataPrevApp) < new Date(b.dataPrevApp)) return -1;
 			// if(new Date(a.dataPrevApp) > new Date(b.dataPrevApp)) return 1;
-			if(a.dapApp < b.dapApp) return -1;
-			if(a.dapApp > b.dapApp) return 1;
+			if (a.dapApp < b.dapApp) return -1;
+			if (a.dapApp > b.dapApp) return 1;
 			// if(a.cultura < b.cultura) return -1;
 			// if(a.cultura > b.cultura) return 1;
 
 			// if(a.variedade < b.variedade) return -1;
 			// if(a.variedade > b.variedade) return 1;
-		
+
 		}
 		const filtArray = filtParcelas
 			.flat()
 			.sort(compare)
-			.sort((a, b) => a.estagio.split('|')[1].localeCompare(b.estagio.split('|')[1]))
-			// .sort((a, b) => a.cultura.localeCompare(b.cultura))
-			// .sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp) || )
-			// .sort((a, b) => a.dapApp - b.dapApp)
+			.sort((a, b) => a.estagio.split('|')[1]?.localeCompare(b.estagio.split('|')[1]))
+		// .sort((a, b) => a.cultura.localeCompare(b.cultura))
+		// .sort((a, b) => new Date(a.dataPrevApp) - new Date(b.dataPrevApp) || )
+		// .sort((a, b) => a.dapApp - b.dapApp)
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
 			const dapApp = curr.dapApp;
@@ -532,7 +532,7 @@ const DataProgramPage = (props) => {
 	};
 
 	const hasduplicated = (ele) => {
-		if(filteredAndDucplicatedParcelas.length > 0) {
+		if (filteredAndDucplicatedParcelas.length > 0) {
 			const moreThanOne = filteredAndDucplicatedParcelas.filter((data) => data === ele).length
 			const hasDuplicated = moreThanOne > 1 ? true : false
 			return hasDuplicated
@@ -590,7 +590,7 @@ const DataProgramPage = (props) => {
 			setfilteredAndDucplicatedParcelas(prev => {
 				parcelasToHide.forEach(item => {
 					const index = prev.indexOf(item);
-					if(index > -1) {
+					if (index > -1) {
 						prev.splice(index, 1);
 					}
 				})
@@ -623,10 +623,10 @@ const DataProgramPage = (props) => {
 						const dataFromServer = JSON.parse(res.data.result)
 						const { code } = dataFromServer;
 						Swal.fire({
-                            title: "Feito!!",
-                            html: `AP Aberta com Sucesso: <b>${code}</b> `,
-                            icon: "success"
-                        });
+							title: "Feito!!",
+							html: `AP Aberta com Sucesso: <b>${code}</b> `,
+							icon: "success"
+						});
 						parcelasToUp.forEach((parcela) => {
 							handleSetApp(parcela.id, parcela.estagio)
 						})
@@ -1334,7 +1334,7 @@ const DataProgramPage = (props) => {
 																		className={
 																			classes[
 																			`${"parcela-div"}`
-																			
+
 																			]
 																		}
 																	>
@@ -1364,9 +1364,9 @@ const DataProgramPage = (props) => {
 																			/>
 																		</div>
 																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]}>
-																		{
-																			data.parcela
-																		}
+																			{
+																				data.parcela
+																			}
 																		</span>
 																	</div>
 																	<div

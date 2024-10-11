@@ -57,10 +57,12 @@ const BarPlantioPlanner = ({ data }) => {
                     // background: '#ffffff', // Custom background color for the chart area
                     legends:{
                         title:{
-                            fill: colors.textColor[100]
+                            fill: colors.textColor[100],
                         },
                         text:{
-                            fill: colors.textColor[100]
+                            fill: colors.textColor[100],
+                            fontSize: 12,
+                            fontWeight: 'bold',  // Makes bar labels bold
                         }
                     },
                     axis: {
@@ -83,6 +85,8 @@ const BarPlantioPlanner = ({ data }) => {
                         legend: {
                             text: {
                                 fill: colors.textColor[100],
+                                fontWeight: 'bold',
+                                fontSize: 14
                             },
                         },
                     },
@@ -95,6 +99,13 @@ const BarPlantioPlanner = ({ data }) => {
                             boxShadow: '0 3px 9px rgba(0, 0, 0, 0.5)',
                             padding: '10px',
                         },
+                    },
+                    labels: {
+                        text: {
+                            // fontSize: 10,
+                            // fontWeight: 'bold',  // Makes bar labels bold
+                            fill: 'black'
+                        }
                     },
                     grid: {
                         line: {

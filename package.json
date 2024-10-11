@@ -21,6 +21,7 @@
     "@mui/joy": "^5.0.0-alpha.86",
     "@mui/lab": "^5.0.0-alpha.112",
     "@mui/material": "^5.11.0",
+    "@mui/x-charts": "^7.20.0",
     "@mui/x-data-grid": "^5.17.16",
     "@mui/x-date-pickers": "^5.0.20",
     "@nivo/bar": "^0.80.0",
