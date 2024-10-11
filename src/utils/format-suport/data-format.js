@@ -40,7 +40,7 @@ export const newDateArr = (dataFor) => {
 };
 
 export const displayDate = (date) => {
-	return date.split("-").reverse().join("/");
+	return date?.split("-").reverse().join("/");
 };
 
 export const getNextDays = (days) => {
