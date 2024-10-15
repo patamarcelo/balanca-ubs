@@ -141,7 +141,6 @@ const HomePage = () => {
 				)
 			);
 		});
-
 		setTimeout(() => {
 			setIsLoading(false);
 		}, 1000);
