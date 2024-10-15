@@ -622,7 +622,7 @@ const FarmBoxPage = () => {
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<span>Selecione uma fazenda</span>
-						{/* <PluviDataComp /> */}
+						<PluviDataComp />
 					</Box>
 				)}
 			</IndexModalDataFarmbox>

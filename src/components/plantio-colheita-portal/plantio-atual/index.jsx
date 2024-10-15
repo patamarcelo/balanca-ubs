@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from 'react'
 
 import { tokens } from "../../../theme";
@@ -13,6 +13,9 @@ import DashboardTable from "./sent-seeds.jsx";
 import TotalCOmp from "./planted-info.jsx";
 
 import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+
 
 
 const PlantioAtual = () => {
@@ -134,6 +137,51 @@ const PlantioAtual = () => {
         }
     }, [dataFromApi, executedAreaArr]);
 
+    const handleRefresh = async () => {
+        try {
+            setIsLoadingSeed(true)
+            await djangoApi
+                .get("plantio/get_sent_seeds_data/", {
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                    }
+                })
+                .then((res) => {
+                    setsentSeedsData(res.data.dados.query_table);
+                })
+                .catch((err) => console.log(err));
+            setIsLoadingSeed(false);
+        } catch (err) {
+            console.log("Erro ao consumir a API", err);
+            setIsLoadingSeed(false);
+        } finally {
+            setIsLoadingSeed(false);
+        }
+
+        try {
+            setIsLoading(true)
+            await djangoApi
+                .get("plantio/get_plantio_planner_data/", {
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+                    }
+                })
+                .then((res) => {
+                    const newData = dataPlannerHandler(res.data.dados.qs_planned)
+                    setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
+                    setExecutedAreaArr(res.data.dados.qs_executed_area)
+                    setDataFromApi(newData)
+                })
+                .catch((err) => console.log(err));
+            setIsLoading(false);
+        } catch (err) {
+            console.log("Erro ao consumir a API", err);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     if (isLoading || isLoadingSeed) {
         return (
             <Box
@@ -165,6 +213,15 @@ const PlantioAtual = () => {
                 minWidth: "1365px",
             }}
         >
+            <Box
+                sx={{
+                    marginLeft: 'auto'
+                }}
+            >
+                <IconButton color="secondary" aria-label="add an alarm" sx={{ cursor: 'pointer', position: 'fixed', right: 20 }} onClick={handleRefresh}>
+                    <AutorenewIcon />
+                </IconButton>
+            </Box>
 
             {
                 sentSeedsData && sentSeedsData.length > 0 &&
