@@ -410,7 +410,7 @@ const DataProgramPage = (props) => {
 		const result = filtArray.reduce((acc, curr) => {
 			const estagio = curr.estagio;
 			const dapApp = curr.dapApp;
-			if (dapApp > 0) {
+			if (dapApp >= 0) {
 				if (acc[estagio] == null) acc[estagio] = [];
 				acc[estagio].push(curr);
 			}

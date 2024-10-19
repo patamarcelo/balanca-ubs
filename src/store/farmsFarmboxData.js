@@ -13,7 +13,7 @@ export const FarmsFarmBoxData = [
 		cnpj_cpf: "",
 		ie: "",
 		city: null,
-		show: true
+		show: false
 	},
 	{
 		id: 11949,
@@ -109,7 +109,7 @@ export const FarmsFarmBoxData = [
 		cnpj_cpf: "",
 		ie: "",
 		city: null,
-		show: false
+		show: true
 	},
 	{
 		id: 11939,

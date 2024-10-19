@@ -1,4 +1,6 @@
 import { getNextDays } from "../../utils/format-suport/data-format";
+import { createSelector } from 'reselect';
+
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
@@ -377,7 +379,7 @@ export const createDict = (state) => {
 			fazenda_box_id: farm_id,
 			app: code,
 			status: status,
-			observations: observations, 
+			observations: observations,
 			progresso: percentApp.toFixed(2),
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
@@ -553,6 +555,27 @@ export const createDictFarmBox = (state) => {
 			a.fazenda.localeCompare(b.fazenda) || a.app.localeCompare(b.app)
 	);
 };
+
+
+// Input selector to get plantio data
+const getPlantioApp = (state) => state.plantio.app || []; // Default to an empty array
+
+// Memoized selector to get unique farm names
+export const onlyFarmSelector = createSelector(
+	[getPlantioApp],
+	(plantio) => {
+		// Extract farm names from plantio data
+		const onlyfarm = plantio.map((data) => {
+			const farms = data.plantations.map((farm) => {
+				return farm.plantation.farm_name;
+			});
+			return farms;
+		});
+
+		// Return unique farm names
+		return [...new Set(onlyfarm.flat())];
+	}
+);
 
 export const onlyFarm = (state) => {
 	const plantio = state.plantio.app;

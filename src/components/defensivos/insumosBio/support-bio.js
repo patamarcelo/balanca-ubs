@@ -203,7 +203,7 @@ export const dataFromDjangoProjetadoArrAll = (data, filterDate) => {
         // console.log('current: ', cur)
         if (cur.id_farmbox === 164990) {
             if (totalBpQuant < 100 && totalBpQuant > 0) {
-                console.log('current: ', cur)
+                // console.log('current: ', cur)
                 totalBp += cur.quantidade
             }
             totalBpQuant += 1
@@ -238,7 +238,23 @@ export const formatPreSt = (data) => {
         })
         return prods.flat()
     })
-    return onlyProds.flat()
+    const result = onlyProds.flat().reduce((acc, item) => {
+        const { cod_produto, quantity_sts, descricao_produto } = item;
+
+        if (!acc[cod_produto]) {
+            // If the cod_produto does not exist in the accumulator, create a new entry
+            acc[cod_produto] = { cod_produto, quantity_sts, descricao_produto };
+        } else {
+            // If it already exists, just sum up the quantity_sts
+            acc[cod_produto].quantity_sts += quantity_sts;
+        }
+
+        return acc;
+    }, {});
+
+    // Convert the accumulator object back into an array
+    const lastUpdated = Object.values(result);
+    return lastUpdated.flat()
 }
 
 export default formatProds

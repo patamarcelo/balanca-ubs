@@ -8,7 +8,8 @@ import {
 	selectApp,
 	createDict,
 	createDictFarmBox,
-	onlyFarm
+	onlyFarm,
+	onlyFarmSelector
 } from "../../../store/plantio/plantio.selector";
 import {
 	setApp,
@@ -50,7 +51,7 @@ import {
 } from "../../../utils/format-suport/data-format";
 import PluviDataComp from "./pluvi-data";
 
-import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
+import { selectSafraCiclo,  } from "../../../store/plantio/plantio.selector";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ColheitaModalPage from "./colheita-modal";
@@ -70,7 +71,8 @@ const FarmBoxPage = () => {
 	const openApp = useSelector(selectApp);
 	const dictSelect = useSelector(createDict);
 	const dictSelectFarm = useSelector(createDictFarmBox);
-	const onlyFarms = useSelector(onlyFarm);
+	// const onlyFarms = useSelector(onlyFarm);
+	const onlyFarms = useSelector(onlyFarmSelector);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
 	const [saldoAplicar, setSaldoAplicar] = useState(0);
@@ -622,7 +624,9 @@ const FarmBoxPage = () => {
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<span>Selecione uma fazenda</span>
-						<PluviDataComp />
+						{ filtFarm.length === 0 &&
+							<PluviDataComp />
+						}
 					</Box>
 				)}
 			</IndexModalDataFarmbox>

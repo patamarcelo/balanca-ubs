@@ -95,6 +95,7 @@ const PluviDataComp = () => {
 				FarmsFarmBoxData.filter((data) => data.show === true)
 					.sort((a, b) => a.name.localeCompare(b.name))
 					.map((data, i) => {
+						console.log('data here: ', data)
 						let pluviNumberData = 0;
 						const getPluviValue = (farmName, indexDate) => {
 							const filteredValueObj = pluviData.filter(
