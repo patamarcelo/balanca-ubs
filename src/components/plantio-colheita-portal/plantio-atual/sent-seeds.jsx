@@ -19,6 +19,12 @@ import { tokens } from '../../../theme';
 
 import styles from './sent-seeds.module.css'
 
+import beans from "../../../utils/assets/icons/beans2.png";
+import soy from "../../../utils/assets/icons/soy.png";
+import rice from "../../../utils/assets/icons/rice.png";
+import cotton from '../../../utils/assets/icons/cotton.png'
+import question from '../../../utils/assets/icons/question.png'
+
 const DashboardTable = ({ data, isLoading }) => {
 
     const theme = useTheme();
@@ -111,6 +117,37 @@ const DashboardTable = ({ data, isLoading }) => {
         }
     }
 
+    const iconDict = [
+        { cultura: "Feijão", icon: beans, alt: "feijao" },
+        { cultura: "FEIJAO MUNGO", icon: beans, alt: "feijao" },
+        { cultura: "Arroz", icon: rice, alt: "arroz" },
+        { cultura: "Soja", icon: soy, alt: "soja" },
+        { cultura: "Algodão", icon: cotton, alt: "algodao" },
+    ];
+
+    const filteredIcon = (data) => {
+        const filtered = iconDict.filter(
+            (dictD) => dictD.cultura === data
+        );
+
+        if (filtered.length > 0) {
+            return filtered[0].icon;
+        }
+        return question;
+    };
+
+    const filteredAlt = (data) => {
+        const filtered = iconDict.filter(
+            (dictD) => dictD.cultura === data
+        );
+
+        if (filtered.length > 0) {
+            return filtered[0].alt;
+        }
+        return question;
+    };
+
+
     if (isLoading) {
         return <Typography>isLoading....</Typography>
     }
@@ -169,13 +206,38 @@ const DashboardTable = ({ data, isLoading }) => {
                                         backgroundColor: (index % 2 !== 0 && !isDark) && 'rgba(224,224,224,1) !important',
                                         '& .MuiTableCell-body': {
                                             paddingRight: `${paddingSize}px !important`,
-                                            paddingLeft: `${paddingSize}px !important`
+                                            paddingLeft: `${paddingSize}px !important`,
+                                            borderBottom: '0px !important'
+                                        },
+                                        "&:hover": {
+                                            backgroundColor: colors.blueAccent[900]
                                         }
+                                        // '& .MuiTableCell-body:hover': {
+                                        //     backgroundColor: 'red'
+                                        // },
                                     }}
                                 >
                                     <TableCell><span style={{ paddingLeft: '5px' }}>{row.Destino.replace('Fazenda ', '')}</span></TableCell>
                                     <TableCell>{row.Produto}</TableCell>
-                                    <TableCell>{row.Cultura}</TableCell>
+                                    <TableCell>
+                                    <div
+                                    style={{textAlign: 'center'}}
+                                    >
+                                        <img
+                                            src={filteredIcon(
+                                                row.Cultura
+                                            )}
+                                            alt={filteredAlt(
+                                                row.Cultura
+                                            )}
+                                            style={{
+                                                filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+                                                width: '15px',
+                                                height: '15px',
+                                            }}
+                                            />
+                                            </div>
+                                    </TableCell>
 
                                     <TableCell align="right">{formatNumberWei(row.Peso_Total)}</TableCell>
                                     <TableCell align="right">{row.Estoque ? formatNumberWei(row.Estoque) : " - "}</TableCell>
@@ -191,7 +253,10 @@ const DashboardTable = ({ data, isLoading }) => {
                                 backgroundColor: 'rgba(224,224,224,0.5)', fontWeight: 'bold', '& .MuiTableCell-body': {
                                     paddingRight: `${paddingSize}px !important`,
                                     paddingLeft: `${paddingSize}px !important`
-                                }
+                                },
+                                "&:hover": {
+                                            backgroundColor: colors.blueAccent[900]
+                                        }
                             }}>
                                 <TableCell sx={{ fontWeight: 'bold' }}><span style={{ paddingLeft: '5px' }}>{totalsArr?.Destino}</span></TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>{totalsArr?.Produto}</TableCell>
