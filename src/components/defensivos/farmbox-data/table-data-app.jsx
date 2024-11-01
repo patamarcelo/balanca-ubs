@@ -61,6 +61,7 @@ const TableDataPage = (props) => {
 
 	const [displayMap, setDisplayMap] = useState(null);
 	const [loadingMap, setLoadingMap] = useState(false);
+	const [loadingMapKml, setLoadingMapKml] = useState(false);
 
 	const [rotateDir, setRotateDir] = useState("270");
 
@@ -217,6 +218,7 @@ const TableDataPage = (props) => {
 			setLoadingMap(false);
 		}
 	};
+
 	const handleGenerateKml = async (idFarm, dataFarm) => {
 		console.log("dataFarmmm", dataFarm)
 		const params = JSON.stringify({
@@ -224,7 +226,7 @@ const TableDataPage = (props) => {
 			parcelas: idParcelasSelected,
 			safra: safraCiclo
 		});
-		setLoadingMap(true);
+		setLoadingMapKml(true);
 		try {
 			const res = await djangoApi.post("plantio/get_kmls_aviacao/", params, {
 				headers: {
@@ -241,13 +243,14 @@ const TableDataPage = (props) => {
 				link.click(); // Trigger the download
 				document.body.removeChild(link); // Clean up by removing the link
 			};
-		
+
 			// Call the download function to initiate the download
 			downloadKMLFile(); // Call this function to initiate the download
 		} catch (err) {
 			console.log("Erro ao alterar as aplicações", err);
+			setLoadingMapKml(false);
 		} finally {
-			setLoadingMap(false);
+			setLoadingMapKml(false);
 		}
 	};
 
@@ -376,7 +379,7 @@ const TableDataPage = (props) => {
 							{dataF.observations === 'Aplicação Aberta via integração' ? '' : dataF.observations}
 						</Typography>
 					</Box>
-					<Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: '-50px', paddingRight: '10px', gap: '20px' }}>
+					<Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: '-50px', paddingRight: '10px', gap: '10px' }}>
 						<IconButton
 							onClick={() =>
 								handleShowMap(dataF.fazenda_box_id)
@@ -391,21 +394,27 @@ const TableDataPage = (props) => {
 							/>
 						</IconButton>
 						<IconButton
-						disabled={idParcelasSelected?.length === 0}
+							disabled={idParcelasSelected?.length === 0}
 							onClick={() =>
-								handleGenerateKml(dataF.fazenda_box_id,dataF)
+								handleGenerateKml(dataF.fazenda_box_id, dataF)
 							}
 							sx={{
 								cursor: 'pointer'
 							}}
 						>
-							<FontAwesomeIcon
-								icon={faPlane}
-								color={idParcelasSelected?.length === 0 ? 'grey' : colors.textColor[100]}
-								style={{
-									cursor: "pointer"
-								}}
-							/>
+							{
+								loadingMapKml ?
+									<CircularProgress size={24} color="inherit" />
+									:
+									<FontAwesomeIcon
+										icon={faPlane}
+										color={idParcelasSelected?.length === 0 ? 'grey' : colors.textColor[100]}
+										style={{
+											cursor: "pointer"
+										}}
+									/>
+							}
+
 						</IconButton>
 					</Box>
 					{sumArea > 0 ? (
