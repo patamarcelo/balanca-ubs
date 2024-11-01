@@ -1,19 +1,48 @@
 import moment from 'moment';
 
-export const dataPlannerHandler = qs_planned => {
-    qs_planned.sort(
-        (a, b) =>
-            new Date(a.data_prevista_plantio) - new Date(b.data_prevista_plantio)
+const dataToUse = (finalizadoPlantio, dataPlantio, dataPrevista) => {
+    if (finalizadoPlantio) {
+        return dataPlantio
+    }
+    return moment(dataPrevista).isBefore(moment(), 'day') ? moment().format('YYYY-MM-DD') : dataPrevista;
+}
+
+const getColheitaDate = (plantioDate, cicle) => {
+    const startDate = moment(plantioDate); // Starting date
+    const newDate = startDate.add(cicle, 'days'); // Add 5 days
+    const formatDate = newDate.format('YYYY-MM-DD'); // Output: '2024-10-06'
+    return formatDate
+}
+
+export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
+    const qs_planned = qs_planned_orig.map((data) => {
+        console.log('data: ', data)
+        const newDateHere = dataToUse(data.finalizado_plantio, data.data_plantio, data.data_prevista_plantio)
+        const colheitaDate = getColheitaDate(newDateHere, data.variedade__dias_ciclo)
+        return ({
+            ...data,
+            newDate: newDateHere,
+            colheitaDate: colheitaDate
+        })
+    }).sort(
+        (a, b) => plantioView ? new Date(a.newDate) - new Date(b.newDate) : new Date(a.colheitaDate) - new Date(b.colheitaDate)
+            
     );
 
+    console.log(qs_planned)
     // Get the earliest date and calculate the start of that week (Sunday to Saturday)
-    const earliestDate = new Date(qs_planned[0].data_prevista_plantio);
+    let earliestDate = ''
+    if(plantioView){
+        earliestDate = new Date(qs_planned[0].data_prevista_plantio);
+    } else {
+        earliestDate = new Date(qs_planned[0].data_prevista_plantio);
+    }
     const weekStart = new Date(
         earliestDate.setDate(earliestDate.getDate() - earliestDate.getDay())
     ); // Start of the week
 
     // Step 2: Group data by weeks
-    const weekRanges = [
+    const weekRangesPlantio = [
         // "15/09/2024 - 21/09/2024",
         "22/09/2024 - 28/09/2024",
         "29/09/2024 - 05/10/2024",
@@ -34,8 +63,172 @@ export const dataPlannerHandler = qs_planned => {
         "12/01/2025 - 18/01/2025",
         "19/01/2025 - 25/01/2025"
     ];
+    const weekRangesColheita = [
+        "12/01/2025 - 18/01/2025",
+        "19/01/2025 - 25/01/2025",
+        "26/01/2025 - 01/02/2025",
+        "02/02/2025 - 08/02/2025",
+        "09/02/2025 - 15/02/2025",
+        "16/02/2025 - 22/02/2025",
+        "23/02/2025 - 01/03/2025",
+        "02/03/2025 - 08/03/2025",
+        "09/03/2025 - 15/03/2025",
+        "16/03/2025 - 22/03/2025",
+        "23/03/2025 - 29/03/2025",
+        "30/03/2025 - 05/04/2025",
+        "06/04/2025 - 12/04/2025",
+        "13/04/2025 - 19/04/2025",
+        "20/04/2025 - 26/04/2025",
+        "27/04/2025 - 03/05/2025",
+        "04/05/2025 - 10/05/2025",
+        "11/05/2025 - 17/05/2025",
+        "18/05/2025 - 24/05/2025",
+        "25/05/2025 - 31/05/2025",
+        "01/06/2025 - 07/06/2025"
+    ];
+
+    const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
-        const entryDate = moment(entry.data_prevista_plantio)
+        let newDate = ''
+        if(plantioView){
+            newDate = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
+        } else {
+            const getInit = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
+            newDate = getColheitaDate(getInit, entry.variedade__dias_ciclo)
+
+        }
+        const entryDate = moment(newDate)
+        entryDate.add(1, 'days')
+
+
+        // Find the week difference from the start of the first week
+        const weekDiff = Math.floor(
+            (entryDate - weekStart) / (7 * 24 * 60 * 60 * 1000)
+        ); // Convert ms to weeks
+
+        const weekStartDate = new Date(weekStart);
+        weekStartDate.setDate(weekStartDate.getDate() + weekDiff * 7);
+
+        const weekEndDate = new Date(weekStartDate);
+        weekEndDate.setDate(weekEndDate.getDate() + 6); // End of the week (Saturday)
+
+        const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
+
+
+        // Group by week range
+        if (!acc[weekRange]) {
+            acc[weekRange] = [];
+        }
+        acc[weekRange].push(entry);
+        return acc;
+    }, {});
+    const result = weekRanges.reduce((acc, range) => {
+        if (!groupByWeeks[range]) {
+            acc[range] = []; // Initialize empty array for weeks with no data
+        } else {
+            acc[range] = groupByWeeks[range];
+        }
+        return acc;
+    }, {});
+    // Step 3: Sum areas by week and project name
+    const summedByWeekAndProject = Object.entries(
+        result
+    ).map(([weekRange, entries]) => {
+        const projectSums = entries.reduce((projectAcc, entry) => {
+            const projectName = entry.talhao__fazenda__nome;
+            if (!projectAcc[projectName]) {
+                projectAcc[projectName] = 0;
+            }
+            projectAcc[projectName] += entry.area_planejamento_plantio;
+            return projectAcc;
+        }, {});
+        const totalPlanned = entries.reduce((acc, curr) => {
+            acc += curr.area_planejamento_plantio
+            return acc
+        }, 0)
+        return { weekRange, totalPlanned: totalPlanned, projects: projectSums };
+    });
+
+    return summedByWeekAndProject;
+};
+export const dataPlannerHandlerBarChart = (qs_planned_orig, plantioView = true) => {
+    const qs_planned = qs_planned_orig.map((data) => {
+        
+        const newDateHere = dataToUse(data.finalizado_plantio, data.data_plantio, data.data_prevista_plantio)
+        const colheitaDate = getColheitaDate(newDateHere, data.variedade__dias_ciclo)
+        return ({
+            ...data,
+            newDate: newDateHere,
+            colheitaDate: colheitaDate
+        })
+    }).sort(
+        (a, b) => new Date(a.data_prevista_plantio) - new Date(b.data_prevista_plantio) 
+            
+    );
+
+    // Get the earliest date and calculate the start of that week (Sunday to Saturday)
+    let earliestDate = ''
+    if(plantioView){
+        earliestDate = new Date(qs_planned[0].data_prevista_plantio);
+    } else {
+        earliestDate = new Date(qs_planned[0].data_prevista_plantio);
+    }
+    const weekStart = new Date(
+        earliestDate.setDate(earliestDate.getDate() - earliestDate.getDay())
+    ); // Start of the week
+
+    // Step 2: Group data by weeks
+    const weekRangesPlantio = [
+        // "15/09/2024 - 21/09/2024",
+        "22/09/2024 - 28/09/2024",
+        "29/09/2024 - 05/10/2024",
+        "06/10/2024 - 12/10/2024",
+        "13/10/2024 - 19/10/2024",
+        "20/10/2024 - 26/10/2024",
+        "27/10/2024 - 02/11/2024",
+        "03/11/2024 - 09/11/2024",
+        "10/11/2024 - 16/11/2024",
+        "17/11/2024 - 23/11/2024",
+        "24/11/2024 - 30/11/2024",
+        "01/12/2024 - 07/12/2024",
+        "08/12/2024 - 14/12/2024",
+        "15/12/2024 - 21/12/2024",
+        "22/12/2024 - 28/12/2024",
+        "29/12/2024 - 04/01/2025",
+        "05/01/2025 - 11/01/2025",
+        "12/01/2025 - 18/01/2025",
+        "19/01/2025 - 25/01/2025"
+    ];
+    const weekRangesColheita = [
+        "12/01/2025 - 18/01/2025",
+        "19/01/2025 - 25/01/2025",
+        "26/01/2025 - 01/02/2025",
+        "02/02/2025 - 08/02/2025",
+        "09/02/2025 - 15/02/2025",
+        "16/02/2025 - 22/02/2025",
+        "23/02/2025 - 01/03/2025",
+        "02/03/2025 - 08/03/2025",
+        "09/03/2025 - 15/03/2025",
+        "16/03/2025 - 22/03/2025",
+        "23/03/2025 - 29/03/2025",
+        "30/03/2025 - 05/04/2025",
+        "06/04/2025 - 12/04/2025",
+        "13/04/2025 - 19/04/2025",
+        "20/04/2025 - 26/04/2025",
+        "27/04/2025 - 03/05/2025",
+        "04/05/2025 - 10/05/2025",
+        "11/05/2025 - 17/05/2025",
+        "18/05/2025 - 24/05/2025",
+        "25/05/2025 - 31/05/2025",
+        "01/06/2025 - 07/06/2025"
+    ];
+
+    const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+
+    const groupByWeeks = qs_planned.reduce((acc, entry) => {
+        const newDate = entry.data_prevista_plantio
+        const entryDate = moment(newDate)
         entryDate.add(1, 'days')
 
 
@@ -143,7 +336,7 @@ export const groupExecutedByWeek = (qs_executed_area) => {
         const plantioDate = moment(entry.data_plantio);
 
         // Get the day of the week (0 for Sunday, 6 for Saturday)
-        const dayOfWeek = plantioDate.day(); 
+        const dayOfWeek = plantioDate.day();
 
         // Calculate the previous Sunday to start the week
         const weekStart = moment(plantioDate).subtract(dayOfWeek, 'days'); // Subtract the day of the week to get Sunday

@@ -2,6 +2,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import { Box, useTheme } from '@mui/material';
 import "./bar-chart.css"
 import { tokens } from '../../../theme';
+import moment from 'moment';
 
 
 const BarPlantioPlanner = ({ data }) => {
@@ -28,6 +29,15 @@ const BarPlantioPlanner = ({ data }) => {
         )
     }
 
+    const isTodayWithinRange = (dateRange) => {
+        const [startDateStr, endDateStr] = dateRange.split(' - '); // Split the range
+        const startDate = moment(startDateStr, 'DD/MM/YYYY');
+        const endDate = moment(endDateStr, 'DD/MM/YYYY');
+        const today = moment();
+    
+        return today.isSameOrAfter(startDate, 'day') && today.isSameOrBefore(endDate, 'day');
+    };
+
 
     return (
 
@@ -47,6 +57,28 @@ const BarPlantioPlanner = ({ data }) => {
                     legend: 'Semanal',
                     legendPosition: 'middle',
                     legendOffset: 60, // Adjust offset due to the rotation
+                    renderTick: (tick) => {
+                        const isHighlighted = isTodayWithinRange(tick.value);
+                        console.log('tickVla', tick.value)
+                        console.log('isHileght: ', isHighlighted)
+                        return (
+                            <g transform={`translate(${tick.x},${tick.y + 15})`}>
+                                <text
+                                    style={{
+                                        fontSize: 12,
+                                        fontWeight: 'bold',
+                                        fill: isHighlighted ? 'rgba(0,123,255,1)' : colors.textColor[100] ,
+                                        backgroundColor: isHighlighted ? 'rgba(0,123,255,1)' : 'transparent',
+                                        padding: isHighlighted ? '4px 8px' : '0',
+                                        borderRadius: isHighlighted ? '4px' : '0'
+                                    }}
+                                    textAnchor="middle"
+                                >
+                                    {tick.value.split(" - ")[0]}
+                                </text>
+                            </g>
+                        );
+                    },
                     format: (value) => {
                         // Split the date range into two parts
                         const [startDate, endDate] = value.split(" - ");

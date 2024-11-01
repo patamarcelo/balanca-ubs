@@ -3,13 +3,30 @@ import { useTheme } from "@mui/material";
 
 import { tokens } from "../../../theme";
 
+import moment from 'moment'
+
 const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
     const onlyWeeks = data.map((data) => data.weekRange);
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
+    const isLastDateBeforeToday = (dateRange) => {
+        const lastDateStr = dateRange.split(' - ')[1]; // Get the last date part
+        const lastDate = moment(lastDateStr, 'DD/MM/YYYY'); // Parse date in DD/MM/YYYY format
+        return lastDate.isBefore(moment(), 'day'); // Check if it's before today
+    };
+
+    const isTodayWithinRange = (dateRange) => {
+        const [startDateStr, endDateStr] = dateRange.split(' - '); // Split the range
+        const startDate = moment(startDateStr, 'DD/MM/YYYY');
+        const endDate = moment(endDateStr, 'DD/MM/YYYY');
+        const today = moment();
+
+        return today.isSameOrAfter(startDate, 'day') && today.isSameOrBefore(endDate, 'day');
+    };
+
     const formatNumber = (data) => {
-        return data.toLocaleString("pt-br", {
+        return data?.toLocaleString("pt-br", {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         });
@@ -88,10 +105,22 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     </span>
                                 </td>
                                 {data.map((dataProj, i) => {
+                                    console.log('dataProj', dataProj)
+                                    const isBefore = isLastDateBeforeToday(dataProj.weekRange)
+                                    const isBetween = isTodayWithinRange(dataProj.weekRange)
                                     const getValue = dataProj.projects[farms]
                                         ? formatNumber(dataProj.projects[farms])
                                         : " - ";
-                                    return <td key={i}>{getValue}</td>;
+                                    return <td key={i}
+                                        style={{
+                                            fontWeight: 'bold',
+                                            backgroundColor: isBefore
+                                            ? 'rgba(161,164,171,0.3)'
+                                            : isBetween
+                                            ? 'rgba(0,123,255,0.3)' // Example color when today is within the range
+                                            : 'transparent' // D
+                                        }}
+                                        >{getValue}</td>;
                                 })}
                                 <td style={{ textAlign: "right" }}>
                                     {formatNumber(projectTotals[farms])}

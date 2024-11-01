@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { tokens } from "../../../theme";
 import BarPlantioPlanner from "./bar-chart-plantio-comp.jsx";
 
-import { dataPlannerHandler, consolidateData, groupExecutedByWeek } from './data-handler.js'
+import { dataPlannerHandler, consolidateData, groupExecutedByWeek, dataPlannerHandlerBarChart } from './data-handler.js'
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -15,6 +15,8 @@ import TotalCOmp from "./planted-info.jsx";
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import Switch from '@mui/material/Switch';
+
 
 
 
@@ -27,7 +29,9 @@ const PlantioAtual = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingSeed, setIsLoadingSeed] = useState(false);
 
+    const [dataFromApiOriginal, setDataFromApiOriginal] = useState([]);
     const [dataFromApi, setDataFromApi] = useState([]);
+    const [dataToBarChartPlanned, setDataToBarChartPlanned] = useState([]);
     const [onlyFarmsArr, setOnlyFarmsArr] = useState([]);
     const [executedAreaArr, setExecutedAreaArr] = useState([]);
 
@@ -36,7 +40,15 @@ const PlantioAtual = () => {
 
     const [totalsSet, setTotalsSet] = useState({ planejado: null, plantado: null });
 
+    const [togllePlantioColheitaView, setTogllePlantioColheitaView] = useState(true);
 
+
+    useEffect(() => {
+        if (dataFromApiOriginal.length > 0) {
+            const newData = dataPlannerHandler(dataFromApiOriginal, togllePlantioColheitaView)
+            setDataFromApi(newData)
+        }
+    }, [togllePlantioColheitaView, dataFromApiOriginal]);
 
     useEffect(() => {
         if (dataFromApi.length > 0) {
@@ -65,7 +77,7 @@ const PlantioAtual = () => {
             console.log('datafromAPI::::', dataFromApi)
             const totalProj = dataFromApi.reduce((acc, curr) => acc += curr.totalPlanned, 0)
 
-            const totalPlanned = getTotalPlannedUntilCurrentWeek(dataFromApi)
+            const totalPlanned = getTotalPlannedUntilCurrentWeek(dataToBarChartPlanned)
             const totalPlanted = executedAreaArr.reduce((acc, curr) => acc += curr.area_plantada, 0)
             const newTotals = {
                 planejado: totalPlanned,
@@ -75,7 +87,7 @@ const PlantioAtual = () => {
 
             setTotalsSet(newTotals)
         }
-    }, [executedAreaArr, dataFromApi]);
+    }, [executedAreaArr, dataToBarChartPlanned, dataFromApi]);
 
     useEffect(() => {
         (async () => {
@@ -89,6 +101,9 @@ const PlantioAtual = () => {
                     })
                     .then((res) => {
                         const newData = dataPlannerHandler(res.data.dados.qs_planned)
+                        const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
+                        setDataToBarChartPlanned(newDataBar)
+                        setDataFromApiOriginal(res.data.dados.qs_planned)
                         setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
                         setExecutedAreaArr(res.data.dados.qs_executed_area)
                         setDataFromApi(newData)
@@ -131,11 +146,11 @@ const PlantioAtual = () => {
     useEffect(() => {
         // console.log('data from api', dataFromApi)
         // console.log('data from api', executedAreaArr)
-        if (executedAreaArr.length > 0 && dataFromApi.length > 0) {
-            const newArr = consolidateData(dataFromApi, executedAreaArr)
+        if (executedAreaArr.length > 0 && dataToBarChartPlanned.length > 0) {
+            const newArr = consolidateData(dataToBarChartPlanned, executedAreaArr)
             setDataToBarChart(newArr)
         }
-    }, [dataFromApi, executedAreaArr]);
+    }, [dataToBarChartPlanned, executedAreaArr]);
 
     const handleRefresh = async () => {
         try {
@@ -168,6 +183,9 @@ const PlantioAtual = () => {
                 })
                 .then((res) => {
                     const newData = dataPlannerHandler(res.data.dados.qs_planned)
+                    const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
+                    setDataToBarChartPlanned(newDataBar)
+                    setDataFromApiOriginal(res.data.dados.qs_planned)
                     setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
                     setExecutedAreaArr(res.data.dados.qs_executed_area)
                     setDataFromApi(newData)
@@ -260,9 +278,17 @@ const PlantioAtual = () => {
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
+                    <Box mt={5}>
+                        <Switch
+                            checked={togllePlantioColheitaView}
+                            onChange={() => setTogllePlantioColheitaView(!togllePlantioColheitaView)}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            color="success"
+                        />
+                    </Box>
                     <Paper elevation={8}
                         sx={{
-                            margin: '30px 0px 10px 0px',
+                            margin: '0px 0px 10px 0px',
                             width: '100%',
                             borderRadius: '6px'
                         }}
@@ -272,7 +298,7 @@ const PlantioAtual = () => {
                             justifyContent={"center"}
                             p={1}
                             sx={{
-                                backgroundColor: colors.blueOrigin[400],
+                                backgroundColor: togllePlantioColheitaView ? colors.blueOrigin[400] : colors.greenAccent[`${isDark ? 700 : 300}`],
                                 color: colors.grey[900],
                                 minWidth: "1581px",
                                 width: '100%',
@@ -284,11 +310,12 @@ const PlantioAtual = () => {
                                 color={"whitesmoke"}
                                 sx={{ alignSelf: "center", justifySelf: "center" }}
                             >
-                                Planejamento Plantio
+                                {togllePlantioColheitaView ? "Planejamento Plantio" : 'Previsão Colheita'}
                             </Typography>
                         </Box>
                     </Paper>
                     <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
+
                         <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} />
                     </Paper>
                 </>
@@ -368,7 +395,7 @@ const PlantioAtual = () => {
                         </Box>
                     </Paper>
                     <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
-                        <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
+                        <TableComonent data={dataToBarChartPlanned} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
                     </Paper>
                 </>
             }
