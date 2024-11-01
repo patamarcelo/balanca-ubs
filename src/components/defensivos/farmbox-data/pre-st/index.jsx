@@ -13,6 +13,13 @@ import { nodeServerSrd } from '../../../../utils/axios/axios.utils';
 
 import CachedIcon from '@mui/icons-material/Cached';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
+
+import { CSVLink } from "react-csv";
+import { formatToCsv } from './format-csv';
+
+import Switch from '@mui/material/Switch';
 
 
 
@@ -24,6 +31,9 @@ const PreStPage = (props) => {
 
     const [loadingDataProtheus, setloadingDataProtheus] = useState(false);
     const [dataFromProtheus, setDataFromProtheus] = useState([]);
+    const [dataToCsv, setDataToCsv] = useState([]);
+
+    const [printTable, setPrintTable] = useState(false);
 
     const { closePage } = props;
     const handleSearch = async () => {
@@ -40,6 +50,8 @@ const PreStPage = (props) => {
                 .then(res => {
                     console.log(res?.data?.pre_sts)
                     setDataFromProtheus(res?.data?.pre_sts)
+                    const csVData = formatToCsv(res?.data?.pre_sts)
+                    setDataToCsv(csVData)
                     setloadingDataProtheus(false);
                 }).catch((err) => {
                     setloadingDataProtheus(false)
@@ -66,7 +78,7 @@ const PreStPage = (props) => {
                         params: query
                     })
                     .then(res => {
-                        console.log(res?.data?.pre_sts)
+                        // console.log(res?.data?.pre_sts)
                         setDataFromProtheus(res?.data?.pre_sts)
                         setloadingDataProtheus(false);
                     }).catch((err) => {
@@ -157,7 +169,22 @@ const PreStPage = (props) => {
                         margin: '0 auto',
                         top: '0'
                     }}
-                >Pré St</Typography>
+                ><Switch
+                checked={printTable}
+                onChange={() => setPrintTable(!printTable)}
+                color="secondary"
+                inputProps={{ 'aria-label': 'controlled' }}
+            />
+                    Pré St
+                    <CSVLink data={dataToCsv} separator={";"} filename={`pre_st.csv`}>
+                        <FontAwesomeIcon
+                            icon={faFileExcel}
+                            color={colors.greenAccent[500]}
+                            style={{ paddingLeft: "5px", fontSize: '20px', marginLeft: '10px' }}
+                        />
+                    </CSVLink>
+                </Typography>
+
                 <Box
                     sx={{
                         top: '0',
@@ -179,7 +206,7 @@ const PreStPage = (props) => {
             {
                 !loadingDataProtheus && dataFromProtheus?.length > 0 &&
 
-                <TableShow dataArr={dataFromProtheus} />
+                <TableShow dataArr={dataFromProtheus} printTable={printTable} />
 
             }
             {/* {

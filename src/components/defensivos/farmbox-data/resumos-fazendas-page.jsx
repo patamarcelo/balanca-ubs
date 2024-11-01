@@ -6,7 +6,8 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 import question from "../../../utils/assets/icons/question.png";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
+import CardDiviOperations from "./card-divisor-operations";
 
 const ResumoFazendasPage = (props) => {
 	const {
@@ -19,7 +20,9 @@ const ResumoFazendasPage = (props) => {
 		daysFilter
 	} = props;
 	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
+	// console.log('dataGeral: ', dataGeral)
 	const fazPlan = dataGeral.fazendas[fazenda];
+	// console.log('fazPlan', fazPlan)
 	const iconDict = [
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
@@ -65,56 +68,84 @@ const ResumoFazendasPage = (props) => {
 				<div style={{ marginLeft: "10px", fontSize: "large" }}>
 					{fazenda in dataGeral.fazendas
 						? dataGeral.fazendas[fazenda].saldo.toLocaleString(
-								"pt-br",
-								{
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
-								}
-						  )
+							"pt-br",
+							{
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2
+							}
+						)
 						: "0,00"}
 				</div>
 			</div>
 			{fazenda in dataGeral.fazendas ? (
-				<div
-					className={classes.resumoByCultura}
-					style={{ color: colors.primary[200] }}
-				>
-					{iconDict.map((data, i) => {
-						if (fazPlan[data.cultura] !== undefined) {
-							return (
-								<Box
-									key={i}
-									width="100%"
-									display="flex"
-									justifyContent="start"
-									alignItems="center"
-								>
-									<img
-										className={classes.imgFarmDiv}
-										src={filteredIcon(data.cultura)}
-										alt={filteredAlt(data.cultura)}
-									/>
-									<p style={{ marginLeft: "2px" }}>
-										{fazPlan[data.cultura].toLocaleString(
-											"pt-br",
-											{
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2
-											}
-										)}
-									</p>
-								</Box>
-							);
-						} else {
-							return <></>;
-						}
-					})}
-				</div>
+				<>
+
+					<div
+						className={classes.resumoByCultura}
+						style={{ color: colors.primary[200] }}
+					>
+						{iconDict.map((data, i) => {
+							if (fazPlan[data.cultura] !== undefined) {
+								return (
+									<Box
+										key={i}
+										width="100%"
+										display="flex"
+										justifyContent="start"
+										alignItems="center"
+									>
+										<img
+											className={classes.imgFarmDiv}
+											src={filteredIcon(data.cultura)}
+											alt={filteredAlt(data.cultura)}
+										/>
+										<p style={{ marginLeft: "2px" }}>
+											{fazPlan[data.cultura].toLocaleString(
+												"pt-br",
+												{
+													minimumFractionDigits: 2,
+													maximumFractionDigits: 2
+												}
+											)}
+										</p>
+									</Box>
+								);
+							} else {
+								return <></>;
+							}
+						})}
+					</div>
+					{/* <Divider /> */}
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'flex-start',
+							gap: '30px',
+							flexDirection: 'row',
+							alignItems: 'center'
+						}}
+					>
+						<CardDiviOperations
+							title="Sólido"
+							value={fazPlan["saldoSolido"]}
+						/>
+						<CardDiviOperations
+							title="Líquido"
+							value={fazPlan["saldoLiquido"]}
+						/>
+						<CardDiviOperations
+							title="Operações"
+							value={fazPlan["saldoOperacao"]}
+						/>
+					</Box>
+					{/* <p>{fazPlan['saldoLiquido']}</p>
+					<p>{fazPlan['saldoOperacao']}</p> */}
+				</>
 			) : (
 				<Box mb={3}></Box>
 			)}
 			{divider && (
-				<Box width="100%">
+				<Box width="100%" sx={{marginTop: '10px'}}>
 					<Divider />
 				</Box>
 			)}

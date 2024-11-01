@@ -73,13 +73,13 @@ const PluviDataComp = () => {
 				}}
 				id="gridTablePluvi"
 			>
-				<div className={styles.headerTitle}>Fazenda</div>
+				<div className={styles.headerTitle} style={{color: colors.primary[100]}}>Fazenda</div>
 				{lastFiveDays &&
 					lastFiveDays.map((data, i) => {
 						const [year, month, day] = data.date.split("-");
 						const formatData = `${day}/${month}/${year}`;
 						return (
-							<div className={styles.headerDate} key={i}>
+							<div className={styles.headerDate} key={i} style={{color: colors.primary[100]}}>
 								<p>{formatData}</p>
 								<p style={{ color: colors.primary[200] }}>
 									{data.number}
@@ -95,7 +95,7 @@ const PluviDataComp = () => {
 				FarmsFarmBoxData.filter((data) => data.show === true)
 					.sort((a, b) => a.name.localeCompare(b.name))
 					.map((data, i) => {
-						console.log('data here: ', data)
+						// console.log('data here: ', data)
 						let pluviNumberData = 0;
 						const getPluviValue = (farmName, indexDate) => {
 							const filteredValueObj = pluviData.filter(
@@ -136,10 +136,12 @@ const PluviDataComp = () => {
 									display: "grid",
 									gridTemplateColumns: "repeat(6,1fr)",
 									width: "10",
-									padding: "3px 0px"
+									padding: "3px 0px",
+									color: colors.primary[100]
 								}}
 								key={i}
 								className={styles.rowTablePluvi}
+
 							>
 								<span className={styles.pluviHeader}>
 									{data.name.replace("Fazenda", "")}

@@ -23,8 +23,8 @@ const ResumoDataPage = (props) => {
 				{Object.keys(dataGeral.geral).map((data, i) => {
 					return (
 						<Box key={i} className={classes.geralDivResumoBody}>
-							<span>{data}</span>
-							<div className={classes.valueDivGeral}>
+							<span style={{color: colors.primary[100], fontWeight: 'bold'}}>{data?.length > 5 ? data?.replace('saldo', '') : data}</span>
+							<div className={classes.valueDivGeral} style={{color: colors.primary[200], fontWeight: 'bold'}}>
 								{dataGeral.geral[data].toLocaleString("pt-br", {
 									minimumFractionDigits: 2,
 									maximumFractionDigits: 2

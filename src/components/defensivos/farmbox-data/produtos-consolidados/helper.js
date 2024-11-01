@@ -79,7 +79,6 @@ export const getInsumosList = (data) => {
 
     })
     const finalArr =  newArrData.flat()
-    console.log('newArrData', finalArr)
     return finalArr
 }
 

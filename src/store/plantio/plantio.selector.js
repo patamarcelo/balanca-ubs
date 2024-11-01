@@ -603,19 +603,21 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 				: new Date(data.date) < new Date("2031-10-17")
 		)
 		.map((data) => {
+			// console.log('dataApplications: : ', data)
+			const cultura = data.plantations[0].plantation.culture_name;
+			const farm = data.plantations[0].plantation.farm_name;
+
+			// #AREA GERAL
 			const areaSolicitada = data.plantations.map(
 				(data) => data.sought_area
 			);
-			const areaAplicada = data.plantations.map(
-				(data) => data.applied_area
-			);
-
-			const farm = data.plantations[0].plantation.farm_name;
-
 			const areaTotalSolicitada = areaSolicitada
 				.reduce((a, b) => a + b, 0)
 				.toFixed(2);
 
+			const areaAplicada = data.plantations.map(
+				(data) => data.applied_area
+			);
 			const areaTotalAplicada = areaAplicada
 				.reduce((a, b) => a + b, 0)
 				.toFixed(2);
@@ -623,47 +625,120 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 			const saldoAplicar =
 				parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
 
-			const cultura = data.plantations[0].plantation.culture_name;
+
+
+			//AREA OPERACAO
+			let totalSaldoAplicacao = 0
+			let totalSaldoSolidos = 0
+			let totalSaldosLiquidos = 0
+			if (data.inputs.length === 1) {
+				const areaSolicitadaOperacao = data.plantations.map(
+					(data) => data.sought_area
+				);
+				const areaTotalSolicitadaOperacao = areaSolicitadaOperacao
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				const areaAplicadaOperacao = data.plantations.map(
+					(data) => data.applied_area
+				);
+				const areaTotalAplicadaOperacao = areaAplicadaOperacao
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				totalSaldoAplicacao =
+					parseFloat(areaTotalSolicitadaOperacao) - parseFloat(areaTotalAplicadaOperacao);
+			//AREA LIQUIDO
+			} else if (data.inputs.length === 2) {
+				const areaSolicitadaSolido = data.plantations.map(
+					(data) => data.sought_area
+				);
+				const areaTotalSolicitadaSolido = areaSolicitadaSolido
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				const areaAplicadaSolido = data.plantations.map(
+					(data) => data.applied_area
+				);
+				const areaTotalAplicadaSolido = areaAplicadaSolido
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				totalSaldoSolidos =
+					parseFloat(areaTotalSolicitadaSolido) - parseFloat(areaTotalAplicadaSolido);
+			//AREA SOLIDO
+			} else if (data.inputs.length > 2) {
+				const areaSolicitadaLiquido = data.plantations.map(
+					(data) => data.sought_area
+				);
+				const areaTotalSolicitadaLiquido = areaSolicitadaLiquido
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				const areaAplicadaLiquido = data.plantations.map(
+					(data) => data.applied_area
+				);
+				const areaTotalAplicadaLiquido = areaAplicadaLiquido
+					.reduce((a, b) => a + b, 0)
+					.toFixed(2);
+
+				totalSaldosLiquidos =
+					parseFloat(areaTotalSolicitadaLiquido) - parseFloat(areaTotalAplicadaLiquido);
+			}
 
 			return {
 				fazenda: farm,
 				cultura: cultura,
 				area: areaTotalSolicitada,
 				aplicado: areaTotalAplicada,
-				saldo: saldoAplicar.toFixed(2)
+				saldo: saldoAplicar.toFixed(2),
+				saldoSolido: totalSaldoSolidos,
+				saldoLiquido: totalSaldosLiquidos,
+				saldoOperacao: totalSaldoAplicacao
 			};
 		});
 
 	const geralApp = newArr.reduce(
 		(result, value) => {
-			const { area, aplicado, saldo } = value;
+			const { area, aplicado, saldo, saldoSolido, saldoLiquido, saldoOperacao } = value;
 
 			result.area += Number(area);
 			result.aplicado += Number(aplicado);
 			result.saldo += Number(saldo);
-
+			result.saldoSolido += Number(saldoSolido);
+			result.saldoLiquido += Number(saldoLiquido);
+			result.saldoOperacao += Number(saldoOperacao);
 			return result;
 		},
 		{
 			area: 0,
 			aplicado: 0,
-			saldo: 0
+			saldo: 0,
+			saldoSolido: 0,
+			saldoLiquido: 0,
+			saldoOperacao: 0
 		}
 	);
 
 	const fazendasApp = newArr.reduce((result, value) => {
-		const { area, aplicado, saldo, fazenda, cultura } = value;
+		const { area, aplicado, saldo, fazenda, cultura, saldoSolido, saldoLiquido, saldoOperacao } = value;
 		const formCult = cultura ? cultura : "SemCultura";
 		if (!result[fazenda]) {
 			result[fazenda] = {
 				area: Number(area),
 				aplicado: Number(aplicado),
-				saldo: Number(saldo)
+				saldo: Number(saldo),
+				saldoSolido: Number(saldoSolido),
+				saldoLiquido: Number(saldoLiquido),
+				saldoOperacao: Number(saldoOperacao)
 			};
 		} else {
 			result[fazenda].area += Number(area);
 			result[fazenda].aplicado += Number(aplicado);
 			result[fazenda].saldo += Number(saldo);
+			result[fazenda].saldoSolido += Number(saldoSolido);
+			result[fazenda].saldoLiquido += Number(saldoLiquido);
+			result[fazenda].saldoOperacao += Number(saldoOperacao);
 		}
 
 		if (!result[fazenda][formCult]) {

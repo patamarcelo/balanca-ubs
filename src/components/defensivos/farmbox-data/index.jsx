@@ -51,7 +51,7 @@ import {
 } from "../../../utils/format-suport/data-format";
 import PluviDataComp from "./pluvi-data";
 
-import { selectSafraCiclo,  } from "../../../store/plantio/plantio.selector";
+import { selectSafraCiclo, } from "../../../store/plantio/plantio.selector";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ColheitaModalPage from "./colheita-modal";
@@ -337,29 +337,30 @@ const FarmBoxPage = () => {
 				<ColheitaPage />
 			}
 			{
+				openPreStPage &&
+				<PreStPage
+					closePage={setOpenPreStPage}
+				/>
+			}
+			{
 				dictSelect.length > 0 &&
 				<>
-					{
-					openPreStPage &&
-					<PreStPage 
-						closePage={setOpenPreStPage}
-					/> 
-				}
-				<Box
-				sx={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					flexDirection: 'column',
-					width: '100%',
-					backgroundColor: colors.blueOrigin[800],
-					borderRadius: '12px'
-				}}
-				p={2}
-				mt={4}
-				>
-					<Typography variant="h2" color={colors.textColor[100]} fontWeight='600' >Insumos Consolidados</Typography>
-				</Box>
+
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							flexDirection: 'column',
+							width: '100%',
+							backgroundColor: colors.blueOrigin[800],
+							borderRadius: '12px'
+						}}
+						p={2}
+						mt={4}
+					>
+						<Typography variant="h2" color={colors.textColor[100]} fontWeight='600' >Insumos Consolidados</Typography>
+					</Box>
 					<Box
 						sx={{
 							marginTop: '10px',
@@ -416,9 +417,9 @@ const FarmBoxPage = () => {
 							>
 								{onlyFarms
 									?.sort((a, b) => a.localeCompare(b))
-									.map((farm, i) => (
+									.map((farm, index) => (
 										<MenuItem
-											key={i}
+											key={index}
 											value={farm}
 										//   style={getStyles(name, personName, theme)}
 										>
@@ -478,12 +479,13 @@ const FarmBoxPage = () => {
 												style={{
 													margin: "29px",
 													cursor: 'pointer',
+													fontSize: '22px'
 
 												}}
 												className={classes.headerNameFarmTitle}
 												onClick={handleOpenAllDetail}
 											>
-												<Divider>{data}</Divider>
+												<Divider>{data.replace('Fazenda', '')}</Divider>
 											</div>
 
 											<HeaderApp />
@@ -624,7 +626,7 @@ const FarmBoxPage = () => {
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<span>Selecione uma fazenda</span>
-						{ filtFarm.length === 0 &&
+						{filtFarm.length === 0 &&
 							<PluviDataComp />
 						}
 					</Box>

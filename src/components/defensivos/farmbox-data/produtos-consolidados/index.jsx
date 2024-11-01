@@ -62,7 +62,6 @@ const ProdutosConsolidados = () => {
 
     useEffect(() => {
         if (openApp.length > 0) {
-            console.log('open app: ', openApp);
 
             const getDates = generalDataArr(openApp)
             const getProjetos = generalProjecs(openApp)

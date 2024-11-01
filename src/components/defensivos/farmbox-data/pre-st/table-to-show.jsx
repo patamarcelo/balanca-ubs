@@ -7,7 +7,7 @@ import { useEffect,useState } from 'react';
 // Styled TableRow to remove default blue hover and make it black/white
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:hover': {
-        backgroundColor: '#ffffff', // White background on hover
+        backgroundColor: 'rgba(255,255,255,0.2) !important', // White background on hover
         color: '#000000', // Black text on hover
     },
 }));
@@ -31,6 +31,7 @@ const CompactTable = ({ data }) => {
         )
     }
 
+
     return (
         <TableContainer component={Paper} style={{ marginTop: '20px', padding: '20px' }}>
             <Typography variant="h6" component="div" gutterBottom fontWeight={'bold'}>
@@ -47,6 +48,7 @@ const CompactTable = ({ data }) => {
                 <TableBody>
                     {/* Project Information */}
                     <StyledTableRow>
+
                         <TableCell colSpan={2}>
                             <Typography variant="subtitle2" fontWeight={'bold'}>Fazenda</Typography>
                             {data.projetos}

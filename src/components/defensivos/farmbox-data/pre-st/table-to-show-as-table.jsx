@@ -9,12 +9,12 @@ import styles from './table-show.module.css'
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:hover': {
-        backgroundColor: '#ffffff', // White background on hover
+        backgroundColor: 'rgba(255,255,255,0.1)', // White background on hover
         color: '#000000', // Black text on hover,
     },
 }));
 
-const TableShow = ({ dataArr }) => {
+const TableShow = ({ dataArr, printTable }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -47,9 +47,16 @@ const TableShow = ({ dataArr }) => {
     
 
     return (
-        <TableContainer component={Paper} style={{ padding: '20px' }}>
-            <Table>
-                <TableHead>
+        <TableContainer component={Paper} style={{ padding: '0px 2px', maxHeight: !printTable && '670px', overflow: 'auto' }}>
+            <Table stickyHeader  sx={{maxHeight: '100%'}}>
+                <TableHead
+                sx={{
+                    backgroundColor: 'black',
+                    '& .MuiTableCell-root': {
+                        backgroundColor: 'black !important', // Text color to ensure readability on black
+                    }
+                }}
+                >
                     <TableRow >
                         <TableCell align="center">Nº</TableCell>
                         <TableCell align="center">Data</TableCell>

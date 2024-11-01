@@ -112,7 +112,7 @@ const TotalCOmp = (props) => {
                         margin={{ top: 20, right: 20, bottom: 50, left: 72 }}
                         layout="horizontal"
                         padding={0.3}
-                        colors={({ id, data }) => (data.category === 'Planejado' ? 'rgb(233,217,164)' : data.category === 'Projetado' ? "#d0d1d5" : colors.greenAccent[700])}
+                        colors={({ id, data }) => (data.category === 'Planejado' ? 'rgb(233,217,164)' : data.category === 'Projetado' ? "#d0d1d5" : "#94e2cd")}
                         label={(d) => `${formatNumber(d.value)}`}
                         axisLeft={{
                             tickSize: 5,
@@ -140,14 +140,16 @@ const TotalCOmp = (props) => {
                                 ticks: {
                                     text: {
                                         fontSize: 12,
-                                        fontWeight: 'bold'  // Makes axis labels bold
+                                        fontWeight: 'bold',  // Makes axis labels bold
+                                        color: 'white',
+                                        fill: colors.textColor[100]
                                     }
                                 },
                                 legend: {
                                     text: {
                                         fontSize: 12,
                                         fontWeight: 'bold',  // Makes axis legend bold
-                                        fill: 'red'
+                                        fill: 'red',
                                     }
                                 }
                             },
@@ -155,7 +157,8 @@ const TotalCOmp = (props) => {
                                 text: {
                                     fontSize: 14,
                                     fontWeight: 'bold',  // Makes bar labels bold
-                                    fill: 'red'
+                                    fill: 'red',
+                                    color: 'white'
                                 }
                             }
                         }}

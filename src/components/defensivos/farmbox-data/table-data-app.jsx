@@ -32,6 +32,7 @@ import {
 	faPrint,
 	faCircleXmark,
 	faMap,
+	faPlane,
 	faCheckCircle,
 	faArrowRotateRight
 } from "@fortawesome/free-solid-svg-icons";
@@ -216,6 +217,39 @@ const TableDataPage = (props) => {
 			setLoadingMap(false);
 		}
 	};
+	const handleGenerateKml = async (idFarm, dataFarm) => {
+		console.log("dataFarmmm", dataFarm)
+		const params = JSON.stringify({
+			projeto: idFarm,
+			parcelas: idParcelasSelected,
+			safra: safraCiclo
+		});
+		setLoadingMap(true);
+		try {
+			const res = await djangoApi.post("plantio/get_kmls_aviacao/", params, {
+				headers: {
+					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+				},
+			});
+			// Handle KML file download
+			const downloadKMLFile = () => {
+				const kmlDataUri = res.data.data.kml; // Accessing the KML data URI from the nested 'data'
+				const link = document.createElement('a');
+				link.href = kmlDataUri; // Set the KML data URI as the link href
+				link.download = `${dataFarm.fazenda.replace('Fazenda ', '')}_${dataFarm.app}.kml`; // Set the filename for download
+				document.body.appendChild(link); // Append link to body
+				link.click(); // Trigger the download
+				document.body.removeChild(link); // Clean up by removing the link
+			};
+		
+			// Call the download function to initiate the download
+			downloadKMLFile(); // Call this function to initiate the download
+		} catch (err) {
+			console.log("Erro ao alterar as aplicações", err);
+		} finally {
+			setLoadingMap(false);
+		}
+	};
 
 	const handleShowMap = (data) => {
 		handleSendApiApp(data);
@@ -260,12 +294,12 @@ const TableDataPage = (props) => {
 							: dataF.app.slice(2)}
 					</p>
 					<div className={classes.tipoDivApp}>
-						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 						<img
 							className={classes.imgFarmDiv}
 							src={filteredIcon(dataF?.cultura)}
 							alt={filteredAlt(dataF?.cultura)}
 						/>
+						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 					</div>
 					<div
 						className={classes.dateDiv}
@@ -342,7 +376,7 @@ const TableDataPage = (props) => {
 							{dataF.observations === 'Aplicação Aberta via integração' ? '' : dataF.observations}
 						</Typography>
 					</Box>
-					<Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: '-50px', paddingRight: '10px' }}>
+					<Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginBottom: '-50px', paddingRight: '10px', gap: '20px' }}>
 						<IconButton
 							onClick={() =>
 								handleShowMap(dataF.fazenda_box_id)
@@ -351,6 +385,23 @@ const TableDataPage = (props) => {
 							<FontAwesomeIcon
 								icon={faMap}
 								color={colors.textColor[100]}
+								style={{
+									cursor: "pointer"
+								}}
+							/>
+						</IconButton>
+						<IconButton
+						disabled={idParcelasSelected?.length === 0}
+							onClick={() =>
+								handleGenerateKml(dataF.fazenda_box_id,dataF)
+							}
+							sx={{
+								cursor: 'pointer'
+							}}
+						>
+							<FontAwesomeIcon
+								icon={faPlane}
+								color={idParcelasSelected?.length === 0 ? 'grey' : colors.textColor[100]}
 								style={{
 									cursor: "pointer"
 								}}
