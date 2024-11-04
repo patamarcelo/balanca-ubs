@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from 'react'
 
 import { tokens } from "../../../theme";
@@ -278,7 +278,7 @@ const PlantioAtual = () => {
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
-                    <Box mt={5}>
+                    <Box mt={5} mb={2}>
                         <Switch
                             checked={togllePlantioColheitaView}
                             onChange={() => setTogllePlantioColheitaView(!togllePlantioColheitaView)}
@@ -286,6 +286,7 @@ const PlantioAtual = () => {
                             color="success"
                         />
                     </Box>
+                    <Divider variant="fullWidth"/>
                     <Paper elevation={8}
                         sx={{
                             margin: '0px 0px 10px 0px',
