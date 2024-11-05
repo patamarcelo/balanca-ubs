@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Box } from '@mui/material'
 import {
     Card,
     CardContent,
@@ -25,7 +26,7 @@ import rice from "../../../utils/assets/icons/rice.png";
 import cotton from '../../../utils/assets/icons/cotton.png'
 import question from '../../../utils/assets/icons/question.png'
 
-const DashboardTable = ({ data, isLoading }) => {
+const DashboardTable = ({ data, isLoading, dataToReport }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -199,7 +200,9 @@ const DashboardTable = ({ data, isLoading }) => {
 
                         {/* Table Body */}
                         <TableBody>
-                            {filteredRows.map((row, index) => (
+                            {filteredRows.map((row, index) => {
+                                console.log('rows here: ',row)
+                                return (
                                 <TableRow key={index}
                                     className={`${index % 2 !== 0 && styles.oddRow}`}
                                     sx={{
@@ -246,8 +249,8 @@ const DashboardTable = ({ data, isLoading }) => {
                                     <TableCell align="right">{row.Semente_Ha ? formatNumber(row.Semente_Ha) : ' - '}</TableCell>
                                     <TableCell align="right" sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', flexDirection: 'row', margin: '0 auto', marginRight: '10px', }}><span style={{ paddingRight: '12px' }}>{row.Ultima_Regulagem ? formatNumberRegulagem(row.Ultima_Regulagem) : ' - '}</span><span style={{ width: '70px', marginRight: `${paddingSize}px` }}>{row.Ultima_Regulagem ? formatQuantRegu(row.Ultima_Regulagem) : ' - '}</span></TableCell>
                                 </TableRow>
-                            ))}
-
+                                )}
+                            )}
                             {/* Totals Row */}
                             <TableRow sx={{
                                 backgroundColor: 'rgba(224,224,224,0.5)', fontWeight: 'bold', '& .MuiTableCell-body': {
@@ -271,6 +274,9 @@ const DashboardTable = ({ data, isLoading }) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Box justifySelf="end" sx={{marginTop: '5px'}}>
+                    <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>   
+                </Box>
             </CardContent>
         </Card>
     );

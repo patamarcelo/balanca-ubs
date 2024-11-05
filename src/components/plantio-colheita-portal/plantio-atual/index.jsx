@@ -42,6 +42,25 @@ const PlantioAtual = () => {
 
     const [togllePlantioColheitaView, setTogllePlantioColheitaView] = useState(true);
 
+    const [dataToReport, setDataToReport] = useState(null);
+
+    useEffect(() => {
+        function getFormattedDate() {
+            const now = new Date();
+
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = now.getFullYear();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            return `${day}/${month}/${year} - ${hours}:${minutes}`;
+        }
+        const newDate = getFormattedDate()
+        setDataToReport(newDate)
+    }, []);
+
 
     useEffect(() => {
         if (dataFromApiOriginal.length > 0) {
@@ -272,7 +291,7 @@ const PlantioAtual = () => {
                             </Typography>
                         </Box>
                     </Paper>
-                    <DashboardTable data={sentSeedsData} isLoading={isLoadingSeed} />
+                    <DashboardTable data={sentSeedsData} isLoading={isLoadingSeed} dataToReport={dataToReport} />
                 </>
             }
             {
@@ -286,7 +305,7 @@ const PlantioAtual = () => {
                             color="success"
                         />
                     </Box>
-                    <Divider variant="fullWidth"/>
+                    <Divider variant="fullWidth" />
                     <Paper elevation={8}
                         sx={{
                             margin: '0px 0px 10px 0px',
@@ -317,8 +336,12 @@ const PlantioAtual = () => {
                     </Paper>
                     <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
 
-                        <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} />
+                        <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} dataToReport={dataToReport} />
+
                     </Paper>
+                    <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
+                        <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+                    </Box>
                 </>
             }
             {
@@ -360,6 +383,9 @@ const PlantioAtual = () => {
                             totalsSet.planejado && totalsSet.plantado &&
                             <TotalCOmp totalsSet={totalsSet} />
                         }
+                        <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
+                            <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+                        </Box>
                     </>
                 )
             }
@@ -398,6 +424,9 @@ const PlantioAtual = () => {
                     <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
                         <TableComonent data={dataToBarChartPlanned} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
                     </Paper>
+                    <Box justifyContent="flex-end" sx={{ marginTop: '3px', width: '100%', display: 'flex' }}>
+                        <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+                    </Box>
                 </>
             }
         </Box>
