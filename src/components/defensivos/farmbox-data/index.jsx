@@ -94,6 +94,8 @@ const FarmBoxPage = () => {
 
 	const [openPreStPage, setOpenPreStPage] = useState(false);
 
+	const [showResumoGeral, setShowResumoGeral] = useState(false);
+
 	const user = useSelector(selectCurrentUser);
 
 	const isNonMobile = useMediaQuery("(min-width: 1200px)");
@@ -283,6 +285,10 @@ const FarmBoxPage = () => {
 			setIsloadingDbFarm(false)
 		}
 		console.log('update farmOperations...')
+	}
+
+	const handleShowResumoGeral = () => {
+		setShowResumoGeral(!showResumoGeral)
 	}
 
 
@@ -547,19 +553,25 @@ const FarmBoxPage = () => {
 					>
 						{filteredApps.length > 0 && (
 							<div className={classes.resumoAppPage}>
-								<div className={classes.headerDivApp}>
+								<div className={classes.headerDivApp} onClick={() => handleShowResumoGeral()}>
 									<Divider>
 										<h3>Resumo Geral</h3>
 									</Divider>
 								</div>
-								<div
-									className={classes.bodyDivApp}
-									style={{
-										backgroundColor: colors.blueOrigin[700]
-									}}
-								>
-									<ResumoDataPage daysFilter={daysFilter} />
-								</div>
+								{
+									showResumoGeral &&
+									<div
+										className={classes.bodyDivApp}
+										style={{
+											opacity: showResumoGeral ? 1 : 0,
+											overflow: 'hidden',
+											backgroundColor: colors.blueOrigin[700],
+											transition: 'opacity 0.3s ease, max-height 0.3s ease',
+										}}
+									>
+										<ResumoDataPage daysFilter={daysFilter} />
+									</div>
+								}
 								{filtFarm && (
 									<>
 										<Box sx={{ width: "100%" }} mt={3}>

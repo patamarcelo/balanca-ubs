@@ -216,7 +216,7 @@ const InsumosBioPage = () => {
                         }
                     })
                     .then((res) => {
-                        // console.log(res.data);
+                        console.log('data from django: ', res.data);
                         setDataFromDjangoProjetado(res.data);
                     })
                     .catch((err) => console.log(err));
