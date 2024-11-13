@@ -38,7 +38,7 @@ const DashboardTable = ({ data, isLoading, dataToReport }) => {
     const [totalsArr, setTotalsArr] = useState({});
 
     useEffect(() => {
-        setInitialRows(data)
+        setInitialRows(data.sort((a,b) => a.Destino.localeCompare(b.Destino) || a.Produto.localeCompare(b.Produto)))
     }, [data]);
 
     useEffect(() => {
