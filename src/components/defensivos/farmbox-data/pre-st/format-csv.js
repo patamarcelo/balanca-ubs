@@ -68,5 +68,6 @@ export const formatToCsv = (data) => {
             csvFile.push(arrayToSend)
         })
     })
+    console.log('data', csvFile)
     return csvFile
 }

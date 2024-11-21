@@ -44,8 +44,8 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
     // Step 2: Group data by weeks
     const weekRangesPlantio = [
         // "15/09/2024 - 21/09/2024",
-        "22/09/2024 - 28/09/2024",
-        "29/09/2024 - 05/10/2024",
+        // "22/09/2024 - 28/09/2024",
+        // "29/09/2024 - 05/10/2024",
         "06/10/2024 - 12/10/2024",
         "13/10/2024 - 19/10/2024",
         "20/10/2024 - 26/10/2024",
@@ -64,7 +64,7 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
         "19/01/2025 - 25/01/2025"
     ];
     const weekRangesColheita = [
-        "12/01/2025 - 18/01/2025",
+        // "12/01/2025 - 18/01/2025",
         "19/01/2025 - 25/01/2025",
         "26/01/2025 - 01/02/2025",
         "02/02/2025 - 08/02/2025",
@@ -181,7 +181,7 @@ export const dataPlannerHandlerBarChart = (qs_planned_orig, plantioView = true) 
     // Step 2: Group data by weeks
     const weekRangesPlantio = [
         // "15/09/2024 - 21/09/2024",
-        "22/09/2024 - 28/09/2024",
+        // "22/09/2024 - 28/09/2024",
         "29/09/2024 - 05/10/2024",
         "06/10/2024 - 12/10/2024",
         "13/10/2024 - 19/10/2024",
