@@ -1,7 +1,7 @@
 const formatProds = (data) => {
     // console.log('prods Here, : ', data)
 
-    const adjustArrByFarm = data.map((farms) => {
+    const adjustArrByFarm = data.filter((prods) => !prods.descricao_produto.includes("MLAB")).map((farms) => {
         const cod_grupo = farms.cod_grupo
         const cod_produto = farms.cod_produto
         const descriao_grupo = farms.descriao_grupo

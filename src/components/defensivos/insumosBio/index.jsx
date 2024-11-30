@@ -517,6 +517,8 @@ const InsumosBioPage = () => {
                 alignItems: "center",
                 backgroundColor: useThemeHere !== 'dark' ? "whitesmoke" : colors.primary[500],
                 borderRadius: "8px",
+                overflow: 'auto',
+                paddingBottom: '20px'
             }}
         >
             <Box

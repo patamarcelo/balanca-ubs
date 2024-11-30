@@ -190,7 +190,8 @@ const DefensivoPage = () => {
 					height: "100%",
 					// border: "1px solid whitesmoke",
 					borderRadius: "8px",
-					marginBottom: "10px"
+					marginBottom: "10px",
+					paddingBottom: '20px'
 				}}
 			>
 				{!isLoadingHome && (
