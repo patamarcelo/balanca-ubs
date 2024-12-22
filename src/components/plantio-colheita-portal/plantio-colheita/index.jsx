@@ -46,6 +46,7 @@ const ColheitaAtual = (props) => {
 	const [areaColhida, setAreaColhida] = useState(0);
 	const [totalPesoCarregado, setTotalPesoCarregado] = useState(0);
 	const [totalProdutividade, setTotalProdutividade] = useState(0);
+	const [totalProdutividadeReal, setTotalProdutividadeReal] = useState(0);
 	
 	
 	const [newDayNow, setNewDayNow] = useState("");
@@ -69,6 +70,7 @@ const ColheitaAtual = (props) => {
 		let areaTotalSoma = 0;
 		let parcelasTotalCount = 0;
 		let areaColhida = 0;
+		let areaRealColhida = 0
 		let pesoTotal = 0
 		selectedFilteredData
 		.filter((data) => 
@@ -81,17 +83,23 @@ const ColheitaAtual = (props) => {
 				: data.area_colheita !== null
 		)
 		.forEach((data) => {
-			console.log('data', data)
+			console.log('data to check', data)
 			areaTotalSoma += data.area_colheita;
 			parcelasTotalCount += 1;
 			areaColhida += data.area_parcial;
 			pesoTotal += data.peso
+			if(data.peso > 0){
+				areaRealColhida += data.area_parcial;
+			}
 		});
 		const areaDisponivel = areaTotalSoma - areaColhida;
 		const areaTotalColhida = areaColhida;
+		const areaRealTotalColhida = areaRealColhida
 
 		const produtividade = (pesoTotal > 0 && areaTotalColhida  > 0)? ( (pesoTotal / 60) / areaTotalColhida) : 0
+		const produtividadeReal = (pesoTotal > 0 && areaRealTotalColhida  > 0)? ( (pesoTotal / 60) / areaRealTotalColhida) : 0
 
+		setTotalProdutividadeReal(produtividadeReal)
 		setTotalProdutividade(produtividade)
 		setTotalPesoCarregado(pesoTotal)
 		setAreaTotal(formatArea(areaTotalSoma));
@@ -200,7 +208,7 @@ const ColheitaAtual = (props) => {
 					})}
 			</Box>
 			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'flex-start' }}>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.1}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -215,7 +223,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.1}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -229,7 +237,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.1}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -243,7 +251,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.1}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -257,7 +265,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.2}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -271,7 +279,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.3}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -285,7 +293,21 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.8}>
+				<Grid item xs={1.3}>
+					<Card
+						sx={{
+							backgroundColor: colors.primary[900]
+						}}
+					>
+						<CardContent sx={{ paddingBottom: "16px !important" }}>
+							<Typography variant="h6" fontWeight={"bold"}>
+								Produtividade Real 
+							</Typography>
+							<Typography variant="body1">{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]

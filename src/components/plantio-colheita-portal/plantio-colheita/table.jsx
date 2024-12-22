@@ -84,13 +84,13 @@ const TableColheita = ({ data, idsPending }) => {
 						return formatedDate;
 					};
 
-					const scsColhidos = Number(carga.peso / 60).toLocaleString(
+					const scsColhidos = carga.peso > 0 ? Number(carga.peso / 60).toLocaleString(
 						"pt-br",
 						{
 							maximumFractionDigits: 2,
 							minimumFractionDigits: 2
 						}
-					);
+					) : ' - '
 					const formatArea = (number) => {
 						return Number(number).toLocaleString("pt-br", {
 							maximumFractionDigits: 2,
@@ -147,12 +147,12 @@ const TableColheita = ({ data, idsPending }) => {
 									styles.semAreaInformada
 								}`}
 							>
-								{formatArea(areaParcial)}
+								{areaParcial > 0 ? formatArea(areaParcial) : ' - '}
 							</td>
 							<td
 								
 							>
-								{formatArea(areaSaldoColher)}
+								{areaSaldoColher > 0 ? formatArea(areaSaldoColher) : ' - '}
 							</td>
 							<td
 								className={`${
@@ -170,11 +170,11 @@ const TableColheita = ({ data, idsPending }) => {
 									styles.semAreaInformada
 								}`}
 							>
-								{carga.romaneios}
+								{carga.romaneios > 0 ? carga.romaneios : '-'}
 							</td>
 							<td style={{color: romaneiosPending > 0 ? "rgb(148, 148, 55)" : colors.textColor[100] }}>{romaneiosPending}</td>
 							<td>
-								{formatArea(mediaPrev)}
+								{mediaPrev > 0 ? formatArea(mediaPrev) : '-'}
 							</td>
 						</tr>
 					);

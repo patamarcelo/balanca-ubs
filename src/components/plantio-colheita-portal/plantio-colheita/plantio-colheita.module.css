@@ -21,7 +21,7 @@ h6 + p{
 .colheitaRow {
     /* background-color: rgba(0,128,0,0.5); */
     color: rgb(9, 137, 9);
-    color: rgb(124, 124, 124) !important;
+    color: rgba(124, 124, 124, 1) !important;
     font-weight: bold;
 }
 
@@ -65,6 +65,7 @@ h6 + p{
 
 .closedParcelaOdd {
     background-color: rgba(11,156,49,0.4);
+    color: 'whitesmoke !important'
 }
 
 .closedParcelaEven {

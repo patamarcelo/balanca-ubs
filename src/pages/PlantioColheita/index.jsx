@@ -24,6 +24,9 @@ import { selectRomaneiosLoads } from "../../store/trucks/trucks.selector";
 
 import toast from "react-hot-toast";
 
+import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+
+
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -52,7 +55,7 @@ const PlantioColheitaPage = () => {
 
 	const [params, setParams] = useState({
 		safra: "2024/2025",
-		ciclo: "1"
+		ciclo: "2"
 	});
 
 	// useEffect(() => {
@@ -172,9 +175,15 @@ const PlantioColheitaPage = () => {
 	};
 
 	useEffect(() => {
+		if (params) {
+			handlerRefresh()
+		}
+	}, [params]);
+
+	useEffect(() => {
 		const collRef = collection(db, TABLES_FIREBASE.truckmove);
 		const q = query(collRef, where("syncDate", "!=", null), where('uploadedToProtheus', '==', false),
-		// const q = query(collRef, where("syncDate", "!=", null),
+			// const q = query(collRef, where("syncDate", "!=", null),
 			orderBy("syncDate", "desc"), limit(100));
 		onSnapshot(q, (snapshot) => {
 			// snapshot.docChanges().forEach((change) => {
@@ -222,62 +231,105 @@ const PlantioColheitaPage = () => {
 		handlerUpdateRomaneios()
 	}, [useData]);
 
+	const handleChange = (field) => (event) => {
+		setParams((prev) => ({
+			...prev,
+			[field]: event.target.value,
+		}));
+	};
+
 
 	return (
-		<Box
-			width={"100%"}
-			position={"relative"}
-			sx={{
-				display: "flex",
-				borderRadius: "12px"
-			}}
-		>
-			<Box>
-				<PermanentDrawerLeft
-					openDrawer={openDrawer}
-					handleNagivationIcon={handleNagivationIcon}
-					selectedRoute={selectedRoute}
-					handlerRefresh={handlerRefresh}
-				/>
+		<>
+
+
+
+			<Box sx={{ display: "flex", width: '230px', flexDirection: 'row', gap: 2, alignItems: "flex-start", p: 2, position: 'absolute', top: '7px', left: '122px' }}>
+				<FormControl sx={{width: '130px'}}>
+					<InputLabel id="safra-label">Safra</InputLabel>
+					<Select
+						size="small"
+						labelId="safra-label"
+						value={params.safra}
+						onChange={handleChange("safra")}
+						label="Safra"
+					>
+						<MenuItem value="2023/2024">2023/2024</MenuItem>
+						<MenuItem value="2024/2025">2024/2025</MenuItem>
+					</Select>
+				</FormControl>
+
+				<FormControl sx={{width: '70px'}}>
+					<InputLabel id="ciclo-label">Ciclo</InputLabel>
+					<Select
+						size="small"
+						labelId="ciclo-label"
+						value={params.ciclo}
+						onChange={handleChange("ciclo")}
+						label="Ciclo"
+					>
+						<MenuItem value="1">1</MenuItem>
+						<MenuItem value="2">2</MenuItem>
+						<MenuItem value="3">3</MenuItem>
+					</Select>
+				</FormControl>
 			</Box>
+
 			<Box
-				className={styles["main-container"]}
-				// position={"relative"}
+				width={"100%"}
+				position={"relative"}
 				sx={{
-					backgroundColor: colors.blueOrigin[800],
-					borderRadius: "0px 12px 12px 0px"
+					display: "flex",
+					borderRadius: "12px"
 				}}
 			>
-				{isLoading && (
-					<Box
-						sx={{
-							width: "100%",
-							height: "100%",
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center"
-						}}
-					>
-						<CircularProgress
-							sx={{ color: colors.blueAccent[100] }}
-						/>
-					</Box>
-				)}
-				{!isLoading && (
-					<PlantioColheitaPortal
-						setOpenDrawer={setOpenDrawer}
+				<Box>
+					<PermanentDrawerLeft
 						openDrawer={openDrawer}
+						handleNagivationIcon={handleNagivationIcon}
 						selectedRoute={selectedRoute}
-						filteredFarm={filteredFarm}
-						selectedFarm={selectedFarm}
-						handlerFilter={handlerFilter}
-						selectedFilteredData={selectedFilteredData}
-						idsPending={idsRomaneioPending}
-						resumeFarmRomaneios={resumeFarmRomaneios}
+						handlerRefresh={handlerRefresh}
 					/>
-				)}
+				</Box>
+				<Box
+					className={styles["main-container"]}
+					// position={"relative"}
+					sx={{
+						backgroundColor: colors.blueOrigin[800],
+						borderRadius: "0px 12px 12px 0px"
+					}}
+				>
+					{isLoading && (
+						<Box
+							sx={{
+								width: "100%",
+								height: "100%",
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center"
+							}}
+						>
+							<CircularProgress
+								sx={{ color: colors.blueAccent[100] }}
+							/>
+						</Box>
+					)}
+					{!isLoading && (
+						<PlantioColheitaPortal
+							setOpenDrawer={setOpenDrawer}
+							openDrawer={openDrawer}
+							selectedRoute={selectedRoute}
+							filteredFarm={filteredFarm}
+							selectedFarm={selectedFarm}
+							handlerFilter={handlerFilter}
+							selectedFilteredData={selectedFilteredData}
+							idsPending={idsRomaneioPending}
+							resumeFarmRomaneios={resumeFarmRomaneios}
+						/>
+					)}
+				</Box>
 			</Box>
-		</Box>
+		</>
 	);
 };
 
