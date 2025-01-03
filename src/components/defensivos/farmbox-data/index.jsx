@@ -476,7 +476,7 @@ const FarmBoxPage = () => {
 						{filtFarm?.map((data, i) => {
 							const hasApp = (obj) => obj.fazenda === data;
 							return (
-								<>
+								<div style={{position: 'relative'}} >
 									{filteredApps.some(hasApp) && (
 										<>
 											<div
@@ -485,7 +485,11 @@ const FarmBoxPage = () => {
 												style={{
 													margin: "29px",
 													cursor: 'pointer',
-													fontSize: '22px'
+													fontSize: '22px',
+													position: 'sticky', // Make it sticky
+													top: '-30px',          // Adjust as needed (e.g., "10px" if you need an offset)
+													zIndex: 1000 ,
+													// backgroundColor: colors.blueOrigin[900]  
 
 												}}
 												className={classes.headerNameFarmTitle}
@@ -493,8 +497,12 @@ const FarmBoxPage = () => {
 											>
 												<Divider>{data.replace('Fazenda', '')}</Divider>
 											</div>
-
-											<HeaderApp />
+											
+											
+												{/* <div className={classes.headerAppSticky} style={{ backgroundColor: colors.blueOrigin[900] }}> */}
+													<HeaderApp />
+												{/* </div> */}
+											
 										</>
 									)}
 									<div className={classes.mainDivLeft}>
@@ -543,7 +551,7 @@ const FarmBoxPage = () => {
 												return <></>;
 											})}
 									</div>
-								</>
+								</div>
 							);
 						})}
 					</div>

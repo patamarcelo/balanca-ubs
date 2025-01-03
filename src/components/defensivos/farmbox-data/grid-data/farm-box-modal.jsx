@@ -244,6 +244,7 @@ const ModalDataFarmbox = (props) => {
 					return appParcelasDict.flat();
 				}
 			});
+			console.log('newarr',newarr.flat())
 			setAppArray(newarr.flat());
 		} catch (err) {
 			console.log("erro ao formar o Array do Grid Farmbox", err);

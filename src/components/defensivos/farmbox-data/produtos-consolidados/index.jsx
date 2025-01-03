@@ -1,4 +1,4 @@
-import { Box, Button, Typography, IconButton, useTheme } from '@mui/material'
+import { Box, Button, Typography, IconButton, useTheme, Divider } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import SelectInputs from './select-inputs';
 import DateTimeSelector from './date-time-select';
@@ -20,6 +20,7 @@ import { selectIsAdminUser } from '../../../../store/user/user.selector';
 import djangoApi from '../../../../utils/axios/axios.utils';
 
 import Swal from "sweetalert2";
+import OpenApsAllprodsPage from './list-prods-open-apss-all';
 
 
 const ProdutosConsolidados = () => {
@@ -44,6 +45,7 @@ const ProdutosConsolidados = () => {
     const [prodcutsToProtheus, setprodcutsToProtheus] = useState([]);
 
     const [stOpened, setStOpened] = useState(null);
+    const [filteredData, setFilteredData] = useState([]);
 
 
     const [isLoadingBtn, setIsLoadingBtn] = useState(false);
@@ -58,6 +60,7 @@ const ProdutosConsolidados = () => {
         setSelectedData({})
         setStOpened(null)
         setObservations("")
+        setFilteredData([])
     }
 
     useEffect(() => {
@@ -89,10 +92,11 @@ const ProdutosConsolidados = () => {
         const getArmazenCode = armazemDictCode.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const dataToSend = {
             ...selectedData,
-            produtos: prodcutsToProtheus,
+            produtos: prodcutsToProtheus?.filter((prod) => prod.inputType !== "Operação"),
             fazendaDestino: getCode,
             armazemDestino: getArmazenCode,
-            observacao: observations
+            observacao: observations,
+            produtosGeral: filteredData
         }
         console.log('dados Selecionados: ', dataToSend)
         const params = JSON.stringify(dataToSend)
@@ -231,6 +235,22 @@ const ProdutosConsolidados = () => {
                         }
                     </Box>
                     <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
+                    {
+                        selectedData &&
+                        <>
+                            <Divider />
+                            <Box
+                                sx={{
+                                    paddingLeft: '20px',
+                                    marginTop: '5px',
+                                    marginRight: '-10px',
+                                    marginBottom: '40px'
+                                }}
+                            >
+                                <OpenApsAllprodsPage data={openApp} selectedData={selectedData} setFilteredData={setFilteredData} filteredData={filteredData}/>
+                            </Box>
+                        </>
+                    }
                 </Box>
             }
 

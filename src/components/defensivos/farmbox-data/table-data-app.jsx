@@ -273,7 +273,7 @@ const TableDataPage = (props) => {
 	return (
 		<div
 			style={{
-				width: "100%",
+				width: "98%",
 				backgroundColor: colors.blueOrigin[700],
 				border:
 					dataF.status === "sought"

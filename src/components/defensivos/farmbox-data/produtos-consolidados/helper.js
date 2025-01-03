@@ -1,3 +1,25 @@
+export const farmDictProject = [
+    {projeto: 'Fazenda Benção de Deus', mainFarm: "Bencao de Deus"},
+    
+    {projeto: 'Fazenda Cacique', mainFarm: "Campo Guapo"},
+    {projeto: 'Fazenda Campo Guapo', mainFarm: "Campo Guapo"},
+    {projeto: "Fazenda Safira", mainFarm: "Campo Guapo"},
+    
+    {projeto: 'Fazenda Capivara', mainFarm: "Diamante"},
+    {projeto: "Fazenda Cervo", mainFarm: "Diamante"},
+    {projeto: "Fazenda Jacaré", mainFarm: "Diamante"},
+    {projeto: "Fazenda Tucano", mainFarm: "Diamante"},
+    {projeto: "Fazenda Tuiuiu", mainFarm: "Diamante"},
+    
+    {projeto: "Fazenda Eldorado", mainFarm: "Eldorado"},
+    
+    {projeto: "Fazenda Lago Verde", mainFarm: "Lago Verde"},
+    
+    {projeto: "Fazenda Santa Maria", mainFarm: "Santa Maria"},
+    
+    {projeto: "Fazenda Fazendinha", mainFarm: "Fazendinha"},
+]
+
 export const generalDataArr = (data) => {
     const newArr = data.map((datas) => datas.date)
     const conslidateArr = [...new Set(newArr)]
@@ -79,6 +101,58 @@ export const getInsumosList = (data) => {
 
     })
     const finalArr =  newArrData.flat()
+    return finalArr
+}
+export const getInsumosListOpenApps = (data) => {
+    const onlyOpenAps = data.filter((ap) => ap.status === 'sought')
+    const newArrData = onlyOpenAps.map((apps) => {
+        // console.log('appss: ', apps)
+        
+        const totalAppliedArea = apps?.plantations?.reduce((acc, curr) => acc += curr?.applied_area, 0) || 0
+        // console.log('total já aplicado', totalAppliedArea)
+        
+        const totalSoughtArea = apps?.plantations?.reduce((acc, curr) => acc += curr?.sought_area, 0) || 0
+        // console.log('total Solicitado', totalSoughtArea)
+
+        const totalOpenArea = totalSoughtArea - totalAppliedArea
+        // console.log('total Aberto: ', totalOpenArea)
+
+
+        const date = apps.date
+        const number = apps.code
+        const farmName = apps.plantations[0].plantation.farm_name
+        // console.log('farmName: ', farmName, 'code: ', number)
+
+        const finalCode = `${farmName?.replace('Fazenda ', '')} - ${number}`
+        const inputsArr = apps.inputs.map((input) => {
+            const inputType = input.input.input_type_name
+            const inputName = input.input.name
+            const quantity = input.sought_quantity
+            const dosage = input.sought_dosage_value
+            const quantityOpen = totalOpenArea * dosage
+            const inputId = input.input.id
+            const inputLastUpdated = input.updated_at
+            const mainFarm = farmDictProject.find((farm) => farm.projeto === farmName)
+            return ({
+                date, 
+                code: number,
+                finalCode,
+                farmName,
+                inputType,
+                inputName,
+                quantity,
+                inputId,
+                inputLastUpdated,
+                dosage,
+                quantityOpen, 
+                mainFarm: mainFarm?.mainFarm
+            })
+        })
+        return inputsArr.flat()
+
+    })
+    const finalArr =  newArrData.flat()
+    // console.log('array dos prods: ', finalArr)
     return finalArr
 }
 
