@@ -21,11 +21,23 @@
     justify-content: space-around;
     /* align-items: baseline; */
     width: 100%;
-    min-width: 1200px;
     min-height: 90%;
     /* border: 1px solid black; */
     padding: 10px;
     zoom: 113%;
+}
+
+@media (min-width: 260px) and (max-width: 1299px) {
+    .dashboardDiv {
+        justify-content: flex-start; /* For tablet/notebook sizes */
+    }
+}
+
+@media (min-width: 1200px) {
+    .dashboardDiv {
+        min-width: 1200px;
+        justify-content: space-around; /* For larger screens */
+    }
 }
 
 
@@ -59,6 +71,12 @@
 
 .dashLeft {
     width: 65%;
+}
+
+@media (max-width: 768px) {
+    .dashRight {
+        display: none;
+    }
 }
 
 .dashRight {
@@ -361,7 +379,7 @@
 }
 
 .pluviNotZero {
-    color: rgba(250,218,94);
+    color: rgba(250, 218, 94);
 }
 
 .pluviZero {
@@ -387,7 +405,7 @@
 }
 
 .isInArr {
-    border: 1px solid rgba(245,245,245,0.8);
+    border: 1px solid rgba(245, 245, 245, 0.8);
     border-radius: 12px;
 }
 
@@ -401,11 +419,11 @@
 
 
 .headerNameFarmTitle:hover {
-    background-color: rgba(245,245,245,0.1);
+    background-color: rgba(245, 245, 245, 0.1);
     /* border-radius: 6px; */
 }
 
-.headerAppSticky{
+.headerAppSticky {
     position: sticky;
     top: -30px;
     z-index: 1000;

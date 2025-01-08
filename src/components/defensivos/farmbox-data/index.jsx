@@ -99,6 +99,8 @@ const FarmBoxPage = () => {
 	const user = useSelector(selectCurrentUser);
 
 	const isNonMobile = useMediaQuery("(min-width: 1200px)");
+	const isMobile = useMediaQuery("(max-width: 760px)"); // Adjust breakpoint as needed
+
 
 	// const ITEM_HEIGHT = 48;
 	// const ITEM_PADDING_TOP = 8;
@@ -396,12 +398,15 @@ const FarmBoxPage = () => {
 				</Typography>
 				{!loadingData && onlyFarms.length > 0 && (
 					<Box className={classes.formDiv}>
-						<Switch
-							checked={allFarmsSet}
-							onChange={handleAllFarms}
-							inputProps={{ "aria-label": "controlled" }}
-							color="secondary"
-						/>
+						{
+							!isMobile &&
+							<Switch
+								checked={allFarmsSet}
+								onChange={handleAllFarms}
+								inputProps={{ "aria-label": "controlled" }}
+								color="secondary"
+							/>
+						}
 						<FormControl
 							sx={{
 								m: 1,
@@ -434,26 +439,29 @@ const FarmBoxPage = () => {
 									))}
 							</Select>
 						</FormControl>
-						<Box display="flex" flexDirection="row">
-							<Switch
-								checked={openAppOnly}
-								onChange={handleCheckOpenApp}
-								inputProps={{ "aria-label": "controlled" }}
-								color="secondary"
-							/>
-							{/* <Switch
+						{
+							!isMobile &&
+							<Box display="flex" flexDirection="row">
+								<Switch
+									checked={openAppOnly}
+									onChange={handleCheckOpenApp}
+									inputProps={{ "aria-label": "controlled" }}
+									color="secondary"
+								/>
+								{/* <Switch
 								checked={filterPreaproSolo}
 								onChange={handlePreaproSolo}
 								inputProps={{ "aria-label": "controlled" }}
 								color="warning"
-							/> */}
-							<Switch
-								checked={showFutureApps}
-								onChange={handleFutureAp}
-								inputProps={{ "aria-label": "controlled" }}
-								color="warning"
-							/>
-						</Box>
+								/> */}
+								<Switch
+									checked={showFutureApps}
+									onChange={handleFutureAp}
+									inputProps={{ "aria-label": "controlled" }}
+									color="warning"
+								/>
+							</Box>
+						}
 					</Box>
 				)}
 				{
@@ -476,7 +484,7 @@ const FarmBoxPage = () => {
 						{filtFarm?.map((data, i) => {
 							const hasApp = (obj) => obj.fazenda === data;
 							return (
-								<div style={{position: 'relative'}} >
+								<div style={{ position: 'relative' }} >
 									{filteredApps.some(hasApp) && (
 										<>
 											<div
@@ -488,7 +496,7 @@ const FarmBoxPage = () => {
 													fontSize: '22px',
 													position: 'sticky', // Make it sticky
 													top: '-30px',          // Adjust as needed (e.g., "10px" if you need an offset)
-													zIndex: 1000 ,
+													zIndex: 1000,
 													// backgroundColor: colors.blueOrigin[900]  
 
 												}}
@@ -497,12 +505,12 @@ const FarmBoxPage = () => {
 											>
 												<Divider>{data.replace('Fazenda', '')}</Divider>
 											</div>
-											
-											
-												{/* <div className={classes.headerAppSticky} style={{ backgroundColor: colors.blueOrigin[900] }}> */}
-													<HeaderApp />
-												{/* </div> */}
-											
+
+
+											{/* <div className={classes.headerAppSticky} style={{ backgroundColor: colors.blueOrigin[900] }}> */}
+											<HeaderApp />
+											{/* </div> */}
+
 										</>
 									)}
 									<div className={classes.mainDivLeft}>
@@ -645,8 +653,8 @@ const FarmBoxPage = () => {
 				</div>
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
-						<span>Selecione uma fazenda</span>
-						{filtFarm.length === 0 &&
+						<Typography variant="h4" color={colors.grey[300]}>Selecione uma fazenda</Typography>
+						{filtFarm.length === 0 && !isMobile &&
 							<PluviDataComp />
 						}
 					</Box>
