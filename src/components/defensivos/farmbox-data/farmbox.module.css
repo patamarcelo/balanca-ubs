@@ -13,32 +13,16 @@
 }
 
 .dashboardDiv {
-    /* background-color: rgb(127,255,212, 0.3); */
     border-radius: 8px;
     flex-wrap: wrap;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    /* align-items: baseline; */
     width: 100%;
     min-height: 90%;
-    /* border: 1px solid black; */
     padding: 10px;
     zoom: 113%;
 }
 
-@media (min-width: 260px) and (max-width: 1299px) {
-    .dashboardDiv {
-        justify-content: flex-start; /* For tablet/notebook sizes */
-    }
-}
-
-@media (min-width: 1200px) {
-    .dashboardDiv {
-        min-width: 1200px;
-        justify-content: space-around; /* For larger screens */
-    }
-}
 
 
 .emptyFarm {
@@ -73,11 +57,6 @@
     width: 65%;
 }
 
-@media (max-width: 768px) {
-    .dashRight {
-        display: none;
-    }
-}
 
 .dashRight {
     width: 27%;

@@ -478,7 +478,11 @@ const FarmBoxPage = () => {
 						{hojeH}
 					</Box>
 				}
-				<div className={classes.dashboardDiv}>
+				<Box className={classes.dashboardDiv}
+					sx={{
+						justifyContent: !isNonMobile ? 'flex-start' : 'space-around'
+					}}
+				>
 
 					<div className={classes.dashLeft}>
 						{filtFarm?.map((data, i) => {
@@ -491,6 +495,7 @@ const FarmBoxPage = () => {
 												key={i}
 												id={data}
 												style={{
+													width: '100%',
 													margin: "29px",
 													cursor: 'pointer',
 													fontSize: '22px',
@@ -650,7 +655,7 @@ const FarmBoxPage = () => {
 							</div>
 						)}
 					</div>
-				</div>
+				</Box>
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<Typography variant="h4" color={colors.grey[300]}>Selecione uma fazenda</Typography>
