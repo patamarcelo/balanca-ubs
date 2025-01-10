@@ -22,12 +22,14 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useSelector } from "react-redux";
 import {
 	selectUnidadeOpUser,
-	selectIsDefensivosUser
+	selectIsDefensivosUser,
+	selectIsAdminUser
 } from "../../store/user/user.selector";
 import PlantioColheitaPage from "../../pages/PlantioColheita";
 import PageNotFound from "../../pages/NotFound";
 
 import MenuIcon from "@mui/icons-material/Menu";
+import UsersPage from "../../pages/Users";
 
 const AuthApp = () => {
 	const theme = useTheme();
@@ -39,6 +41,7 @@ const AuthApp = () => {
 
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isDefensivosUser = useSelector(selectIsDefensivosUser);
+	const isAdminUser = useSelector(selectIsAdminUser);
 
 	const toggleDrawer = (event) => {
 		if (
@@ -131,7 +134,7 @@ const AuthApp = () => {
 							<Route
 								path="/visitas/:visitaId"
 								element={<VisitaIDPage />}
-							/>
+								/>
 						</>
 					)}
 					{isDefensivosUser && (
@@ -139,8 +142,11 @@ const AuthApp = () => {
 							<Route
 								path="/plantio-colheita"
 								element={<PlantioColheitaPage />}
-							/>
+								/>
 						</>
+					)}
+					{isAdminUser && (
+						<Route path="/users" element={<UsersPage />} />
 					)}
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>

@@ -13,7 +13,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import { ReactComponent as Diamond } from "../../utils/assets/img/diamond.svg";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faChartSimple } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
@@ -26,13 +26,15 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
 	selectUnidadeOpUser,
-	selectIsDefensivosUser
+	selectIsDefensivosUser,
+	selectIsAdminUser
 } from "../../store/user/user.selector";
 
 import { useEffect, useState } from "react";
 
 export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	const isDefensivosUser = useSelector(selectIsDefensivosUser);
+	const isAdminUser = useSelector(selectIsAdminUser);
 
 	const navigate = useNavigate();
 
@@ -92,6 +94,13 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 			to: "/plantio-colheita",
 			unidade: "ubs",
 			permission: isDefensivosUser
+		},
+		{
+			title: "Usuários",
+			icon: faUser,
+			to: "/users",
+			unidade: "ubs",
+			permission: isAdminUser
 		}
 	];
 	useEffect(() => {
