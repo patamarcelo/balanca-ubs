@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { useState, useEffect, useCallback } from "react";
 import classes from "./data-program.module.css";
@@ -1474,6 +1474,9 @@ const DataProgramPage = (props) => {
 								</>
 							);
 						})}
+						{objResumValues.length > 0 && <Box sx={{textAlign: 'center', marginTop: '10px'}}>
+							<Divider>{farmSelected?.replace('Projeto', '')}</Divider>
+							</Box>}
 				</Box>
 			</Box>
 		</Box >

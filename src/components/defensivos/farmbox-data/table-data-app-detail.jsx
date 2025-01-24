@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import Chip from "@mui/material/Chip";
-import { Box, useTheme } from "@mui/material";
+import { Box, Divider, Typography, useTheme } from "@mui/material";
 import classes from "./farmbox.module.css";
 import { tokens } from "../../../theme";
 
@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
+
+import { formatNumber } from "../../../utils/format-suport/data-format";
 
 
 const colorDict = [
@@ -120,11 +122,16 @@ const DetailAppData = (props) => {
 		return false;
 	};
 
-	// useEffect(() => {
-	// 	if (sumArea === 0) {
-	// 		setParcelaSelected([]);
-	// 	}
-	// }, [sumArea]);
+
+	const daysBetween = (date1) => {
+		const d1 = new Date(date1);
+		const d2 = new Date();
+		const diffTime = Math.abs(d2 - d1); // Difference in milliseconds
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+		return diffDays;
+	}
+
+	console.log('data::::', data)
 
 	return (
 		<>
@@ -144,7 +151,7 @@ const DetailAppData = (props) => {
 						const getArea = data.areaAplicada > 0 ? data.areaAplicada : data.area
 						const notFinished = (data.area - getArea) > 0 ? true : false
 						const getPercent = ((data.areaAplicada / data.area) * 100)
-						const tooltipTile = getPercent.toFixed(0) + "%  - " + data.areaAplicada + " Ha"
+						const tooltipTile = getPercent.toFixed(0) + "%  - " + formatNumber(data.areaAplicada, 2) + " Ha"
 						return (
 							<Box
 								m={1}
@@ -152,8 +159,35 @@ const DetailAppData = (props) => {
 								onClick={() => handlerSumArea(data)}
 							>
 								{/* {<IconDetail color={data.aplicado} />} */}
-								<Tooltip title={<h2> {tooltipTile}</h2>} arrow
-								TransitionComponent={Zoom}
+								<Tooltip
+									title={
+										<Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
+											{
+												data?.variedade &&
+												<>
+													<h2>{data?.variedade}</h2>
+													<Divider />
+												</>
+											}
+											{
+												data?.dataPlantio ?
+													<h2>{data?.dataPlantio?.split("-").reverse().join("/")} - DAP {daysBetween(data.dataPlantio)}</h2>
+													:
+													<h3>Não Plantado na abertura</h3>
+											}
+
+											{
+												getPercent !== 0 &&
+												<>
+													<Divider />
+													<h2> {tooltipTile}</h2>
+												</>
+
+											}
+										</Box>
+									}
+									arrow
+									TransitionComponent={Zoom}
 								>
 									<Box
 										className={
@@ -166,16 +200,16 @@ const DetailAppData = (props) => {
 											// 	: "rgba(238,75,43, 0.6)",
 											// border: '1px solid rgba(255,255,255,0.1)',
 											width: "100%",
-											borderRadius: "12px",
+											borderRadius: "6px",
 										}}
 									>
 										<Box
 											sx={{
 												width: data.aplicado ? `${getPercent}%` : '100%',
 												padding: "3px 10px",
-												borderRadius: notFinished ? "" : "12px",
-												borderTopLeftRadius: notFinished && "12px",
-												borderBottomLeftRadius: notFinished && "12px",
+												borderRadius: notFinished ? "" : "6px",
+												borderTopLeftRadius: notFinished && "6px",
+												borderBottomLeftRadius: notFinished && "6px",
 												fontWeight: "bold",
 												whiteSpace: "nowrap",
 												backgroundColor: notFinished ? 'rgba(248,198,0,0.6)' : data.aplicado
@@ -183,12 +217,13 @@ const DetailAppData = (props) => {
 													: "rgba(238,75,43, 0.6)",
 											}}
 										>
-
 											{data.parcela} -{" "}
 											{data.area
 												.toFixed(2)
 												.toString()
 												.replace(".", ",")}
+
+
 										</Box>
 									</Box>
 								</Tooltip>
@@ -240,17 +275,17 @@ const DetailAppData = (props) => {
 				)}
 				{data.insumos
 					.sort((a, b) => a.tipo.localeCompare(b.tipo))
-					.map((data, i) => {
+					.map((dataInsum, i) => {
 						const bombCalc =
 							bombArr[0].bombx > 0 && bombArr[0].bombx;
 
-						const tipo = data.tipo.includes("Óleo Mineral")
+						const tipo = dataInsum.tipo.includes("Óleo Mineral")
 							? "Óleo"
-							: data.tipo;
+							: dataInsum.tipo;
 						const quantiAplicar =
 							bombaValue > 0
-								? bombCalc * Number(data.dose)
-								: data.quantidade;
+								? bombCalc * Number(dataInsum.dose)
+								: dataInsum.quantidade;
 
 						return (
 							<>
@@ -262,10 +297,11 @@ const DetailAppData = (props) => {
 									gridAutoColumns={"1fr 180px 1fr 1fr"}
 									gridRowGap="5px"
 									gap={"2px"}
-									margin={"7px"}
+									margin={"3px"}
+									alignItems={"baseline"}
 								>
 									<b>
-										{parseFloat(data.dose).toLocaleString(
+										{parseFloat(dataInsum.dose).toLocaleString(
 											"pt-br",
 											{
 												minimumFractionDigits: 3,
@@ -274,11 +310,11 @@ const DetailAppData = (props) => {
 										)}
 									</b>{" "}
 									<Chip
-										label={data.insumo}
+										label={dataInsum.insumo}
 										// label={
 										// 	tipo.includes("Óleo Mineral")
 										// 		? "Óleo"
-										// 		: tipo + " - " + data.insumo
+										// 		: tipo + " - " + dataInsum.insumo
 										// }
 										sx={{
 											backgroundColor: getColorChip(tipo),
@@ -287,7 +323,8 @@ const DetailAppData = (props) => {
 											height: "auto",
 											margin: "0px 8px 0px 4px",
 											fontWeight: "bold",
-											border: "0.1em solid black"
+											border: "0.1em solid black",
+											borderRadius: '6px'
 										}}
 										size="small"
 									/>
@@ -314,7 +351,7 @@ const DetailAppData = (props) => {
 											<b>
 												{" "}
 												{parseFloat(
-													Number(data.dose) *
+													Number(dataInsum.dose) *
 													bombArr[1].bomby
 												).toLocaleString("pt-br", {
 													minimumFractionDigits: 2,
@@ -324,6 +361,10 @@ const DetailAppData = (props) => {
 										</Box>
 									)}
 								</Box>
+								{
+									i !== data.insumos.length - 1 &&
+									<Divider m={0} p={0} />
+								}
 							</>
 						);
 					})}

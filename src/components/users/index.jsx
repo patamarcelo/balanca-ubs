@@ -71,6 +71,7 @@ const UsersTable = (props) => {
                     }}
                 >
                     <Typography variant="h6" sx={{ flex: 1 }}>
+                    <Typography fontSize={"10px"} sx={{ flex: 1 }}>{i + 1}</Typography>
                         {data.email}
                     </Typography>
                     <Typography variant="h6" sx={{ flex: 1 }}>

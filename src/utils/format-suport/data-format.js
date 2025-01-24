@@ -71,4 +71,15 @@ export const getNextWeekDays = () => {
 	return formatDate;
 };
 
+export const formatNumber = (data, digits) => {
+	return data.toLocaleString(
+		"pt-br",
+		{
+			minimumFractionDigits: digits,
+			maximumFractionDigits: digits
+		}
+	)
+}
+
+
 export default formatDate;
