@@ -7,6 +7,7 @@ const MercadoriaTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+	console.log('data:::', data)
 
 	return (
 		<Box
@@ -27,7 +28,7 @@ const MercadoriaTruck = (props) => {
 					Produto
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
-					{data.mercadoria}
+					{data?.mercadoria || `${data?.parcelasObjFiltered[0]?.cultura} - ${data?.parcelasObjFiltered[0]?.variedade}`}
 				</Typography>
 			</>
 		</Box>

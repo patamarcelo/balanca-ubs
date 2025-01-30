@@ -264,7 +264,7 @@ const HomeTableTruck = (props) => {
 							<QuantityTruckTara data={data} />
 							<QuantityTruckBruto data={data} />
 							{/* <QuantityTruckHold data={data} /> */}
-							{data.mercadoria ? (
+							{(data.mercadoria || data.parcelasObjFiltered) ? (
 								<MercadoriaTruck data={data} />
 							) : (
 								<EmptyField />
