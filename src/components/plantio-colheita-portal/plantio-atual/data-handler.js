@@ -61,7 +61,9 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
         "29/12/2024 - 04/01/2025",
         "05/01/2025 - 11/01/2025",
         "12/01/2025 - 18/01/2025",
-        "19/01/2025 - 25/01/2025"
+        "19/01/2025 - 25/01/2025",
+        "26/01/2025 - 01/02/2025",
+
     ];
     const weekRangesColheita = [
         // "12/01/2025 - 18/01/2025",
@@ -84,7 +86,10 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
         "11/05/2025 - 17/05/2025",
         "18/05/2025 - 24/05/2025",
         "25/05/2025 - 31/05/2025",
-        "01/06/2025 - 07/06/2025"
+        "01/06/2025 - 07/06/2025",
+        // "08/06/2025 - 15/06/2025",
+        // "16/06/2025 - 22/06/2025",
+        // "23/06/2025 - 29/06/2025",
     ];
 
     const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita

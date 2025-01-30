@@ -160,6 +160,7 @@ const RomaneiosTable = (props) => {
 						</th>
 						<th>Parcelas</th>
 						<th>Cultura</th>
+						<th>Variedade</th>
 						<th>Placa</th>
 						<th>Motorista</th>
 						<th>Destino</th>
@@ -176,6 +177,9 @@ const RomaneiosTable = (props) => {
 							console.log('Carga detail:::', carga)
 							const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
 							const getTicket = carga?.ticket ? carga.ticket : '-'
+							const getCultura = carga?.parcelasObjFiltered[0]?.cultura
+							const getVariedade = carga?.parcelasObjFiltered.map((data) => data.variedade)
+							const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
 							return (
 								<tr
 									key={i}
@@ -194,10 +198,10 @@ const RomaneiosTable = (props) => {
 									<td>
 										<img
 											src={filteredIcon(
-												carga.cultura
+												getCultura
 											)}
 											alt={filteredAlt(
-												carga.cultura
+												getCultura
 											)}
 											style={{
 												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
@@ -206,6 +210,7 @@ const RomaneiosTable = (props) => {
 											}}
 										/>
 									</td>
+									<td>{filtVariedade}</td>
 									<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>
 										{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
 									</td>
