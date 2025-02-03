@@ -7,7 +7,6 @@ const MercadoriaTruck = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
-	console.log('data:::', data)
 
 	return (
 		<Box

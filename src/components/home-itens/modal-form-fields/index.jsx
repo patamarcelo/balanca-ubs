@@ -55,13 +55,14 @@ const ModalFormFields = (props) => {
 
 	useEffect(() => {
 		if (truckValues.fazendaOrigem) {
-			const newParcFiltered = [];
 			const parcelasArray =
-				dataParcelas["dados"][truckValues.fazendaOrigem];
-			for (let i in parcelasArray) {
-				newParcFiltered.push(i);
-			}
-			setNewParcelas(newParcFiltered);
+				dataParcelas["dados"][truckValues.fazendaOrigem]
+
+			const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
+				...details,
+				parcela
+			}));
+			setNewParcelas(newArray);
 		}
 
 		if (
@@ -401,8 +402,8 @@ const ModalFormFields = (props) => {
 					>
 						{newParelas.map((iterData, i) => {
 							return (
-								<MenuItem value={iterData} key={i}>
-									{iterData}
+								<MenuItem value={iterData.parcela} key={i}>
+									{iterData.parcela} - {iterData.variedade}
 								</MenuItem>
 							);
 						})}

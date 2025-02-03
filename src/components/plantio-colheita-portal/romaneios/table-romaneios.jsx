@@ -180,6 +180,7 @@ const RomaneiosTable = (props) => {
 							const getCultura = carga?.parcelasObjFiltered[0]?.cultura
 							const getVariedade = carga?.parcelasObjFiltered.map((data) => data.variedade)
 							const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
+							const getParcelas = carga?.parcelasObjFiltered.map((data) => data.parcela)
 							return (
 								<tr
 									key={i}
@@ -191,7 +192,7 @@ const RomaneiosTable = (props) => {
 									<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
 									<td>{carga.fazendaOrigem}</td>
 									<td>
-										{carga.parcelasNovas
+										{getParcelas
 											.sort((a, b) => a.localeCompare(b))
 											.join(", ")}
 									</td>

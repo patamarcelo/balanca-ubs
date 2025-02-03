@@ -63,6 +63,7 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
         "12/01/2025 - 18/01/2025",
         "19/01/2025 - 25/01/2025",
         "26/01/2025 - 01/02/2025",
+        "02/02/2025 - 08/02/2025"
 
     ];
     const weekRangesColheita = [
