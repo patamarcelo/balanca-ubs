@@ -1,7 +1,7 @@
 import classes from "./farmbox.module.css";
 import djangoApi, { nodeServer } from "../../../utils/axios/axios.utils";
 import { useEffect, useState, useCallback } from "react";
-import { Box, Button, CircularProgress, Typography, useTheme } from "@mui/material";
+import { Box, Button, CircularProgress, Typography, useTheme, Paper } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import {
@@ -355,6 +355,8 @@ const FarmBoxPage = () => {
 				<>
 
 					<Box
+					component={Paper}
+					elevation={8}
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
@@ -377,6 +379,7 @@ const FarmBoxPage = () => {
 							minWidth: "1400px",
 							minHeight: 'calc(100% - 10px)',
 							padding: '10px',
+							paddingLeft: '0px',
 							display: "flex",
 							borderRadius: '8px',
 							// border: `1px solid ${colors.primary[200]}`

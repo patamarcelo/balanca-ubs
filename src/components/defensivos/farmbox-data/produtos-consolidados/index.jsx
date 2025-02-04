@@ -1,4 +1,4 @@
-import { Box, Button, Typography, IconButton, useTheme, Divider } from '@mui/material'
+import { Box, Button, Typography, IconButton, useTheme, Divider,Paper } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import SelectInputs from './select-inputs';
 import DateTimeSelector from './date-time-select';
@@ -215,16 +215,19 @@ const ProdutosConsolidados = () => {
                 Object.keys(selectedData).length > 0 &&
                 <Box>
                     <Box
+                        component={stOpened && Paper}
+                        elevation={stOpened && 8}
                         sx={{
                             paddingLeft: '20px',
                             marginTop: '5px',
                             marginRight: '-10px',
+                            paddingTop: 1
                         }}
                     >
                         <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
                         {
                             stOpened && stOpened !== 0 &&
-                            <Typography sx={{ marginLeft: '-30px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 30px', }} color={colors.textColor[200]}>Pré ST:
+                            <Typography sx={{ marginLeft: '-20px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 20px', }} color={colors.textColor[200]}>Pré ST:
                                 <span style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '10px', marginLeft: '10px', }} color={colors.textColor[100]}>{stOpened}</span>
                             </Typography>
                         }

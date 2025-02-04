@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Paper } from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
 import { useContext } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -127,13 +127,15 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 			</Box>
 			<Box
 				display={"flex"}
+				component={Paper}
+				elevation={6}
 				justifyContent="space-around"
 				alignItems="center"
 				sx={{
 					backgroundColor: colors.blueOrigin[800],
 					padding: "0px 5px",
 					borderRadius: "8px",
-					boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
+					// boxShadow: `rgba(255, 255, 255, 0.1) 2px 2px 6px 0px inset, rgba(255, 255, 255, 0.1) -1px -1px 1px 1px inset;`,
 					border:
 						theme.palette.mode === "light" && "0.5px solid black"
 				}}
