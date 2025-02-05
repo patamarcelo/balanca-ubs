@@ -76,6 +76,7 @@ const TableSrd = ({data}) => {
 					<th>Projeto</th>
 					<th>Parcelas</th>
 					<th>Cultura</th>
+					<th>Variedade</th>
 					<th>Placa</th>
 					<th>Motorista</th>
 					<th>Bruto</th>
@@ -114,6 +115,7 @@ const TableSrd = ({data}) => {
                                         }}
                                     />    
                                 </td>
+                                <td style={{width: '100px'}}>{parcela?.VARIEDADE?.replace(/arroz/gi, '')}</td>
                                 <td style={{width: '100px'}}>{parcela?.PLACA?.slice(0,3) + "-" + parcela?.PLACA?.slice(3,7) }</td>
                                 <td style={{width: '300px', overflow: 'hidden', textOverflow: "ellipsis", whiteSpace: 'nowrap'}}>{parcela.MOTORISTA}</td>
                                 <td>{formatWei(parcela.BRUTO)}</td>
