@@ -56,15 +56,12 @@ const ModalFormFields = (props) => {
 	useEffect(() => {
 		if (truckValues?.fazendaOrigem) {
 			const parcelasArray =
-				dataParcelas?.dados?.truckValues?.fazendaOrigem || []
-			console.log('parceasArray: ', parcelasArray)
-			if (parcelasArray.length > 0) {
-				const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
-					...details,
-					parcela
-				}));
-				setNewParcelas(newArray);
-			}
+				dataParcelas?.dados[truckValues?.fazendaOrigem] || []
+			const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
+				...details,
+				parcela
+			}));
+			setNewParcelas(newArray);
 		}
 
 		if (
