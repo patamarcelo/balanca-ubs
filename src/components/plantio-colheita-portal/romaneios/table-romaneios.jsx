@@ -177,10 +177,10 @@ const RomaneiosTable = (props) => {
 							console.log('Carga detail:::', carga)
 							const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
 							const getTicket = carga?.ticket ? carga.ticket : '-'
-							const getCultura = carga?.parcelasObjFiltered[0]?.cultura
-							const getVariedade = carga?.parcelasObjFiltered.map((data) => data.variedade)
+							const getCultura = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.cultura) : undefined
+							const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
 							const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
-							const getParcelas = carga?.parcelasObjFiltered.map((data) => data.parcela)
+							const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
 							return (
 								<tr
 									key={i}
@@ -197,19 +197,22 @@ const RomaneiosTable = (props) => {
 											.join(", ")}
 									</td>
 									<td>
-										<img
-											src={filteredIcon(
-												getCultura
-											)}
-											alt={filteredAlt(
-												getCultura
-											)}
-											style={{
-												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
-												width: '20px',
-												height: '20px'
-											}}
-										/>
+										{
+											getCultura &&
+											<img
+												src={filteredIcon(
+													getCultura[0]
+												)}
+												alt={filteredAlt(
+													getCultura
+												)}
+												style={{
+													filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+													width: '20px',
+													height: '20px'
+												}}
+											/>
+										}
 									</td>
 									<td>{filtVariedade}</td>
 									<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>

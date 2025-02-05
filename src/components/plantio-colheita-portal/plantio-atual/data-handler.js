@@ -16,7 +16,6 @@ const getColheitaDate = (plantioDate, cicle) => {
 
 export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
     const qs_planned = qs_planned_orig.map((data) => {
-        console.log('data: ', data)
         const newDateHere = dataToUse(data.finalizado_plantio, data.data_plantio, data.data_prevista_plantio)
         const colheitaDate = getColheitaDate(newDateHere, data.variedade__dias_ciclo)
         return ({
