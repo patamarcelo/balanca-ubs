@@ -54,15 +54,17 @@ const ModalFormFields = (props) => {
 	const [newParelas, setNewParcelas] = useState([]);
 
 	useEffect(() => {
-		if (truckValues.fazendaOrigem) {
+		if (truckValues?.fazendaOrigem) {
 			const parcelasArray =
-				dataParcelas["dados"][truckValues.fazendaOrigem]
-
-			const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
-				...details,
-				parcela
-			}));
-			setNewParcelas(newArray);
+				dataParcelas?.dados?.truckValues?.fazendaOrigem || []
+			console.log('parceasArray: ', parcelasArray)
+			if (parcelasArray.length > 0) {
+				const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
+					...details,
+					parcela
+				}));
+				setNewParcelas(newArray);
+			}
 		}
 
 		if (
@@ -150,7 +152,7 @@ const ModalFormFields = (props) => {
 				...truckValues,
 				data: new Date(
 					truckValues?.entrada?.seconds * 1000 +
-						truckValues?.entrada?.nanoseconds / 1000000
+					truckValues?.entrada?.nanoseconds / 1000000
 				)
 			});
 		}
@@ -177,9 +179,8 @@ const ModalFormFields = (props) => {
 			<Box
 				display="grid"
 				gap="10px"
-				gridTemplateColumns={`repeat(${
-					!isNonMobile ? "1" : "2"
-				}, minmax(0, 1fr))`}
+				gridTemplateColumns={`repeat(${!isNonMobile ? "1" : "2"
+					}, minmax(0, 1fr))`}
 				sx={{
 					width: "100%",
 					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -245,10 +246,10 @@ const ModalFormFields = (props) => {
 							onChange={(e) => handleChangeTruck(e)}
 							value={
 								input.name === "liquido" &&
-								truckValues[input.name] > 0
+									truckValues[input.name] > 0
 									? truckValues[input.name].toLocaleString(
-											"pt-BR"
-									  ) + " Kg"
+										"pt-BR"
+									) + " Kg"
 									: truckValues[input.name]
 							}
 							name={input.name}
@@ -260,7 +261,7 @@ const ModalFormFields = (props) => {
 								readOnly: input.disabled,
 								className:
 									truckValues[input.name] ===
-									"Valor Negativo, verificar"
+										"Valor Negativo, verificar"
 										? "red-value"
 										: "no-value"
 							}}
@@ -304,9 +305,8 @@ const ModalFormFields = (props) => {
 				display="grid"
 				gap="10px"
 				mb="8px"
-				gridTemplateColumns={`repeat(${
-					!isNonMobile ? "1" : "2"
-				}, minmax(0, 1fr))`}
+				gridTemplateColumns={`repeat(${!isNonMobile ? "1" : "2"
+					}, minmax(0, 1fr))`}
 				sx={{
 					width: "100%",
 					"& .Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -326,9 +326,8 @@ const ModalFormFields = (props) => {
 				}}
 			>
 				<FormControl
-					gridTemplateColumns={`repeat(${
-						!isNonMobile ? "1" : "2"
-					}, minmax(0, 1fr))`}
+					gridTemplateColumns={`repeat(${!isNonMobile ? "1" : "2"
+						}, minmax(0, 1fr))`}
 					// sx={{ gridColumn: "span 3" }}
 					className={classes["observacao-style"]}
 				>
@@ -353,9 +352,8 @@ const ModalFormFields = (props) => {
 					</Select>
 				</FormControl>
 				<FormControl
-					gridTemplateColumns={`repeat(${
-						!isNonMobile ? "1" : "2"
-					}, minmax(0, 1fr))`}
+					gridTemplateColumns={`repeat(${!isNonMobile ? "1" : "2"
+						}, minmax(0, 1fr))`}
 					// sx={{ gridColumn: "span 3" }}
 					className={classes["observacao-style"]}
 				>
@@ -434,12 +432,12 @@ const ModalFormFields = (props) => {
 								display:
 									(input.name === "origem" &&
 										truckValues["fazendaOrigem"] !==
-											"Outros" &&
+										"Outros" &&
 										truckValues["origem"] === "" &&
 										"none") ||
 									(input.name === "destino" &&
 										truckValues["fazendaDestino"] !==
-											"Outros" &&
+										"Outros" &&
 										truckValues["destino"] === "" &&
 										"none") ||
 									(input.name === "projeto" &&
@@ -455,7 +453,7 @@ const ModalFormFields = (props) => {
 									true) ||
 								(input.name === "destino" &&
 									truckValues["fazendaDestino"] !==
-										"Outros" &&
+									"Outros" &&
 									true)
 							}
 						/>
