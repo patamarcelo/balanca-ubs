@@ -43,6 +43,7 @@ const ColheitaAtual = (props) => {
 	const [areaTotal, setAreaTotal] = useState(0);
 	const [parcelasTotal, setparcelasTotal] = useState(0);
 	const [areaColhidaParcial, setAreaColhidaParcial] = useState(0);
+	const [areaTotalProgress, setAreaTotalProgress] = useState(0);
 
 	const [areaDisponivel, setAreaDisponivel] = useState(0);
 	const [areaColhida, setAreaColhida] = useState(0);
@@ -109,6 +110,10 @@ const ColheitaAtual = (props) => {
 		setAreaColhidaParcial(formatArea(areaColhida));
 		setAreaColhida(formatArea(areaTotalColhida));
 		setAreaDisponivel(formatArea(areaDisponivel));
+		
+		const progressBar = (areaTotalColhida / areaTotalSoma) * 100
+		setAreaTotalProgress(progressBar)
+
 	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect]);
 
 	useEffect(() => {
@@ -429,7 +434,7 @@ const ColheitaAtual = (props) => {
 					{selectedFarm?.replace("Projeto", "")}
 				</Typography>
 			</Box>
-			<LinearProgressWithLabel />
+			<LinearProgressWithLabel progress={areaTotalProgress} />
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
 					theme={theme}

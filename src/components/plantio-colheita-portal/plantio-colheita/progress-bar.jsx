@@ -1,45 +1,26 @@
-import { useEffect, useState } from 'react'
-import LinearProgress from '@mui/joy/LinearProgress';
-import Typography from '@mui/joy/Typography';
-import Box from '@mui/joy/Box';
+import * as React from 'react';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { tokens } from '../../../theme';
+import { useTheme } from '@emotion/react';
 
-export default function LinearProgressWithLabel() {
-    const [progress, setProgress] = useState(0);
+const LinearProgressWithLabel = ({ progress }) => {
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-        }, 800);
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    
 
     return (
-        <Box sx={{ bgcolor: 'white', width: '100%' }}>
-            <LinearProgress
-                determinate
-                variant="outlined"
-                color="neutral"
-                size="sm"
-                thickness={32}
-                value={progress}
-                sx={{
-                    '--LinearProgress-radius': '0px',
-                    '--LinearProgress-progressThickness': '24px',
-                    boxShadow: 'sm',
-                    borderColor: 'neutral.500',
-                }}
-            >
-                <Typography
-                    level="body-xs"
-                    textColor="common.white"
-                    sx={{ fontWeight: 'xl', mixBlendMode: 'difference' }}
-                >
-                    LOADING… {`${Math.round(progress)}%`}
-                </Typography>
-            </LinearProgress>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1, border: `1px solid ${colors.primary[100]}`,padding: '2px' }}>
+            <Box sx={{ width: '100%', mr: 0, backgroundColor: progress < 80 ? colors.yellow[560] : colors.greenAccent[560]}}>
+                <Box sx={{width: progress + '%', maxWidth: '100%', backgroundColor: progress < 80 ? colors.yellow[570] : colors.greenAccent[570],  transition: 'width 1s ease-in-out'}}>
+                    <Typography variant="body2" sx={{ color: progress < 80 ? 'black' : 'whitesmoke', textAlign: 'center', fontWeight: 'bold' }}>
+                        {`${Math.round(progress)}%`}
+                    </Typography>
+                </Box>
+            </Box>
         </Box>
     );
 }
+
+export default LinearProgressWithLabel
