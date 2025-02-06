@@ -26,6 +26,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import LinearProgressWithLabel from './progress-bar'
+
 const ColheitaAtual = (props) => {
 	const {
 		filteredFarm,
@@ -41,14 +43,14 @@ const ColheitaAtual = (props) => {
 	const [areaTotal, setAreaTotal] = useState(0);
 	const [parcelasTotal, setparcelasTotal] = useState(0);
 	const [areaColhidaParcial, setAreaColhidaParcial] = useState(0);
-	
+
 	const [areaDisponivel, setAreaDisponivel] = useState(0);
 	const [areaColhida, setAreaColhida] = useState(0);
 	const [totalPesoCarregado, setTotalPesoCarregado] = useState(0);
 	const [totalProdutividade, setTotalProdutividade] = useState(0);
 	const [totalProdutividadeReal, setTotalProdutividadeReal] = useState(0);
-	
-	
+
+
 	const [newDayNow, setNewDayNow] = useState("");
 
 	const [checkedColheita, setCheckedColheita] = useState(true);
@@ -73,31 +75,31 @@ const ColheitaAtual = (props) => {
 		let areaRealColhida = 0
 		let pesoTotal = 0
 		selectedFilteredData
-		.filter((data) => 
-			varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-		data.variedade__nome_fantasia !== null
-		)
-		.filter((data) =>
-			chekedAreasAvaiable
-				? data.area_colheita - data.area_parcial !== 0
-				: data.area_colheita !== null
-		)
-		.forEach((data) => {
-			console.log('data to check', data)
-			areaTotalSoma += data.area_colheita;
-			parcelasTotalCount += 1;
-			areaColhida += data.area_parcial;
-			pesoTotal += data.peso
-			if(data.peso > 0){
-				areaRealColhida += data.area_parcial;
-			}
-		});
+			.filter((data) =>
+				varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
+					data.variedade__nome_fantasia !== null
+			)
+			.filter((data) =>
+				chekedAreasAvaiable
+					? data.area_colheita - data.area_parcial !== 0
+					: data.area_colheita !== null
+			)
+			.forEach((data) => {
+				console.log('data to check', data)
+				areaTotalSoma += data.area_colheita;
+				parcelasTotalCount += 1;
+				areaColhida += data.area_parcial;
+				pesoTotal += data.peso
+				if (data.peso > 0) {
+					areaRealColhida += data.area_parcial;
+				}
+			});
 		const areaDisponivel = areaTotalSoma - areaColhida;
 		const areaTotalColhida = areaColhida;
 		const areaRealTotalColhida = areaRealColhida
 
-		const produtividade = (pesoTotal > 0 && areaTotalColhida  > 0)? ( (pesoTotal / 60) / areaTotalColhida) : 0
-		const produtividadeReal = (pesoTotal > 0 && areaRealTotalColhida  > 0)? ( (pesoTotal / 60) / areaRealTotalColhida) : 0
+		const produtividade = (pesoTotal > 0 && areaTotalColhida > 0) ? ((pesoTotal / 60) / areaTotalColhida) : 0
+		const produtividadeReal = (pesoTotal > 0 && areaRealTotalColhida > 0) ? ((pesoTotal / 60) / areaRealTotalColhida) : 0
 
 		setTotalProdutividadeReal(produtividadeReal)
 		setTotalProdutividade(produtividade)
@@ -154,7 +156,7 @@ const ColheitaAtual = (props) => {
 	}
 
 	useEffect(() => {
-		if(selectedFilteredData.length > 0) {
+		if (selectedFilteredData.length > 0) {
 			const onlyVar = selectedFilteredData.map((data) => data.variedade__nome_fantasia)
 			const rempveDuplicate = [...new Set(onlyVar)]
 			setVarSelectedArr(rempveDuplicate)
@@ -208,7 +210,7 @@ const ColheitaAtual = (props) => {
 					})}
 			</Box>
 			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'flex-start' }}>
-				<Grid item xs={1.1}>
+				<Grid item xs={1.3}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -223,7 +225,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.1}>
+				<Grid item xs={1.3}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -237,7 +239,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.1}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -251,7 +253,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.1}>
+				<Grid item xs={1.3}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -265,7 +267,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.2}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -287,13 +289,13 @@ const ColheitaAtual = (props) => {
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
 							<Typography variant="h6" fontWeight={"bold"}>
-								Produtividade 
+								Produtividade
 							</Typography>
 							<Typography variant="body1">{formatArea(totalProdutividade)} Scs/Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.3}>
+				<Grid item xs={1.8}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
@@ -301,20 +303,20 @@ const ColheitaAtual = (props) => {
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
 							<Typography variant="h6" fontWeight={"bold"}>
-								Produtividade Real 
+								Produtividade Real
 							</Typography>
 							<Typography variant="body1">{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.5}>
+				<Grid item xs={1.8}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
+							<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
 								Romaneios Pendentes
 							</Typography>
 							<Typography variant="body1">
@@ -427,6 +429,7 @@ const ColheitaAtual = (props) => {
 					{selectedFarm?.replace("Projeto", "")}
 				</Typography>
 			</Box>
+			<LinearProgressWithLabel />
 			{selectedFilteredData.length > 0 && (
 				<TableColheita
 					theme={theme}
@@ -435,9 +438,9 @@ const ColheitaAtual = (props) => {
 					setVarSelectedArr={setVarSelectedArr}
 					setVarieSelect={setVarieSelect}
 					data={selectedFilteredData
-						.filter((data) => 
+						.filter((data) =>
 							varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-						data.variedade__nome_fantasia !== null
+								data.variedade__nome_fantasia !== null
 						)
 						.filter((data) =>
 							chekedAreasAvaiable
