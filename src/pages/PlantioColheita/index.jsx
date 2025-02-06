@@ -32,8 +32,6 @@ const PlantioColheitaPage = () => {
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
 
-	const safraCiclo = useSelector(selectSafraCiclo);
-
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataArray, setDataArray] = useState([]);
 	const [cargasArray, setCargasArray] = useState([]);
@@ -42,7 +40,7 @@ const PlantioColheitaPage = () => {
 	const [selectedFarm, setSelectedFarm] = useState(null);
 	const [selectedFilteredData, setSelectedFilteredData] = useState([]);
 
-	const [selectedRoute, setSelectedRoute] = useState("rota 1");
+	const [selectedRoute, setSelectedRoute] = useState("rota 3");
 
 	const useData = useSelector(selectRomaneiosLoads)
 	const [idsRomaneioPending, setIdsRomaneioPending] = useState({});
@@ -55,15 +53,8 @@ const PlantioColheitaPage = () => {
 
 	const [params, setParams] = useState({
 		safra: "2024/2025",
-		ciclo: "2"
+		ciclo: "3"
 	});
-
-	// useEffect(() => {
-	// 	setParams({
-	// 		safra: safraCiclo.safra,
-	// 		ciclo: safraCiclo.ciclo
-	// 	});
-	// }, [safraCiclo]);
 
 	useEffect(() => {
 		const getTrueApi = async () => {

@@ -21,7 +21,7 @@ const HeaderFarm = ({ farm, index, handlerFilter, selectedFarm }) => {
 			sx={{
 				cursor: "pointer",
 				textTransform: 'none',
-				borderRadius: '15px', /* Smaller border radius */
+				borderRadius: '6px', /* Smaller border radius */
 				px: 2, /* Smaller padding on the x-axis */
 				py: 1, /* Smaller padding on the y-axis */
 				fontSize: '13px', /* Smaller font size */
