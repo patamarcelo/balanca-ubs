@@ -22,6 +22,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 import formatData from "./csv-format-data";
 import { nodeServerSrd } from "../../../utils/axios/axios.utils";
+import { exportAsJson, handleJsonData } from "./json-export";
+
+import JsonFile from '../../../utils/assets/icons/json.png'
 
 const SRDPage = () => {
     const theme = useTheme();
@@ -39,6 +42,7 @@ const SRDPage = () => {
     const [projArr, setprojArr] = useState();
     const [filterImp, setFilterImp] = useState();
     const [csvData, setcsvData] = useState([]);
+    const [jsonData, setJsonData] = useState([]);
 
     const [filteImp, setFilteImp] = useState();
 
@@ -142,6 +146,9 @@ const SRDPage = () => {
         if (dataArray?.length > 0) {
             const csvData = formatData(dataArray)
             setcsvData(csvData)
+
+            const jsonData = handleJsonData(dataArray)
+            setJsonData(jsonData)
         }
 
 
@@ -168,7 +175,7 @@ const SRDPage = () => {
     }
 
     const handlerKeyDown = (e) => {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             handleSearch()
         }
     }
@@ -221,13 +228,31 @@ const SRDPage = () => {
                         </Box>
                     )
                 }
+                {
+                    csvData.length > 0 && (
+                        <Box alignSelf="center" sx={{ cursor: 'pointer' }}>
+                            <IconButton onClick={() => exportAsJson(jsonData, 'colheita.json')}>
+                                <img
+                                    src={JsonFile} 
+                                    alt="Export JSON"
+                                    style={{
+                                        width: "22px", // Set the width of the icon
+                                        height: "22px", // Set the height of the icon
+                                        color: "#4CAF50", // Optional: Style adjustments
+                                    }}
+                                />
+                            </IconButton>
+                        </Box>
+                    )
+                }
+
 
             </Box>
             <Box display={"flex"} flexDirection={"row"} gap={2} ml={initialDate || finalDate || ticketApi || filterImp ? 7 : 2} mt={2} alignItems={"center"}
                 className={styles.dateRangeTransition}
             >
-                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
-                <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} onKeyDown={handlerKeyDown} sx={{width: '155px'}}/>
+                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{ width: '155px' }} />
+                <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} onKeyDown={handlerKeyDown} sx={{ width: '155px' }} />
                 {
                     filterDataArray?.length > 0 &&
                     <>
