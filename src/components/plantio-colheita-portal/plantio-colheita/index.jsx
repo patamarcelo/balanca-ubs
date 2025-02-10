@@ -50,6 +50,7 @@ const ColheitaAtual = (props) => {
 	const [totalPesoCarregado, setTotalPesoCarregado] = useState(0);
 	const [totalProdutividade, setTotalProdutividade] = useState(0);
 	const [totalProdutividadeReal, setTotalProdutividadeReal] = useState(0);
+	const [totalRomaneios, setTotalRomaneios] = useState(0);
 
 
 	const [newDayNow, setNewDayNow] = useState("");
@@ -75,12 +76,13 @@ const ColheitaAtual = (props) => {
 		let areaColhida = 0;
 		let areaRealColhida = 0
 		let pesoTotal = 0
-		selectedFilteredData
-			.filter((data) =>
-				varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-					data.variedade__nome_fantasia !== null
-			)
-			.filter((data) =>
+		const filteredCargas = selectedFilteredData
+		.filter((data) =>
+			varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
+				data.variedade__nome_fantasia !== null
+		)
+		
+		filteredCargas.filter((data) =>
 				chekedAreasAvaiable
 					? data.area_colheita - data.area_parcial !== 0
 					: data.area_colheita !== null
@@ -110,11 +112,15 @@ const ColheitaAtual = (props) => {
 		setAreaColhidaParcial(formatArea(areaColhida));
 		setAreaColhida(formatArea(areaTotalColhida));
 		setAreaDisponivel(formatArea(areaDisponivel));
+		const sumRomaneios = filteredCargas
+    		.map(obj => idsPending[obj.id] || 0) // Check if the id exists in the `ids` object; if not, return 0
+    		.reduce((acc, value) => acc + value, 0); // Sum all matched values
+		setTotalRomaneios(sumRomaneios)
 		
 		const progressBar = (areaTotalColhida / areaTotalSoma) * 100
 		setAreaTotalProgress(progressBar)
 
-	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect]);
+	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect, idsPending]);
 
 	useEffect(() => {
 		setNewDayNow(new Date().toLocaleDateString());
@@ -320,14 +326,12 @@ const ColheitaAtual = (props) => {
 							backgroundColor: colors.primary[900]
 						}}
 					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
+						<CardContent sx={{ paddingBottom: "16px !important", backgroundColor: totalRomaneios > 0  ?  colors.yellow[700]  : colors.greenAccent[700] }}>
 							<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
 								Romaneios Pendentes
 							</Typography>
 							<Typography variant="body1">
-								{resumeFarmRomaneios[selectedFarm]
-									? resumeFarmRomaneios[selectedFarm]
-									: " - "}
+								{totalRomaneios}
 							</Typography>
 						</CardContent>
 					</Card>
