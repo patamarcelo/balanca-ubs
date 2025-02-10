@@ -10,6 +10,8 @@ import rice from "../../../utils/assets/icons/rice.png";
 import cotton from '../../../utils/assets/icons/cotton.png'
 import question from '../../../utils/assets/icons/question.png'
 
+import toast from "react-hot-toast";
+
 const TableSrd = ({data}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -65,6 +67,19 @@ const TableSrd = ({data}) => {
         )
     }
 
+    const handlerCopyData = (parcela) => {
+        if (parcela?.ID_INTEGRACAO && parcela.ID_INTEGRACAO.trim() !== '') {
+            navigator.clipboard.writeText(parcela?.ID_INTEGRACAO)
+            toast.success(`ID Copiado!!: ${parcela.TICKET} - ID: ${parcela.ID_INTEGRACAO}`, {
+                position: 'top-center',
+            })
+        } else {
+            toast.error(`ID Integração não existe`, {
+                position: 'top-center',
+            })
+        }
+	}
+
     return (  
         <Box pl={2}>
             <Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm">
@@ -72,6 +87,7 @@ const TableSrd = ({data}) => {
 			<thead style={{backgroundColor: colors.blueOrigin[300], color: 'white'}}>
 				<tr>
 					<th>Ticket</th>
+					<th>Romaneio</th>
 					<th>Data</th>
 					<th>Projeto</th>
 					<th>Parcelas</th>
@@ -99,6 +115,7 @@ const TableSrd = ({data}) => {
                             className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow}`}
                             >
                                 <td style={{width: '70px'}}>{parseInt(parcela.TICKET)}</td>
+                                <td onClick={() => handlerCopyData(parcela)} style={{width: '70px', cursor: 'pointer' }}>{parseInt(parcela?.ROMANEIO || 0)}</td>
                                 <td style={{width: '105px'}}>{parcela.DT_PESAGEM_TARA.trim().split('-').reverse().join('/')}</td>
                                 <td style={{width: '160px'}}>{parcela.PROJETO}</td>
                                 <td style={{width: '100px'}}>{parcela.PARCELA.replace("'",'').replaceAll(';', ' ')}</td>
