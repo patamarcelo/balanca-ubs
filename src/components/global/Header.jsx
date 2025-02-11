@@ -89,7 +89,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 			alignItems="center"
 			mt="20px"
 			width="100%"
-			mb={isNonMobile ? "20px" : "10px"}
+			mb={isNonMobile ? "10px" : "10px"}
 			sx={{
 				padding: "0px 10px 0px 10px"
 			}}

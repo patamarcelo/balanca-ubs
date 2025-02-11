@@ -190,7 +190,7 @@ const RomaneiosTable = (props) => {
 									<td>{newDate}</td>
 									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 									<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
-									<td>{carga.fazendaOrigem}</td>
+									<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
 									<td>
 										{getParcelas
 											.sort((a, b) => a.localeCompare(b))

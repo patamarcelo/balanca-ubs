@@ -326,7 +326,11 @@ const ColheitaAtual = (props) => {
 							backgroundColor: colors.primary[900]
 						}}
 					>
-						<CardContent sx={{ paddingBottom: "16px !important", backgroundColor: totalRomaneios > 0  ?  colors.yellow[700]  : colors.greenAccent[700] }}>
+						<CardContent sx={{ 
+							paddingBottom: "16px !important",
+							backgroundColor: totalRomaneios > 0  ?  colors.yellow[700]  : colors.greenAccent[700],
+							transition: 'background-color 0.5s ease'
+							}}>
 							<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
 								Romaneios Pendentes
 							</Typography>
