@@ -1,4 +1,4 @@
-import { Alert, Box, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Typography, useTheme, Paper } from "@mui/material";
 import {
 	Grid,
 	Card,
@@ -77,16 +77,16 @@ const ColheitaAtual = (props) => {
 		let areaRealColhida = 0
 		let pesoTotal = 0
 		const filteredCargas = selectedFilteredData
-		.filter((data) =>
-			varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-				data.variedade__nome_fantasia !== null
-		)
-		
-		filteredCargas.filter((data) =>
-				chekedAreasAvaiable
-					? data.area_colheita - data.area_parcial !== 0
-					: data.area_colheita !== null
+			.filter((data) =>
+				varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
+					data.variedade__nome_fantasia !== null
 			)
+
+		filteredCargas.filter((data) =>
+			chekedAreasAvaiable
+				? data.area_colheita - data.area_parcial !== 0
+				: data.area_colheita !== null
+		)
 			.forEach((data) => {
 				console.log('data to check', data)
 				areaTotalSoma += data.area_colheita;
@@ -113,10 +113,10 @@ const ColheitaAtual = (props) => {
 		setAreaColhida(formatArea(areaTotalColhida));
 		setAreaDisponivel(formatArea(areaDisponivel));
 		const sumRomaneios = filteredCargas
-    		.map(obj => idsPending[obj.id] || 0) // Check if the id exists in the `ids` object; if not, return 0
-    		.reduce((acc, value) => acc + value, 0); // Sum all matched values
+			.map(obj => idsPending[obj.id] || 0) // Check if the id exists in the `ids` object; if not, return 0
+			.reduce((acc, value) => acc + value, 0); // Sum all matched values
 		setTotalRomaneios(sumRomaneios)
-		
+
 		const progressBar = (areaTotalColhida / areaTotalSoma) * 100
 		setAreaTotalProgress(progressBar)
 
@@ -223,21 +223,25 @@ const ColheitaAtual = (props) => {
 			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'space-between' }}>
 				<Grid item xs={1.3}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 							// backgroundColor: theme.palette.mode === "light" && colors.primary[900]
 						}}
 					>
 						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
+							<Typography variant="h6" fontWeight={"bold"} >
 								Área Total
 							</Typography>
-							<Typography variant="body1">{areaTotal} Ha</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaTotal} Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.3}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -246,12 +250,14 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Area Colhida
 							</Typography>
-							<Typography variant="body1">{areaColhida} Ha</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaColhida} Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.5}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -260,12 +266,14 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Área Disponível
 							</Typography>
-							<Typography variant="body1">{areaDisponivel} Ha</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaDisponivel} Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.3}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -274,12 +282,14 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Parcelas
 							</Typography>
-							<Typography variant="body1">{parcelasTotal}</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{parcelasTotal}</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.5}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -288,12 +298,14 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Peso Carregado
 							</Typography>
-							<Typography variant="body1">{(formatArea(totalPesoCarregado / 60))} Scs</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{(formatArea(totalPesoCarregado / 60))} Scs</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.3}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -302,12 +314,14 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Produtividade
 							</Typography>
-							<Typography variant="body1">{formatArea(totalProdutividade)} Scs/Ha</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividade)} Scs/Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.8}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
@@ -316,25 +330,27 @@ const ColheitaAtual = (props) => {
 							<Typography variant="h6" fontWeight={"bold"}>
 								Produtividade Real
 							</Typography>
-							<Typography variant="body1">{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
 						</CardContent>
 					</Card>
 				</Grid>
 				<Grid item xs={1.5}>
 					<Card
+						component={Paper}
+						elevation={4}
 						sx={{
 							backgroundColor: colors.primary[900]
 						}}
 					>
-						<CardContent sx={{ 
+						<CardContent sx={{
 							paddingBottom: "16px !important",
-							backgroundColor: totalRomaneios > 0  ?  colors.yellow[700]  : colors.greenAccent[700],
+							backgroundColor: totalRomaneios > 0 ? colors.yellow[700] : colors.greenAccent[700],
 							transition: 'background-color 0.5s ease'
-							}}>
+						}}>
 							<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
 								Romaneios Pendentes
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>
 								{totalRomaneios}
 							</Typography>
 						</CardContent>
@@ -425,7 +441,7 @@ const ColheitaAtual = (props) => {
 				sx={{
 					justifySelf: "center",
 					width: "100%",
-					marginBottom: "10px",
+					mb: 0.5,
 					textAlign: "center",
 					// backgroundColor: "rgba(128,128,128,0.4)",
 					backgroundColor: colors.blueOrigin[400],

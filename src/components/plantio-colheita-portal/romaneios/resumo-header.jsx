@@ -1,4 +1,4 @@
-import { Typography, useTheme, Box } from "@mui/material";
+import { Typography, useTheme, Box, Paper } from "@mui/material";
 import { tokens } from "../../../theme";
 
 const ResumoHeader = props => {
@@ -14,7 +14,7 @@ const ResumoHeader = props => {
             justifyContent={"space-between"}
             alignItems={"center"}
             width={"250px"}
-            borderRadius={"8px"}
+            borderRadius={"4px"}
             border={`1px dotted ${colors.textColor[100]}`}
             sx={{
                 padding: "5px 20px",
@@ -28,8 +28,10 @@ const ResumoHeader = props => {
             }}
             mt={mtComp && mtComp}
             ml={mlComp && mlComp}
+            component={Paper}
+            elevation={8}
         >
-            <Box>
+            <Box >
                 <Typography
                     sx={{ fontWeight: "bold" }}
                     variant="h5"

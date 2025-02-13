@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Divider, Button } from "@mui/material";
+import { Box, Typography, useTheme, Divider, Button, Paper } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import { useEffect, useState } from "react";
@@ -268,6 +268,7 @@ const RomaneiosPage = () => {
             display={"flex"}
             alignItems={filteredUserData.length === 0 ? "center" : "flex-start"}
             p={5}
+            paddingTop={0}
         >
             <Box
                 display={"flex"}
@@ -354,6 +355,9 @@ const RomaneiosPage = () => {
                             color: colors.grey[900]
                         }}
                         width={"100%"}
+                        component={Paper}
+                        elevation={8}
+                        borderRadius={"4px"}
                     >
                         <Typography
                             variant="h1"
@@ -457,7 +461,7 @@ const RomaneiosPage = () => {
                         </Divider>
                         {newArr.length > 0 ? (
                             <>
-                                <Box mb={2} mt={2}>
+                                <Box mb={2} mt={2} >
                                     <ResumoHeader
                                         data={{
                                             fazenda: "Geral",
