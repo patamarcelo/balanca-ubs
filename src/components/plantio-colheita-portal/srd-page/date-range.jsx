@@ -2,10 +2,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 
-const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, setFinalDate, ticketApi  }) => {
+import { tokens } from '../../../theme'
+
+
+const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, setFinalDate, ticketApi }) => {
+
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
 
     useEffect(() => {
         const today = new Date()
@@ -34,19 +40,47 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DatePicker
                     label="Data"
-                    renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
+                    renderInput={params => <TextField size="small" {...params} sx={{ width: '155px' }} />}
                     onChange={newValue =>
                         setInitialDate(new Date(newValue).toISOString().slice(0, 10))}
                     value={initialDate}
+                    componentsProps={{
+                        actionBar: {
+                            actions: ["clear", "cancel", "accept", "today"],
+                            sx: {
+                                backgroundColor: colors.blueAccent[100],  // Change action bar background
+                                '& .MuiButton-root': {
+                                    color: colors.textColor[200],           // Change button text color
+                                },
+                                '& .MuiButton-root:hover': {
+                                    backgroundColor: "#e0e0e0", // Hover color effect
+                                }
+                            }
+                        }
+                    }}
                 />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <DatePicker
                     label="Data"
-                    renderInput={params => <TextField size="small" {...params} sx={{width: '155px'}}/>}
+                    renderInput={params => <TextField size="small" {...params} sx={{ width: '155px' }} />}
                     onChange={newValue =>
                         setFinalDate(new Date(newValue).toISOString().slice(0, 10))}
                     value={finalDate}
+                    componentsProps={{
+                        actionBar: {
+                            actions: ["clear", "cancel", "accept", "today"],
+                            sx: {
+                                backgroundColor: colors.blueAccent[100],  // Change action bar background
+                                '& .MuiButton-root': {
+                                    color: colors.textColor[200],           // Change button text color
+                                },
+                                '& .MuiButton-root:hover': {
+                                    backgroundColor: "#e0e0e0", // Hover color effect
+                                }
+                            }
+                        }
+                    }}
                 />
             </LocalizationProvider>
         </Box>

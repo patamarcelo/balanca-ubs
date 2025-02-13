@@ -199,7 +199,7 @@ const ColheitaAtual = (props) => {
 					display: "flex",
 					flexDirection: "row",
 					justifyContent: "flex-start",
-					gap: "10px",
+					gap: "15px",
 					alignItems: "flex-start",
 					width: "100%",
 					marginBottom: "20px",
@@ -220,7 +220,7 @@ const ColheitaAtual = (props) => {
 						);
 					})}
 			</Box>
-			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'flex-start' }}>
+			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'space-between' }}>
 				<Grid item xs={1.3}>
 					<Card
 						sx={{
@@ -320,7 +320,7 @@ const ColheitaAtual = (props) => {
 						</CardContent>
 					</Card>
 				</Grid>
-				<Grid item xs={1.8}>
+				<Grid item xs={1.5}>
 					<Card
 						sx={{
 							backgroundColor: colors.primary[900]
