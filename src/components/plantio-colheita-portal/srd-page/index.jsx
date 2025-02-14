@@ -380,7 +380,19 @@ const SRDPage = () => {
                                                             data={filterDataArray
                                                                 .filter((data) => data.DESTINO.includes(destino))
                                                                 .filter((data) => data.PROJETO.includes(projeto))
-                                                                .sort((a, b) => b.TICKET - a.TICKET)}
+                                                                .sort((a, b) => {
+                                                                    const dateA = new Date(a.DT_PESAGEM_TARA);
+                                                                    const dateB = new Date(b.DT_PESAGEM_TARA);
+                                                                    
+                                                                    // First, sort by date (newest first)
+                                                                    if (dateB - dateA !== 0) {
+                                                                        return dateB - dateA;
+                                                                    }
+                                                            
+                                                                    // If dates are the same, sort by TICKET (descending)
+                                                                    return b.TICKET - a.TICKET
+                                                                })
+                                                            }
                                                         />
                                                         <Box
                                                             style={{ color: colors.textColor[100] }}

@@ -64,11 +64,11 @@ h6 + p{
 }
 
 .closedParcelaOdd {
-    background-color: rgba(11,156,49,0.4);
+    background-color: rgba(11,156,49,0.3);
     color: 'whitesmoke !important'
 }
 
 .closedParcelaEven {
-    background-color: rgba(11,156,49,0.2);
+    background-color: rgba(11,156,49,0.1);
     
 }
