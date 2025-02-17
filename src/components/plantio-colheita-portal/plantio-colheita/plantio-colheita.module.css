@@ -72,3 +72,8 @@ h6 + p{
     background-color: rgba(11,156,49,0.1);
     
 }
+
+.romaneioIsPendindStyle{
+    background-color: rgba(255,243,205,1);
+    border: 1px dotted black;
+}

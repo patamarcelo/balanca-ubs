@@ -9,8 +9,6 @@ import rice from "../../../utils/assets/icons/rice.png";
 import cotton from '../../../utils/assets/icons/cotton.png'
 import question from '../../../utils/assets/icons/question.png'
 
-import { useEffect } from "react";
-
 const TableColheita = ({ data, idsPending }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -101,6 +99,7 @@ const TableColheita = ({ data, idsPending }) => {
 					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
 
 					const romaneiosPending =  idsPending[carga.id] ? idsPending[carga.id] : " - "
+					console.log('romaneio is pendingn here: ', romaneiosPending)
 					return (
 						<tr key={i}
 							className={`${
@@ -111,6 +110,7 @@ const TableColheita = ({ data, idsPending }) => {
 									: styles.notColheitaRow
 							} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 === 0 && styles.closedParcelaOdd} 
 							${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 !== 0 && styles.closedParcelaEven} 
+							${romaneiosPending > 0  && styles.romaneioIsPendindStyle} 
 							${theme.palette.mode === 'light'  && i % 2 !== 0 && styles.oddRowLight}`}
 						>
 							<td>{carga.talhao__id_talhao}</td>
