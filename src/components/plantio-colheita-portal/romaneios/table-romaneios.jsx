@@ -1,6 +1,8 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import DoneAll from "@mui/icons-material/DoneAll";
+import PublishedWithChanges from '@mui/icons-material/PublishedWithChanges'
+import CircularProgress from "@mui/material/CircularProgress";
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import { useState, useEffect } from "react";
 
@@ -19,6 +21,8 @@ import rice from "../../../utils/assets/icons/rice.png";
 import cotton from '../../../utils/assets/icons/cotton.png'
 import question from '../../../utils/assets/icons/question.png'
 
+import { nodeServerSrd } from "../../../utils/axios/axios.utils";
+
 const RomaneiosTable = (props) => {
 	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates } = props;
 
@@ -29,6 +33,8 @@ const RomaneiosTable = (props) => {
 
 	const [sortBy, setsortBy] = useState(null);
 	const [dataFilter, setdataFilter] = useState([]);
+
+	const [isLoadingTicket, setIsLoadingTicket] = useState({});
 
 
 
@@ -139,6 +145,38 @@ const RomaneiosTable = (props) => {
 		})
 	}
 
+	const handleRefreshTicket = async (e, carga) => {
+		console.log('data id ', carga?.id)
+		setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: true }));
+		toast.success(`ID Reenviado!!: ${carga.relatorioColheita} - ID: ${carga.id}`, {
+			position: 'top-center',
+		})
+		try {
+			const response = await nodeServerSrd
+				.post("upload-romaneio/", {
+					id: carga?.id,
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+					},
+				})
+				.catch((err) => console.log(err));
+			console.log('response', response)
+			const { status, data } = response
+			if (status === 200) {
+				toast.success(`Ticket Atualizado com sucesso!!: ${carga.relatorioColheita} - ID: ${data.ticket}`, {
+					position: 'top-center',
+				})
+			}
+			return response;
+		} catch (error) {
+			toast.error(`Problema ao enviar para o protheus!!: ${carga.relatorioColheita} - ID: ${carga.id}`, {
+				position: 'top-center',
+			})
+		} finally {
+			setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: false }));
+		}
+	}
+
 	return (
 		<Box width={"100%"} height={"100%"}>
 			<Table striped bordered hover style={{ color: colors.textColor[100], marginBottom: '20px' }} size="" className={styles.romaneioTable}>
@@ -189,7 +227,25 @@ const RomaneiosTable = (props) => {
 								>
 									<td>{newDate}</td>
 									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
-									<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
+									{
+										!carga?.ticket ?
+											<IconButton
+												aria-label="delete"
+												size="sm"
+												color={"success"}
+												onClick={(e) => handleRefreshTicket(e, carga)}
+												style={{ padding: "2px" }}
+												disabled={isLoadingTicket[carga.id] || false}
+											>
+												{isLoadingTicket[carga.id] ? (
+													<CircularProgress size={16} color="inherit" />
+												) : (
+													<PublishedWithChanges fontSize="inherit" />
+												)}
+											</IconButton>
+											:
+											<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
+									}
 									<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
 									<td>
 										{getParcelas
