@@ -229,20 +229,22 @@ const RomaneiosTable = (props) => {
 									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 									{
 										!carga?.ticket ?
-											<IconButton
-												aria-label="delete"
-												size="sm"
-												color={"success"}
-												onClick={(e) => handleRefreshTicket(e, carga)}
-												style={{ padding: "2px" }}
-												disabled={isLoadingTicket[carga.id] || false}
-											>
-												{isLoadingTicket[carga.id] ? (
-													<CircularProgress size={16} color="inherit" />
-												) : (
-													<PublishedWithChanges fontSize="inherit" />
-												)}
-											</IconButton>
+											<td>
+												<IconButton
+													aria-label="delete"
+													size="sm"
+													color={"success"}
+													onClick={(e) => handleRefreshTicket(e, carga)}
+													style={{ padding: "2px", justifyContent: 'center' }}
+													disabled={isLoadingTicket[carga.id] || false}
+												>
+													{isLoadingTicket[carga.id] ? (
+														<CircularProgress size={16} color="inherit" />
+													) : (
+														<PublishedWithChanges fontSize="inherit" />
+													)}
+												</IconButton>
+											</td>
 											:
 											<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
 									}
