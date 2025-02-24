@@ -138,7 +138,7 @@ const TableSrd = ({data}) => {
                                 <td>{formatWei(parcela.BRUTO)}</td>
                                 <td>{formatWei(parcela.TARA)}</td>
                                 <td>{formatWei(parcela.LIQUIDO)}</td>
-                                <td style={{color: formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' && 'red', fontWeight: formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' && "bold"}}>{formatDesc(parcela.UMIDADE_ENTRADA)}</td>
+                                <td style={{color: (formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' || parcela.UMIDADE_ENTRADA < 19 ? 'red' : undefined), fontWeight: formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' || parcela.UMIDADE_ENTRADA < 19 ? "bold" : undefined}}>{formatDesc(parcela.UMIDADE_ENTRADA)}</td>
                                 <td style={{color: formatDesc(parcela.IMPUREZA_ENTRADA) === '0,00' && 'red', fontWeight: formatDesc(parcela.IMPUREZA_ENTRADA) === '0,00' && "bold"}}>{formatDesc(parcela.IMPUREZA_ENTRADA)}</td>
                                 <td style={{color: formatDesc(parcela.SACOS_SECOS) === '0,00' && 'red', fontWeight: formatDesc(parcela.SACOS_SECOS) === '0,00' && "bold"}}>{formatDesc(parcela.SACOS_SECOS)}</td>
                                 <td>{parcela.DESTINO.split('-')[0]}</td>
