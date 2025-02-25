@@ -306,6 +306,7 @@ export const createDict = (state) => {
 		const operacao = data.inputs[0].input.name;
 		const operacaoTipo = data.inputs[0].input.input_type_name;
 		const cultura = data.plantations[0].plantation.culture_name;
+		const planned_cult = data.plantations[0].plantation.planned_culture_name;
 		const code = data.code;
 		const areaSolicitada = data.plantations.map((data) => data.sought_area);
 		const areaAplicada = data.plantations.map((data) => data.applied_area);
@@ -340,7 +341,7 @@ export const createDict = (state) => {
 				area: data.sought_area,
 				areaAplicada: data.applied_area,
 				variedade: data.plantation.variety_name,
-				cultura: data.plantation.culture_name,
+				cultura: data.plantation.culture_name ||  data.plantation.planned_culture_name,
 				aplicado: aplicado,
 				dataPlantio: data.plantation.date
 			};
@@ -383,7 +384,7 @@ export const createDict = (state) => {
 			progresso: percentApp.toFixed(2),
 			operacao: opTioApName ? opTioApName : "Sem Operação Informada",
 			operacaoTipo: opTioAp ? opTioAp : "Sem Operação Informada",
-			cultura: cultura,
+			cultura: cultura || planned_cult,
 			parcelas: parcelasSolicitadas.sort((a, b) =>
 				a.parcela.localeCompare(b.parcela)
 			),
@@ -605,6 +606,7 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 		.map((data) => {
 			// console.log('dataApplications: : ', data)
 			const cultura = data.plantations[0].plantation.culture_name;
+			const planned_cult = data.plantations[0].plantation.planned_culture_name;
 			const farm = data.plantations[0].plantation.farm_name;
 
 			// #AREA GERAL
@@ -688,7 +690,7 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 
 			return {
 				fazenda: farm,
-				cultura: cultura,
+				cultura: cultura || planned_cult,
 				area: areaTotalSolicitada,
 				aplicado: areaTotalAplicada,
 				saldo: saldoAplicar.toFixed(2),
