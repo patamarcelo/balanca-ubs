@@ -200,7 +200,7 @@ const DefensivoPage = () => {
 						isLoadingHome={isLoadingHome}
 					/>
 				)}
-				{(isLoadingHome || dataDef.length === 0) && (
+				{isLoadingHome && (
 					<Box width="100%" height="100%">
 						<Stack direction="row" spacing={2}>
 							<Skeleton

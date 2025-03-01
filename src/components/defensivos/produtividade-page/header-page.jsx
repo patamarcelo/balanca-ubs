@@ -38,6 +38,12 @@ const HeaderPage = (props) => {
 		return "";
 	};
 
+
+	const formatProjectName = selectedProject
+		.map((data, index) => (index > 0 ? `| ${data.replace('Projeto', '')}` : data.replace('Projeto', '')))
+		.join(' ');
+
+
 	return (
 		<div className={styles.headerPageDiv}>
 			<div className={styles.headerNameDiv}>
@@ -59,7 +65,7 @@ const HeaderPage = (props) => {
 					}}
 					className={styles.titleProdutividade}
 				>
-					{selectedProject}
+					{formatProjectName}
 				</Typography>
 				{/* <div
 					className={styles.MainConteinerresumoByVar}

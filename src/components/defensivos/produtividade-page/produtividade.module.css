@@ -226,3 +226,50 @@ height: auto;
 thead tr th {
     color: whitesmoke !important
 }
+
+
+
+
+
+
+.mapContainer {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+}
+
+.summaryTable {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background: white;
+	padding: 10px;
+	border-radius: 8px;
+	box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+	font-size: 14px;
+}
+
+.summaryTable h3 {
+	margin: 0 0 5px;
+	font-size: 16px;
+	text-align: center;
+}
+
+.summaryTable table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.summaryTable td {
+	padding: 4px 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+.summaryTable td:last-child {
+	text-align: right;
+	font-weight: bold;
+}
+
+.summaryTable tr:last-child td {
+	border-bottom: none;
+}

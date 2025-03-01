@@ -17,8 +17,9 @@ const DateRange = ({ setParamsQuery, initialDate, setInitialDate, finalDate, set
         const today = new Date()
         const yesterday = new Date(today)
         yesterday.setDate(yesterday.getDate() - 1)
+
         setInitialDate(yesterday.toISOString().slice(0, 10))
-        setFinalDate(yesterday.toISOString().slice(0, 10))
+        setFinalDate(today.toISOString().slice(0, 10))
     }, []);
 
     useEffect(() => {

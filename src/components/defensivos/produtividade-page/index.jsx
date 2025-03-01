@@ -31,6 +31,11 @@ import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+
+import EventNoteIcon from "@mui/icons-material/EventNote"; // Planner
+import LandscapeIcon from "@mui/icons-material/Landscape"; // Planted Area
+
+
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
 		safra: "2023/2024",
@@ -52,7 +57,7 @@ const ProdutividadePage = () => {
 	const [produtividade, setProdutividade] = useState([]);
 	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
-	const [selectedProject, setSelectedProject] = useState("");
+	const [selectedProject, setSelectedProject] = useState([]);
 	const [filteredArray, setFilteredArray] = useState([]);
 
 	const [filtPlantioDone, setFiltPlantioDone] = useState(false);
@@ -66,9 +71,15 @@ const ProdutividadePage = () => {
 	const [totalSelected, setTotalSelected] = useState([]);
 
 	const [showVarOrArea, setShowVarOrArea] = useState(false);
+	
+	const [showAsPlanned, setShowAsPlanned] = useState(true);
 
 	const handleValueMap = () => {
 		setShowVarOrArea(prev => !prev)
+	}
+	
+	const handlePlannerData = () => {
+		setShowAsPlanned(prev => !prev)
 	}
 
 	const handleSUm = (selected) => {
@@ -100,7 +111,7 @@ const ProdutividadePage = () => {
 	useEffect(() => {
 		const filteredArray = produtividade.filter(
 			(data) =>
-				data.talhao__fazenda__nome === selectedProject &&
+				selectedProject.includes(data.talhao__fazenda__nome)  &&
 				data.finalizado_plantio === true
 		);
 		setMapPlantation(filteredArray);
@@ -157,17 +168,19 @@ const ProdutividadePage = () => {
 
 	useEffect(() => {
 		const filterArr = plantioMapALl.filter(
-			(data) => data.fazenda === selectedProject
+			(data) => selectedProject.includes(data.fazenda)
 		);
 		setFilteredPlantioMal(filterArr);
 	}, [selectedProject, plantioMapALl]);
 
 	const handleChangeSelect = (event) => {
-		setSelectedProject(event.target.value);
+			const value = event.target.value;
+			setSelectedProject(typeof value === 'string' ? value.split(',') : value);
+		// setSelectedProject(event.target.value);
 	};
 	useEffect(() => {
 		const filterArray = produtividade.filter(
-			(data) => data.talhao__fazenda__nome === selectedProject
+			(data) => selectedProject.includes(data.talhao__fazenda__nome)
 		);
 		setFilteredArray(filterArray);
 	}, [selectedProject, produtividade]);
@@ -258,6 +271,7 @@ const ProdutividadePage = () => {
 						value={selectedProject}
 						title={"Projeto"}
 						width={200}
+						multiple={true}
 					/>
 				) : (
 					<Box
@@ -299,6 +313,19 @@ const ProdutividadePage = () => {
 					</ToggleButton>
 					<ToggleButton value={false} aria-label="centered">
 						<Filter1Icon />
+					</ToggleButton>
+				</ToggleButtonGroup>
+				<ToggleButtonGroup
+					value={showAsPlanned}
+					exclusive
+					onChange={handlePlannerData}
+					aria-label="text alignment"
+				>
+					<ToggleButton value={true} aria-label="left aligned">
+						<LandscapeIcon />
+					</ToggleButton>
+					<ToggleButton value={false} aria-label="centered">
+						<EventNoteIcon />
 					</ToggleButton>
 				</ToggleButtonGroup>
 			</Box>
@@ -362,6 +389,8 @@ const ProdutividadePage = () => {
 									totalSelected={totalSelected}
 									setTotalSelected={setTotalSelected}
 									showVarOrArea={showVarOrArea}
+									showAsPlanned={showAsPlanned}
+									setShowAsPlanned={setShowAsPlanned}
 								/>
 							</Box>
 							{printPage ? (

@@ -20,6 +20,9 @@ import rice from "../../../utils/assets/icons/rice.png";
 
 import styles from "./produtividade.module.css";
 
+import { useTheme, Box, Typography } from "@mui/material";
+import { tokens } from '../../../theme'
+
 const svgMarker = {
 	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
 	fillColor: "blue",
@@ -32,7 +35,21 @@ const svgMarker = {
 const containerStyle = {
 	width: "100%",
 	height: "100%",
-	borderRadius: "8px"
+	borderRadius: "8px",
+	position: "relative" // Ensures child absolute positioning works
+};
+
+const tableStyles = {
+	position: "absolute", // Position it over the map
+	top: "10px",
+	right: "10px",
+	backgroundColor: "rgba(255, 255, 255, 0.7)", // White with 70% opacity
+	padding: "20px",
+	borderRadius: "8px",
+	boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+	// height: "300px",
+	zIndex: 1000, // Ensure it's above the map
+	backdropFilter: "blur(5px)" // Optional: Adds a blur effect to the background
 };
 
 const MapPage = ({
@@ -42,8 +59,14 @@ const MapPage = ({
 	setTotalSelected,
 	handleSUm,
 	printPage,
-	showVarOrArea
+	showVarOrArea,
+	showAsPlanned,
+	setShowAsPlanned
 }) => {
+
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
@@ -98,6 +121,7 @@ const MapPage = ({
 	const [parcelasApp, setParcelasApp] = useState([]);
 	const [appArray, setAppArray] = useState([]);
 	const [zoomMap, setZoomMap] = useState();
+
 
 	const MapOptions = {
 		// disableDefaultUI: true
@@ -186,7 +210,8 @@ const MapPage = ({
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
-			// console.log(data);
+
+			// console.log('pathData', data);
 			const newColor = parcelasApp.includes(data.parcela)
 				? data.variedadeColor
 				: "white";
@@ -206,6 +231,41 @@ const MapPage = ({
 	}, [mapArray, filtData, parcelasApp, paths]);
 
 	const getColorStroke = (data) => {
+		// console.log('data inside', data.variedade)
+		const getColor = (variedadeInside, colorInside) => {
+			if (variedadeInside === 'Mungo Preto') {
+				return 'rgba(170,88,57,1.0)'
+			}
+			if (variedadeInside === 'Mungo Verde') {
+				return '#82202B'
+			}
+			if (variedadeInside === 'Caupi') {
+				return '#3F4B7D'
+			}
+			return colorInside
+		}
+		const getColorLine = (variedadeInside, colorInside) => {
+			if (variedadeInside === 'Mungo Preto') {
+				return 'rgba(170,88,57,0.7)'
+			}
+			if (variedadeInside === 'Mungo Verde') {
+				return 'rgba(130,32,43,0.7)'
+			}
+			if (variedadeInside === 'Caupi') {
+				return '#3F4B7D'
+			}
+			return colorInside
+		}
+
+		console.log('data inside', data.data.data.variedade)
+		if (showAsPlanned) {
+			return {
+				color: getColor(data.data.data.variedade, data.variedadeColor),
+				stroke: 0.8,
+				lineColor: getColorLine(data.data.data.variedade, data.variedadeColorLine),
+				lineStroke: 1.5
+			}
+		}
 		if (
 			data.finalizadoColheita === true &&
 			data.finalizadoPlantio === true
@@ -247,130 +307,134 @@ const MapPage = ({
 		}
 	};
 
-	const multilineText = `First line of text
-Second line of text
-Third line of text`;
-
 	return isLoaded && center ? (
-		<GoogleMap
-			mapContainerStyle={containerStyle}
-			center={center}
-			disableDefaultUI={true}
-			options={MapOptions}
-			onLoad={(map) => {
-				new window.google.maps.LatLngBounds();
-			}}
-		>
-			{appArray &&
-				appArray.map((dataF, i) => {
-					const area = dataF.data.data.area_colheita.toLocaleString(
-						"pt-br",
-						{
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-						}
-					);
-					const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
-					// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
-					const finalizado =
-						dataF.finalizadoPlantio && !dataF.descontinuado;
-					const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
-					// const label = `${dataF.parcela} \n marce`;
-					const newLabel = {
-						text: finalizado ? label : label,
-						color: finalizado ? "white" : "black",
-						className: styles["marker-label"]
-					};
-					return (
-						<>
-							<PolygonF
-								key={i}
-								options={{
-									fillColor: getColorStroke(dataF).color,
-									fillOpacity: getColorStroke(dataF).stroke,
-									strokeColor:
-										getColorStroke(dataF).lineColor,
-									strokeOpacity: 1,
-									strokeWeight:
-										getColorStroke(dataF).lineStroke,
-									clickable: true,
-									draggable: false,
-									editable: false,
-									geodesic: false,
-									zIndex: 1
-								}}
-								onClick={(e) => handleClick(e, dataF)}
-								// onLoad={onLoad}
-								paths={dataF.path}
-							/>
-							<Marker
-								optimized={true}
-								label={finalizado ? newLabel : newLabel}
-								icon={"."}
-								InfoWindowShown={true}
-								position={dataF.data.data.map_geo_points_center}
-							></Marker>
-						</>
-					);
-				})}
+		<div style={{ position: "relative", width: "100%", height: "100%" }}>
+			<GoogleMap
+				mapContainerStyle={containerStyle}
+				center={center}
+				disableDefaultUI={true}
+				options={MapOptions}
+				onLoad={(map) => {
+					new window.google.maps.LatLngBounds();
+				}}
+			>
+				{appArray &&
+					appArray.map((dataF, i) => {
+						const area = dataF.data.data.area_colheita.toLocaleString(
+							"pt-br",
+							{
+								minimumFractionDigits: 2,
+								maximumFractionDigits: 2
+							}
+						);
+						const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
+						// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
+						const finalizado =
+							dataF.finalizadoPlantio && !dataF.descontinuado;
+						const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
+						// const label = `${dataF.parcela} \n marce`;
+						const newLabel = {
+							text: finalizado ? label : label,
+							color: finalizado ? "white" : "black",
+							className: styles["marker-label"]
+						};
+						return (
+							<>
+								<PolygonF
+									key={i}
+									options={{
+										fillColor: getColorStroke(dataF).color,
+										fillOpacity: getColorStroke(dataF).stroke,
+										strokeColor:
+											getColorStroke(dataF).lineColor,
+										strokeOpacity: 1,
+										strokeWeight:
+											getColorStroke(dataF).lineStroke,
+										clickable: true,
+										draggable: false,
+										editable: false,
+										geodesic: false,
+										zIndex: 1
+									}}
+									onClick={(e) => handleClick(e, dataF)}
+									// onLoad={onLoad}
+									paths={dataF.path}
+								/>
+								<Marker
+									optimized={true}
+									label={finalizado ? newLabel : newLabel}
+									icon={"."}
+									InfoWindowShown={true}
+									position={dataF.data.data.map_geo_points_center}
+								></Marker>
+							</>
+						);
+					})}
 
-			{markerList &&
-				markerList.map((data, i) => {
-					console.log(data.lat, data.lng);
-					return (
-						<>
-							<InfoWindowF
-								open={true}
-								position={{ lat: data.lat, lng: data.lng }}
-								onCloseClick={() => {
-									setMarkerList((prev) =>
-										prev.filter(
-											(dataArray) =>
-												dataArray.data.data.data
-													.plantio_id !==
-												data.data.data.data.plantio_id
-										)
-									);
-									console.log("clic");
-								}}
-							>
-								<div className={styles.popUpMap}>
-									<div className={styles.popUpMapInfo}>
-										<div>{data.data.parcela}</div>
-										<img
-											style={{
-												width: "15px",
-												height: "15px",
-												marginRight: "10px"
-											}}
-											src={filteredIcon(
-												data.data.data.data.cultura
-											)}
-											alt={filteredAlt(
-												data.data.data.data.cultura
-											)}
-										/>
-									</div>
-									<div className={styles.popUpMapInfoTwo}>
-										<div>
-											{data.data.data.data.variedade}
+				{markerList &&
+					markerList.map((data, i) => {
+						console.log(data.lat, data.lng);
+						return (
+							<>
+								<InfoWindowF
+									open={true}
+									position={{ lat: data.lat, lng: data.lng }}
+									onCloseClick={() => {
+										setMarkerList((prev) =>
+											prev.filter(
+												(dataArray) =>
+													dataArray.data.data.data
+														.plantio_id !==
+													data.data.data.data.plantio_id
+											)
+										);
+										console.log("clic");
+									}}
+								>
+									<div className={styles.popUpMap}>
+										<div className={styles.popUpMapInfo}>
+											<div>{data.data.parcela}</div>
+											<img
+												style={{
+													width: "15px",
+													height: "15px",
+													marginRight: "10px"
+												}}
+												src={filteredIcon(
+													data.data.data.data.cultura
+												)}
+												alt={filteredAlt(
+													data.data.data.data.cultura
+												)}
+											/>
 										</div>
-										<div>
-											{data.data.data.data.area_colheita.toLocaleString(
-												"pt-br",
-												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
-												}
-											)}
+										<div className={styles.popUpMapInfoTwo}>
+											<div>
+												{data.data.data.data.variedade}
+											</div>
+											<div>
+												{data.data.data.data.area_colheita.toLocaleString(
+													"pt-br",
+													{
+														minimumFractionDigits: 2,
+														maximumFractionDigits: 2
+													}
+												)}
+											</div>
 										</div>
 									</div>
-								</div>
-							</InfoWindowF>
-						</>
-					);
-				})}
-		</GoogleMap>
+								</InfoWindowF>
+							</>
+						);
+					})}
+			</GoogleMap>
+			{/* Table Container */}
+			<Box sx={tableStyles}>
+				<Typography variant="h2" color={colors.blueAccent[600]}>
+					Resumo do Mapa
+				</Typography>
+			</Box>
+		</div>
 	) : (
 		<></>
 	);
