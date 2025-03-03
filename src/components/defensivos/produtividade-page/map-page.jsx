@@ -22,6 +22,7 @@ import styles from "./produtividade.module.css";
 
 import { useTheme, Box, Typography } from "@mui/material";
 import { tokens } from '../../../theme'
+import MapResumePage from "./map-page-resume";
 
 const svgMarker = {
 	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
@@ -41,15 +42,15 @@ const containerStyle = {
 
 const tableStyles = {
 	position: "absolute", // Position it over the map
-	top: "10px",
-	right: "10px",
-	backgroundColor: "rgba(255, 255, 255, 0.7)", // White with 70% opacity
-	padding: "20px",
+	top: "15px",
+	left: "15px",
+	backgroundColor: "rgba(255, 255, 255, 0.6)", // White with 70% opacity
+	// padding: "20px",
 	borderRadius: "8px",
-	boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+	boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.4)",
 	// height: "300px",
 	zIndex: 1000, // Ensure it's above the map
-	backdropFilter: "blur(5px)" // Optional: Adds a blur effect to the background
+	backdropFilter: "blur(10px)" // Optional: Adds a blur effect to the background
 };
 
 const MapPage = ({
@@ -63,7 +64,7 @@ const MapPage = ({
 	showAsPlanned,
 	setShowAsPlanned
 }) => {
-
+	
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -122,6 +123,31 @@ const MapPage = ({
 	const [appArray, setAppArray] = useState([]);
 	const [zoomMap, setZoomMap] = useState();
 
+	const [resumeContainerData, setResumeContainerData] = useState([]);
+
+
+	useEffect(() => {
+		if(mapArray?.length > 0 ){
+			const groupedData = Object.values(
+				mapArray.reduce((acc, curr) => {
+					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+					if (!acc[key]) {
+						acc[key] = {
+							cultura: curr.dados.cultura,
+							variedade: curr.dados.variedade,
+							total_area_colheita: 0,
+						};
+					}
+					acc[key].total_area_colheita += curr.dados.area_colheita;
+					return acc;
+				}, {})
+			);
+			setResumeContainerData(groupedData)
+		}
+	}, [mapArray]);
+
+
+	
 
 	const MapOptions = {
 		// disableDefaultUI: true
@@ -242,6 +268,9 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
+			if(!variedadeInside){
+				return '#f0f0f0'
+			}
 			return colorInside
 		}
 		const getColorLine = (variedadeInside, colorInside) => {
@@ -254,16 +283,18 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
+			if(!variedadeInside){
+				return '#f0f0f0'
+			}
 			return colorInside
 		}
 
-		console.log('data inside', data.data.data.variedade)
 		if (showAsPlanned) {
 			return {
 				color: getColor(data.data.data.variedade, data.variedadeColor),
-				stroke: 0.8,
+				stroke: data.data.data.variedade ? 0.8 : 0.3,
 				lineColor: getColorLine(data.data.data.variedade, data.variedadeColorLine),
-				lineStroke: 1.5
+				lineStroke: data.data.data.variedade ? 1.5 : 0.5
 			}
 		}
 		if (
@@ -430,9 +461,7 @@ const MapPage = ({
 			</GoogleMap>
 			{/* Table Container */}
 			<Box sx={tableStyles}>
-				<Typography variant="h2" color={colors.blueAccent[600]}>
-					Resumo do Mapa
-				</Typography>
+				<MapResumePage data={resumeContainerData} />
 			</Box>
 		</div>
 	) : (
