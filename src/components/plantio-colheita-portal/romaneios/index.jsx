@@ -26,6 +26,8 @@ import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
+import { FormControl, InputLabel, MenuItem, Select, Chip } from "@mui/material";
+
 const RomaneiosPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -38,6 +40,25 @@ const RomaneiosPage = () => {
     const [dataToCsv, setdataToCsv] = useState([]);
 
     const listSit = ["Descarregados", "Pendentes"];
+    
+    const [filteredFarms, setFilteredFarms] = useState([]);
+
+    useEffect(() => {
+        if(useData.length > 0 ){
+            const onlyFarms = useData.map((data) => data.fazendaOrigem)
+            const removeDupli = [...new Set(onlyFarms)]
+            setFilteredFarms(removeDupli)
+        }
+    }, [useData]);
+    
+    const [selected, setSelected] = useState([]);
+    const handleChange = (event) => {
+        setSelected(event.target.value);
+    };
+
+    const handlerClearProjetosSelected = () => {
+        setSelected([])
+    }
 
     const formatDateIn = (dateInit, dataFinal) => {
         const date = dataFinal?.replaceAll("-", "");
@@ -81,53 +102,30 @@ const RomaneiosPage = () => {
 
     useEffect(() => {
         if (useData.length > 0) {
-            if (filterDataArr && filterDataArrInit) {
-                setfilteredUserData(
-                    useData
-                        .filter((data) => data.uploadedToProtheus === false)
-                        .filter((data) => {
-                            const addOndeDay = new Date(filterDataArr);
-                            addOndeDay.setDate(addOndeDay.getDate() + 1);
-                            return (
-                                new Date(data.syncDate.toDate().toDateString()) <= addOndeDay
-                            );
-                        })
-                        .filter(
-                            (data) =>
-                                new Date(data.syncDate.toDate().toDateString()) >=
-                                new Date(filterDataArrInit)
-                        )
-                );
-            } else if (filterDataArr != null) {
-                setfilteredUserData(
-                    useData
-                        .filter((data) => data.uploadedToProtheus === false)
-                        .filter((data) => {
-                            const addOndeDay = new Date(filterDataArr);
-                            addOndeDay.setDate(addOndeDay.getDate() + 1);
-                            return (
-                                new Date(data.syncDate.toDate().toDateString()) <= addOndeDay
-                            );
-                        })
-                );
-            } else if (filterDataArrInit != null) {
-                setfilteredUserData(
-                    useData
-                        .filter((data) => data.uploadedToProtheus === false)
-                        .filter((data) => {
-                            return (
-                                new Date(data.syncDate.toDate().toDateString()) >=
-                                new Date(filterDataArrInit)
-                            );
-                        })
-                );
-            } else if (filterDataArrInit === null && filterDataArr === null) {
-                setfilteredUserData(
-                    useData.filter((data) => data.uploadedToProtheus === false)
+            let filteredData = useData.filter((data) => data.uploadedToProtheus === false);
+    
+            if (filterDataArr) {
+                const addOneDay = new Date(filterDataArr);
+                addOneDay.setDate(addOneDay.getDate() + 1);
+                filteredData = filteredData.filter(
+                    (data) => new Date(data.syncDate.toDate().toDateString()) <= addOneDay
                 );
             }
+    
+            if (filterDataArrInit) {
+                filteredData = filteredData.filter(
+                    (data) => new Date(data.syncDate.toDate().toDateString()) >= new Date(filterDataArrInit)
+                );
+            }
+    
+            // Apply the selected array filter only if it's not empty
+            if (selected.length > 0) {
+                filteredData = filteredData.filter((data) => selected.includes(data.fazendaOrigem));
+            }
+    
+            setfilteredUserData(filteredData);
         }
-    }, [useData, filterDataArr, filterDataArrInit]);
+    }, [useData, filterDataArr, filterDataArrInit, selected]);
 
     const handleUpdateCarga = async (event, cargaDetail) => {
         if (
@@ -187,8 +185,8 @@ const RomaneiosPage = () => {
             ];
 
             const withEx = filteredUserData
-                        .filter((data) => data.liquido > 0)
-                        .sort((a, b) => a?.saida && b?.saida - a?.saida);
+                .filter((data) => data.liquido > 0)
+                .sort((a, b) => a?.saida && b?.saida - a?.saida);
             const withWei = filteredUserData
                 .filter((data) => data.saida.length === 0)
                 .filter((data) => data.pesoBruto === "")
@@ -310,10 +308,10 @@ const RomaneiosPage = () => {
                         value={filterDataArr}
                     />
                 </LocalizationProvider>
-                <Button color="warning" variant="outlined" onClick={handlerYesterday}>
+                <Button color="warning" variant="outlined" onClick={handlerYesterday} sx={{height: '100%'}}>
                     Ontem
                 </Button>
-                <Button color="success" variant="outlined" onClick={handlerToday}>
+                <Button color="success" variant="outlined" onClick={handlerToday} sx={{height: '100%'}}>
                     Hoje
                 </Button>
                 <Box>
@@ -326,6 +324,38 @@ const RomaneiosPage = () => {
                         />
                     </CSVLink>
                 </Box>
+                <FormControl sx={{minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px'}} size="small">
+                    <InputLabel>Filtre por Projeto</InputLabel>
+                    <Select
+                        multiple
+                        value={selected}
+                        onChange={handleChange}
+                        renderValue={(selected) => (
+                            <Box sx={{ display: "flex", gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value.replace('Projeto', '')} />
+                                ))}
+                            </Box>
+                        )}
+                    >
+                        {filteredFarms.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                {selected.length > 0 && (
+                    <IconButton
+                        aria-label="delete"
+                        size="sm"
+                        color="warning"
+                        onClick={(e) => handlerClearProjetosSelected()}
+                        style={{ padding: "2px" }}
+                    >
+                        <CancelIcon fontSize="inherit" />
+                    </IconButton>
+                )}
             </Box>
             {filteredUserData.length > 0 && (
                 <>
