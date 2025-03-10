@@ -51,6 +51,18 @@ const UsersTable = (props) => {
                         Ativo
                     </Typography>
                 </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        flex: 1,
+                    }}
+                >
+
+                    <Typography variant="h6">
+                        Admin
+                    </Typography>
+                </Box>
             </Box>
             {users.sort((a, b) => a.displayName.localeCompare(b.displayName)).map((data, i) => (
                 <Box
@@ -91,6 +103,22 @@ const UsersTable = (props) => {
                         )}
                         <Typography variant="h6">
                             {data.disabled ? "Inativo" : "Ativo"}
+                        </Typography>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flex: 1,
+                        }}
+                    >
+                        {!data?.customClaims?.admin ? (
+                            <CancelIcon sx={{ color: "red", marginRight: "8px" }} />
+                        ) : (
+                            <CheckCircleIcon sx={{ color: "green", marginRight: "8px" }} />
+                        )}
+                        <Typography variant="h6">
+                            {data?.customClaims?.admin ? "Admin" : "Regular"}
                         </Typography>
                     </Box>
                 </Box>
