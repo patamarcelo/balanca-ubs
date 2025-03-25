@@ -101,6 +101,41 @@ const FarmBoxPage = () => {
 	const isNonMobile = useMediaQuery("(min-width: 1200px)");
 	const isMobile = useMediaQuery("(max-width: 760px)"); // Adjust breakpoint as needed
 
+	const [totalCountSelected, setTotalCountSelected] = useState({});
+
+	const [totalCountSelectedArea, setTotalCountSelectedArea] = useState(0);
+	const [totalCountSelectedAplicado, setTotalCountSelectedAplicado] = useState(0);
+	const [totalCountSelectedAberto, setTotalCountSelectedAberto] = useState(0);
+
+
+	useEffect(() => {
+		const mergeAllArrays = (data) => {
+			if (!data || Object.keys(data).length === 0) return [];
+
+			return Object.values(data) // Get all values from the main object
+				.flatMap(obj => Object.values(obj)) // Flatten nested objects
+				.flat() // Merge all arrays into one
+				.filter((item, index, self) =>
+					index === self.findIndex(t => t.app === item.app) // Remove duplicates based on `app`
+				);
+		};
+		const mergedArray = mergeAllArrays(totalCountSelected);
+		if (mergedArray.length > 0) {
+
+			const totalAberto = mergedArray.reduce((acc, curr) => acc += curr.saldoAplicar, 0)
+			const totalArea = mergedArray.reduce((acc, curr) => acc += curr.area, 0)
+			const totalAplicado = mergedArray.reduce((acc, curr) => acc += curr.areaAplicada, 0)
+
+			setTotalCountSelectedAberto(totalAberto)
+			setTotalCountSelectedAplicado(totalAplicado)
+			setTotalCountSelectedArea(totalArea)
+		} else {
+			setTotalCountSelectedAberto(0)
+			setTotalCountSelectedAplicado(0)
+			setTotalCountSelectedArea(0)
+		}
+
+	}, [totalCountSelected]);
 
 	// const ITEM_HEIGHT = 48;
 	// const ITEM_PADDING_TOP = 8;
@@ -293,6 +328,13 @@ const FarmBoxPage = () => {
 		setShowResumoGeral(!showResumoGeral)
 	}
 
+	const formatNumber = number => {
+		return number?.toLocaleString("pt-br", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		})
+	}
+
 
 	return (
 		<Box
@@ -355,8 +397,8 @@ const FarmBoxPage = () => {
 				<>
 
 					<Box
-					component={Paper}
-					elevation={8}
+						component={Paper}
+						elevation={8}
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
@@ -480,6 +522,18 @@ const FarmBoxPage = () => {
 					>
 						{hojeH}
 					</Box>
+
+				}
+				{
+					JSON.stringify(totalCountSelected) !== "{}" &&
+					(totalCountSelectedArea > 0 || totalCountSelectedAplicado > 0 || totalCountSelectedAberto > 0)
+					&&
+					<Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px', fontSize: '1.2em' }}>
+						<p>Área: {formatNumber(totalCountSelectedArea)}</p>
+						<p>Aplicado: {formatNumber(totalCountSelectedAplicado)}</p>
+						<p>Saldo: {formatNumber(totalCountSelectedAberto)}</p>
+
+					</Box>
 				}
 				<Box className={classes.dashboardDiv}
 					sx={{
@@ -490,6 +544,9 @@ const FarmBoxPage = () => {
 					<div className={classes.dashLeft}>
 						{filtFarm?.map((data, i) => {
 							const hasApp = (obj) => obj.fazenda === data;
+							const totalAberto = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.saldoAplicar, 0)
+							const totalArea = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.area, 0)
+							const totalAplicado = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.areaAplicada, 0)
 							return (
 								<div style={{ position: 'relative' }} >
 									{filteredApps.some(hasApp) && (
@@ -512,8 +569,17 @@ const FarmBoxPage = () => {
 												onClick={handleOpenAllDetail}
 											>
 												<Divider>{data.replace('Fazenda', '')}</Divider>
+
 											</div>
 
+											{
+												totalCountSelected[data] &&
+												<Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px', fontSize: '1.2em' }}>
+													<p>Área: {formatNumber(totalArea)}</p>
+													<p>Aplicado: {formatNumber(totalAplicado)}</p>
+													<p>Saldo: {formatNumber(totalAberto)}</p>
+												</Box>
+											}
 
 											{/* <div className={classes.headerAppSticky} style={{ backgroundColor: colors.blueOrigin[900] }}> */}
 											<HeaderApp />
@@ -557,10 +623,12 @@ const FarmBoxPage = () => {
 												if (app.fazenda === data) {
 													return (
 														<TableDataPage
+															totalCountSelected={totalCountSelected[data] || []}
 															colors={colors}
 															key={i}
 															dataF={app}
 															openAll={isOpenedAll}
+															setTotalCountSelected={setTotalCountSelected}
 														/>
 													);
 												}

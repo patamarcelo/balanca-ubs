@@ -231,7 +231,7 @@ const SRDPage = () => {
                 {
                     csvData.length > 0 && (
                         <Box alignSelf="center" sx={{ cursor: 'pointer' }}>
-                            <IconButton onClick={() => exportAsJson(jsonData, 'colheita.json')}>
+                            <IconButton onClick={() => exportAsJson(jsonData)}>
                                 <img
                                     src={JsonFile} 
                                     alt="Export JSON"
@@ -377,6 +377,7 @@ const SRDPage = () => {
                                                             </Box>
                                                         </Box>
                                                         <TableSrd
+                                                            setFilterDataArray={setDataArray}
                                                             data={filterDataArray
                                                                 .filter((data) => data.DESTINO.includes(destino))
                                                                 .filter((data) => data.PROJETO.includes(projeto))

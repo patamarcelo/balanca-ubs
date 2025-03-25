@@ -33,6 +33,8 @@ import cotton from '../../../../utils/assets/icons/cotton.png'
 
 import djangoApi from "../../../../utils/axios/axios.utils";
 
+import Swal from "sweetalert2";
+
 const ColheitaPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -187,7 +189,14 @@ const ColheitaPage = () => {
                 })
                 .then((res) => {
                     console.log(res.data);
-
+                    console.log('res django update: ', res)
+                    if (res.status === 201) {
+                        Swal.fire({
+                            title: "Feito!!",
+                            html: `<b>${res?.data?.msg}</b> `,
+                            icon: "success"
+                        });
+                    }
                 });
             setIsLoadingDjango(false)
         } catch (err) {
@@ -204,19 +213,19 @@ const ColheitaPage = () => {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         })
-        return formatArea 
+        return formatArea
     }
 
     useEffect(() => {
         const getTotals = () => {
-            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaFazenda ,0)
+            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaFazenda, 0)
             return areaTotalGeral
         }
         const area = getTotals()
         setAreaTotalgeral(area)
-        
+
         const getTotalsColhido = () => {
-            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaAplicada ,0)
+            const areaTotalGeral = totalByFarmData.reduce((acc, curr) => acc += curr.areaAplicada, 0)
             return areaTotalGeral
         }
         const areaColhido = getTotalsColhido()
@@ -226,7 +235,7 @@ const ColheitaPage = () => {
         setAreaTotalSaldo(saldoAcolher)
 
     }, [totalByFarmData]);
-    
+
 
     if (isLoading) {
         return (
@@ -316,46 +325,46 @@ const ColheitaPage = () => {
                             paddingBottom: '32px'
                         }}
                     >
-                        <Accordion  sx={{ width: "100%" }}
+                        <Accordion sx={{ width: "100%" }}
                             disabled={true}
                             expanded={false}
                         >
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
-                                                aria-controls="panel1-content"
-                                                id="panel1-header"
-                                                sx={{ backgroundColor: colors.blueOrigin[800] }}
-                                            >
-                                                <Typography
-                                                    color={colors.textColor[100]}
-                                                    variant="h4"
-                                                    sx={{ width: "220px" }}
-                                                >
-                                                    Fazenda
-                                                </Typography>{" "}
-                                                <Typography
-                                                    color={colors.textColor[100]}
-                                                    variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right" }}
-                                                >
-                                                    Area Total: <br />{formatNumber(areaTotalgeral)}
-                                                </Typography>
-                                                <Typography
-                                                    color={colors.textColor[100]}
-                                                    variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right" }}
-                                                >
-                                                    Colhido: <br /> {formatNumber(areaTotalgeralColhido)}
-                                                </Typography>
-                                                <Typography
-                                                    color={colors.textColor[100]}
-                                                    variant="h4"
-                                                    sx={{ width: "150px", textAlign: "right" }}
-                                                >
-                                                    Saldo <br /> {formatNumber(areaTotalSaldo)}
-                                                </Typography>
-                                            </AccordionSummary>
-                                </Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                sx={{ backgroundColor: colors.blueOrigin[800] }}
+                            >
+                                <Typography
+                                    color={colors.textColor[100]}
+                                    variant="h4"
+                                    sx={{ width: "220px" }}
+                                >
+                                    Fazenda
+                                </Typography>{" "}
+                                <Typography
+                                    color={colors.textColor[100]}
+                                    variant="h4"
+                                    sx={{ width: "150px", textAlign: "right" }}
+                                >
+                                    Area Total: <br />{formatNumber(areaTotalgeral)}
+                                </Typography>
+                                <Typography
+                                    color={colors.textColor[100]}
+                                    variant="h4"
+                                    sx={{ width: "150px", textAlign: "right" }}
+                                >
+                                    Colhido: <br /> {formatNumber(areaTotalgeralColhido)}
+                                </Typography>
+                                <Typography
+                                    color={colors.textColor[100]}
+                                    variant="h4"
+                                    sx={{ width: "150px", textAlign: "right" }}
+                                >
+                                    Saldo <br /> {formatNumber(areaTotalSaldo)}
+                                </Typography>
+                            </AccordionSummary>
+                        </Accordion>
                         {totalByFarmData?.length > 0 &&
                             totalByFarmData.map((data, index) => {
                                 return (

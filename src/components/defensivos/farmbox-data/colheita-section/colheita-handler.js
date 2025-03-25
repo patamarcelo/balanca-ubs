@@ -36,7 +36,6 @@ const handlerDataColheita = (data) => {
         const farmName = details.plantations[0].plantation.farm_name;
         const updatedAt = details.updated_at
         const talhoesArr = details.plantations.map((talhao) => {
-            console.log('talhao: ', talhao.plantation)
             const areaAplicada = talhao.applied_area;
             const areaSolicitada = talhao.sought_area;
             const areaTalhao = talhao.plantation.area;

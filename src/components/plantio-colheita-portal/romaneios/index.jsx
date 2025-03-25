@@ -520,7 +520,7 @@ const RomaneiosPage = () => {
                                 </Box>
                                 <Box
                                     display={"grid"}
-                                    gridTemplateColumns={"repeat(4, 250px)"}
+                                    gridTemplateColumns={"repeat(auto-fill, 250px)"}
                                     mt={2}
                                     mb={2}
                                     columnGap={2}

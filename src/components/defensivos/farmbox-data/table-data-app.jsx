@@ -44,7 +44,7 @@ import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 const TableDataPage = (props) => {
-	const { dataF, openAll } = props;
+	const { dataF, openAll, setTotalCountSelected, totalCountSelected } = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -269,12 +269,47 @@ const TableDataPage = (props) => {
 			setRotateDir(newRotate.toLocaleString());
 		}
 	};
+	const handleSelectAreaAp = (data) => {
+		setTotalCountSelected(prevData => {
+			const { fazenda, app, area, areaAplicada, saldoAplicar } = data;
+			const objToAdd = { 
+				app, 
+				area: Number(area),
+				areaAplicada: Number(areaAplicada),
+				saldoAplicar: Number(saldoAplicar) 
+			};
 
+			const newData = { ...prevData };
+
+			// Ensure `fazenda` exists in newData as an array
+			if (!newData[fazenda]) {
+				newData[fazenda] = [];
+			}
+
+			// Check if the `app` already exists in the array
+			const index = newData[fazenda].findIndex(item => item.app === app);
+
+			if (index !== -1) {
+				// If found, remove it
+				newData[fazenda].splice(index, 1);
+
+				// If `fazenda` has no more apps, remove it as well
+				if (newData[fazenda].length === 0) {
+					delete newData[fazenda];
+				}
+			} else {
+				// If not found, add it to the array
+				newData[fazenda].push(objToAdd);
+			}
+
+			return newData;
+		});
+	};
 	return (
 		<div
 			style={{
 				width: "98%",
-				backgroundColor: colors.blueOrigin[700],
+				backgroundColor: totalCountSelected.filter((data) => data.app === dataF.app).length > 0 ? 'rgba(11,156,49,0.2)': colors.blueOrigin[700],
 				border:
 					dataF.status === "sought"
 						? "0.5px solid yellow"
@@ -319,7 +354,7 @@ const TableDataPage = (props) => {
 					</div>
 				</div>
 				<div className={classes.numberDivApp}>
-					<p>
+					<p style={{ cursor: 'pointer' }} onClick={() => handleSelectAreaAp(dataF)}>
 						{Number(dataF.area).toLocaleString("pt-br", {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2

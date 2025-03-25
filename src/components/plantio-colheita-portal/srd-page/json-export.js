@@ -1,4 +1,15 @@
-export const exportAsJson = (array, filename = "data.json") => {
+function getFormattedDateNow() {
+    const now = new Date();
+    
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Ensure 2 digits
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}_${hours}:${minutes}`;
+}
+export const exportAsJson = (array, filename = `${getFormattedDateNow()}.json`) => {
     // Convert the array to a JSON string
     const jsonString = JSON.stringify(array, null, 2); // Format with indentation for readability
 
