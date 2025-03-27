@@ -185,7 +185,7 @@ export const getTruckMoves = async () => {
 	const q = await query(
 		collection(db, TABLES_FIREBASE.truckmove),
 		orderBy("createdAt", "desc"),
-		limit(700)
+		limit(500)
 	);
 	const querySnapshot = await getDocs(q);
 	return querySnapshot.docs.map((docSnapshot) => {
