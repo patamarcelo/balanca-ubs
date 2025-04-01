@@ -140,7 +140,15 @@ const TableSrd = ({ data, setFilterDataArray }) => {
                                     onMouseLeave={() => setHoveredRow(null)}
                                 >
                                     <td style={{ width: '70px' }}>{parseInt(parcela.TICKET)}</td>
-                                    <td onClick={() => handlerCopyData(parcela)} style={{ width: '70px', cursor: 'pointer' }}>{parseInt(parcela?.ROMANEIO || 0)}</td>
+                                    <td onClick={() => handlerCopyData(parcela)} style={{ width: '70px', cursor: 'pointer' }}>
+                                        {
+                                            parcela.ROMANEIO ? parseInt(parcela?.ROMANEIO) :
+                                                <img
+                                                    className={styles.imgIconResume}
+                                                    src={question}
+                                                    alt={'question'}
+                                                />}
+                                    </td>
                                     <td style={{ width: '105px' }}>{parcela.DT_PESAGEM_TARA.trim().split('-').reverse().join('/')}</td>
                                     <td style={{ width: '120px' }}>{parcela.PROJETO}</td>
                                     <td style={{ width: '100px' }}>{parcela.PARCELA.replace("'", '').replaceAll(';', ' ')}</td>
