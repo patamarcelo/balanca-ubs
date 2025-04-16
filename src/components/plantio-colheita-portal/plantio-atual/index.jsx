@@ -20,7 +20,7 @@ import Switch from '@mui/material/Switch';
 
 
 
-const PlantioAtual = () => {
+const PlantioAtual = ({params}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -116,11 +116,14 @@ const PlantioAtual = () => {
                     .get("plantio/get_plantio_planner_data/", {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-                        }
+                        },
+                        params
                     })
                     .then((res) => {
+                        
                         const newData = dataPlannerHandler(res.data.dados.qs_planned)
-                        const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
+                        const newDataBar = dataPlannerHandler(res.data.dados.qs_planned)
+                        // const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
                         setDataToBarChartPlanned(newDataBar)
                         setDataFromApiOriginal(res.data.dados.qs_planned)
                         setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
@@ -146,7 +149,8 @@ const PlantioAtual = () => {
                     .get("plantio/get_sent_seeds_data/", {
                         headers: {
                             Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-                        }
+                        },
+                        params
                     })
                     .then((res) => {
                         setsentSeedsData(res.data.dados.query_table);
@@ -192,7 +196,8 @@ const PlantioAtual = () => {
                 .get("plantio/get_sent_seeds_data/", {
                     headers: {
                         Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-                    }
+                    },
+                    params
                 })
                 .then((res) => {
                     setsentSeedsData(res.data.dados.query_table);
@@ -212,7 +217,8 @@ const PlantioAtual = () => {
                 .get("plantio/get_plantio_planner_data/", {
                     headers: {
                         Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-                    }
+                    },
+                    params
                 })
                 .then((res) => {
                     const newData = dataPlannerHandler(res.data.dados.qs_planned)

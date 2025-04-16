@@ -247,6 +247,7 @@ const PlantioColheitaPage = () => {
 					>
 						<MenuItem value="2023/2024">2023/2024</MenuItem>
 						<MenuItem value="2024/2025">2024/2025</MenuItem>
+						<MenuItem value="2025/2026">2025/2026</MenuItem>
 					</Select>
 				</FormControl>
 
@@ -316,6 +317,7 @@ const PlantioColheitaPage = () => {
 							selectedFilteredData={selectedFilteredData}
 							idsPending={idsRomaneioPending}
 							resumeFarmRomaneios={resumeFarmRomaneios}
+							params={params}
 						/>
 					)}
 				</Box>

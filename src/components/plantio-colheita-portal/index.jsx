@@ -22,7 +22,8 @@ const PlantioColheitaPortal = (props) => {
 		idsPending,
 		resumeFarmRomaneios,
 		setOpenDrawer,
-		openDrawer
+		openDrawer,
+		params
 	} = props;
 
 	const theme = useTheme();
@@ -33,6 +34,7 @@ const PlantioColheitaPortal = (props) => {
 			route: "rota 1",
 			component: (
 				<PlantioAtual
+				params={params}
 				/>
 			)
 		},

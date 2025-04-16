@@ -59,8 +59,6 @@ const BarPlantioPlanner = ({ data }) => {
                     legendOffset: 60, // Adjust offset due to the rotation
                     renderTick: (tick) => {
                         const isHighlighted = isTodayWithinRange(tick.value);
-                        console.log('tickVla', tick.value)
-                        console.log('isHileght: ', isHighlighted)
                         return (
                             <g transform={`translate(${tick.x},${tick.y + 15})`}>
                                 <text

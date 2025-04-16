@@ -105,7 +105,6 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                     </span>
                                 </td>
                                 {data.map((dataProj, i) => {
-                                    console.log('dataProj', dataProj)
                                     const isBefore = isLastDateBeforeToday(dataProj.weekRange)
                                     const isBetween = isTodayWithinRange(dataProj.weekRange)
                                     const getValue = dataProj.projects[farms]
