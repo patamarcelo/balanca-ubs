@@ -108,32 +108,24 @@ const RomaneiosTable = (props) => {
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
-			if (sortDirection === "asc") {
-
-				const sortArr = dataFilter.sort((a, b) =>
-					a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-				);
-				setdataFilter(sortArr);
-			} else {
-				const sortArr = dataFilter.sort((b, a) =>
-					a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-				);
-				setdataFilter(sortArr);
-			}
+			const sorted = [...dataFilter].sort((a, b) => {
+				if (sortDirection === "asc") {
+					return a["fazendaOrigem"].localeCompare(b["fazendaOrigem"]);
+				} else {
+					return b["fazendaOrigem"].localeCompare(a["fazendaOrigem"]);
+				}
+			});
+			setdataFilter(sorted);
 		}
 		else if (sortBy === "relatorioColheita") {
-			if (sortDirection === "asc") {
-
-				const sortArr = dataFilter.sort((a, b) => {
+			const sorted = [...dataFilter].sort((a, b) => {
+				if (sortDirection === "asc") {
+					return a.relatorioColheita - b.relatorioColheita;
+				} else {
 					return b.relatorioColheita - a.relatorioColheita;
-				});
-				setdataFilter(sortArr);
-			} else {
-				const sortArr = dataFilter.sort((b, a) => {
-					return b.relatorioColheita - a.relatorioColheita;
-				});
-				setdataFilter(sortArr);
-			}
+				}
+			});
+			setdataFilter(sorted);
 		}
 		else if (sortBy === "parcelas") {
 			if (sortDirection === "asc") {
@@ -196,16 +188,12 @@ const RomaneiosTable = (props) => {
 	}
 
 	const handleOrder = (data) => {
-		setsortBy(prev => data);
-		setSortDirection((prev) => {
-			if (prev === 'asc') {
-				return 'desc'
-			} else {
-				return 'asc'
-			}
-		})
-	};
+		setsortBy(data); // No need for a function here
 
+		setSortDirection((prev) => {
+			return prev === 'asc' ? 'desc' : 'asc';
+		});
+	};
 	const handlerCopyData = (carga) => {
 		navigator.clipboard.writeText(carga?.id)
 		toast.success(`ID Copiado!!: ${carga.relatorioColheita} - ID: ${carga.id}`, {
@@ -252,17 +240,17 @@ const RomaneiosTable = (props) => {
 					<tr>
 						<th>Data</th>
 						<th
-							onClick={() => handleOrder("fazendaOrigem")}
-							style={{ cursor: "pointer" }}
-						>
-							Romaneio {sortBy === "fazendaOrigem" && (sortDirection !== "asc" ? "🔼" : "🔽")}
-						</th>
-						<th>Ticket</th>
-						<th
 							onClick={() => handleOrder("relatorioColheita")}
 							style={{ cursor: "pointer" }}
 						>
-							Projeto {sortBy === "relatorioColheita" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+							Romaneio {sortBy === "relatorioColheita" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+						</th>
+						<th>Ticket</th>
+						<th
+							onClick={() => handleOrder("fazendaOrigem")}
+							style={{ cursor: "pointer" }}
+						>
+							Projeto {sortBy === "fazendaOrigem" && (sortDirection !== "asc" ? "🔼" : "🔽")}
 						</th>
 						<th onClick={() => handleOrder("parcelas")} style={{ cursor: "pointer" }}>
 							Parcelas {sortBy === "parcelas" && (sortDirection !== "asc" ? "🔼" : "🔽")}
