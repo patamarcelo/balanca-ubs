@@ -24,7 +24,7 @@ import question from '../../../utils/assets/icons/question.png'
 import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
 const RomaneiosTable = (props) => {
-	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates } = props;
+	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected } = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -37,6 +37,11 @@ const RomaneiosTable = (props) => {
 	const [isLoadingTicket, setIsLoadingTicket] = useState({});
 
 
+	const [sortDirection, setSortDirection] = useState("asc"); // or 'desc'
+
+	useEffect(() => {
+		console.log('direccc', sortDirection)
+	}, [sortDirection]);
 
 	// useEffect(() => {
 	// 	setdataFilter(data);
@@ -103,19 +108,75 @@ const RomaneiosTable = (props) => {
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
-			const sortArr = dataFilter.sort((a, b) =>
-				a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-			);
-			setdataFilter(sortArr);
+			if (sortDirection === "asc") {
+
+				const sortArr = dataFilter.sort((a, b) =>
+					a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
+				);
+				setdataFilter(sortArr);
+			} else {
+				const sortArr = dataFilter.sort((b, a) =>
+					a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
+				);
+				setdataFilter(sortArr);
+			}
 		}
-		if (sortBy === "relatorioColheita") {
-			const sortArr = dataFilter.sort((a, b) => {
-				return b.relatorioColheita - a.relatorioColheita;
-			});
-			setdataFilter(sortArr);
+		else if (sortBy === "relatorioColheita") {
+			if (sortDirection === "asc") {
+
+				const sortArr = dataFilter.sort((a, b) => {
+					return b.relatorioColheita - a.relatorioColheita;
+				});
+				setdataFilter(sortArr);
+			} else {
+				const sortArr = dataFilter.sort((b, a) => {
+					return b.relatorioColheita - a.relatorioColheita;
+				});
+				setdataFilter(sortArr);
+			}
 		}
-		setdataFilter(data)
-	}, [sortBy, dataFilter, data]);
+		else if (sortBy === "parcelas") {
+			if (sortDirection === "asc") {
+				const sortArr = [...dataFilter].sort((a, b) => {
+					const getParcela = a?.parcelasObjFiltered.length > 0 ? a.parcelasObjFiltered[0]['parcela'] : '';
+					const getNextParcela = b?.parcelasObjFiltered.length > 0 ? b.parcelasObjFiltered[0]['parcela'] : '';
+					const [prefixA, numberA] = getParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
+					const [prefixB, numberB] = getNextParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
+
+					if (prefixA !== prefixB) {
+						return prefixA.localeCompare(prefixB); // Alphabetical part
+					}
+					return parseInt(numberA) - parseInt(numberB); // Numeric part
+				});
+				setdataFilter(sortArr);
+			} else {
+				const sortArr = [...dataFilter].sort((b, a) => {
+					const getParcela = a?.parcelasObjFiltered.length > 0 ? a.parcelasObjFiltered[0]['parcela'] : '';
+					const getNextParcela = b?.parcelasObjFiltered.length > 0 ? b.parcelasObjFiltered[0]['parcela'] : '';
+					const [prefixA, numberA] = getParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
+					const [prefixB, numberB] = getNextParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
+
+					if (prefixA !== prefixB) {
+						return prefixA.localeCompare(prefixB); // Alphabetical part
+					}
+					return parseInt(numberA) - parseInt(numberB); // Numeric part
+				});
+				setdataFilter(sortArr);
+			}
+		}
+		else if (sortBy === null) {
+			setdataFilter(data);
+		} else {
+			setdataFilter(dataFilter);
+		}
+	}, [sortBy, dataFilter, data, sortDirection]);
+
+	useEffect(() => {
+		if (selected.length === 0) {
+			setSortDirection(null)
+			setsortBy(null)
+		}
+	}, [selected]);
 
 	const formatWeight = (peso) => {
 		if (peso > 0) {
@@ -136,6 +197,13 @@ const RomaneiosTable = (props) => {
 
 	const handleOrder = (data) => {
 		setsortBy(prev => data);
+		setSortDirection((prev) => {
+			if (prev === 'asc') {
+				return 'desc'
+			} else {
+				return 'asc'
+			}
+		})
 	};
 
 	const handlerCopyData = (carga) => {
@@ -187,16 +255,18 @@ const RomaneiosTable = (props) => {
 							onClick={() => handleOrder("fazendaOrigem")}
 							style={{ cursor: "pointer" }}
 						>
-							Romaneio
+							Romaneio {sortBy === "fazendaOrigem" && (sortDirection !== "asc" ? "🔼" : "🔽")}
 						</th>
 						<th>Ticket</th>
 						<th
 							onClick={() => handleOrder("relatorioColheita")}
 							style={{ cursor: "pointer" }}
 						>
-							Projeto
+							Projeto {sortBy === "relatorioColheita" && (sortDirection !== "asc" ? "🔼" : "🔽")}
 						</th>
-						<th>Parcelas</th>
+						<th onClick={() => handleOrder("parcelas")} style={{ cursor: "pointer" }}>
+							Parcelas {sortBy === "parcelas" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+						</th>
 						<th>Cultura</th>
 						<th>Variedade</th>
 						<th>Placa</th>

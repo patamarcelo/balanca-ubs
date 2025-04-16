@@ -541,6 +541,7 @@ const RomaneiosPage = () => {
                                     setFilterDataArr={setFilterDataArr}
                                     duplicates={duplicates}
                                     duplicatesPlates={duplicatesPlates}
+                                    selected={selected}
                                 />
                             </>
                         ) : (
