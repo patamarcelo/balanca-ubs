@@ -108,60 +108,47 @@ const RomaneiosTable = (props) => {
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
-			const sorted = [...dataFilter].sort((a, b) => {
-				if (sortDirection === "asc") {
-					return a["fazendaOrigem"].localeCompare(b["fazendaOrigem"]);
-				} else {
-					return b["fazendaOrigem"].localeCompare(a["fazendaOrigem"]);
-				}
+			const sortArr = dataFilter.sort((a, b) =>
+				a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
+			);
+			setdataFilter(sortArr);
+		}
+		if (sortBy === "relatorioColheita") {
+			const sortArr = dataFilter.sort((a, b) => {
+				return b.relatorioColheita - a.relatorioColheita;
 			});
-			setdataFilter(sorted);
+			setdataFilter(sortArr);
 		}
-		else if (sortBy === "relatorioColheita") {
-			const sorted = [...dataFilter].sort((a, b) => {
-				if (sortDirection === "asc") {
-					return a.relatorioColheita - b.relatorioColheita;
-				} else {
-					return b.relatorioColheita - a.relatorioColheita;
+		if (sortBy === "parcelas") {
+			const sortArr = [...dataFilter].sort((a, b) => {
+				const parcelaA = a.parcelasObjFiltered?.[0]?.parcela || "";
+				const parcelaB = b.parcelasObjFiltered?.[0]?.parcela || "";
+
+				// If either parcela is missing, push it to the end
+				if (!parcelaA && !parcelaB) return 0;
+				if (!parcelaA) return 1;
+				if (!parcelaB) return -1;
+
+				// Match prefix and number
+				const matchA = parcelaA.match(/^([A-Za-z]+)(\d+)$/);
+				const matchB = parcelaB.match(/^([A-Za-z]+)(\d+)$/);
+
+				if (!matchA || !matchB) return parcelaA.localeCompare(parcelaB);
+
+				const [, prefixA, numberA] = matchA;
+				const [, prefixB, numberB] = matchB;
+
+				if (prefixA !== prefixB) {
+					return prefixA.localeCompare(prefixB);
 				}
+				return parseInt(numberA) - parseInt(numberB);
 			});
-			setdataFilter(sorted);
-		}
-		else if (sortBy === "parcelas") {
-			if (sortDirection === "asc") {
-				const sortArr = [...dataFilter].sort((a, b) => {
-					const getParcela = a?.parcelasObjFiltered.length > 0 ? a.parcelasObjFiltered[0]['parcela'] : '';
-					const getNextParcela = b?.parcelasObjFiltered.length > 0 ? b.parcelasObjFiltered[0]['parcela'] : '';
-					const [prefixA, numberA] = getParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
-					const [prefixB, numberB] = getNextParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
 
-					if (prefixA !== prefixB) {
-						return prefixA.localeCompare(prefixB); // Alphabetical part
-					}
-					return parseInt(numberA) - parseInt(numberB); // Numeric part
-				});
-				setdataFilter(sortArr);
-			} else {
-				const sortArr = [...dataFilter].sort((b, a) => {
-					const getParcela = a?.parcelasObjFiltered.length > 0 ? a.parcelasObjFiltered[0]['parcela'] : '';
-					const getNextParcela = b?.parcelasObjFiltered.length > 0 ? b.parcelasObjFiltered[0]['parcela'] : '';
-					const [prefixA, numberA] = getParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
-					const [prefixB, numberB] = getNextParcela.match(/^([A-Z]+)(\d+)$/i) || ['', 0];
+			setdataFilter(sortArr);
+		}
+		setdataFilter(data)
+	}, [sortBy, dataFilter, data]);
 
-					if (prefixA !== prefixB) {
-						return prefixA.localeCompare(prefixB); // Alphabetical part
-					}
-					return parseInt(numberA) - parseInt(numberB); // Numeric part
-				});
-				setdataFilter(sortArr);
-			}
-		}
-		else if (sortBy === null) {
-			setdataFilter(data);
-		} else {
-			setdataFilter(dataFilter);
-		}
-	}, [sortBy, dataFilter, data, sortDirection]);
 
 	useEffect(() => {
 		if (selected.length === 0) {
