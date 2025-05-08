@@ -154,7 +154,9 @@ const FarmBoxPage = () => {
 		"Colheita de Grãos",
 		"Grade Incorporação",
 		"Grade Intermediária 1",
-		"Grade Preparo"
+		"Grade Preparo",
+		'GERAR MAPA',
+		'Semeadura'
 	];
 
 	const handlePreaproSolo = (e) => {

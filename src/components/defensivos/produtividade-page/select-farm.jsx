@@ -23,7 +23,7 @@ const SelectFarm = (props) => {
 				label={title}
 				onChange={handleChange}
 				multiple={multiple}
-				// size="small"
+				size="small"
 			>
 				{projetos.map((data, i) => {
 					return (

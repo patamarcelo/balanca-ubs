@@ -35,6 +35,11 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import EventNoteIcon from "@mui/icons-material/EventNote"; // Planner
 import LandscapeIcon from "@mui/icons-material/Landscape"; // Planted Area
 
+import MapIcon from "@mui/icons-material/Map";
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton, Tooltip } from "@mui/material";
+
+
 
 const ProdutividadePage = () => {
 	const [params, setParams] = useState({
@@ -58,6 +63,8 @@ const ProdutividadePage = () => {
 	const [loadingData, setLoadingData] = useState(true);
 	const [projetos, setProjetos] = useState([]);
 	const [selectedProject, setSelectedProject] = useState([]);
+	const [selectedCultureFilter, setSelectedCultureFilter] = useState([]);
+
 	const [filteredArray, setFilteredArray] = useState([]);
 
 	const [filtPlantioDone, setFiltPlantioDone] = useState(false);
@@ -71,13 +78,17 @@ const ProdutividadePage = () => {
 	const [totalSelected, setTotalSelected] = useState([]);
 
 	const [showVarOrArea, setShowVarOrArea] = useState(false);
-	
+
 	const [showAsPlanned, setShowAsPlanned] = useState(true);
+
+	const [filterDropCulture, setFilterDropCulture] = useState([]);
+
+	const [showResumeMap, setShowResumeMap] = useState(true);
 
 	const handleValueMap = () => {
 		setShowVarOrArea(prev => !prev)
 	}
-	
+
 	const handlePlannerData = () => {
 		setShowAsPlanned(prev => !prev)
 	}
@@ -111,7 +122,7 @@ const ProdutividadePage = () => {
 	useEffect(() => {
 		const filteredArray = produtividade.filter(
 			(data) =>
-				selectedProject.includes(data.talhao__fazenda__nome)  &&
+				selectedProject.includes(data.talhao__fazenda__nome) &&
 				data.finalizado_plantio === true
 		);
 		setMapPlantation(filteredArray);
@@ -167,15 +178,42 @@ const ProdutividadePage = () => {
 	}, [selectedProject, produtividade]);
 
 	useEffect(() => {
-		const filterArr = plantioMapALl.filter(
-			(data) => selectedProject.includes(data.fazenda)
-		);
+		const filterCult = plantioMapALl.map((data) => data.dados.cultura)
+		const uniqueFilterCult = [...new Set(filterCult)].filter((data) => data !== null)
+		console.log('uniqueFilterCult', uniqueFilterCult)
+		setFilterDropCulture(uniqueFilterCult)
+
+		const filterArr = plantioMapALl
+			.filter((data) => selectedProject.includes(data.fazenda))
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedCultureFilter.length === 0) {
+					return true;
+				}
+
+				// Otherwise, filter by the selected cultures
+				return selectedCultureFilter.includes(data.dados.cultura);
+			});
+
+		// const filterArr = plantioMapALl.filter(
+		// 	(data) => selectedProject.includes(data.fazenda)
+		// ).filter((data) => {
+		// 	// console.log('data here from map page: ', data)
+		// 	return data.dados.cultura === 'Soja'
+		// }).filter((parcela) => !["A15", "B06", "B09"].includes(parcela.parcela));
+
 		setFilteredPlantioMal(filterArr);
-	}, [selectedProject, plantioMapALl]);
+	}, [selectedProject, plantioMapALl, selectedCultureFilter]);
 
 	const handleChangeSelect = (event) => {
-			const value = event.target.value;
-			setSelectedProject(typeof value === 'string' ? value.split(',') : value);
+		const value = event.target.value;
+		setSelectedProject(typeof value === 'string' ? value.split(',') : value);
+		// setSelectedProject(event.target.value);
+	};
+
+	const handleChangeSelectCulture = (event) => {
+		const value = event.target.value;
+		setSelectedCultureFilter(typeof value === 'string' ? value.split(',') : value);
 		// setSelectedProject(event.target.value);
 	};
 	useEffect(() => {
@@ -263,6 +301,7 @@ const ProdutividadePage = () => {
 				justifyContent="flex-start"
 				alignItems="center"
 				gap="15px"
+				mb={2}
 			>
 				{projetos.length > 0 ? (
 					<SelectFarm
@@ -328,6 +367,28 @@ const ProdutividadePage = () => {
 						<EventNoteIcon />
 					</ToggleButton>
 				</ToggleButtonGroup>
+				{filterDropCulture.length > 0 && selectedProject.length > 0 && (
+					<Box>
+						<SelectFarm
+							projetos={filterDropCulture}
+							handleChange={handleChangeSelectCulture}
+							value={selectedCultureFilter}
+							title={"Cultura"}
+							width={200}
+							multiple={true}
+						/>
+					</Box>
+				)}
+				<Tooltip title="Mostar Resuno do Mapa">
+					<IconButton onClick={() => setShowResumeMap(!showResumeMap)}>
+					{showResumeMap ? 
+					<CloseIcon fontSize="large" sx={{color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100]}}/> 
+					: 
+
+						<MapIcon fontSize="large" sx={{color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100]}} />
+					}
+					</IconButton>
+				</Tooltip>
 			</Box>
 			<Box
 				sx={{
@@ -391,6 +452,7 @@ const ProdutividadePage = () => {
 									showVarOrArea={showVarOrArea}
 									showAsPlanned={showAsPlanned}
 									setShowAsPlanned={setShowAsPlanned}
+									showResumeMap={showResumeMap}
 								/>
 							</Box>
 							{printPage ? (

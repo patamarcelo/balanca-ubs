@@ -62,9 +62,10 @@ const MapPage = ({
 	printPage,
 	showVarOrArea,
 	showAsPlanned,
-	setShowAsPlanned
+	setShowAsPlanned,
+	showResumeMap
 }) => {
-	
+
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -127,7 +128,7 @@ const MapPage = ({
 
 
 	useEffect(() => {
-		if(mapArray?.length > 0 ){
+		if (mapArray?.length > 0) {
 			const groupedData = Object.values(
 				mapArray.reduce((acc, curr) => {
 					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
@@ -147,7 +148,7 @@ const MapPage = ({
 	}, [mapArray]);
 
 
-	
+
 
 	const MapOptions = {
 		// disableDefaultUI: true
@@ -268,7 +269,7 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
-			if(!variedadeInside){
+			if (!variedadeInside) {
 				return '#f0f0f0'
 			}
 			return colorInside
@@ -283,7 +284,7 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
-			if(!variedadeInside){
+			if (!variedadeInside) {
 				return '#f0f0f0'
 			}
 			return colorInside
@@ -460,9 +461,11 @@ const MapPage = ({
 					})}
 			</GoogleMap>
 			{/* Table Container */}
-			<Box sx={tableStyles}>
-				<MapResumePage data={resumeContainerData} />
-			</Box>
+			{showResumeMap &&
+				<Box sx={tableStyles}>
+					<MapResumePage data={resumeContainerData} />
+				</Box>
+			}
 		</div>
 	) : (
 		<></>

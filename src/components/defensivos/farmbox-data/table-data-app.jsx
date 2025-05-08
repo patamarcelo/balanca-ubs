@@ -272,11 +272,11 @@ const TableDataPage = (props) => {
 	const handleSelectAreaAp = (data) => {
 		setTotalCountSelected(prevData => {
 			const { fazenda, app, area, areaAplicada, saldoAplicar } = data;
-			const objToAdd = { 
-				app, 
+			const objToAdd = {
+				app,
 				area: Number(area),
 				areaAplicada: Number(areaAplicada),
-				saldoAplicar: Number(saldoAplicar) 
+				saldoAplicar: Number(saldoAplicar)
 			};
 
 			const newData = { ...prevData };
@@ -309,7 +309,7 @@ const TableDataPage = (props) => {
 		<div
 			style={{
 				width: "98%",
-				backgroundColor: totalCountSelected.filter((data) => data.app === dataF.app).length > 0 ? 'rgba(11,156,49,0.2)': colors.blueOrigin[700],
+				backgroundColor: totalCountSelected.filter((data) => data.app === dataF.app).length > 0 ? 'rgba(11,156,49,0.2)' : colors.blueOrigin[700],
 				border:
 					dataF.status === "sought"
 						? "0.5px solid yellow"
@@ -361,13 +361,21 @@ const TableDataPage = (props) => {
 						})}
 					</p>
 					<p style={{ textAlign: "center" }}>
-						{Number(dataF.areaAplicada).toLocaleString("pt-br", {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-						})}
+
+						{
+							Number(dataF.areaAplicada) === 0 ? " - " :
+								Number(dataF.areaAplicada).toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								})
+						}
 					</p>
 					<p style={{ textAlign: "center" }}>
-						{Number(dataF.saldoAplicar).toLocaleString("pt-br", {
+
+						{
+						Number(dataF.saldoAplicar) === 0 ? " - " :
+						
+						Number(dataF.saldoAplicar).toLocaleString("pt-br", {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						})}

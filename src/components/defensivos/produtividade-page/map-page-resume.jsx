@@ -68,9 +68,9 @@ const MapResumePage = ({ data }) => {
             <Table >
             <TableHead sx={{backgroundColor:'transparent'}}>
                     <TableRow sx={{ backgroundColor: "rgba(25,118,210,0.8)", borderTopLeftRadius: '8px' }}>
-                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px!important', fontSize: '1.2em' }}>Cultura</TableCell>
-                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px !important', fontSize: '1.2em' }}>Variedade</TableCell>
-                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px !important', fontSize: '1.2em', textAlign: "right" }}>Área</TableCell>
+                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px!important', fontSize: '1.2em', borderRight: 'none' }}>Cultura</TableCell>
+                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px !important', fontSize: '1.2em', borderRight: 'none' }}>Variedade</TableCell>
+                        <TableCell sx={{ color: "white", fontWeight: "bold", width: "100px", padding: '12px 5px 0px 5px !important', fontSize: '1.2em', textAlign: "right", borderRight: 'none' }}>Área</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
