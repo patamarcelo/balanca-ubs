@@ -64,6 +64,7 @@ const ProdutividadePage = () => {
 	const [projetos, setProjetos] = useState([]);
 	const [selectedProject, setSelectedProject] = useState([]);
 	const [selectedCultureFilter, setSelectedCultureFilter] = useState([]);
+	const [selectedVarietyFilter, setSelectedVarietyFilter] = useState([]);
 
 	const [filteredArray, setFilteredArray] = useState([]);
 
@@ -82,6 +83,7 @@ const ProdutividadePage = () => {
 	const [showAsPlanned, setShowAsPlanned] = useState(true);
 
 	const [filterDropCulture, setFilterDropCulture] = useState([]);
+	const [filterDropVariety, setFilterDropVariety] = useState([]);
 
 	const [showResumeMap, setShowResumeMap] = useState(true);
 
@@ -178,10 +180,13 @@ const ProdutividadePage = () => {
 	}, [selectedProject, produtividade]);
 
 	useEffect(() => {
-		const filterCult = plantioMapALl.map((data) => data.dados.cultura)
+		const filterCult = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.cultura)
 		const uniqueFilterCult = [...new Set(filterCult)].filter((data) => data !== null)
-		console.log('uniqueFilterCult', uniqueFilterCult)
 		setFilterDropCulture(uniqueFilterCult)
+
+		const filterVariety = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.variedade)
+		const uniqueFilterVari = [...new Set(filterVariety)].filter((data) => data !== null)
+		setFilterDropVariety(uniqueFilterVari)
 
 		const filterArr = plantioMapALl
 			.filter((data) => selectedProject.includes(data.fazenda))
@@ -190,9 +195,16 @@ const ProdutividadePage = () => {
 				if (selectedCultureFilter.length === 0) {
 					return true;
 				}
-
 				// Otherwise, filter by the selected cultures
 				return selectedCultureFilter.includes(data.dados.cultura);
+			})
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedVarietyFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedVarietyFilter.includes(data.dados.variedade);
 			});
 
 		// const filterArr = plantioMapALl.filter(
@@ -203,7 +215,7 @@ const ProdutividadePage = () => {
 		// }).filter((parcela) => !["A15", "B06", "B09"].includes(parcela.parcela));
 
 		setFilteredPlantioMal(filterArr);
-	}, [selectedProject, plantioMapALl, selectedCultureFilter]);
+	}, [selectedProject, plantioMapALl, selectedCultureFilter, selectedVarietyFilter]);
 
 	const handleChangeSelect = (event) => {
 		const value = event.target.value;
@@ -216,6 +228,13 @@ const ProdutividadePage = () => {
 		setSelectedCultureFilter(typeof value === 'string' ? value.split(',') : value);
 		// setSelectedProject(event.target.value);
 	};
+
+	const handleChangeSelectVariety = (event) => {
+		const value = event.target.value;
+		setSelectedVarietyFilter(typeof value === 'string' ? value.split(',') : value);
+		// setSelectedProject(event.target.value);
+	};
+
 	useEffect(() => {
 		const filterArray = produtividade.filter(
 			(data) => selectedProject.includes(data.talhao__fazenda__nome)
@@ -323,36 +342,46 @@ const ProdutividadePage = () => {
 						<CircularProgress color="secondary" size={20} />
 					</Box>
 				)}
-				<Switch
-					checked={printPage}
-					onChange={handlePrintPage}
-					inputProps={{ "aria-label": "controlled" }}
-					color="warning"
-				/>
-				<Switch
-					checked={bigMap}
-					onChange={handleBigMap}
-					inputProps={{ "aria-label": "controlled" }}
-					color="success"
-				/>
-				<Switch
-					checked={filtPlantioDone}
-					onChange={handleListShowData}
-					inputProps={{ "aria-label": "controlled" }}
-					color="success"
-				/>
+				<Tooltip title="Mudar Modo Lista Tabela" placement="bottom">
+					<Switch
+						checked={printPage}
+						onChange={handlePrintPage}
+						inputProps={{ "aria-label": "controlled" }}
+						color="warning"
+					/>
+				</Tooltip>
+				<Tooltip title="Alterar o Tamanho do Mapa" placement="bottom">
+					<Switch
+						checked={bigMap}
+						onChange={handleBigMap}
+						inputProps={{ "aria-label": "controlled" }}
+						color="success"
+					/>
+				</Tooltip>
+				<Tooltip title="Incluir Áreas Sem Plantio no Relatório Lateral" placement="bottom">
+					<Switch
+						checked={filtPlantioDone}
+						onChange={handleListShowData}
+						inputProps={{ "aria-label": "controlled" }}
+						color="success"
+					/>
+				</Tooltip>
 				<ToggleButtonGroup
 					value={showVarOrArea}
 					exclusive
 					onChange={handleValueMap}
 					aria-label="text alignment"
 				>
-					<ToggleButton value={true} aria-label="left aligned">
-						<SortByAlphaIcon />
-					</ToggleButton>
-					<ToggleButton value={false} aria-label="centered">
-						<Filter1Icon />
-					</ToggleButton>
+					<Tooltip title="Áreas / Há" placement="top">
+						<ToggleButton value={true} aria-label="left aligned" size="small">
+							<SortByAlphaIcon sx={{ fontSize: 16 }} /> {/* Adjust size here */}
+						</ToggleButton>
+					</Tooltip>
+					<Tooltip title="Variedades" placement="top">
+						<ToggleButton value={false} aria-label="centered" size="small">
+							<Filter1Icon sx={{ fontSize: 12 }} /> {/* Adjust size here */}
+						</ToggleButton>
+					</Tooltip>
 				</ToggleButtonGroup>
 				<ToggleButtonGroup
 					value={showAsPlanned}
@@ -360,12 +389,16 @@ const ProdutividadePage = () => {
 					onChange={handlePlannerData}
 					aria-label="text alignment"
 				>
-					<ToggleButton value={true} aria-label="left aligned">
-						<LandscapeIcon />
-					</ToggleButton>
-					<ToggleButton value={false} aria-label="centered">
-						<EventNoteIcon />
-					</ToggleButton>
+					<Tooltip title="Mostar Áreas Planejadas" placement="top">
+						<ToggleButton value={true} aria-label="left aligned" size="small">
+							<LandscapeIcon sx={{ fontSize: 16 }} />
+						</ToggleButton>
+					</Tooltip>
+					<Tooltip title="Mostar Áreas Plantadas" placement="top">
+						<ToggleButton value={false} aria-label="centered" size="small">
+							<EventNoteIcon sx={{ fontSize: 16 }} />
+						</ToggleButton>
+					</Tooltip>
 				</ToggleButtonGroup>
 				{filterDropCulture.length > 0 && selectedProject.length > 0 && (
 					<Box>
@@ -379,14 +412,26 @@ const ProdutividadePage = () => {
 						/>
 					</Box>
 				)}
+				{filterDropVariety.length > 0 && selectedProject.length > 0 && (
+					<Box>
+						<SelectFarm
+							projetos={filterDropVariety}
+							handleChange={handleChangeSelectVariety}
+							value={selectedVarietyFilter}
+							title={"Variedade"}
+							width={200}
+							multiple={true}
+						/>
+					</Box>
+				)}
 				<Tooltip title="Mostar Resuno do Mapa">
 					<IconButton onClick={() => setShowResumeMap(!showResumeMap)}>
-					{showResumeMap ? 
-					<CloseIcon fontSize="large" sx={{color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100]}}/> 
-					: 
+						{showResumeMap ?
+							<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
+							:
 
-						<MapIcon fontSize="large" sx={{color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100]}} />
-					}
+							<MapIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[300] }} />
+						}
 					</IconButton>
 				</Tooltip>
 			</Box>
@@ -399,7 +444,8 @@ const ProdutividadePage = () => {
 					alignItems: "center",
 					backgroundColor: colors.blueOrigin[600],
 					padding: "0px 5px 5px 5px",
-					borderRadius: "8px"
+					borderRadius: "8px",
+					height: filteredArray.length === 0 && '500px'
 				}}
 			>
 				{filteredArray.length === 0 ? (
@@ -412,7 +458,10 @@ const ProdutividadePage = () => {
 							fontWeight: "bold",
 							marginBottom: "10px",
 							width: "100%",
-							height: "100%"
+							height: "100%",
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
 						}}
 						className={styles.titleProdutividade}
 					>

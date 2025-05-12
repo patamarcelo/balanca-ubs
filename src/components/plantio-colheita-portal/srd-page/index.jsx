@@ -238,7 +238,7 @@ const SRDPage = () => {
                                     style={{
                                         width: "22px", // Set the width of the icon
                                         height: "22px", // Set the height of the icon
-                                        color: "#4CAF50", // Optional: Style adjustments
+                                        filter: theme.palette.mode === 'dark' ? "brightness(0) invert(1)" : "brightness(0)"
                                     }}
                                 />
                             </IconButton>
