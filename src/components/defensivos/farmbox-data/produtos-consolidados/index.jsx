@@ -112,13 +112,23 @@ const ProdutosConsolidados = () => {
                     console.log(res);
                     if (res.status === 201) {
                         const { st_number, sent_by_email } = res.data
-                        console.log('tudo certo', st_number)
-                        setStOpened(st_number)
-                        Swal.fire({
-                            title: "Feito!!",
-                            html: `<b>ST Aberta com Suscesso: ${st_number}</b> <br> Enviada por E-mail: ${sent_by_email}`,
-                            icon: "success"
-                        });
+                        if(sent_by_email === 'Não'){
+                            console.log('Problema em abrir a ST', st_number)
+                            setStOpened(st_number)
+                            Swal.fire({
+                                title: "Problema!!",
+                                html: `<b>Problema em Abrir a ST, e-mail não enviado!!`,
+                                icon: "error"
+                            });
+                        } else {
+                            console.log('tudo certo', st_number)
+                            setStOpened(st_number)
+                            Swal.fire({
+                                title: "Feito!!",
+                                html: `<b>ST Aberta com Suscesso: ${st_number}</b> <br> Enviada por E-mail: ${sent_by_email}`,
+                                icon: "success"
+                            });
+                        }
                     } else if (res.status === 208) {
                         const { msg, error } = res.data
                         Swal.fire({

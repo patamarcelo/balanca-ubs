@@ -108,9 +108,16 @@ const RomaneiosTable = (props) => {
 
 	useEffect(() => {
 		if (sortBy === "fazendaOrigem") {
-			const sortArr = dataFilter.sort((a, b) =>
-				a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-			);
+			// const sortArr = dataFilter.sort((a, b) =>
+			// 	a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
+			// );
+			const sortArr = dataFilter.sort((a, b) => {
+				const fazendaCompare = a["fazendaOrigem"].localeCompare(b["fazendaOrigem"]);
+				if (fazendaCompare !== 0) {
+					return fazendaCompare;
+				}
+				return Number(a["ticket"]) - Number(b["ticket"]); // ordena por ticket se fazendaOrigem for igual
+			});
 			setdataFilter(sortArr);
 		}
 		if (sortBy === "relatorioColheita") {
