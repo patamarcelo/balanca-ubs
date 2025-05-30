@@ -133,6 +133,22 @@ const ProdutividadePage = () => {
 		const totalResumoVariedades = {};
 		const filtCult = filteredArray
 			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedCultureFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedCultureFilter.includes(data.variedade__cultura__cultura);
+			})
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedVarietyFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
+			})
 			.map((data) => {
 				const areaSum = data.finalizado_colheita
 					? data.area_colheita
@@ -177,14 +193,25 @@ const ProdutividadePage = () => {
 		// 	return sum;
 		// }, {});
 		// console.log(totalFiltered);
-	}, [selectedProject, produtividade]);
+	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter]);
 
 	useEffect(() => {
 		const filterCult = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.cultura)
 		const uniqueFilterCult = [...new Set(filterCult)].filter((data) => data !== null)
 		setFilterDropCulture(uniqueFilterCult)
 
-		const filterVariety = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.variedade)
+		const filterVariety = plantioMapALl
+			.filter((data) => selectedProject.includes(data.fazenda))
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedCultureFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedCultureFilter.includes(data.dados.cultura);
+			})
+			.map((data) => data.dados.variedade)
+
 		const uniqueFilterVari = [...new Set(filterVariety)].filter((data) => data !== null)
 		setFilterDropVariety(uniqueFilterVari)
 
@@ -236,11 +263,32 @@ const ProdutividadePage = () => {
 	};
 
 	useEffect(() => {
-		const filterArray = produtividade.filter(
-			(data) => selectedProject.includes(data.talhao__fazenda__nome)
-		);
+		const filterArray = produtividade
+			.filter(
+				(data) => selectedProject.includes(data.talhao__fazenda__nome)
+			)
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedCultureFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedCultureFilter.includes(data.variedade__cultura__cultura);
+			})
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (selectedVarietyFilter.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected cultures
+				return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
+			});
+		console.log('filterArr: ', filterArray)
+
+			;
 		setFilteredArray(filterArray);
-	}, [selectedProject, produtividade]);
+	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter]);
+
 	useEffect(() => {
 		const onlyProjetos = produtividade.map((data) => {
 			return data.talhao__fazenda__nome;

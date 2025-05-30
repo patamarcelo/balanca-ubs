@@ -127,10 +127,11 @@ const SRDPage = () => {
 
     const handleChangeTicket = (data) => {
         const ticket = data.target.value
-        if (ticket.length > 0) {
+        if (ticket.length > 0 && Number(ticket) < 99999) {
             setTicketApi(ticket)
-        } else {
-            setTicketApi('')
+        } 
+        if(ticket.length === 0){
+                setTicketApi('')
         }
     }
 
@@ -233,7 +234,7 @@ const SRDPage = () => {
                         <Box alignSelf="center" sx={{ cursor: 'pointer' }}>
                             <IconButton onClick={() => exportAsJson(jsonData)}>
                                 <img
-                                    src={JsonFile} 
+                                    src={JsonFile}
                                     alt="Export JSON"
                                     style={{
                                         width: "22px", // Set the width of the icon
@@ -251,7 +252,8 @@ const SRDPage = () => {
             <Box display={"flex"} flexDirection={"row"} gap={2} ml={initialDate || finalDate || ticketApi || filterImp ? 7 : 2} mt={2} alignItems={"center"}
                 className={styles.dateRangeTransition}
             >
-                <TextField id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{ width: '155px' }} />
+                <TextField type="number" id="ticketapi" label="Ticket" variant="outlined" size="small" onChange={handleChangeTicket} value={ticketApi} onKeyDown={handlerKeyDown} sx={{ width: '155px' }}
+                />
                 <TextField id="impureza" label="Impureza" variant="outlined" size="small" onChange={handleChangeImp} value={filterImp} onKeyDown={handlerKeyDown} sx={{ width: '155px' }} />
                 {
                     filterDataArray?.length > 0 &&
@@ -384,12 +386,12 @@ const SRDPage = () => {
                                                                 .sort((a, b) => {
                                                                     const dateA = new Date(a.DT_PESAGEM_TARA);
                                                                     const dateB = new Date(b.DT_PESAGEM_TARA);
-                                                                    
+
                                                                     // First, sort by date (newest first)
                                                                     if (dateB - dateA !== 0) {
                                                                         return dateB - dateA;
                                                                     }
-                                                            
+
                                                                     // If dates are the same, sort by TICKET (descending)
                                                                     return b.TICKET - a.TICKET
                                                                 })
