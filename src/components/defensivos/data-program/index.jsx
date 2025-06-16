@@ -1174,9 +1174,9 @@ const DataProgramPage = (props) => {
 																							.palette
 																							.mode ===
 																							"light"
-																							? "grey"
+																							? "black"
 																							: colors
-																								.primary[300]
+																								.primary[100]
 																				}}
 																				className={
 																					classes[
@@ -1421,7 +1421,8 @@ const DataProgramPage = (props) => {
 																	<div
 																		style={{
 																			color: colors
-																				.primary[200]
+																				.primary[100],
+																				fontWeight: 'bold'
 																		}}
 																		className={
 																			classes[
