@@ -59,6 +59,8 @@ import ColheitaPage from "./colheita-section/colheita-index-data";
 import ProdutosConsolidados from "./produtos-consolidados";
 import PreStPage from "./pre-st";
 
+import toast from "react-hot-toast";
+
 const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -210,6 +212,13 @@ const FarmBoxPage = () => {
 				})
 				.then((res) => {
 					dispatch(setApp(res.data));
+					toast.success(
+						`'Tudo Certo', 'Aplicações Atualizadas com sucesso!!'`,
+						{
+							position: "top-right",
+							duration: 5000
+						}
+					)
 				})
 				.catch((err) => console.log(err));
 		} catch (err) {
@@ -310,7 +319,14 @@ const FarmBoxPage = () => {
 				})
 				.then((res) => {
 					if (res.status === 200) {
-						console.log('Tudo Certo', 'Aplicações Atualizadas com sucesso!!')
+						toast.success(
+							`'Tudo Certo', 'Banco de Dados Atualizado!!'`,
+							{
+								position: "top-right",
+								duration: 5000
+							}
+						)
+						refreshData()
 						// alert('Tudo Certo', 'Aplicações Atualizadas com sucesso!!')
 					}
 				})
