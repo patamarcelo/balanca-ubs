@@ -39,8 +39,8 @@ const SelectInputs = (props) => {
                     const farmNameArr = selectedProecj.map((farm) => farm.replace('Fazenda ', ''))
                     const filterDatas = selectedData?.Data ? selectedData?.Data : []
                     const filtApps = inputsArr.filter((filtApss) => farmNameArr.includes(filtApss.split("-")[0].trim())).filter((apps) => filterDatas.includes((apps.split(' | ')[1])))
-                    console.log('filtAppss: ', filtApps)
-                    console.log('data Selected: ', selectedData?.Data)
+                    // console.log('filtAppss: ', filtApps)
+                    // console.log('data Selected: ', selectedData?.Data)
 
                     setarrToMap(filtApps)
                     setDisabledForm(false)

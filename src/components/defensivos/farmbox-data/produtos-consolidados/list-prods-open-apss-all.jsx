@@ -93,7 +93,7 @@ const OpenApsAllprodsPage = ({ data, selectedData, setFilteredData, filteredData
     }, [selectedData]);
 
     useEffect(() => {
-        console.log('selectedProject', selectedProject)
+        // console.log('selectedProject', selectedProject)
         const filteredDataHandled = dataHandled.filter((data) => data.mainFarm === selectedProject && data.inputType !== 'Operação')
         const grouped = Object.values(
             filteredDataHandled.reduce((acc, item) => {

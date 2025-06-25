@@ -59,7 +59,6 @@ const ListProducts = (props) => {
                 const prodFilter = Insumo?.length === 0 || !Insumo?.includes(item.inputName)
                 return dateFilter && projetoFilter && apFilter && tipoFilter && prodFilter
             })
-            console.log('newData: ', newData)
             const filtData = selectedData?.DateTime ? newData.filter((data) => data.inputLastUpdated > selectedData?.DateTime) : newData
             const newProds = filtData.reduce((acc, curr) => {
                 if (acc.filter((input) => input.insumo === curr.inputName).length === 0) {
@@ -147,20 +146,35 @@ const ListProducts = (props) => {
             <Box>
                 <Typography sx={{ textAlign: 'left', fontWeight: 'bold', borderBottom: `1px solid ${borderColor}` }}>Ap's</Typography>
                 {
-                    Ap && Ap.length > 0 && Ap.sort((a, b) => a.localeCompare(b)).map((aps, ind) => {
+                    Ap &&
+                    Ap.length > 0 &&
+                    Ap.sort((a, b) => {
+                        const [nameA] = a.split(' - ');
+                        const [nameB] = b.split(' - ');
 
-                        return (
-                            <Box key={ind}
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    width: '100%',
-                                    flexDirection: 'row',
-                                    // paddingRight: '0px',
-                                }}
-                            ><span>{formatApName(aps)}</span><span>{getAreaAp(aps)}</span> </Box>
-                        )
+                        if (nameA !== nameB) {
+                            return nameA.localeCompare(nameB); // ordena por nome do local
+                        }
+
+                        const apNum = (str) => parseInt(str.match(/AP(\d+)/i)?.[1] || Infinity, 10);
+                        return apNum(a) - apNum(b); // ordena pelo número após "AP"
                     })
+                        .map((aps, ind) => {
+                            return (
+                                <Box
+                                    key={ind}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                    }}
+                                >
+                                    <span>{formatApName(aps)}</span>
+                                    <span>{getAreaAp(aps)}</span>
+                                </Box>
+                            );
+                        })
                 }
                 {
                     Ap && Ap.length > 1 && (
