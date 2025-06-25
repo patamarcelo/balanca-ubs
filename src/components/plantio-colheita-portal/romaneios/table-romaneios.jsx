@@ -270,6 +270,7 @@ const RomaneiosTable = (props) => {
 							const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
 							const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
 							const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
+							console.log("carga", carga)
 							return (
 								<tr
 									key={i}
@@ -279,7 +280,7 @@ const RomaneiosTable = (props) => {
 									<td>{newDate}</td>
 									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 									{
-										!carga?.ticket ?
+										(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ?
 											<td>
 												<IconButton
 													aria-label="delete"
