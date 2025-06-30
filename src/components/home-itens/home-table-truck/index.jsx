@@ -287,7 +287,7 @@ const HomeTableTruck = (props) => {
 									filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
 								}}
 								onClick={() => {
-									if (!isBalanca || (data?.createdBy === 'App' && !isAdminUser)) {
+									if (!isBalanca || (data?.createdBy === 'App' && !isAdminUser && !data?.codTicketPro && !data?.filialPro)) {
 										toast.error(`Usuário Sem Permissão`, {
 											position: "top-center"
 										});
