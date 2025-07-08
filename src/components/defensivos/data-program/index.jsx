@@ -63,7 +63,6 @@ import { createRoot } from "react-dom/client";
 
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import dataProdsJson from './response-prods.json'
 
 
 
@@ -134,7 +133,6 @@ const DataProgramPage = (props) => {
 		const getDefensivosData = async () => {
 			setIsLoadingProdsToUse(true)
 			try {
-				setSendingData(true);
 				await djangoApi
 					.get("defensivo/get_defensivos_integration_farmbox/", {
 						headers: {
@@ -162,10 +160,11 @@ const DataProgramPage = (props) => {
 			.filter((o) =>
 				o.name.toLowerCase().includes(inputValue.toLowerCase())
 			)
-			.slice(0, 10050);
+			.slice(0, 100050);
 
 
-	const handleAddProd = async (hiddenAppName) => {
+	const handleAddProd = async (hiddenAppName, existProds) => {
+
 		await MySwal.fire({
 			title: `Adicionar insumo`,
 			html: `<div id="swal-react-root">/div>`,
@@ -183,28 +182,30 @@ const DataProgramPage = (props) => {
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
 						{/* AUTOCOMPLETE COMPACTO */}
 						{hiddenAppName.replace('|', " - ").replace('Projeto', ' - ')}
-						<Autocomplete
-							id="swal-prod"
-							size="small"
-							options={prodsToUse}
-							filterOptions={filterOptions}
-							getOptionLabel={(opt) => opt.name}
-							onChange={(_, value) => (selectedProd.current = value)}
-							renderInput={(params) => (
-								<TextField {...params} label="Insumo" />
-							)}
-							sx={{ width: 280 }}
-						/>
+						<Box sx={{display: 'flex', flexDirection: 'row', gap: '10px'}}>
+							<Autocomplete
+								id="swal-prod"
+								size="small"
+								options={prodsToUse}
+								filterOptions={filterOptions}
+								getOptionLabel={(opt) => opt.name}
+								onChange={(_, value) => (selectedProd.current = value)}
+								renderInput={(params) => (
+									<TextField {...params} label="Insumo" />
+								)}
+								sx={{ width: 280 }}
+							/>
 
-						{/* DOSE – 3 CASAS DECIMAIS */}
-						<TextField
-							id="swal-dose"
-							label="Dose"
-							placeholder="0.000"
-							size="small"
-							type="number"
-							inputProps={{ step: 0.001, min: 0 }}
-						/>
+							{/* DOSE – 3 CASAS DECIMAIS */}
+							<TextField
+								id="swal-dose"
+								label="Dose"
+								placeholder="0.000"
+								size="small"
+								type="number"
+								inputProps={{ step: 0.001, min: 0 }}
+							/>
+						</Box>
 					</Box>
 				);
 
@@ -232,6 +233,17 @@ const DataProgramPage = (props) => {
 		}).then(({ isConfirmed, value }) => {
 			// if (isConfirmed) onSave?.(value); // { prod, dose }
 			if (isConfirmed) {
+				const checkIfIsInserted = existProds.filter((data) => data.produto === value.prod.name)
+				if (checkIfIsInserted.length > 0) {
+					toast.error(
+						'Produto já consta na Calda',
+						{
+							position: "top-right",
+							duration: 2000
+						}
+					)
+					return
+				}
 				const { prod, dose } = value
 				const { name, ...prodClean } = prod;
 				const newProd = {
@@ -800,7 +812,7 @@ const DataProgramPage = (props) => {
 			console.log('yes, need to remove someProds here:')
 			const onlyIdToRemove = isThereAnyProdToRemove.map((data) => data.prodToRemove.id_farmbox)
 			newData = {
-				...data,
+				...newData,
 				inputs: data.inputs.filter((prods) => !onlyIdToRemove.includes(prods.input_id))
 			}
 		}
@@ -808,7 +820,7 @@ const DataProgramPage = (props) => {
 		if (isThereAnyProdToAdd.length > 0) {
 			const onlyObjTOFarm = isThereAnyProdToAdd.map((data) => data.objToSendtoFarm)
 			newData = {
-				...data,
+				...newData,
 				inputs: [...data.inputs, ...onlyObjTOFarm]
 			}
 		}
@@ -1452,7 +1464,7 @@ const DataProgramPage = (props) => {
 														<IconButton
 															size="small"        // deixa o botão compacto
 															color="success"     // segue o tema MUI
-															onClick={() => handleAddProd(hiddenAppName)}
+															onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
 															aria-label="adicionar"
 															disabled={prodsToUse.length === 0}
 														>
