@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Typography, useTheme } from "@mui/material";
+import { Box, Button, Divider, Typography, useTheme, Autocomplete, TextField, } from "@mui/material";
 import { tokens } from "../../../theme";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
@@ -57,6 +57,14 @@ import toast from "react-hot-toast";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { createRoot } from "react-dom/client";
+
+
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import dataProdsJson from './response-prods.json'
+
 
 
 const DataProgramPage = (props) => {
@@ -104,14 +112,198 @@ const DataProgramPage = (props) => {
 	const [appIsLoading, setAppIsLoading] = useState(null);
 
 	const [loadMaps, setLoadMaps] = useState(false);
+	const [prodsToRemove, setProdsToRemove] = useState([]);
+	const [prodsToAdd, setprodsToAdd] = useState([]);
+
+	const [prodsToUse, setProdsToUse] = useState([]);
+	const [isLoadingProdsToUse, setIsLoadingProdsToUse] = useState(false);
+
+	const MySwal = withReactContent(Swal);
+
+
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Algodão", icon: cotton, alt: "algodao" },
-
 	];
+
+
+	useEffect(() => {
+		const getDefensivosData = async () => {
+			setIsLoadingProdsToUse(true)
+			try {
+				setSendingData(true);
+				await djangoApi
+					.get("defensivo/get_defensivos_integration_farmbox/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						console.log(res);
+						const { dados } = res.data
+						setProdsToUse(dados)
+						setIsLoadingProdsToUse(false)
+					});
+			} catch (err) {
+				console.log("Erro ao alterar as aplicações", err);
+			} finally {
+				setIsLoadingProdsToUse(false)
+			}
+		};
+		getDefensivosData()
+	}, []);
+
+	const selectedProd = useRef(null);
+	const filterOptions = (options, { inputValue }) =>
+		options
+			.filter((o) =>
+				o.name.toLowerCase().includes(inputValue.toLowerCase())
+			)
+			.slice(0, 10050);
+
+
+	const handleAddProd = async (hiddenAppName) => {
+		await MySwal.fire({
+			title: `Adicionar insumo`,
+			html: `<div id="swal-react-root">/div>`,
+			showCancelButton: true,
+			confirmButtonText: "Salvar",
+			cancelButtonText: "Cancelar",
+			focusConfirm: false,
+			customClass: { popup: "swal2-compact" },
+			/** Monta o React dentro do Swal */
+			didOpen: () => {
+				const container = document.getElementById("swal-react-root");
+				const root = createRoot(container);
+
+				root.render(
+					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+						{/* AUTOCOMPLETE COMPACTO */}
+						{hiddenAppName.replace('|', " - ").replace('Projeto', ' - ')}
+						<Autocomplete
+							id="swal-prod"
+							size="small"
+							options={prodsToUse}
+							filterOptions={filterOptions}
+							getOptionLabel={(opt) => opt.name}
+							onChange={(_, value) => (selectedProd.current = value)}
+							renderInput={(params) => (
+								<TextField {...params} label="Insumo" />
+							)}
+							sx={{ width: 280 }}
+						/>
+
+						{/* DOSE – 3 CASAS DECIMAIS */}
+						<TextField
+							id="swal-dose"
+							label="Dose"
+							placeholder="0.000"
+							size="small"
+							type="number"
+							inputProps={{ step: 0.001, min: 0 }}
+						/>
+					</Box>
+				);
+
+				/** desmonta o React quando o Swal fechar */
+				MySwal.getPopup().addEventListener("swalClose", () => root.unmount());
+			},
+			/** Valida e devolve resultado */
+			preConfirm: () => {
+				const doseStr = document.getElementById("swal-dose").value.trim();
+
+				if (!selectedProd.current) {
+					MySwal.showValidationMessage("Selecione um produto.");
+					return false;
+				}
+				if (!/^\d+(\.\d{1,3})?$/.test(doseStr)) {
+					MySwal.showValidationMessage("Dose deve ter até 3 casas decimais.");
+					return false;
+				}
+
+				return {
+					prod: selectedProd.current, // objeto inteiro {id, name…}
+					dose: parseFloat(doseStr).toFixed(3),
+				};
+			},
+		}).then(({ isConfirmed, value }) => {
+			// if (isConfirmed) onSave?.(value); // { prod, dose }
+			if (isConfirmed) {
+				const { prod, dose } = value
+				const { name, ...prodClean } = prod;
+				const newProd = {
+					...prodClean,
+					dosage_value: Number(dose)
+				}
+				const prodToAdd = {
+					objToSendtoFarm: newProd,
+					objToRender: {
+						dose: Number(dose),
+						produto: name,
+					},
+					appName: hiddenAppName
+				}
+				setprodsToAdd((prev) => {
+					return [...prev, prodToAdd]
+				})
+
+				toast.success(
+					'Produto Adicionado com sucesso!!',
+					{
+						position: "top-right",
+						duration: 2000
+					}
+				)
+			}
+		});
+	}
+
+
+	useEffect(() => {
+		console.log('prodsToAdd: ', prodsToAdd)
+	}, [prodsToAdd]);
+
+	const handleDeleteProdManual = (prod, hiddenAppName) => {
+		setprodsToAdd((prev) =>
+			prev.filter(
+				(item) =>
+					// mantém se NÃO for o app em questão...
+					item.appName !== hiddenAppName ||
+					// ...ou se for o app, mas NÃO é o mesmo produto
+					item.objToRender?.produto !== prod.produto
+			)
+		);
+	};
+
+	const handleDeleteProd = (prod, prodsArray, appName) => {
+		console.log("AppName:", appName);
+
+		const prodToRemove = prodsArray.find((data) => data.produto === prod.produto);
+		console.log("prodToRemove", prodToRemove);
+
+		setProdsToRemove((prev) => {
+			const alreadyExists = prev.some(
+				(item) =>
+					item.appName === appName &&
+					item.prodToRemove?.produto === prodToRemove?.produto
+			);
+
+			if (alreadyExists) {
+				// Remove o item se já existir
+				return prev.filter(
+					(item) =>
+						!(item.appName === appName && item.prodToRemove?.produto === prodToRemove?.produto)
+				);
+			} else {
+				// Adiciona o item
+				return [...prev, { appName, prodToRemove }];
+			}
+		});
+	};
+
 
 	const handleSetApp = (dataId, estagio) => {
 		console.log(dataId, estagio);
@@ -515,13 +707,10 @@ const DataProgramPage = (props) => {
 		}, 0);
 		setAreaFiltTotal(sum);
 		setObjResumValues(filtArr);
-
-		console.log('arrays of parcelas: ', filtArr)
 		const parcelasArr = filtArr.map((data) => {
 			const parcelasHere = data.data.cronograma.map((parcela) => parcela.parcela)
 			return parcelasHere.flat()
 		})
-		console.log('arrays of parcelas: ', parcelasArr.flat())
 		setfilteredAndDucplicatedParcelas(parcelasArr.flat())
 
 	}, [objList]);
@@ -603,11 +792,30 @@ const DataProgramPage = (props) => {
 		setHidenAppsArr([]);
 	}, [farmSelected]);
 
-	const handleOpenApp = async (data, cronograma, estagio, programaLoading) => {
+	const handleOpenApp = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
 		console.log('data to send to Farmbox', data)
+		let newData = data
+		const isThereAnyProdToRemove = prodsToRemove.filter((data) => data.appName === hiddenAppName)
+		if (isThereAnyProdToRemove?.length > 0) {
+			console.log('yes, need to remove someProds here:')
+			const onlyIdToRemove = isThereAnyProdToRemove.map((data) => data.prodToRemove.id_farmbox)
+			newData = {
+				...data,
+				inputs: data.inputs.filter((prods) => !onlyIdToRemove.includes(prods.input_id))
+			}
+		}
+		const isThereAnyProdToAdd = prodsToAdd.filter((data) => data.appName === hiddenAppName)
+		if (isThereAnyProdToAdd.length > 0) {
+			const onlyObjTOFarm = isThereAnyProdToAdd.map((data) => data.objToSendtoFarm)
+			newData = {
+				...data,
+				inputs: [...data.inputs, ...onlyObjTOFarm]
+			}
+		}
+
 		const parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
 		const params = JSON.stringify({
-			data: data
+			data: newData
 		});
 		try {
 			setAppIsLoading(programaLoading)
@@ -899,27 +1107,24 @@ const DataProgramPage = (props) => {
 							const estagio = data.estagio.split("|")[0];
 							const hiddenAppName =
 								dat.data.estagio + farmSelected;
-							// const mapIdsFilter = data.cronograma.map((ids) => ids.plantioId)
-							// if (data) {
-							// 	return <Box
-							// 		sx={{
-							// 			display: 'flex',
-							// 			justifyContent: 'center',
-							// 			alignItems: 'center',
-							// 			width: '100%',
-							// 			height: '30px',
-							// 			boxShadow:
-							// 				"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
-							// 			borderRadius: "8px",
-							// 			opacity: hidenAppsArr.includes(
-							// 				hiddenAppName
-							// 			)
-							// 				? "0"
-							// 				: "1",
-							// 		}}
-							// 		className={classes["mainProgramAllDiv"]}
-							// 	>Loading...</Box>
-							// }
+
+
+							const totalToMult = Number(data.total.replace(/\./g, '').replace(',', '.'));
+							const totaisFiltrados = dat.totais
+								.sort((a, b) => a.tipo.localeCompare(b.tipo))
+								.filter((t) => t.tipo !== "operacao");
+
+							const extrasRender = prodsToAdd
+								.filter((ex) => ex.appName === hiddenAppName)
+								.map((ex) => {
+									return {
+										...ex.objToRender,
+										qty: totalToMult * ex.objToRender.dose,
+										canRemove: true
+									}
+								});
+
+							const linhasParaMostrar = [...totaisFiltrados, ...extrasRender];
 							return (
 								<>
 									<Box
@@ -971,7 +1176,7 @@ const DataProgramPage = (props) => {
 													/>
 													:
 													<Button
-														onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio)}
+														onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio, hiddenAppName)}
 														sx={{
 															cursor: "pointer",
 															width: "50px",
@@ -1036,6 +1241,7 @@ const DataProgramPage = (props) => {
 														: classes["estagio-div"]
 												}
 											>
+												{objResumValues.length - (i)} {" "}
 												<FontAwesomeIcon
 													icon={
 														!showProducts
@@ -1128,13 +1334,7 @@ const DataProgramPage = (props) => {
 															]
 														}
 													>
-														{dat.totais
-															.sort((a, b) =>
-																a.tipo.localeCompare(
-																	b.tipo
-																)
-															)
-															.filter((tipos) => tipos.tipo !== 'operacao')
+														{linhasParaMostrar
 															.map((dataP, i) => {
 																// console.log('dataP', dataP)
 																const quantidade =
@@ -1147,6 +1347,7 @@ const DataProgramPage = (props) => {
 																			minimumFractionDigits: 2
 																		}
 																	);
+																const wasRemoved = prodsToRemove.filter((prodTo) => prodTo.appName === hiddenAppName && prodTo.prodToRemove.produto === dataP.produto)
 																return (
 																	<div
 																		key={i}
@@ -1169,6 +1370,7 @@ const DataProgramPage = (props) => {
 																		>
 																			<div
 																				style={{
+																					textDecoration: wasRemoved.length > 0 && 'line-through',
 																					color:
 																						theme
 																							.palette
@@ -1183,7 +1385,29 @@ const DataProgramPage = (props) => {
 																					"div-produtos-aplicar-produto"
 																					]
 																				}
+																			><IconButton
+																				onClick={() =>
+																					!dataP.canRemove ?
+																						handleDeleteProd(dataP, dat?.data?.produtos, hiddenAppName)
+																						:
+																						handleDeleteProdManual(dataP, hiddenAppName)
+																				}
+																				size="small"
+																				aria-label="delete"
+																				color={!wasRemoved.length > 0 ? "warning" : 'success'}
+																				sx={{
+																					alignSelf: "start",
+																					borderRadius: "12px"
+																				}}
 																			>
+																					{
+																						!dataP.canRemove ?
+																							<DeleteIcon />
+																							:
+																							<DeleteForeverIcon />
+
+																					}
+																				</IconButton>
 																				{`${dataP.dose.toLocaleString(
 																					"pt-br",
 																					{
@@ -1221,6 +1445,20 @@ const DataProgramPage = (props) => {
 															})}
 													</div>
 												</Zoom>
+												{
+													isLoadingProdsToUse ?
+														<CircularProgress size={24} color="inherit" />
+														:
+														<IconButton
+															size="small"        // deixa o botão compacto
+															color="success"     // segue o tema MUI
+															onClick={() => handleAddProd(hiddenAppName)}
+															aria-label="adicionar"
+															disabled={prodsToUse.length === 0}
+														>
+															<AddCircleRoundedIcon fontSize="small" />
+														</IconButton>
+												}
 											</div>
 											<div
 												className={
@@ -1363,7 +1601,7 @@ const DataProgramPage = (props) => {
 																				}}
 																			/>
 																		</div>
-																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]}>
+																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]} style={{ fontWeight: 'bold' }}>
 																			{
 																				data.parcela
 																			}
@@ -1422,7 +1660,7 @@ const DataProgramPage = (props) => {
 																		style={{
 																			color: colors
 																				.primary[100],
-																				fontWeight: 'bold'
+																			fontWeight: 'bold'
 																		}}
 																		className={
 																			classes[
@@ -1475,9 +1713,9 @@ const DataProgramPage = (props) => {
 								</>
 							);
 						})}
-						{objResumValues.length > 0 && <Box sx={{textAlign: 'center', marginTop: '10px'}}>
-							<Divider>{farmSelected?.replace('Projeto', '')}</Divider>
-							</Box>}
+					{objResumValues.length > 0 && <Box sx={{ textAlign: 'center', marginTop: '10px' }}>
+						<Divider>{farmSelected?.replace('Projeto', '')}</Divider>
+					</Box>}
 				</Box>
 			</Box>
 		</Box >
