@@ -169,7 +169,7 @@ const DataProgramPage = (props) => {
 			title: `Adicionar insumo`,
 			html: `<div id="swal-react-root">/div>`,
 			showCancelButton: true,
-			confirmButtonText: "Salvar",
+			confirmButtonText: "Adicionar",
 			cancelButtonText: "Cancelar",
 			focusConfirm: false,
 			customClass: { popup: "swal2-compact" },
@@ -182,7 +182,7 @@ const DataProgramPage = (props) => {
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
 						{/* AUTOCOMPLETE COMPACTO */}
 						{hiddenAppName.replace('|', " - ").replace('Projeto', ' - ')}
-						<Box sx={{display: 'flex', flexDirection: 'row', gap: '10px'}}>
+						<Box sx={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
 							<Autocomplete
 								id="swal-prod"
 								size="small"
@@ -233,16 +233,22 @@ const DataProgramPage = (props) => {
 		}).then(({ isConfirmed, value }) => {
 			// if (isConfirmed) onSave?.(value); // { prod, dose }
 			if (isConfirmed) {
-				const checkIfIsInserted = existProds.filter((data) => data.produto === value.prod.name)
-				if (checkIfIsInserted.length > 0) {
-					toast.error(
-						'Produto já consta na Calda',
-						{
-							position: "top-right",
-							duration: 2000
-						}
-					)
-					return
+				const prodName = value.prod.name;
+
+				// 1) Já existe na calda?
+				const alreadyInCalda = existProds.some(p => p.produto === prodName);
+
+				// 2) Está na lista de remoção (para este app)?
+				const scheduledToRemove = prodsToRemove
+					.filter(item => item.appName === hiddenAppName)   // isola o app
+					.some(item => item.prodToRemove?.produto === prodName); // ajuste o campo se necessário
+
+				if (alreadyInCalda && !scheduledToRemove) {
+					toast.error('Produto já consta na Calda', {
+						position: 'top-right',
+						duration: 2000,
+					});
+					return;
 				}
 				const { prod, dose } = value
 				const { name, ...prodClean } = prod;
@@ -274,10 +280,6 @@ const DataProgramPage = (props) => {
 	}
 
 
-	useEffect(() => {
-		console.log('prodsToAdd: ', prodsToAdd)
-	}, [prodsToAdd]);
-
 	const handleDeleteProdManual = (prod, hiddenAppName) => {
 		setprodsToAdd((prev) =>
 			prev.filter(
@@ -291,10 +293,10 @@ const DataProgramPage = (props) => {
 	};
 
 	const handleDeleteProd = (prod, prodsArray, appName) => {
-		console.log("AppName:", appName);
+		// console.log("AppName:", appName);
 
 		const prodToRemove = prodsArray.find((data) => data.produto === prod.produto);
-		console.log("prodToRemove", prodToRemove);
+		// console.log("prodToRemove", prodToRemove);
 
 		setProdsToRemove((prev) => {
 			const alreadyExists = prev.some(
@@ -317,11 +319,13 @@ const DataProgramPage = (props) => {
 	};
 
 
-	const handleSetApp = (dataId, estagio) => {
-		console.log(dataId, estagio);
+	const handleSetApp = (dataId, estagio, hiddenAppName, plantioIdFarmbox) => {
+		// console.log(dataId, estagio, hiddenAppName);
 		const newDict = {
 			id: dataId,
-			estagio: estagio
+			estagio: estagio,
+			appName: hiddenAppName,
+			plantioIdFarmbox
 		};
 
 		const isIn = updateApp.some(
@@ -472,7 +476,7 @@ const DataProgramPage = (props) => {
 			});
 		setFarmList([...new Set(listFarm)].sort());
 		handleFilterList([...new Set(listFarm)].sort()[0]);
-	}, []);
+	}, [plantioRedux]);
 
 	const handleFilterList = (farmName) => {
 		setFarmSelected(farmName);
@@ -804,28 +808,68 @@ const DataProgramPage = (props) => {
 		setHidenAppsArr([]);
 	}, [farmSelected]);
 
+	useEffect(() => {
+		console.log('isThereAnyProdToAdd', prodsToAdd)
+	}, [prodsToAdd]);
+
 	const handleOpenApp = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
 		console.log('data to send to Farmbox', data)
 		let newData = data
 		const isThereAnyProdToRemove = prodsToRemove.filter((data) => data.appName === hiddenAppName)
 		if (isThereAnyProdToRemove?.length > 0) {
-			console.log('yes, need to remove someProds here:')
-			const onlyIdToRemove = isThereAnyProdToRemove.map((data) => data.prodToRemove.id_farmbox)
+			console.log('yes, need to remove someProds here:');
+
+			// helper para padronizar a dose com 3 casas
+			const to3 = v => Number(v).toFixed(3);
+
+			// monta array de {id, dose} padronizados
+			const onlyIdToRemove = isThereAnyProdToRemove.map(data => ({
+				id: data.prodToRemove.id_farmbox,
+				dose: to3(data.prodToRemove.dose),
+			}));
+
+
+			// cria Set com chaves "id|dose" para busca eficiente
+			const removeKeys = new Set(
+				onlyIdToRemove.map(item => `${item.id}|${item.dose}`)
+			);
+
+			// filtra mantendo só os que NÃO estão no removeKeys
 			newData = {
 				...newData,
-				inputs: data.inputs.filter((prods) => !onlyIdToRemove.includes(prods.input_id))
-			}
+				inputs: newData.inputs.filter(
+					prods => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
+				),
+			};
 		}
 		const isThereAnyProdToAdd = prodsToAdd.filter((data) => data.appName === hiddenAppName)
 		if (isThereAnyProdToAdd.length > 0) {
 			const onlyObjTOFarm = isThereAnyProdToAdd.map((data) => data.objToSendtoFarm)
 			newData = {
 				...newData,
-				inputs: [...data.inputs, ...onlyObjTOFarm]
+				inputs: [...newData.inputs, ...onlyObjTOFarm]
 			}
 		}
 
-		const parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
+		const isThereAnyPlantationToRemove = updateApp.filter((data) => data.appName === hiddenAppName)
+		let parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
+		if (isThereAnyPlantationToRemove.length > 0) {
+			console.log('precisa remover as plantacoes abaixo:')
+			const onlyIdPlantations = isThereAnyPlantationToRemove.map((parcela) => parcela.plantioIdFarmbox)
+			newData = {
+				...newData,
+				plantations: newData.plantations.filter((data) => !onlyIdPlantations.includes(data.plantation_id)) 
+			}
+			const onlyPlantioId = isThereAnyPlantationToRemove.map((data) => data.id)
+			
+			parcelasToUp = parcelasToUp.filter((data) => !onlyPlantioId.includes(data.id))
+		}
+		
+		// console.log('newData', newData)
+		// console.log('parcelasToRemove', updateApp)
+		// console.log('cronograma', cronograma)
+		// console.log('parcelasToUp', parcelasToUp)
+
 		const params = JSON.stringify({
 			data: newData
 		});
@@ -1315,7 +1359,7 @@ const DataProgramPage = (props) => {
 															handleSetApp(element.plantioId, element.estagio.split("|")[0])
 														})}
 												>
-													<p>{estagio}</p>
+													<p style={{ color: colors.primary[200] }}>{estagio}</p>
 												</Box>
 												<p
 													style={{
@@ -1323,12 +1367,13 @@ const DataProgramPage = (props) => {
 															theme.palette
 																.mode ===
 																"light"
-																? "grey"
+																? colors
+																	.primary[100]
 																: colors
-																	.primary[300]
+																	.primary[100]
 													}}
 												>
-													Area Total: {data.total}
+													Área Total: {data.total}
 												</p>
 												<Zoom
 													in={showProducts}
@@ -1359,7 +1404,11 @@ const DataProgramPage = (props) => {
 																			minimumFractionDigits: 2
 																		}
 																	);
-																const wasRemoved = prodsToRemove.filter((prodTo) => prodTo.appName === hiddenAppName && prodTo.prodToRemove.produto === dataP.produto)
+																const wasRemoved = prodsToRemove.filter((prodTo) => prodTo.appName === hiddenAppName && prodTo.prodToRemove.produto === dataP.produto && Number(prodTo?.prodToRemove?.dose).toFixed(3) === Number(dataP.dose).toFixed(3))
+																if (wasRemoved.length > 0) {
+																	console.log('wasRemoved', Number(wasRemoved[0]?.prodToRemove?.dose).toFixed(3) === Number(dataP.dose).toFixed(3))
+																	console.log('dataP Dose', Number(dataP.dose).toFixed(3))
+																}
 																return (
 																	<div
 																		key={i}
@@ -1537,7 +1586,7 @@ const DataProgramPage = (props) => {
 														>
 															DAP AP
 														</div>
-														<div>Area</div>
+														<div>Área</div>
 													</div>
 													{data.cronograma
 														.sort((a, b) =>
@@ -1597,7 +1646,9 @@ const DataProgramPage = (props) => {
 																			onClick={() =>
 																				handleSetApp(
 																					dataId,
-																					setEstagio
+																					setEstagio,
+																					hiddenAppName,
+																					data.plantioIdFarmbox
 																				)
 																			}
 																		>

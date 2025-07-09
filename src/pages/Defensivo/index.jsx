@@ -21,12 +21,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPlantio, setSafraCilco } from "../../store/plantio/plantio.actions";
 
 import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
+import { useLocation } from "react-router-dom";
+
 
 const DefensivoPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
 	const safraCiclo = useSelector(selectSafraCiclo);
+	const location = useLocation();               // ← pathname atual
+
 
 	const [isLoadingHome, setIsLoading] = useState(true);
 
@@ -72,7 +76,7 @@ const DefensivoPage = () => {
 	};
 
 	const getFalseApi = async () => {
-		const newObj  = { ...safraCiclo, device: 'WEB'}
+		const newObj = { ...safraCiclo, device: 'WEB' }
 		try {
 			await djangoApi
 				.post(
@@ -166,7 +170,7 @@ const DefensivoPage = () => {
 							margin: "-10px 10px",
 							color: (theme) =>
 								colors.greenAccent[
-									theme.palette.mode === "dark" ? 200 : 800
+								theme.palette.mode === "dark" ? 200 : 800
 								]
 						}}
 					/>

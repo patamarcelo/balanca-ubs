@@ -26,16 +26,17 @@ import classes from "../data-program/data-program.module.css";
 import SafraCicloComp from "./safra-ciclo";
 import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
 
+
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
 	const { isLoadingHome, handleRefreshData } = props;
 
-	const [isOpenProducts, setIsOpenProducts] = useState(true);
+	const [isOpenProducts, setIsOpenProducts] = useState(false);
 	const [isOpenProductsByDayDinamic, setisOpenProductsByDayDinamic] =
 		useState(false);
-	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(false);
+	const [isOpenProductsProgram, setisOpenProductsProgram] = useState(true);
 	const [isOpenPlantioPage, setIsOpenPlantioPage] = useState(false);
 	const [isOpenFarmbox, setIsOpenFarmbox] = useState(false);
 
@@ -62,6 +63,7 @@ const HomeDefensivoPage = (props) => {
 		finalDate.setDate(finalDate.getDate() + 6);
 		setFinalDateForm(finalDate.toISOString().split("T")[0]);
 	}, []);
+	
 
 	const dictComps = {
 		dinamic: "dinamic",
