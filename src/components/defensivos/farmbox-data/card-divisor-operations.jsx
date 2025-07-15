@@ -17,6 +17,9 @@ const CardDiviOperations = (props) => {
             }
         )
     }
+    if(value === 0){
+        return
+    }
     return (
         <Box>
             <Typography variant="h6" color={colors.primary[100]} >

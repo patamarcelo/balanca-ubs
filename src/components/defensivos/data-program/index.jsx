@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Typography, useTheme, Autocomplete, TextField, } from "@mui/material";
-import { tokens } from "../../../theme";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { tokens, ColorModeContext } from "../../../theme";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
@@ -69,6 +69,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const DataProgramPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const colorMode = useContext(ColorModeContext);
 	const { initialDateForm, finalDateForm, handleRefreshData } = props;
 
 	const [farmList, setFarmList] = useState([]);
@@ -244,10 +245,11 @@ const DataProgramPage = (props) => {
 					.some(item => item.prodToRemove?.produto === prodName); // ajuste o campo se necessário
 
 				if (alreadyInCalda && !scheduledToRemove) {
-					toast.error('Produto já consta na Calda', {
-						position: 'top-right',
-						duration: 2000,
-					});
+					Swal.fire({
+							title: "Atenção!!",
+							html: `<b>Produto já consta na Calda</b> `,
+							icon: "warning"
+						});
 					return;
 				}
 				const { prod, dose } = value
@@ -745,6 +747,10 @@ const DataProgramPage = (props) => {
 		return false
 	}
 	const generatePDF = async () => {
+		const actualTheme = theme.palette.mode
+		if (actualTheme === 'dark') {
+			colorMode.toggleColorMode()
+		}
 		const pdf = new JsPDF("portrait", "pt", "a4", false);
 		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
 		let srcWidth = document.getElementById(
@@ -768,6 +774,9 @@ const DataProgramPage = (props) => {
 			.then(() => {
 				pdf.save(`${formatName()}.pdf`);
 			});
+		if (actualTheme === 'dark') {
+			colorMode.toggleColorMode()
+		}
 	};
 
 	const hiddenApps = (appNameToHdie, totalArea, parcelas) => {
@@ -858,13 +867,13 @@ const DataProgramPage = (props) => {
 			const onlyIdPlantations = isThereAnyPlantationToRemove.map((parcela) => parcela.plantioIdFarmbox)
 			newData = {
 				...newData,
-				plantations: newData.plantations.filter((data) => !onlyIdPlantations.includes(data.plantation_id)) 
+				plantations: newData.plantations.filter((data) => !onlyIdPlantations.includes(data.plantation_id))
 			}
 			const onlyPlantioId = isThereAnyPlantationToRemove.map((data) => data.id)
-			
+
 			parcelasToUp = parcelasToUp.filter((data) => !onlyPlantioId.includes(data.id))
 		}
-		
+
 		// console.log('newData', newData)
 		// console.log('parcelasToRemove', updateApp)
 		// console.log('cronograma', cronograma)
