@@ -273,7 +273,7 @@ const DataProgramPage = (props) => {
 				toast.success(
 					'Produto Adicionado com sucesso!!',
 					{
-						position: "top-right",
+						position: "bottom-left",
 						duration: 2000
 					}
 				)

@@ -52,8 +52,8 @@ const PlantioColheitaPage = () => {
 	};
 
 	const [params, setParams] = useState({
-		safra: "2024/2025",
-		ciclo: "3"
+		safra: "2025/2026",
+		ciclo: "1"
 	});
 
 	useEffect(() => {
