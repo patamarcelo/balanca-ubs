@@ -136,7 +136,8 @@
 .estagio-div{
     min-width: 32%;
     font-weight: bold;
-    font-family: "Times New Roman"
+    font-family: "Times New Roman";
+    align-self: flex-start;
 }
 .estagio-div-ipad{
     min-width: 38%;
@@ -153,6 +154,8 @@
     flex-direction: row;
     padding: 5px;
     width: 90%;
+    align-self: flex-start;
+    margin-top: 10px;
 }
 
 .parcelas-resumo-div > div{
@@ -399,3 +402,14 @@
 /* .hasitemInsideArr{
     background-color: yellow !important;
 } */
+
+
+.no-print {
+	display: block;
+}
+
+@media print {
+	.no-print {
+		display: none !important;
+	}
+}

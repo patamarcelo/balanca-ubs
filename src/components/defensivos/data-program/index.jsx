@@ -45,9 +45,10 @@ import {
 
 import EmptyResultPage from "./empty-result";
 
-import JsPDF from "jspdf";
+// import JsPDF from "jspdf"
 // import moment from "moment";
-// import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 // import MapPlotDjango from "./data-plot-map";
 
@@ -119,6 +120,8 @@ const DataProgramPage = (props) => {
 	const [isLoadingProdsToUse, setIsLoadingProdsToUse] = useState(false);
 
 	const MySwal = withReactContent(Swal);
+
+	const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
 
 
@@ -246,10 +249,10 @@ const DataProgramPage = (props) => {
 
 				if (alreadyInCalda && !scheduledToRemove) {
 					Swal.fire({
-							title: "Atenção!!",
-							html: `<b>Produto já consta na Calda</b> `,
-							icon: "warning"
-						});
+						title: "Atenção!!",
+						html: `<b>Produto já consta na Calda</b> `,
+						icon: "warning"
+					});
 					return;
 				}
 				const { prod, dose } = value
@@ -746,36 +749,81 @@ const DataProgramPage = (props) => {
 		}
 		return false
 	}
+
 	const generatePDF = async () => {
-		const actualTheme = theme.palette.mode
-		if (actualTheme === 'dark') {
-			colorMode.toggleColorMode()
-		}
-		const pdf = new JsPDF("portrait", "pt", "a4", false);
-		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
-		let srcWidth = document.getElementById(
-			"printableGeralProgramaDiv"
-		).scrollWidth;
-		let margin = 18; // narrow margin - 1.27 cm (36);
-		let scale = (pWidth - margin * 2) / srcWidth;
-		await pdf
-			.html(document.getElementById("printableGeralProgramaDiv"), {
-				x: margin,
-				y: margin,
-				margin: [20, 0, 20, 0],
-				autoPaging: "text",
-				html2canvas: {
-					logging: true,
-					scale: scale,
-					allowTaint: true,
-					useCORS: true
-				}
-			})
-			.then(() => {
-				pdf.save(`${formatName()}.pdf`);
+		try {
+			setIsGeneratingPDF(true);
+
+			// Esconde elementos com classe .print-safe-wrapper (ex: botões)
+			document.querySelectorAll(".print-safe-wrapper").forEach(el => {
+				el.style.visibility = "hidden";
 			});
-		if (actualTheme === 'dark') {
-			colorMode.toggleColorMode()
+
+			const actualTheme = theme.palette.mode;
+			if (actualTheme === 'dark') {
+				colorMode.toggleColorMode();
+			}
+
+			// Pequena pausa para aplicar mudanças visuais
+			await new Promise(res => setTimeout(res, 300));
+
+			const pdf = new jsPDF("portrait", "pt", "a4");
+			const pageHeight = pdf.internal.pageSize.getHeight() - 40; // margem de 20pt topo/baixo
+			const pageWidth = pdf.internal.pageSize.getWidth() - 40;   // margem lateral
+
+			const headerDiv = document.querySelector(".print-fazenda-div");
+			const contentDivs = Array.from(document.querySelectorAll(".mainProgramAllDiv"));
+			const footerDiv = document.querySelector("#footerDiv");
+
+			// Junta todos os elementos para renderizar no PDF
+			const allDivs = [headerDiv, ...contentDivs];
+			if (footerDiv) allDivs.push(footerDiv);
+
+			let currentY = 20;
+
+			for (let i = 0; i < allDivs.length; i++) {
+				const div = allDivs[i];
+				if (!div) continue;
+				if (i > 0) {
+					div.style.display = 'block';
+				}
+				div.style.opacity = '1';
+				div.style.visibility = 'visible';
+
+				const canvas = await html2canvas(div, {
+					scale: 1.2,
+					useCORS: true,
+					allowTaint: true,
+				});
+
+				const imgData = canvas.toDataURL("image/jpeg", 0.7);
+				const imgProps = pdf.getImageProperties(imgData);
+
+				const imgWidth = pageWidth;
+				const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+				if (currentY + imgHeight > pageHeight) {
+					pdf.addPage();
+					currentY = 20;
+				}
+
+				pdf.addImage(imgData, "JPEG", 20, currentY, imgWidth, imgHeight);
+				currentY += imgHeight + 10;
+			}
+
+			pdf.save(`${formatName()}.pdf`);
+
+			if (actualTheme === 'dark') {
+				colorMode.toggleColorMode();
+			}
+		} catch (error) {
+			console.error("Erro ao gerar PDF:", error);
+		} finally {
+			// Restaura visibilidade dos botões
+			document.querySelectorAll(".print-safe-wrapper").forEach(el => {
+				el.style.visibility = "visible";
+			});
+			setIsGeneratingPDF(false);
 		}
 	};
 
@@ -970,14 +1018,23 @@ const DataProgramPage = (props) => {
 					);
 				})}
 				<Box sx={{ marginLeft: "auto" }}>
-					<IconButton onClick={generatePDF}>
-						{/* <IconButton onClick={() => window.print()}> */}
-						<FontAwesomeIcon
-							icon={faPrint}
-							color={colors.blueAccent[500]}
-							size={"sm"}
+					{isGeneratingPDF ? (
+						<CircularProgress
+							size={24}
+							sx={{
+								color: colors.blueAccent[500],
+								marginRight: "12px",
+							}}
 						/>
-					</IconButton>
+					) : (
+						<IconButton onClick={generatePDF}>
+							<FontAwesomeIcon
+								icon={faPrint}
+								color={colors.blueAccent[500]}
+								size={"sm"}
+							/>
+						</IconButton>
+					)}
 				</Box>
 			</Box>
 			<Box
@@ -989,10 +1046,13 @@ const DataProgramPage = (props) => {
 				mt={2}
 			>
 				<Box
-					className={classes["fazenda-div"]}
-					style={{ backgroundColor: colors.blueOrigin[800] }}
+					className={`${classes["fazenda-div"]} fazenda-div`}
+					style={{
+						backgroundColor: theme.palette.mode !== "dark" ? "#ffffff" : colors.blueOrigin[800], // força branco no modo escuro
+					}}
 				>
 					<Typography
+						className="print-fazenda-div"
 						variant={!isCellPhone ? "h6" : "h6"}
 						color={
 							theme.palette.mode === "dark"
@@ -1008,64 +1068,22 @@ const DataProgramPage = (props) => {
 							fontWeight: "bold"
 						}}
 					>
-						<div style={{ fontFamily: "Times New Roman" }}>
-							<span style={{ fontStyle: "italic" }}>
-								até{" "}
-								{finalDateForm && displayDate(finalDateForm)}
-							</span>
+						<div style={{ fontFamily: "Times New Roman", fontStyle: 'italic' }}>
+							até{" "}
+							{finalDateForm && displayDate(finalDateForm)}
 						</div>
-						<div style={{ fontFamily: "Times New Roman" }}>
+						<div style={{ fontFamily: "Times New Roman", display: 'flex', flexDirection: 'row' }}>
 							{farmSelected?.replace('Projeto', '')}
-							<FontAwesomeIcon
-								icon={!onlyOpenApp ? faCheckDouble : faClock}
-								color={
-									!onlyOpenApp
-										? colors.greenAccent[500]
-										: colors.yellow[500]
-								}
-								size="sm"
+							<div
+								className="print-safe-wrapper"
 								style={{
-									margin: "0px 10px",
-									cursor: "pointer"
+									visibility: isGeneratingPDF ? "hidden" : "visible"
 								}}
-								onClick={() => setOnlyOpenApp(!onlyOpenApp)}
-							/>
-							<FontAwesomeIcon
-								icon={
-									!filtData
-										? faArrowDownShortWide
-										: faArrowDownAZ
-								}
-								color={
-									!filtData
-										? colors.greenAccent[500]
-										: colors.yellow[500]
-								}
-								size="sm"
-								style={{
-									margin: "0px 0px",
-									cursor: "pointer"
-								}}
-								onClick={() => handleFilterTable()}
-							/>
-							{isLoadingHome ? (
-								<CircularProgress
-									size={15}
-									sx={{
-										margin: "0px 10px",
-										color: (theme) =>
-											colors.greenAccent[
-											theme.palette.mode === "dark"
-												? 200
-												: 800
-											]
-									}}
-								/>
-							) : (
+							>
 								<FontAwesomeIcon
-									icon={faMapLocationDot}
+									icon={!onlyOpenApp ? faCheckDouble : faClock}
 									color={
-										!showMapps
+										!onlyOpenApp
 											? colors.greenAccent[500]
 											: colors.yellow[500]
 									}
@@ -1074,11 +1092,57 @@ const DataProgramPage = (props) => {
 										margin: "0px 10px",
 										cursor: "pointer"
 									}}
-									onClick={() => handleShowMaps()}
+									onClick={() => setOnlyOpenApp(!onlyOpenApp)}
 								/>
-							)}
+								<FontAwesomeIcon
+									icon={
+										!filtData
+											? faArrowDownShortWide
+											: faArrowDownAZ
+									}
+									color={
+										!filtData
+											? colors.greenAccent[500]
+											: colors.yellow[500]
+									}
+									size="sm"
+									style={{
+										margin: "0px 0px",
+										cursor: "pointer"
+									}}
+									onClick={() => handleFilterTable()}
+								/>
+								{isLoadingHome ? (
+									<CircularProgress
+										size={15}
+										sx={{
+											margin: "0px 10px",
+											color: (theme) =>
+												colors.greenAccent[
+												theme.palette.mode === "dark"
+													? 200
+													: 800
+												]
+										}}
+									/>
+								) : (
+									<FontAwesomeIcon
+										icon={faMapLocationDot}
+										color={
+											!showMapps
+												? colors.greenAccent[500]
+												: colors.yellow[500]
+										}
+										size="sm"
+										style={{
+											margin: "0px 10px",
+											cursor: "pointer"
+										}}
+										onClick={() => handleShowMaps()}
+									/>
+								)}
 
-							{/* {isLoadingHome ? (
+								{/* {isLoadingHome ? (
 								<CircularProgress
 									size={15}
 									sx={{
@@ -1108,45 +1172,46 @@ const DataProgramPage = (props) => {
 								/>
 							)} */}
 
-							{isAdminUser &&
-								updateApp.length > 0 &&
-								(sendingData ? (
-									<CircularProgress
-										size={15}
-										sx={{
-											margin: "0px 10px",
-											color: (theme) =>
-												colors.greenAccent[
-												theme.palette.mode ===
-													"dark"
-													? 200
-													: 800
-												]
-										}}
-									/>
-								) : (
-									<IconButton
-										aria-label="delete"
-										onClick={() =>
-											handleSendApiApp(updateApp)
-										}
-									>
-										<FontAwesomeIcon
-											icon={faCircleCheck}
-											size="xs"
+								{isAdminUser &&
+									updateApp.length > 0 &&
+									(sendingData ? (
+										<CircularProgress
+											size={15}
+											sx={{
+												margin: "0px 10px",
+												color: (theme) =>
+													colors.greenAccent[
+													theme.palette.mode ===
+														"dark"
+														? 200
+														: 800
+													]
+											}}
 										/>
-									</IconButton>
-								))}
+									) : (
+										<IconButton
+											aria-label="delete"
+											onClick={() =>
+												handleSendApiApp(updateApp)
+											}
+										>
+											<FontAwesomeIcon
+												icon={faCircleCheck}
+												size="xs"
+											/>
+										</IconButton>
+									))}
 
-							{
-								<Fade in={positiveSignal}>
-									<FontAwesomeIcon
-										icon={faCheck}
-										size="xs"
-										color={colors.greenAccent[500]}
-									/>
-								</Fade>
-							}
+								{
+									<Fade in={positiveSignal}>
+										<FontAwesomeIcon
+											icon={faCheck}
+											size="xs"
+											color={colors.greenAccent[500]}
+										/>
+									</Fade>
+								}
+							</div>
 						</div>
 						<div>
 							{areaFiltTotal > 0 && (
@@ -1274,9 +1339,11 @@ const DataProgramPage = (props) => {
 												hiddenAppName
 											)
 												? "none"
-												: "block"
+												: "block",
+											pageBreakInside: "avoid",
+											breakInside: "avoid" // importante para navegadores modernos
 										}}
-										className={classes["mainProgramAllDiv"]}
+										className={`${classes["mainProgramAllDiv"]} mainProgramAllDiv`}
 									>
 										<div
 											key={i}
@@ -1296,7 +1363,17 @@ const DataProgramPage = (props) => {
 												}`
 												]
 											}
+										><span
+											style={{
+												alignSelf: 'self-start',
+												marginTop: '10px',
+												marginLeft: '10px',
+												fontWeight: 'bold',
+												marginRight: '-40px',
+											}}
 										>
+												{objResumValues.length - (i)} {" "}
+											</span>
 											<div
 												className={
 													!isNonIpad
@@ -1306,7 +1383,6 @@ const DataProgramPage = (props) => {
 														: classes["estagio-div"]
 												}
 											>
-												{objResumValues.length - (i)} {" "}
 												<FontAwesomeIcon
 													icon={
 														!showProducts
@@ -1519,15 +1595,22 @@ const DataProgramPage = (props) => {
 													isLoadingProdsToUse ?
 														<CircularProgress size={24} color="inherit" />
 														:
-														<IconButton
-															size="small"        // deixa o botão compacto
-															color="success"     // segue o tema MUI
-															onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
-															aria-label="adicionar"
-															disabled={prodsToUse.length === 0}
+														<div
+															className="print-safe-wrapper"
+															style={{
+																visibility: isGeneratingPDF ? "hidden" : "visible"
+															}}
 														>
-															<AddCircleRoundedIcon fontSize="small" />
-														</IconButton>
+															<IconButton
+																size="small"
+																color="success"
+																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
+																aria-label="adicionar"
+																disabled={prodsToUse.length === 0}
+															>
+																<AddCircleRoundedIcon fontSize="small" />
+															</IconButton>
+														</div>
 												}
 											</div>
 											<div
@@ -1550,26 +1633,27 @@ const DataProgramPage = (props) => {
 													>
 														<div
 															style={{
-																marginRight:
-																	"20px"
+																textAlign: 'left'
+																// marginRight:
+																// 	"20px"
 															}}
 														>
 															Parcela
 														</div>
 														<div>Plantio</div>
 														<div
-															style={{
-																marginRight:
-																	"20px"
-															}}
+														// style={{
+														// 	marginRight:
+														// 		"20px"
+														// }}
 														>
 															Dap
 														</div>
 														<div
-															style={{
-																marginRight:
-																	"30px"
-															}}
+															// style={{
+															// 	marginRight:
+															// 		"30px"
+															// }}
 															className={
 																classes[
 																"cultura-div"
@@ -1580,18 +1664,18 @@ const DataProgramPage = (props) => {
 														</div>
 														<div>Variedade</div>
 														<div
-															style={{
-																marginLeft:
-																	"30px"
-															}}
+														// style={{
+														// 	marginLeft:
+														// 		"30px"
+														// }}
 														>
 															Prev.
 														</div>
 														<div
-															style={{
-																marginLeft:
-																	"20px"
-															}}
+														// style={{
+														// 	marginLeft:
+														// 		"20px"
+														// }}
 														>
 															DAP AP
 														</div>
@@ -1785,9 +1869,14 @@ const DataProgramPage = (props) => {
 								</>
 							);
 						})}
-					{objResumValues.length > 0 && <Box sx={{ textAlign: 'center', marginTop: '10px' }}>
-						<Divider>{farmSelected?.replace('Projeto', '')}</Divider>
-					</Box>}
+					{objResumValues.length > 0 && (
+						<Box
+							id="footerDiv"
+							sx={{ textAlign: 'center', marginTop: '10px' }}
+						>
+							<Divider>{farmSelected?.replace('Projeto', '')}</Divider>
+						</Box>
+					)}
 				</Box>
 			</Box>
 		</Box >
