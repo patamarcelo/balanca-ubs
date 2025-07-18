@@ -60,6 +60,9 @@ import ProdutosConsolidados from "./produtos-consolidados";
 import PreStPage from "./pre-st";
 
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+
+import { startTaskMonitor } from "../../../store/tasks/tasks-monitor.actions";
 
 const daysFilter = 12;
 const FarmBoxPage = () => {
@@ -213,7 +216,7 @@ const FarmBoxPage = () => {
 				.then((res) => {
 					dispatch(setApp(res.data));
 					toast.success(
-						`'Tudo Certo', 'Aplicações Atualizadas com sucesso!!'`,
+						`Tudo Certo, Aplicações Atualizadas com sucesso!!`,
 						{
 							position: "top-right",
 							duration: 5000
@@ -308,39 +311,40 @@ const FarmBoxPage = () => {
 	const hojeH = (new Date()).toLocaleString('pt-BR')
 
 	const handleUpdateFarmDb = async () => {
-		console.log('Atualizar banco de dados')
-		setIsloadingDbFarm(true)
+		setIsloadingDbFarm(true);
 		try {
-			await djangoApi
-				.get("/defensivo/update_farmbox_mongodb_data/", {
-					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-					}
-				})
-				.then((res) => {
-					if (res.status === 200) {
-						toast.success(
-							`'Tudo Certo', 'Banco de Dados Atualizado!!'`,
-							{
-								position: "top-right",
-								duration: 5000
-							}
-						)
-						refreshData()
-						// alert('Tudo Certo', 'Aplicações Atualizadas com sucesso!!')
-					}
-				})
-				.catch((err) => console.log(err));
+			const res = await djangoApi.get("/defensivo/update_farmbox_mongodb_data/", {
+				headers: {
+					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+				},
+			});
 
+			if (res.data.status === "locked") {
+				Swal.fire({
+					title: "Processo em andamento!",
+					html: `<b>Já existe uma tarefa 'update_farmbox' rodando.`,
+					icon: "warning",
+				});
+				return;
+			}
+
+			const taskId = res.data.task_id;
+			dispatch(startTaskMonitor(taskId, refreshData));
+			toast.success("Banco sendo atualizado em segundo plano!", {
+				position: "top-right",
+			});
+			// refreshData();
 		} catch (error) {
-			console.error('erro ao atualziar os dados: ', error);
-			setIsloadingDbFarm(false)
-			// alert('Problema em atualizar o banco de dados', `Erro: ${error}`)
+			console.error("Erro ao iniciar atualização:", error);
+			Swal.fire({
+				title: "Erro!",
+				html: `<b>Erro ao iniciar a atualização do banco</b><br>${error.message}`,
+				icon: "error",
+			});
 		} finally {
-			setIsloadingDbFarm(false)
+			setIsloadingDbFarm(false);
 		}
-		console.log('update farmOperations...')
-	}
+	};
 
 	const handleShowResumoGeral = () => {
 		setShowResumoGeral(!showResumoGeral)
