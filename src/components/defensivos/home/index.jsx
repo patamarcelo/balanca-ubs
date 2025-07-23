@@ -433,7 +433,7 @@ const HomeDefensivoPage = (props) => {
 					data.status && (
 						<>
 							{isChangingTable && (
-								<Box className={classesPlantioDone.container}>
+								<Box className={classesPlantioDone.container} key={i}>
 									<LoaderHomeSkeleton />
 								</Box>
 							)}

@@ -325,14 +325,12 @@ const DataProgramPage = (props) => {
 
 
 	const handleSetApp = (dataId, estagio, hiddenAppName, plantioIdFarmbox) => {
-		// console.log(dataId, estagio, hiddenAppName);
 		const newDict = {
 			id: dataId,
 			estagio: estagio,
 			appName: hiddenAppName,
 			plantioIdFarmbox
 		};
-
 		const isIn = updateApp.some(
 			(data) => data.id === dataId && data.estagio === estagio
 		);
@@ -349,42 +347,162 @@ const DataProgramPage = (props) => {
 			// console.log("ainda não estava");
 		}
 	};
+	
+	const handleSetAppMany = (dataId, estagio, hiddenAppName, plantioIdFarmbox) => {
+		const newDict = {
+			id: dataId,
+			estagio: estagio,
+			appName: hiddenAppName,
+			plantioIdFarmbox
+		};
+		const isIn = updateApp.some(
+			(data) => data.appName === hiddenAppName
+		);
+		if (isIn) {
+			const newArr = updateApp.filter((data) => data.appName !== hiddenAppName)
+			setUpdateApp(newArr);
+		} else {
+			setUpdateApp((updateApp) => [...updateApp, newDict]);
+		}
+	};
 
 	// const handleRequestDjangoMaps = () => {
 	// 	setLoadMaps(!loadMaps)
 	// }
-
+	
 	const handleSendApiApp = async (data) => {
-		const params = JSON.stringify({
-			data: data
-		});
+		const params = JSON.stringify({ data });
 		try {
 			setSendingData(true);
-			await djangoApi
-				.put("plantio/update_aplication_plantio/", params, {
+	
+			const res = await djangoApi.put(
+				"plantio/update_aplication_plantio/",
+				params,
+				{
 					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+					},
+				}
+			);
+	
+			const taskId = res.data.task_id;
+			console.log("🔁 Task iniciada:", taskId);
+	
+			if (!taskId) {
+				throw new Error("task_id não recebido!");
+			}
+	
+			let attempts = 0;
+			const maxAttempts = 60; // até 60 segundos
+			const intervalId = setInterval(async () => {
+				try {
+					const statusRes = await djangoApi.get(
+						`backgroundtask/${taskId}/task_status/`,
+						{
+							headers: {
+								Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+							},
+						}
+					);
+	
+					const taskStatus = statusRes.data.status;
+					console.log("🔍 Verificando status:", statusRes);
+					console.log("🔍 Verificando status:", taskStatus);
+	
+					if (taskStatus === "done") {
+						clearInterval(intervalId);
+						setSendingData(false);
+	
+						Swal.fire({
+							title: "Atualização concluída!",
+							text: "As aplicações foram atualizadas com sucesso.",
+							icon: "success",
+							confirmButtonText: "Ok",
+						});
+	
+						// setPositiveSignal(true);
+						setPositiveSignal(false)
+						handleRefreshData()
+						// setTimeout(() => setPositiveSignal(false), 1500);
+						// setTimeout(() => handleRefreshData(), 1700);
 					}
-				})
-				.then((res) => {
-					console.log(res);
-				});
+	
+					if (taskStatus === "failed") {
+						clearInterval(intervalId);
+						setSendingData(false);
+	
+						console.error("❌ Task falhou!", statusRes.data.result?.error);
+	
+						Swal.fire({
+							title: "Erro ao processar!",
+							text: "A tarefa falhou. Verifique os dados e tente novamente.",
+							icon: "error",
+							confirmButtonText: "Fechar",
+						});
+					}
+	
+					if (++attempts >= maxAttempts) {
+						clearInterval(intervalId);
+						setSendingData(false);
+						Swal.fire({
+							title: "Tempo esgotado",
+							text: "A verificação da tarefa excedeu o tempo máximo.",
+							icon: "warning",
+						});
+					}
+				} catch (err) {
+					console.error("Erro ao consultar status da task:", err);
+					clearInterval(intervalId);
+					setSendingData(false);
+					Swal.fire({
+						title: "Erro de rede",
+						text: "Erro ao consultar o status da tarefa.",
+						icon: "error",
+					});
+				}
+			}, 1000);
 		} catch (err) {
-			console.log("Erro ao alterar as aplicações", err);
-		} finally {
-			setUpdateApp([]);
+			console.error("Erro ao iniciar a tarefa:", err);
 			setSendingData(false);
-
-			setPositiveSignal(true);
-			setTimeout(() => {
-				setPositiveSignal(false);
-			}, 1500);
-
-			setTimeout(() => {
-				handleRefreshData();
-			}, 1700);
+			Swal.fire({
+				title: "Erro de envio",
+				text: "Erro ao iniciar o envio das aplicações.",
+				icon: "error",
+			});
 		}
 	};
+
+	// const handleSendApiApp = async (data) => {
+	// 	const params = JSON.stringify({
+	// 		data: data
+	// 	});
+	// 	try {
+	// 		setSendingData(true);
+	// 		await djangoApi
+	// 			.put("plantio/update_aplication_plantio/", params, {
+	// 				headers: {
+	// 					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+	// 				}
+	// 			})
+	// 			.then((res) => {
+	// 				console.log(res);
+	// 			});
+	// 	} catch (err) {
+	// 		console.log("Erro ao alterar as aplicações", err);
+	// 	} finally {
+	// 		setUpdateApp([]);
+	// 		setSendingData(false);
+
+	// 		setPositiveSignal(true);
+	// 		setTimeout(() => {
+	// 			setPositiveSignal(false);
+	// 		}, 1500);
+
+	// 		setTimeout(() => {
+	// 			handleRefreshData();
+	// 		}, 1700);
+	// 	}
+	// };
 
 	const handleShowMaps = () => {
 		setShowMapps(!showMapps);
@@ -1441,7 +1559,7 @@ const DataProgramPage = (props) => {
 																)
 														).forEach(element => {
 															console.log(element.plantioId, element.estagio.split("|")[0])
-															handleSetApp(element.plantioId, element.estagio.split("|")[0])
+															handleSetAppMany(element.plantioId, element.estagio.split("|")[0], hiddenAppName)
 														})}
 												>
 													<p style={{ color: colors.primary[200] }}>{estagio}</p>

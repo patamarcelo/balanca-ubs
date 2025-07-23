@@ -28,7 +28,7 @@
     /* padding: 10px 5px; */
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr 1fr 1fr 0.8fr;
+    grid-template-columns: 1fr 1.2fr 1fr 1fr 1fr 1fr 0.8fr;
     justify-items: center;
     border-radius: 8px;
     box-shadow: rgba(0, 0, 0, 0.65) 0px 1px 1px;
@@ -65,7 +65,7 @@
 .headerEstagios {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr 1fr 1fr 0.8fr;
+    grid-template-columns: 1fr 1.2fr 1fr 1fr 1fr 1fr 0.8fr;
     justify-items: center;
     font-weight: bold;
     margin-bottom: -5px;
@@ -124,7 +124,8 @@
     height: 100%;
 }
 
-.areaTotalContainer h6:first-child{
+.areaTotalContainer h6:first-child,
+.areaTotalContainer h6:nth-child(2){
 font-weight: 900;
 margin-bottom: 10px;
 align-self: flex-end;
@@ -187,4 +188,10 @@ align-self: flex-end;
     color: white;
     transform: scale(0.2); /* Shrink the header */
     transition: all 0.3s ease;   
+}
+
+
+.totalCostTitle{
+    font-style: italic;
+    font-weight: bold;
 }

@@ -50,6 +50,12 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 				});
 			}
 		}
+		if(tipo === 'valor_aplicacao'){
+			return 'R$ '+ data.toLocaleString("pt-br", {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
+		}
 		return data;
 	};
 

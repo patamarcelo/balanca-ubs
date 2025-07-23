@@ -35,6 +35,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
+import Logo from "../../utils/assets/img/logo-2.png";
 
 const initialValues = {
 	username: "",
@@ -138,19 +139,8 @@ const Auth = () => {
 					justifyContent="center"
 					alignItems="center"
 					mb="50px"
-				>
-					{/* <Header title="Pitaya Pay" /> */}
-					<Typography
-						variant="h2"
-						color={colors.pink[100]}
-						fontWeight="bold"
-						sx={{
-							fontStyle: "italic"
-						}}
-						className="title-app"
-					>
-						Diamante
-					</Typography>
+				>	
+					<img src={Logo} alt="logo" style={{ borderRadius: "4px" }} />
 				</Box>
 				<Formik
 					// onSubmit={handleFormSubmit}
@@ -220,7 +210,7 @@ const Auth = () => {
 											variant="filled"
 											type={
 												value.name === "password" &&
-												!showPassword
+													!showPassword
 													? "text"
 													: value.type
 											}
@@ -264,23 +254,23 @@ const Auth = () => {
 											InputProps={{
 												endAdornment: value.type ===
 													"password" && (
-													<IconButton
-														aria-label="toggle password visibility"
-														onClick={
-															handleClickShowPassword
-														}
-														onMouseDown={
-															handleMouseDownPassword
-														}
-														edge="end"
-													>
-														{showPassword ? (
-															<VisibilityOff />
-														) : (
-															<Visibility />
-														)}
-													</IconButton>
-												)
+														<IconButton
+															aria-label="toggle password visibility"
+															onClick={
+																handleClickShowPassword
+															}
+															onMouseDown={
+																handleMouseDownPassword
+															}
+															edge="end"
+														>
+															{showPassword ? (
+																<VisibilityOff />
+															) : (
+																<Visibility />
+															)}
+														</IconButton>
+													)
 											}}
 										/>
 									);

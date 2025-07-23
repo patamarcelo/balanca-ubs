@@ -1,16 +1,38 @@
 import { Box } from "@mui/material";
 import styles from "./programas-styles.module.css";
 import ProdutosComp from "./produtos";
+import { useSelector } from "react-redux";
+import { selectOperacoes } from "../../../store/programas/programas.selector";
 
 const EstagiosComp = ({ data, program }) => {
+	const operacoes = useSelector(selectOperacoes);
 	const headerData = [
 		{ title: "Estágio" },
 		{ title: "Produto" },
 		{ title: "Tipo" },
 		{ title: "Dose Kg/Lt ha" },
 		{ title: "Quantidade" },
+		{ title: "Custo / Há" },
 		{ title: "Observação" }
 	];
+	function transformarTexto(input) {
+		// Exemplo: "P24/25 - 3  Arroz Medio"
+
+		// Atualiza o trecho da safra: P24/25 -> P25/26
+		const novaSafra = input.replace(/P(\d{2})\/(\d{2})/, (_, ano1, ano2) => {
+			const novoAno1 = parseInt(ano1);
+			const novoAno2 = parseInt(ano2);
+			return `P${novoAno1}/${novoAno2}`;
+		});
+
+		// Remove o número do ciclo no meio (ex: "- 3 ")
+		const semCiclo = novaSafra.replace(/- *\d+ */, '-  ');
+
+		// Corrige acentuação se necessário (ex: "Medio" → "Médio")
+		const corrigido = semCiclo.replace(/Medio/i, 'Médio');
+
+		return corrigido.trim();
+	}
 	return (
 		<Box
 			className={styles.gridLayoutEstagios}
@@ -21,7 +43,10 @@ const EstagiosComp = ({ data, program }) => {
 				justifyContent: "center",
 				alignItems: "center",
 				gap: "5px",
-				width: "100%"
+				width: "100%",
+				breakInside: "avoid",          // <- evita quebra
+				pageBreakInside: "avoid",      // <- evita quebra em impressão
+				WebkitColumnBreakInside: "avoid", // <- para compatibilidade
 			}}
 		>
 			<Box className={styles.headerEstagios}>
@@ -32,6 +57,10 @@ const EstagiosComp = ({ data, program }) => {
 			{data
 				.sort((a, b) => a.prazo_dap - b.prazo_dap)
 				.map((data, i) => {
+					const filterOperations = operacoes.filter((dataInside) => dataInside.operacao__estagio === data.estagio).filter((dataProgram) => {
+						return transformarTexto(dataProgram.operacao__programa__nome) === program
+					})
+					const totalCost = filterOperations.reduce((acc, curr) => acc += curr.valor_aplicacao, 0)
 					return (
 						<Box
 							className={[
@@ -53,6 +82,15 @@ const EstagiosComp = ({ data, program }) => {
 									dap:{" "}
 									{data.prazo_dap < 0 ? 0 : data.prazo_dap}
 								</div>
+								{
+									totalCost > 0 &&
+									<span className={styles.totalCostTitle}>
+										R$ {totalCost.toLocaleString("pt-br", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2
+										})}
+									</span>
+								}
 							</div>
 							<ProdutosComp
 								program={program}
@@ -77,6 +115,13 @@ const EstagiosComp = ({ data, program }) => {
 								estagio={data.estagio}
 								calc={"quantidade"}
 								tipo={"dose"}
+								classes={"quantidadeTotal"}
+							/>
+							<ProdutosComp
+								program={program}
+								estagio={data.estagio}
+								calc={"quantidade"}
+								tipo={"valor_aplicacao"}
 								classes={"quantidadeTotal"}
 							/>
 							<div className={styles.obsMainContainer}>

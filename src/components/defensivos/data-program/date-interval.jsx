@@ -2,8 +2,13 @@ import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { tokens } from "../../../theme";
+import { useTheme } from "@emotion/react";
 
 const DateIntervalPage = ({ setInitialDate, initialDateForm, label }) => {
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
 	const isDateValid = (dateStr) => {
 		return !isNaN(new Date(dateStr));
 	};
@@ -19,6 +24,20 @@ const DateIntervalPage = ({ setInitialDate, initialDateForm, label }) => {
 						);
 				}}
 				renderInput={(params) => <TextField size="small" {...params} />}
+				componentsProps={{
+					actionBar: {
+						actions: ["clear", "cancel", "accept", "today"],
+						sx: {
+							backgroundColor: colors.brown[500],
+							'& .MuiButton-root': {
+								color: colors.textColor[100],           // Change button text color
+							},
+							'& .MuiButton-root:hover': {
+								backgroundColor: colors.brown[550],
+							}
+						}
+					}
+				}}
 			/>
 		</LocalizationProvider>
 	);
