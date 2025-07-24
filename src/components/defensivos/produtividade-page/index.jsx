@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Collapse } from "@mui/material";
 import djangoApi from "../../../utils/axios/axios.utils";
 import { useEffect, useState } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -39,6 +39,10 @@ import MapIcon from "@mui/icons-material/Map";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton, Tooltip } from "@mui/material";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
 
 const ProdutividadePage = () => {
@@ -86,6 +90,9 @@ const ProdutividadePage = () => {
 	const [filterDropVariety, setFilterDropVariety] = useState([]);
 
 	const [showResumeMap, setShowResumeMap] = useState(true);
+
+
+	const [loadingMapKml, setLoadingMapKml] = useState(false);
 
 	const handleValueMap = () => {
 		setShowVarOrArea(prev => !prev)
@@ -344,6 +351,49 @@ const ProdutividadePage = () => {
 		})();
 	}, []);
 
+
+	const handleGenerateKml = async () => {
+		const getIdFarm = [...new Set(filteredArray?.map((data) => data.talhao__fazenda__id_farmbox))];
+		const idFarm = getIdFarm
+		const getIdParcelas = filteredArray?.map((data) => data.id_farmbox)
+		const idParcelasSelected = getIdParcelas
+
+		const farmName = selectedProject
+			.map(p => p.replace('Projeto ', ''))
+			.join('__');
+		const params = JSON.stringify({
+			projeto: idFarm,
+			parcelas: idParcelasSelected,
+			safra: safraCiclo
+		});
+		setLoadingMapKml(true);
+		try {
+			const res = await djangoApi.post("plantio/get_kmls_aviacao/", params, {
+				headers: {
+					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+				},
+			});
+			// Handle KML file download
+			const downloadKMLFile = () => {
+				const kmlDataUri = res.data.data.kml; // Accessing the KML data URI from the nested 'data'
+				const link = document.createElement('a');
+				link.href = kmlDataUri; // Set the KML data URI as the link href
+				link.download = `${farmName.replace('Fazenda ', '')}_.kml`; // Set the filename for download
+				document.body.appendChild(link); // Append link to body
+				link.click(); // Trigger the download
+				document.body.removeChild(link); // Clean up by removing the link
+			};
+
+			// Call the download function to initiate the download
+			downloadKMLFile(); // Call this function to initiate the download
+		} catch (err) {
+			console.log("Erro ao alterar as aplicações", err);
+			setLoadingMapKml(false);
+		} finally {
+			setLoadingMapKml(false);
+		}
+	};
+
 	if (loadingData) {
 		return (
 			<Box
@@ -390,98 +440,135 @@ const ProdutividadePage = () => {
 						<CircularProgress color="secondary" size={20} />
 					</Box>
 				)}
-				<Tooltip title="Mudar Modo Lista Tabela" placement="bottom">
-					<Switch
-						checked={printPage}
-						onChange={handlePrintPage}
-						inputProps={{ "aria-label": "controlled" }}
-						color="warning"
-					/>
-				</Tooltip>
-				<Tooltip title="Alterar o Tamanho do Mapa" placement="bottom">
-					<Switch
-						checked={bigMap}
-						onChange={handleBigMap}
-						inputProps={{ "aria-label": "controlled" }}
-						color="success"
-					/>
-				</Tooltip>
-				<Tooltip title="Incluir Áreas Sem Plantio no Relatório Lateral" placement="bottom">
-					<Switch
-						checked={filtPlantioDone}
-						onChange={handleListShowData}
-						inputProps={{ "aria-label": "controlled" }}
-						color="success"
-					/>
-				</Tooltip>
-				<ToggleButtonGroup
-					value={showVarOrArea}
-					exclusive
-					onChange={handleValueMap}
-					aria-label="text alignment"
-				>
-					<Tooltip title="Áreas / Há" placement="top">
-						<ToggleButton value={true} aria-label="left aligned" size="small">
-							<SortByAlphaIcon sx={{ fontSize: 16 }} /> {/* Adjust size here */}
-						</ToggleButton>
-					</Tooltip>
-					<Tooltip title="Variedades" placement="top">
-						<ToggleButton value={false} aria-label="centered" size="small">
-							<Filter1Icon sx={{ fontSize: 12 }} /> {/* Adjust size here */}
-						</ToggleButton>
-					</Tooltip>
-				</ToggleButtonGroup>
-				<ToggleButtonGroup
-					value={showAsPlanned}
-					exclusive
-					onChange={handlePlannerData}
-					aria-label="text alignment"
-				>
-					<Tooltip title="Mostar Áreas Planejadas" placement="top">
-						<ToggleButton value={true} aria-label="left aligned" size="small">
-							<LandscapeIcon sx={{ fontSize: 16 }} />
-						</ToggleButton>
-					</Tooltip>
-					<Tooltip title="Mostar Áreas Plantadas" placement="top">
-						<ToggleButton value={false} aria-label="centered" size="small">
-							<EventNoteIcon sx={{ fontSize: 16 }} />
-						</ToggleButton>
-					</Tooltip>
-				</ToggleButtonGroup>
-				{filterDropCulture.length > 0 && selectedProject.length > 0 && (
-					<Box>
-						<SelectFarm
-							projetos={filterDropCulture}
-							handleChange={handleChangeSelectCulture}
-							value={selectedCultureFilter}
-							title={"Cultura"}
-							width={200}
-							multiple={true}
-						/>
-					</Box>
-				)}
-				{filterDropVariety.length > 0 && selectedProject.length > 0 && (
-					<Box>
-						<SelectFarm
-							projetos={filterDropVariety}
-							handleChange={handleChangeSelectVariety}
-							value={selectedVarietyFilter}
-							title={"Variedade"}
-							width={200}
-							multiple={true}
-						/>
-					</Box>
-				)}
-				<Tooltip title="Mostar Resuno do Mapa">
-					<IconButton onClick={() => setShowResumeMap(!showResumeMap)}>
-						{showResumeMap ?
-							<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
-							:
+				<Collapse in={Array.isArray(selectedProject) && selectedProject.length > 0} timeout={300}>
+					<Box
+						sx={{ display: 'flex', flexDirection: 'row', gap: '20px', alignItems: 'center' }}
+					>
+						<Tooltip title="Mudar Modo Lista Tabela" placement="bottom">
+							<Switch
+								checked={printPage}
+								onChange={handlePrintPage}
+								inputProps={{ "aria-label": "controlled" }}
+								color="warning"
+								size="small"
+							/>
+						</Tooltip>
+						<Tooltip title="Alterar o Tamanho do Mapa" placement="bottom">
+							<Switch
+								checked={bigMap}
+								onChange={handleBigMap}
+								inputProps={{ "aria-label": "controlled" }}
+								color="success"
+								size="small"
+							/>
+						</Tooltip>
+						<Tooltip title="Incluir Áreas Sem Plantio no Relatório Lateral" placement="bottom">
+							<Switch
+								checked={filtPlantioDone}
+								onChange={handleListShowData}
+								inputProps={{ "aria-label": "controlled" }}
+								color="success"
+								size="small"
+							/>
+						</Tooltip>
+						<ToggleButtonGroup
+							value={showVarOrArea}
+							exclusive
+							onChange={handleValueMap}
+							aria-label="text alignment"
+						>
+							<Tooltip title="Áreas / Há" placement="top">
+								<ToggleButton value={true} aria-label="left aligned" size="small">
+									<SortByAlphaIcon sx={{ fontSize: 16 }} /> {/* Adjust size here */}
+								</ToggleButton>
+							</Tooltip>
+							<Tooltip title="Variedades" placement="top">
+								<ToggleButton value={false} aria-label="centered" size="small">
+									<Filter1Icon sx={{ fontSize: 12 }} /> {/* Adjust size here */}
+								</ToggleButton>
+							</Tooltip>
+						</ToggleButtonGroup>
+						<ToggleButtonGroup
+							value={showAsPlanned}
+							exclusive
+							onChange={handlePlannerData}
+							aria-label="text alignment"
+						>
+							<Tooltip title="Mostar Áreas Planejadas" placement="top">
+								<ToggleButton value={true} aria-label="left aligned" size="small">
+									<LandscapeIcon sx={{ fontSize: 16 }} />
+								</ToggleButton>
+							</Tooltip>
+							<Tooltip title="Mostar Áreas Plantadas" placement="top">
+								<ToggleButton value={false} aria-label="centered" size="small">
+									<EventNoteIcon sx={{ fontSize: 16 }} />
+								</ToggleButton>
+							</Tooltip>
+						</ToggleButtonGroup>
 
-							<MapIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[300] }} />
+						{filterDropCulture.length > 0 && selectedProject.length > 0 && (
+							<Box>
+								<SelectFarm
+									projetos={filterDropCulture}
+									handleChange={handleChangeSelectCulture}
+									value={selectedCultureFilter}
+									title={"Cultura"}
+									width={200}
+									multiple={true}
+								/>
+							</Box>
+						)}
+						{filterDropVariety.length > 0 && selectedProject.length > 0 && (
+							<Box>
+								<SelectFarm
+									projetos={filterDropVariety}
+									handleChange={handleChangeSelectVariety}
+									value={selectedVarietyFilter}
+									title={"Variedade"}
+									width={200}
+									multiple={true}
+								/>
+							</Box>
+						)}
+						<Tooltip title="Mostar Resuno do Mapa">
+							<IconButton onClick={() => setShowResumeMap(!showResumeMap)}>
+								{showResumeMap ?
+									<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
+									:
+
+									<MapIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[300] }} />
+								}
+							</IconButton>
+						</Tooltip>
+						{
+							selectedProject.length > 0 &&
+							<Tooltip title="Gerar Kml">
+								<IconButton
+									onClick={() =>
+										handleGenerateKml()
+									}
+									sx={{
+										cursor: 'pointer'
+									}}
+								>
+									{
+										loadingMapKml ?
+											<CircularProgress size={24} color="inherit" />
+											:
+											<FontAwesomeIcon
+												icon={faPlane}
+												color={colors.textColor[100]}
+												style={{
+													cursor: "pointer"
+												}}
+											/>
+									}
+
+								</IconButton>
+							</Tooltip>
 						}
-					</IconButton>
-				</Tooltip>
+					</Box>
+				</Collapse>
 			</Box>
 			<Box
 				sx={{

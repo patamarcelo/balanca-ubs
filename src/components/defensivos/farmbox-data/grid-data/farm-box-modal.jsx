@@ -59,20 +59,14 @@ const ModalDataFarmbox = (props) => {
 				setLoading(true);
 				setRefreshData(false);
 				console.warn("pegando dados DataDetail");
-				await nodeServer
-					.get("/datadetail", {
-						headers: {
-							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-							"X-Firebase-AppCheck": user.accessToken
-						},
-						params: {
-							safraCiclo
-						}
-					})
-					.then((res) => {
-						dispatch(setAppFarmBox(res.data));
-					})
-					.catch((err) => console.log(err));
+				const res = await nodeServer.get("/datadetail", {
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+						"X-Firebase-AppCheck": user.accessToken,
+					},
+					params: { safraCiclo },
+				});
+				dispatch(setAppFarmBox(res.data));
 			} catch (err) {
 				console.log("Erro ao consumir a API de dados do FarmBox", err);
 			} finally {
@@ -80,7 +74,7 @@ const ModalDataFarmbox = (props) => {
 				setLoading(false);
 			}
 		}
-	}, [dispatch]);
+	}, [dispatch, dictSelectFarm, refreshData, user.accessToken, safraCiclo]);
 
 	const getTrueApiFarmDataRefresh = async () => {
 		try {
@@ -219,18 +213,18 @@ const ModalDataFarmbox = (props) => {
 								quantidadeSolicitada - quantidade < 0
 									? 0
 									: (
-											quantidadeSolicitada - quantidade
-									  ).toLocaleString("pt-br", {
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2
-									  }),
+										quantidadeSolicitada - quantidade
+									).toLocaleString("pt-br", {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2
+									}),
 							area: parc.area.toLocaleString("pt-br", {
 								minimumFractionDigits: 2,
 								maximumFractionDigits: 2
 							}),
 							dose: ins.dose.replace(".", ","),
 							insumo: ins.insumo,
-							insumo_id : ins.insumo_id,
+							insumo_id: ins.insumo_id,
 							tipo: ins.tipo,
 							id: `${parc.id}${ins.dose}${ins.insumo}`
 						};
@@ -244,7 +238,7 @@ const ModalDataFarmbox = (props) => {
 					return appParcelasDict.flat();
 				}
 			});
-			console.log('newarr',newarr.flat())
+			console.log('newarr', newarr.flat())
 			setAppArray(newarr.flat());
 		} catch (err) {
 			console.log("erro ao formar o Array do Grid Farmbox", err);
@@ -362,9 +356,9 @@ const ModalDataFarmbox = (props) => {
 									margin: "-10px 10px",
 									color: (theme) =>
 										colors.greenAccent[
-											theme.palette.mode === "dark"
-												? 200
-												: 800
+										theme.palette.mode === "dark"
+											? 200
+											: 800
 										]
 								}}
 							/>

@@ -28,7 +28,7 @@ const SelectFarm = (props) => {
 				{projetos.map((data, i) => {
 					return (
 						<MenuItem key={i} value={data}>
-							{data}
+							{data.replace('Projeto ', '')}
 						</MenuItem>
 					);
 				})}

@@ -222,10 +222,11 @@ const TableDataPage = (props) => {
 	const handleGenerateKml = async (idFarm, dataFarm) => {
 		console.log("dataFarmmm", dataFarm)
 		const params = JSON.stringify({
-			projeto: idFarm,
+			projeto: [idFarm],
 			parcelas: idParcelasSelected,
 			safra: safraCiclo
 		});
+		console.log('paramsss: ', params)
 		setLoadingMapKml(true);
 		try {
 			const res = await djangoApi.post("plantio/get_kmls_aviacao/", params, {
