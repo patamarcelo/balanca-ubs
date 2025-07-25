@@ -1658,7 +1658,7 @@ const DataProgramPage = (props) => {
 																				}
 																				size="small"
 																				aria-label="delete"
-																				color={!wasRemoved.length > 0 ? "warning" : 'success'}
+																				color={!wasRemoved.length > 0 ? "success" : 'error'}
 																				sx={{
 																					alignSelf: "start",
 																					borderRadius: "12px"
@@ -1668,7 +1668,7 @@ const DataProgramPage = (props) => {
 																						!dataP.canRemove ?
 																							<DeleteIcon />
 																							:
-																							<DeleteForeverIcon />
+																							<DeleteForeverIcon color="warning" />
 
 																					}
 																				</IconButton>
