@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Slide } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import { useState } from "react";
@@ -25,6 +25,7 @@ import classes from "../data-program/data-program.module.css";
 
 import SafraCicloComp from "./safra-ciclo";
 import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
+import { useSelector } from "react-redux";
 
 
 const HomeDefensivoPage = (props) => {
@@ -50,6 +51,8 @@ const HomeDefensivoPage = (props) => {
 	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
+	const visible = useSelector((state) => state.ui.headerVisible);
+
 	useEffect(() => {
 		const today = new Date();
 		const lastSunday = (today) => {
@@ -63,7 +66,7 @@ const HomeDefensivoPage = (props) => {
 		finalDate.setDate(finalDate.getDate() + 6);
 		setFinalDateForm(finalDate.toISOString().split("T")[0]);
 	}, []);
-	
+
 
 	const dictComps = {
 		dinamic: "dinamic",
@@ -283,7 +286,7 @@ const HomeDefensivoPage = (props) => {
 		}
 	];
 	return (
-		<Box width="100%" height="100%">
+		<Box width="100%" height="100%" mt={!visible && 2} alignItems={"center"}>
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
 				<Stack spacing={2} direction="row" justifyContent="start">
 					<Box
@@ -321,7 +324,11 @@ const HomeDefensivoPage = (props) => {
 							marginLeft: '100px !important'
 						}}
 					>
-						<SafraCicloComp />
+						<Slide direction="down" in={visible} mountOnEnter unmountOnExit>
+							<div>
+								<SafraCicloComp />
+							</div>
+						</Slide>
 					</Box>
 					{isOpenProductsProgram && (
 						<Box
