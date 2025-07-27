@@ -1,7 +1,7 @@
 // store/ui/ui.reducer.js
 
 const INITIAL_STATE = {
-    headerVisible: false
+    headerVisible: true
 };
 
 export const uiReducer = (state = INITIAL_STATE, action) => {
