@@ -160,7 +160,7 @@ const DefensivoPage = () => {
 			<Box
 				sx={{
 					textAlign: "right",
-					marginBottom: "-30px"
+					// marginBottom: "-30px"
 				}}
 			>
 				{isLoadingHome ? (
@@ -180,9 +180,11 @@ const DefensivoPage = () => {
 						color={colors.greenAccent[500]}
 						size="lg"
 						style={{
-							margin: "0px 10px",
+							// margin: "0px 10px",
 							cursor: "pointer",
-							position: "relative"
+							position: "absolute",  // remove do fluxo do layout
+							right: 15,
+							// overflow: "hidden",
 						}}
 						onClick={() => handleRefreshData()}
 					/>

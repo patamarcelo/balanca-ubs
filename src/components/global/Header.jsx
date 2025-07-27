@@ -51,14 +51,14 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	const dispatch = useDispatch();
 	const isNonMobile = useMediaQuery("(min-width: 800px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
-	
+
 	const user = useSelector(selectCurrentUser);
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isDefensivosUser = useSelector(selectIsDefensivosUser);
-	
+
 	const location = useLocation();
 	const navigate = useNavigate();
-	
+
 	const visible = useSelector((state) => state.ui.headerVisible);
 
 	const handlerNavHome = () => navigate("/");
@@ -82,14 +82,15 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 				sx={{
 					position: "fixed",
 					top: 0,
-					left: "50%",
+					right: !visible ? "2%" : "50%",
 					transform: "translateX(-50%)",
 					zIndex: 1301,
 					bgcolor: colors.primary[400],
 					borderRadius: "0 0 8px 8px",
 					boxShadow: 3,
 					p: "2px 6px",
-					cursor: "pointer"
+					cursor: "pointer",
+					transition: "right 0.3s ease, transform 0.3s ease" // <- aqui!
 				}}
 				onClick={() => dispatch(toggleHeader())}
 			>
