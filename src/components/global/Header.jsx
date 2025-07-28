@@ -41,6 +41,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import { toggleHeader } from "../../store/ui/ui.actions";
+import SafraCicloComp from "../defensivos/home/safra-ciclo";
 
 
 
@@ -142,6 +143,16 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						>
 							{unidadeOpUser}
 						</Typography>
+					</Box>
+					<Box
+						sx={{
+							position: 'fixed',
+							top: '0',
+							marginTop: '15px !important',
+							marginLeft: '100px !important',
+						}}
+					>
+						<SafraCicloComp />
 					</Box>
 
 					<Box

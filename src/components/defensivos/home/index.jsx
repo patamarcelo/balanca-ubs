@@ -22,8 +22,6 @@ import LoaderHomeSkeleton from "./loader";
 import DateIntervalPage from "../data-program/date-interval";
 
 import classes from "../data-program/data-program.module.css";
-
-import SafraCicloComp from "./safra-ciclo";
 import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
 import { useSelector } from "react-redux";
 
@@ -315,20 +313,6 @@ const HomeDefensivoPage = (props) => {
 								/>
 							);
 						})}
-					</Box>
-					<Box
-						sx={{
-							position: 'fixed',
-							top: '0',
-							marginTop: '15px !important',
-							marginLeft: '100px !important'
-						}}
-					>
-						<Slide direction="down" in={visible} mountOnEnter unmountOnExit>
-							<div>
-								<SafraCicloComp />
-							</div>
-						</Slide>
 					</Box>
 					{isOpenProductsProgram && (
 						<Box
