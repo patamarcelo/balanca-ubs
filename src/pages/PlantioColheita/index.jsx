@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 
 
+
 const PlantioColheitaPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -48,15 +49,12 @@ const PlantioColheitaPage = () => {
 	const [openDrawer, setOpenDrawer] = useState(true);
 
 	const visible = useSelector((state) => state.ui.headerVisible);
+	const params = useSelector(selectSafraCiclo);
 
 	const handleNagivationIcon = (route) => {
 		setSelectedRoute(route);
 	};
 
-	const [params, setParams] = useState({
-		safra: "2025/2026",
-		ciclo: "1"
-	});
 
 	useEffect(() => {
 		const getTrueApi = async () => {
@@ -224,51 +222,10 @@ const PlantioColheitaPage = () => {
 		handlerUpdateRomaneios()
 	}, [useData]);
 
-	const handleChange = (field) => (event) => {
-		setParams((prev) => ({
-			...prev,
-			[field]: event.target.value,
-		}));
-	};
 
 
 	return (
 		<>
-
-
-			<Slide direction="down" in={visible} mountOnEnter unmountOnExit>
-				<Box sx={{ display: "flex", width: '230px', flexDirection: 'row', gap: 2, alignItems: "flex-start", p: 2, position: 'absolute', top: '7px', left: '122px' }}>
-					<FormControl sx={{ width: '130px' }}>
-						<InputLabel id="safra-label">Safra</InputLabel>
-						<Select
-							size="small"
-							labelId="safra-label"
-							value={params.safra}
-							onChange={handleChange("safra")}
-							label="Safra"
-						>
-							<MenuItem value="2023/2024">2023/2024</MenuItem>
-							<MenuItem value="2024/2025">2024/2025</MenuItem>
-							<MenuItem value="2025/2026">2025/2026</MenuItem>
-						</Select>
-					</FormControl>
-
-					<FormControl sx={{ width: '70px' }}>
-						<InputLabel id="ciclo-label">Ciclo</InputLabel>
-						<Select
-							size="small"
-							labelId="ciclo-label"
-							value={params.ciclo}
-							onChange={handleChange("ciclo")}
-							label="Ciclo"
-						>
-							<MenuItem value="1">1</MenuItem>
-							<MenuItem value="2">2</MenuItem>
-							<MenuItem value="3">3</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
-			</Slide>
 			<Box
 				width={"100%"}
 				position={"relative"}

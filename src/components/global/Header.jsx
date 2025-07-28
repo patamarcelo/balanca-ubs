@@ -83,7 +83,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 				sx={{
 					position: "fixed",
 					top: 0,
-					right: !visible ? "2%" : "50%",
+					right: !visible ? "2%" : "-1%",
 					transform: "translateX(-50%)",
 					zIndex: 1301,
 					bgcolor: colors.primary[400],
@@ -165,6 +165,7 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 							backgroundColor: colors.blueOrigin[800],
 							padding: "0px 5px",
 							borderRadius: "8px",
+							marginRight: '3%',
 							border:
 								theme.palette.mode === "light" &&
 								"0.5px solid black"
