@@ -636,10 +636,17 @@ const FarmBoxPage = () => {
 												a.status.localeCompare(b.status)
 											)
 											.sort((a, b) => {
-												return (
-													new Date(a.date) -
-													new Date(b.date)
-												);
+												const dateA = new Date(a.date);
+												const dateB = new Date(b.date);
+
+												if (dateA < dateB) return -1;
+												if (dateA > dateB) return 1;
+												
+												// Datas iguais: compara o número da app
+												const numA = parseInt(a.app.replace(/\D/g, ""), 10);
+												const numB = parseInt(b.app.replace(/\D/g, ""), 10);
+
+												return numA - numB;
 											})
 											.map((app, i) => {
 												if (app.fazenda === data) {
