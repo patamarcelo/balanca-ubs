@@ -12,10 +12,14 @@ const EstagiosComp = ({ data, program }) => {
 		{ title: "Tipo" },
 		{ title: "Dose Kg/Lt ha" },
 		{ title: "Quantidade" },
-		{ title: "Custo / Há" },
+		{ title: "Custo / Há - Valor" },
 		{ title: "Observação" }
 	];
 	function transformarTexto(input) {
+		// console.log('input', input)
+		// console.log('program', program)
+		// console.log(program === input)
+		if(program === input)return input
 		// Exemplo: "P24/25 - 3  Arroz Medio"
 
 		// Atualiza o trecho da safra: P24/25 -> P25/26
@@ -51,7 +55,26 @@ const EstagiosComp = ({ data, program }) => {
 		>
 			<Box className={styles.headerEstagios}>
 				{headerData.map((data, i) => {
-					return <div key={i}>{data.title}</div>;
+					if (data.title === 'Custo / Há - Valor') {
+						const parts = data.title.split(" - ");
+						return (
+							<div
+								style={{
+									display: 'flex',
+									width: '100%',
+									justifyContent: 'space-between',
+									paddingLeft: 10,
+									paddingRight: 10,
+								}}
+								key={i}
+							>
+								<b>{parts[0] || ''}</b>
+								<b>{parts[1] || ''}</b>
+							</div>
+						);
+					} else {
+						return <div key={i}>{data.title}</div>;
+					}
 				})}
 			</Box>
 			{data
@@ -75,12 +98,11 @@ const EstagiosComp = ({ data, program }) => {
 							}}
 						>
 							<div className={styles.estagioTitle}>
-								<div style={{ fontWeight: "bold" }}>
-									{data.estagio}
+								<div style={{ textDecoration: "italic", color: 'grey', fontWeight: 'bold', fontSize: '0.9em' }}>
+									{data.prazo_dap < 0 ? 0 : data.prazo_dap} dias
 								</div>
-								<div>
-									dap:{" "}
-									{data.prazo_dap < 0 ? 0 : data.prazo_dap}
+								<div style={{ fontWeight: "bold", color: 'black', fontSize: '1em' }}>
+									{data.estagio}
 								</div>
 								{
 									totalCost > 0 &&

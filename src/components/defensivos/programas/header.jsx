@@ -14,6 +14,7 @@ const HeaderComp = (props) => {
 	const colors = tokens(theme.palette.mode);
 	const operacoes = useSelector(selectOperacoes);
 	function transformarTexto(input) {
+		if(data.nome === input)return input
 		// Exemplo: "P24/25 - 3  Arroz Medio"
 
 		// Atualiza o trecho da safra: P24/25 -> P25/26

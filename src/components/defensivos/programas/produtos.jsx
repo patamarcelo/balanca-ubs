@@ -29,6 +29,11 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 		}
 	}, [quantidades, program]);
 
+	function capitalizeFirstLetter(str) {
+		if (!str) return '';
+		return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+	}
+
 	const transformTipo = (tipo, data, calc) => {
 		if (tipo === "dose" && calc === "quantidade") {
 			const total = quantidadeTotal * data;
@@ -50,11 +55,14 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 				});
 			}
 		}
-		if(tipo === 'valor_aplicacao'){
-			return 'R$ '+ data.toLocaleString("pt-br", {
+		if (tipo === 'valor_aplicacao') {
+			return 'R$ ' + data.toLocaleString("pt-br", {
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2
 			});
+		}
+		if (tipo === 'defensivo__tipo') {
+			return capitalizeFirstLetter(data);
 		}
 		return data;
 	};
@@ -91,11 +99,36 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 						a.defensivo__tipo.localeCompare(b.defensivo__tipo)
 					)
 					.map((data, i) => {
-						return (
-							<div key={i}>
-								{transformTipo(tipo, data[tipo], calc).split('_').slice(0,2).join(" ")}
-							</div>
-						);
+						if (tipo === 'valor_aplicacao') {
+							return (
+								<div key={i}
+									style={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										width: '100%',
+										paddingLeft: 10,
+										paddingRight: 10
+									}}
+								>
+									{transformTipo(tipo, data[tipo], calc).split('_').slice(0, 2).join(" ")}
+									{
+										tipo === 'valor_aplicacao' &&
+										<b style={{
+											fontSize: '0.9em',
+											color: data["valor_final"] === 0 ? '#ba8e23' : 'grey',
+											fontWeight: 'bold',
+											textDecoration: 'italic',
+										}}> {transformTipo(tipo, data['valor_final'], calc).split('_').slice(0, 2).join(" ").replace('R$ ', '')}</b>
+									}
+								</div>
+							);
+						} else {
+							return (
+								<div key={i}>
+									{transformTipo(tipo, data[tipo], calc).split('_').slice(0, 2).join(" ")}
+								</div>
+							);
+						}
 					})}
 		</Box>
 	);
