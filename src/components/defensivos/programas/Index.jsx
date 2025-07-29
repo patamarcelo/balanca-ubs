@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../../theme";
-import { useState, useEffect } from "react";
+import { tokens, ColorModeContext } from "../../../theme";
+import { useState, useEffect, useContext } from "react";
 import LoaderHomeSkeleton from "../home/loader";
 
 import djangoApi from "../../../utils/axios/axios.utils";
@@ -37,8 +37,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import PrintVersion from "./print-version";
 
-import JsPDF from "jspdf";
+// import JsPDF from "jspdf";
 import moment from "moment";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const ProgramasSection = () => {
 	const theme = useTheme();
@@ -66,48 +68,136 @@ const ProgramasSection = () => {
 
 	const [version, setVersion] = useState("");
 
-	const generatePDF = () => {
-		const pdf = new JsPDF("portrait", "pt", "a4", false);
+	const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+	const colorMode = useContext(ColorModeContext);
 
-		const contentHeight =
-			document.querySelector("#printDivProgram").offsetHeight;
+	// const generatePDF = () => {
+	// 	const pdf = new JsPDF("portrait", "pt", "a4", false);
 
-		// Set the maximum height of each page (adjust as needed)
-		const maxHeightPerPage = 1200; // For example, assuming each page can hold up to 800px of content
+	// 	const contentHeight =
+	// 		document.querySelector("#printDivProgram").offsetHeight;
 
-		// Calculate the number of pages needed
-		const totalPages = Math.ceil(contentHeight / maxHeightPerPage);
-		console.log("total pages: ", totalPages);
+	// 	// Set the maximum height of each page (adjust as needed)
+	// 	const maxHeightPerPage = 1200; // For example, assuming each page can hold up to 800px of content
 
-		const formatDate = "YYYY.MM.DD";
-		const today = new Date();
-		const dateNameFilte = moment(today).format(formatDate);
+	// 	// Calculate the number of pages needed
+	// 	const totalPages = Math.ceil(contentHeight / maxHeightPerPage);
+	// 	console.log("total pages: ", totalPages);
 
-		const saveFile = version
-			? `${dateNameFilte} - ${programData.nome_fantasia} - Versão ${version}`
-			: `${dateNameFilte} - ${programData.nome_fantasia}`;
+	// 	const formatDate = "YYYY.MM.DD";
+	// 	const today = new Date();
+	// 	const dateNameFilte = moment(today).format(formatDate);
 
-		let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
-		let srcWidth = document.getElementById("printDivProgram").scrollWidth;
-		let margin = 18; // narrow margin - 1.27 cm (36);
-		let scale = (pWidth - margin * 2) / srcWidth;
+	// 	const saveFile = version
+	// 		? `${dateNameFilte} - ${programData.nome_fantasia} - Versão ${version}`
+	// 		: `${dateNameFilte} - ${programData.nome_fantasia}`;
 
-		pdf.html(document.getElementById("printDivProgram"), {
-			x: margin,
-			y: margin,
-			margin: [25, 0, 25, 0],
-			autoPaging: "text",
-			html2canvas: {
-				scale: scale,
-				allowTaint: true,
-				useCORS: true
-			}
-			// callback: function () {
-			// 	window.open(pdf.output("bloburl"));
+	// 	let pWidth = pdf.internal.pageSize.width; // 595.28 is the width of a4
+	// 	let srcWidth = document.getElementById("printDivProgram").scrollWidth;
+	// 	let margin = 18; // narrow margin - 1.27 cm (36);
+	// 	let scale = (pWidth - margin * 2) / srcWidth;
+
+	// 	pdf.html(document.getElementById("printDivProgram"), {
+	// 		x: margin,
+	// 		y: margin,
+	// 		margin: [25, 0, 25, 0],
+	// 		autoPaging: "text",
+	// 		html2canvas: {
+	// 			scale: scale,
+	// 			allowTaint: true,
+	// 			useCORS: true
+	// 		}
+	// 		// callback: function () {
+	// 		// 	window.open(pdf.output("bloburl"));
+	// 		// }
+	// 	}).then(() => {
+	// 		pdf.save(`${saveFile}.pdf`);
+	// 	});
+	// };
+
+	const generatePDF = async () => {
+		try {
+			setIsGeneratingPDF(true);
+
+			// Oculta elementos não imprimíveis
+			document.querySelectorAll(".print-safe-wrapper").forEach(el => {
+				el.style.visibility = "hidden";
+			});
+
+			const actualTheme = theme.palette?.mode;
+			// if (actualTheme === "dark") {
+			// 	colorMode.toggleColorMode();
 			// }
-		}).then(() => {
+
+			await new Promise(res => setTimeout(res, 300));
+
+			const pdf = new jsPDF("portrait", "pt", "a4");
+			const pageHeight = pdf.internal.pageSize.getHeight();
+			const pageWidth = pdf.internal.pageSize.getWidth();
+			const margin = 20;
+			const maxContentHeight = pageHeight - margin * 2;
+			let currentY = margin;
+
+			// Renderiza header e printVersionTop
+			const renderBlock = async (target, options = {}) => {
+				const el = typeof target === "string" ? document.querySelector(target) : target;
+				if (!el) return null;
+
+				const canvas = await html2canvas(el, {
+					scale: 1.2, // Menor escala = menor peso
+					useCORS: true,
+					allowTaint: true,
+				});
+
+				const imgData = canvas.toDataURL("image/jpeg", 0.6); // Qualidade reduzida
+				const imgProps = pdf.getImageProperties(imgData);
+				const imgWidth = pageWidth - margin * 2;
+				const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+				if (currentY + imgHeight > pageHeight - margin) {
+					pdf.addPage();
+					currentY = margin;
+				}
+
+				pdf.addImage(imgData, "JPEG", margin, currentY, imgWidth, imgHeight);
+				currentY += imgHeight + (options.spacing ?? 15); // margem menor entre os blocos
+			};
+
+			// Renderiza header + printVersionTop (fixos)
+			await renderBlock("#printVersionTop");
+			await renderBlock("#headerComp");
+			await renderBlock(".estagiosHeader", { spacing: 0 }); // Adiciona essa classe no JSX
+
+			// Renderiza cada estágio individualmente
+			const estagioContainers = document.querySelectorAll(".estagioContainer");
+			for (const el of estagioContainers) {
+				await renderBlock(el, { spacing: 5 });
+			}
+
+			// Renderiza printVersionBottom (opcional)
+			await renderBlock("#printVersionBottom");
+
+			// Gera o nome do arquivo
+			const formatDate = "YYYY.MM.DD";
+			const today = new Date();
+			const dateNameFilte = moment(today).format(formatDate);
+			const saveFile = version
+				? `${dateNameFilte} - ${programData.nome_fantasia} - Versão ${version}`
+				: `${dateNameFilte} - ${programData.nome_fantasia}`;
+
 			pdf.save(`${saveFile}.pdf`);
-		});
+
+			// if (actualTheme === "dark") {
+			// 	colorMode.toggleColorMode();
+			// }
+		} catch (error) {
+			console.error("Erro ao gerar PDF:", error);
+		} finally {
+			document.querySelectorAll(".print-safe-wrapper").forEach(el => {
+				el.style.visibility = "visible";
+			});
+			setIsGeneratingPDF(false);
+		}
 	};
 	// useEffect(() => {
 	// 	if (programData) {
@@ -297,40 +387,43 @@ const ProgramasSection = () => {
 								</label>
 							</Box>
 							<Box sx={{ alignSelf: "end" }}>
-								<IconButton onClick={generatePDF}>
-									{/* <IconButton onClick={() => window.print()}> */}
-									<FontAwesomeIcon
-										icon={faPrint}
-										color={colors.blueAccent[500]}
-										size={"sm"}
+								{isGeneratingPDF ? (
+									<CircularProgress
+										size={24}
+										sx={{
+											color: colors.blueAccent[500],
+											marginRight: "12px",
+										}}
 									/>
-								</IconButton>
+								) : (
+									<IconButton onClick={generatePDF}>
+										<FontAwesomeIcon
+											icon={faPrint}
+											color={colors.blueAccent[500]}
+											size={"sm"}
+										/>
+									</IconButton>
+								)}
 							</Box>
 							<Box
 								id="printDivProgram"
-								sx={{
-									fontFamily: "Times New Roman !important",
-								}}
+								sx={{ fontFamily: "Times New Roman !important" }}
 							>
 								{version && (
-									<PrintVersion
-										programData={programData}
-										version={version}
-									/>
+									<div id="printVersionTop">
+										<PrintVersion programData={programData} version={version} />
+									</div>
 								)}
-								<HeaderComp
-									data={programData}
-									quantidadeTotal={quantidadeTotal}
-								/>
-								<EstagiosComp
-									data={filteredEstagios}
-									program={selectedPrograma}
-								/>
+								<div id="headerComp">
+									<HeaderComp data={programData} quantidadeTotal={quantidadeTotal} />
+								</div>
+								<div id="estagiosComp">
+									<EstagiosComp data={filteredEstagios} program={selectedPrograma} />
+								</div>
 								{version && (
-									<PrintVersion
-										programData={programData}
-										version={version}
-									/>
+									<div id="printVersionBottom">
+										<PrintVersion programData={programData} version={version} />
+									</div>
 								)}
 							</Box>
 							<hr />

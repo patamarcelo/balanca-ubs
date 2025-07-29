@@ -88,7 +88,7 @@
 
 .produtosMainContainer div{
     /* text-transform: lowercase; */
-    border: 0.5px dotted black;
+    border: 1px solid rgba(0,0,0,0.3);
     /* border-left: 0px; */
     /* border-right: 0px; */
     width: 100%;

@@ -53,7 +53,7 @@ const EstagiosComp = ({ data, program }) => {
 				WebkitColumnBreakInside: "avoid", // <- para compatibilidade
 			}}
 		>
-			<Box className={styles.headerEstagios}>
+			<Box className={[`${styles.headerEstagios} estagiosHeader`]}>
 				{headerData.map((data, i) => {
 					if (data.title === 'Custo / Há - Valor') {
 						const parts = data.title.split(" - ");
@@ -88,7 +88,7 @@ const EstagiosComp = ({ data, program }) => {
 						<Box
 							className={[
 								`${styles["estagioContainer"]}
-								${i === 6 && "pageBreak"} pageBreakContainer`
+								${i === 6 && "pageBreak"} pageBreakContainer estagioContainer`
 							]}
 							key={i}
 							sx={{
