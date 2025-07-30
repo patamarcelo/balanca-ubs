@@ -56,10 +56,14 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 			}
 		}
 		if (tipo === 'valor_aplicacao') {
-			return 'R$ ' + data.toLocaleString("pt-br", {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
-			});
+			if(data > 0){
+
+				return 'R$ ' + data.toLocaleString("pt-br", {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+				});
+			}
+			return  'R$ 0,00'
 		}
 		if (tipo === 'defensivo__tipo') {
 			return capitalizeFirstLetter(data);
