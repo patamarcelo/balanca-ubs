@@ -1558,8 +1558,9 @@ const DataProgramPage = (props) => {
 																	b.parcela
 																)
 														).forEach(element => {
-															console.log(element.plantioId, element.estagio.split("|")[0])
-															handleSetAppMany(element.plantioId, element.estagio.split("|")[0], hiddenAppName)
+															// console.log(element.plantioId, element.estagio.split("|")[0])
+															// console.log(element)
+															handleSetAppMany(element.plantioId, element.estagio.split("|")[0], hiddenAppName, element.plantioIdFarmbox)
 														})}
 												>
 													<p style={{ color: colors.primary[200] }}>{estagio}</p>
