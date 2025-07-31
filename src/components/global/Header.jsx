@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
 	Box,
 	Typography,
@@ -75,6 +75,11 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 	};
 
 	const print = () => window.print();
+	useEffect(() => {
+		if (location.pathname === "/defensivo") {
+			dispatch(toggleHeader())
+		}
+	}, [location, dispatch]);
 
 	return (
 		<>

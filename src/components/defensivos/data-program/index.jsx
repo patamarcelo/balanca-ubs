@@ -347,7 +347,7 @@ const DataProgramPage = (props) => {
 			// console.log("ainda não estava");
 		}
 	};
-	
+
 	const handleSetAppMany = (dataId, estagio, hiddenAppName, plantioIdFarmbox) => {
 		const newDict = {
 			id: dataId,
@@ -369,12 +369,12 @@ const DataProgramPage = (props) => {
 	// const handleRequestDjangoMaps = () => {
 	// 	setLoadMaps(!loadMaps)
 	// }
-	
+
 	const handleSendApiApp = async (data) => {
 		const params = JSON.stringify({ data });
 		try {
 			setSendingData(true);
-	
+
 			const res = await djangoApi.put(
 				"plantio/update_aplication_plantio/",
 				params,
@@ -384,14 +384,14 @@ const DataProgramPage = (props) => {
 					},
 				}
 			);
-	
+
 			const taskId = res.data.task_id;
 			console.log("🔁 Task iniciada:", taskId);
-	
+
 			if (!taskId) {
 				throw new Error("task_id não recebido!");
 			}
-	
+
 			let attempts = 0;
 			const maxAttempts = 60; // até 60 segundos
 			const intervalId = setInterval(async () => {
@@ -404,35 +404,35 @@ const DataProgramPage = (props) => {
 							},
 						}
 					);
-	
+
 					const taskStatus = statusRes.data.status;
 					console.log("🔍 Verificando status:", statusRes);
 					console.log("🔍 Verificando status:", taskStatus);
-	
+
 					if (taskStatus === "done") {
 						clearInterval(intervalId);
 						setSendingData(false);
-	
+
 						Swal.fire({
 							title: "Atualização concluída!",
 							text: "As aplicações foram atualizadas com sucesso.",
 							icon: "success",
 							confirmButtonText: "Ok",
 						});
-	
+
 						// setPositiveSignal(true);
 						setPositiveSignal(false)
 						handleRefreshData()
 						// setTimeout(() => setPositiveSignal(false), 1500);
 						// setTimeout(() => handleRefreshData(), 1700);
 					}
-	
+
 					if (taskStatus === "failed") {
 						clearInterval(intervalId);
 						setSendingData(false);
-	
+
 						console.error("❌ Task falhou!", statusRes.data.result?.error);
-	
+
 						Swal.fire({
 							title: "Erro ao processar!",
 							text: "A tarefa falhou. Verifique os dados e tente novamente.",
@@ -440,7 +440,7 @@ const DataProgramPage = (props) => {
 							confirmButtonText: "Fechar",
 						});
 					}
-	
+
 					if (++attempts >= maxAttempts) {
 						clearInterval(intervalId);
 						setSendingData(false);
@@ -890,7 +890,12 @@ const DataProgramPage = (props) => {
 			const pageWidth = pdf.internal.pageSize.getWidth() - 40;   // margem lateral
 
 			const headerDiv = document.querySelector(".print-fazenda-div");
-			const contentDivs = Array.from(document.querySelectorAll(".mainProgramAllDiv"));
+			// const contentDivs = Array.from(document.querySelectorAll(".mainProgramAllDiv"));
+			const contentDivs = Array.from(document.querySelectorAll(".mainProgramAllDiv"))
+				.filter(div => {
+					const appName = div.getAttribute("data-appname");
+					return !hidenAppsArr.includes(appName);  // só inclui os visíveis
+				});
 			const footerDiv = document.querySelector("#footerDiv");
 
 			// Junta todos os elementos para renderizar no PDF
@@ -1444,6 +1449,7 @@ const DataProgramPage = (props) => {
 									}
 									<div
 										key={i}
+										data-appname={hiddenAppName}  // <- adiciona isso aqui
 										style={{
 											boxShadow:
 												"rgba(0, 0, 0, 0.5) 2px 2px 2px 1px",
@@ -1726,6 +1732,7 @@ const DataProgramPage = (props) => {
 																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
 																aria-label="adicionar"
 																disabled={prodsToUse.length === 0}
+																sx={{marginBottom: '10px'}}
 															>
 																<AddCircleRoundedIcon fontSize="small" />
 															</IconButton>
