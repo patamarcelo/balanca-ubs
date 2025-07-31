@@ -14,6 +14,42 @@ const getColheitaDate = (plantioDate, cicle) => {
     return formatDate
 }
 
+function getWeeklyRanges(entries, field, startOnMonday = true) {
+    if (!entries.length) return [];
+
+    // Get min and max dates
+    const dates = entries
+        .map(e => e[field])
+        .filter(date => !!date && !isNaN(new Date(date))) // só datas válidas
+        .map(date => new Date(date));
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+
+    // Adjust start date to the beginning of the week (Monday)
+    const start = new Date(minDate);
+    const day = start.getDay(); // 0 (Sunday) to 6 (Saturday)
+    // const diffToMonday = (day === 0 ? -6 : 1) - day; // Shift to Monday
+    start.setDate(start.getDate() - day); // Domingo = 0, então não muda nada
+
+    // Adjust end date to next Sunday
+    const end = new Date(maxDate);
+    const endDay = end.getDay();
+    const daysToSunday = 7 - endDay;
+    end.setDate(end.getDate() + daysToSunday);
+
+    const result = [];
+    const current = new Date(start);
+    while (current <= end) {
+        const weekStart = new Date(current);
+        const weekEnd = new Date(current);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        result.push(`${moment(weekStart).format("DD/MM/YYYY")} - ${moment(weekEnd).format("DD/MM/YYYY")}`);
+        current.setDate(current.getDate() + 7);
+    }
+    return result;
+}
+
 export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
     const qs_planned = qs_planned_orig.map((data) => {
         const newDateHere = dataToUse(data.finalizado_plantio, data.data_plantio, data.data_prevista_plantio)
@@ -40,119 +76,154 @@ export const dataPlannerHandler = (qs_planned_orig, plantioView = true) => {
         earliestDate.setDate(earliestDate.getDate() - earliestDate.getDay())
     ); // Start of the week
 
-    // Step 2: Group data by weeks
-    const weekRangesPlantio = [
-        // "15/09/2024 - 21/09/2024",
-        // "22/09/2024 - 28/09/2024",
-        // "29/09/2024 - 05/10/2024",
-        // "06/10/2024 - 12/10/2024",
-        // "13/10/2024 - 19/10/2024",
-        // "20/10/2024 - 26/10/2024",
-        // "27/10/2024 - 02/11/2024",
-        // "03/11/2024 - 09/11/2024",
-        // "10/11/2024 - 16/11/2024",
-        // "17/11/2024 - 23/11/2024",
-        // "24/11/2024 - 30/11/2024",
-        // "01/12/2024 - 07/12/2024",
-        // "08/12/2024 - 14/12/2024",
-        // "15/12/2024 - 21/12/2024",
-        // "22/12/2024 - 28/12/2024",
-        // "29/12/2024 - 04/01/2025",
-        // "05/01/2025 - 11/01/2025",
-        // "12/01/2025 - 18/01/2025",
-        // "19/01/2025 - 25/01/2025",
-        // "26/01/2025 - 01/02/2025",
-        // "02/02/2025 - 08/02/2025"
-        "23/03/2025 - 29/03/2025",
-        "30/03/2025 - 05/04/2025",
-        "06/04/2025 - 12/04/2025",
-        "13/04/2025 - 19/04/2025",
-        "20/04/2025 - 26/04/2025",
-        "27/04/2025 - 03/05/2025",
-        "04/05/2025 - 10/05/2025",
-        "11/05/2025 - 17/05/2025",
-        "18/05/2025 - 24/05/2025",
-        "25/05/2025 - 31/05/2025",
-        "01/06/2025 - 07/06/2025"
+    // // Step 2: Group data by weeks
+    // const weekRangesPlantio = [
+    //     // "15/09/2024 - 21/09/2024",
+    //     // "22/09/2024 - 28/09/2024",
+    //     // "29/09/2024 - 05/10/2024",
+    //     // "06/10/2024 - 12/10/2024",
+    //     // "13/10/2024 - 19/10/2024",
+    //     // "20/10/2024 - 26/10/2024",
+    //     // "27/10/2024 - 02/11/2024",
+    //     // "03/11/2024 - 09/11/2024",
+    //     // "10/11/2024 - 16/11/2024",
+    //     // "17/11/2024 - 23/11/2024",
+    //     // "24/11/2024 - 30/11/2024",
+    //     // "01/12/2024 - 07/12/2024",
+    //     // "08/12/2024 - 14/12/2024",
+    //     // "15/12/2024 - 21/12/2024",
+    //     // "22/12/2024 - 28/12/2024",
+    //     // "29/12/2024 - 04/01/2025",
+    //     // "05/01/2025 - 11/01/2025",
+    //     // "12/01/2025 - 18/01/2025",
+    //     // "19/01/2025 - 25/01/2025",
+    //     // "26/01/2025 - 01/02/2025",
+    //     // "02/02/2025 - 08/02/2025"
+    //     "23/03/2025 - 29/03/2025",
+    //     "30/03/2025 - 05/04/2025",
+    //     "06/04/2025 - 12/04/2025",
+    //     "13/04/2025 - 19/04/2025",
+    //     "20/04/2025 - 26/04/2025",
+    //     "27/04/2025 - 03/05/2025",
+    //     "04/05/2025 - 10/05/2025",
+    //     "11/05/2025 - 17/05/2025",
+    //     "18/05/2025 - 24/05/2025",
+    //     "25/05/2025 - 31/05/2025",
+    //     "01/06/2025 - 07/06/2025"
 
-    ];
-    const weekRangesColheita = [
-        // "12/01/2025 - 18/01/2025",
-        // "19/01/2025 - 25/01/2025",
-        // "26/01/2025 - 01/02/2025",
-        // "02/02/2025 - 08/02/2025",
-        // "09/02/2025 - 15/02/2025",
-        // "16/02/2025 - 22/02/2025",
-        // "23/02/2025 - 01/03/2025",
-        // "02/03/2025 - 08/03/2025",
-        // "09/03/2025 - 15/03/2025",
-        // "16/03/2025 - 22/03/2025",
-        // "23/03/2025 - 29/03/2025",
-        // "30/03/2025 - 05/04/2025",
-        // "06/04/2025 - 12/04/2025",
-        // "13/04/2025 - 19/04/2025",
-        // "20/04/2025 - 26/04/2025",
-        // "27/04/2025 - 03/05/2025",
-        // "04/05/2025 - 10/05/2025",
-        // "11/05/2025 - 17/05/2025",
-        // "18/05/2025 - 24/05/2025",
-        // "25/05/2025 - 31/05/2025",
-        // "01/06/2025 - 07/06/2025",
-        "01/06/2025 - 07/06/2025",
-        "08/06/2025 - 14/06/2025",
-        "15/06/2025 - 21/06/2025",
-        "22/06/2025 - 28/06/2025",
-        "29/06/2025 - 05/07/2025",
-        "06/07/2025 - 12/07/2025",
-        "13/07/2025 - 19/07/2025",
-        "20/07/2025 - 26/07/2025",
-        "27/07/2025 - 02/08/2025",
-        "03/08/2025 - 09/08/2025",
-        "10/08/2025 - 16/08/2025",
-        "17/08/2025 - 23/08/2025",
-        "24/08/2025 - 30/08/2025",
-        "31/08/2025 - 06/09/2025",
-        "07/09/2025 - 13/09/2025",
-        "14/09/2025 - 20/09/2025",
-        "21/09/2025 - 27/09/2025"
-    ];
+    // ];
+    // const weekRangesColheita = [
+    //     // "12/01/2025 - 18/01/2025",
+    //     // "19/01/2025 - 25/01/2025",
+    //     // "26/01/2025 - 01/02/2025",
+    //     // "02/02/2025 - 08/02/2025",
+    //     // "09/02/2025 - 15/02/2025",
+    //     // "16/02/2025 - 22/02/2025",
+    //     // "23/02/2025 - 01/03/2025",
+    //     // "02/03/2025 - 08/03/2025",
+    //     // "09/03/2025 - 15/03/2025",
+    //     // "16/03/2025 - 22/03/2025",
+    //     // "23/03/2025 - 29/03/2025",
+    //     // "30/03/2025 - 05/04/2025",
+    //     // "06/04/2025 - 12/04/2025",
+    //     // "13/04/2025 - 19/04/2025",
+    //     // "20/04/2025 - 26/04/2025",
+    //     // "27/04/2025 - 03/05/2025",
+    //     // "04/05/2025 - 10/05/2025",
+    //     // "11/05/2025 - 17/05/2025",
+    //     // "18/05/2025 - 24/05/2025",
+    //     // "25/05/2025 - 31/05/2025",
+    //     // "01/06/2025 - 07/06/2025",
+    //     "01/06/2025 - 07/06/2025",
+    //     "08/06/2025 - 14/06/2025",
+    //     "15/06/2025 - 21/06/2025",
+    //     "22/06/2025 - 28/06/2025",
+    //     "29/06/2025 - 05/07/2025",
+    //     "06/07/2025 - 12/07/2025",
+    //     "13/07/2025 - 19/07/2025",
+    //     "20/07/2025 - 26/07/2025",
+    //     "27/07/2025 - 02/08/2025",
+    //     "03/08/2025 - 09/08/2025",
+    //     "10/08/2025 - 16/08/2025",
+    //     "17/08/2025 - 23/08/2025",
+    //     "24/08/2025 - 30/08/2025",
+    //     "31/08/2025 - 06/09/2025",
+    //     "07/09/2025 - 13/09/2025",
+    //     "14/09/2025 - 20/09/2025",
+    //     "21/09/2025 - 27/09/2025"
+    // ];
 
-    const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+    // const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+
+    const weekRanges = getWeeklyRanges(
+        qs_planned,
+        plantioView ? 'data_prevista_plantio' : 'colheitaDate'
+    );
+    console.log('weekRanges', weekRanges)
+    const firstWeekRange = weekRanges[0];
 
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
-        let newDate = ''
-        if (plantioView) {
-            newDate = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
-        } else {
-            const getInit = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
-            newDate = getColheitaDate(getInit, entry.variedade__dias_ciclo)
+        const field = plantioView ? entry.data_prevista_plantio : entry.colheitaDate;
 
+        let entryDate = field ? moment(field) : null;
+
+        if (!entryDate || !entryDate.isValid()) {
+            // Se a data for inválida ou undefined, envia para a primeira semana
+            if (!acc[firstWeekRange]) acc[firstWeekRange] = [];
+            acc[firstWeekRange].push(entry);
+            return acc;
         }
-        const entryDate = moment(newDate)
-        entryDate.add(1, 'days')
 
+        // Calcular o início da primeira semana (Date real, não string)
+        const baseWeekStart = moment(firstWeekRange.split(" - ")[0], "DD/MM/YYYY");
 
-        // Find the week difference from the start of the first week
-        const weekDiff = Math.floor(
-            (entryDate - weekStart) / (7 * 24 * 60 * 60 * 1000)
-        ); // Convert ms to weeks
+        // Calcula a diferença de semanas entre entryDate e a primeira semana
+        const weekDiff = Math.floor(entryDate.diff(baseWeekStart, 'days') / 7);
 
-        const weekStartDate = new Date(weekStart);
-        weekStartDate.setDate(weekStartDate.getDate() + weekDiff * 7);
+        const weekStart = moment(baseWeekStart).add(weekDiff * 7, 'days');
+        const weekEnd = moment(weekStart).add(6, 'days');
 
-        const weekEndDate = new Date(weekStartDate);
-        weekEndDate.setDate(weekEndDate.getDate() + 6); // End of the week (Saturday)
+        const weekRange = `${weekStart.format("DD/MM/YYYY")} - ${weekEnd.format("DD/MM/YYYY")}`;
 
-        const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
-
-
-        // Group by week range
-        if (!acc[weekRange]) {
-            acc[weekRange] = [];
-        }
+        if (!acc[weekRange]) acc[weekRange] = [];
         acc[weekRange].push(entry);
         return acc;
     }, {});
+    // const groupByWeeks = qs_planned.reduce((acc, entry) => {
+    //     let newDate = ''
+    //     if (plantioView) {
+    //         newDate = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
+    //     } else {
+    //         const getInit = dataToUse(entry.finalizado_plantio, entry.data_plantio, entry.data_prevista_plantio)
+    //         newDate = getColheitaDate(getInit, entry.variedade__dias_ciclo)
+
+    //     }
+    //     const entryDate = moment(newDate)
+    //     entryDate.add(1, 'days')
+
+
+    //     // Find the week difference from the start of the first week
+    //     const weekDiff = Math.floor(
+    //         (entryDate - weekStart) / (7 * 24 * 60 * 60 * 1000)
+    //     ); // Convert ms to weeks
+
+    //     const weekStartDate = new Date(weekStart);
+    //     weekStartDate.setDate(weekStartDate.getDate() + weekDiff * 7);
+
+    //     const weekEndDate = new Date(weekStartDate);
+    //     weekEndDate.setDate(weekEndDate.getDate() + 6); // End of the week (Saturday)
+
+    //     const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
+
+
+    //     // Group by week range
+    //     if (!acc[weekRange]) {
+    //         acc[weekRange] = [];
+    //     }
+    //     acc[weekRange].push(entry);
+    //     return acc;
+    // }, {});
+
     const result = weekRanges.reduce((acc, range) => {
         if (!groupByWeeks[range]) {
             acc[range] = []; // Initialize empty array for weeks with no data
@@ -206,112 +277,149 @@ export const dataPlannerHandlerBarChart = (qs_planned_orig, plantioView = true) 
         earliestDate.setDate(earliestDate.getDate() - earliestDate.getDay())
     ); // Start of the week
 
-    // Step 2: Group data by weeks
-    const weekRangesPlantio = [
-        // "15/09/2024 - 21/09/2024",
-        // "22/09/2024 - 28/09/2024",
-        // "29/09/2024 - 05/10/2024",
-        // "06/10/2024 - 12/10/2024",
-        // "13/10/2024 - 19/10/2024",
-        // "20/10/2024 - 26/10/2024",
-        // "27/10/2024 - 02/11/2024",
-        // "03/11/2024 - 09/11/2024",
-        // "10/11/2024 - 16/11/2024",
-        // "17/11/2024 - 23/11/2024",
-        // "24/11/2024 - 30/11/2024",
-        // "01/12/2024 - 07/12/2024",
-        // "08/12/2024 - 14/12/2024",
-        // "15/12/2024 - 21/12/2024",
-        // "22/12/2024 - 28/12/2024",
-        // "29/12/2024 - 04/01/2025",
-        // "05/01/2025 - 11/01/2025",
-        // "12/01/2025 - 18/01/2025",
-        // "19/01/2025 - 25/01/2025",
-        // "26/01/2025 - 01/02/2025",
-        // "02/02/2025 - 08/02/2025"
 
-        "23/03/2025 - 29/03/2025",
-        "30/03/2025 - 05/04/2025",
-        "06/04/2025 - 12/04/2025",
-        "13/04/2025 - 19/04/2025",
-        "20/04/2025 - 26/04/2025",
-        "27/04/2025 - 03/05/2025",
-        "04/05/2025 - 10/05/2025",
-        "11/05/2025 - 17/05/2025",
-        "18/05/2025 - 24/05/2025",
-        "25/05/2025 - 31/05/2025",
-        "01/06/2025 - 07/06/2025"
+    // // Step 2: Group data by weeks
+    // const weekRangesPlantio = [
+    //     // "15/09/2024 - 21/09/2024",
+    //     // "22/09/2024 - 28/09/2024",
+    //     // "29/09/2024 - 05/10/2024",
+    //     // "06/10/2024 - 12/10/2024",
+    //     // "13/10/2024 - 19/10/2024",
+    //     // "20/10/2024 - 26/10/2024",
+    //     // "27/10/2024 - 02/11/2024",
+    //     // "03/11/2024 - 09/11/2024",
+    //     // "10/11/2024 - 16/11/2024",
+    //     // "17/11/2024 - 23/11/2024",
+    //     // "24/11/2024 - 30/11/2024",
+    //     // "01/12/2024 - 07/12/2024",
+    //     // "08/12/2024 - 14/12/2024",
+    //     // "15/12/2024 - 21/12/2024",
+    //     // "22/12/2024 - 28/12/2024",
+    //     // "29/12/2024 - 04/01/2025",
+    //     // "05/01/2025 - 11/01/2025",
+    //     // "12/01/2025 - 18/01/2025",
+    //     // "19/01/2025 - 25/01/2025",
+    //     // "26/01/2025 - 01/02/2025",
+    //     // "02/02/2025 - 08/02/2025"
 
-    ];
-    const weekRangesColheita = [
-        // "12/01/2025 - 18/01/2025",
-        // "19/01/2025 - 25/01/2025",
-        // "26/01/2025 - 01/02/2025",
-        // "02/02/2025 - 08/02/2025",
-        // "09/02/2025 - 15/02/2025",
-        // "16/02/2025 - 22/02/2025",
-        // "23/02/2025 - 01/03/2025",
-        // "02/03/2025 - 08/03/2025",
-        // "09/03/2025 - 15/03/2025",
-        // "16/03/2025 - 22/03/2025",
-        // "23/03/2025 - 29/03/2025",
-        // "30/03/2025 - 05/04/2025",
-        // "06/04/2025 - 12/04/2025",
-        // "13/04/2025 - 19/04/2025",
-        // "20/04/2025 - 26/04/2025",
-        // "27/04/2025 - 03/05/2025",
-        // "04/05/2025 - 10/05/2025",
-        // "11/05/2025 - 17/05/2025",
-        // "18/05/2025 - 24/05/2025",
-        // "25/05/2025 - 31/05/2025",
-        // "01/06/2025 - 07/06/2025"
-        "01/06/2025 - 07/06/2025",
-        "08/06/2025 - 14/06/2025",
-        "15/06/2025 - 21/06/2025",
-        "22/06/2025 - 28/06/2025",
-        "29/06/2025 - 05/07/2025",
-        "06/07/2025 - 12/07/2025",
-        "13/07/2025 - 19/07/2025",
-        "20/07/2025 - 26/07/2025",
-        "27/07/2025 - 02/08/2025",
-        "03/08/2025 - 09/08/2025",
-        "10/08/2025 - 16/08/2025",
-        "17/08/2025 - 23/08/2025",
-        "24/08/2025 - 30/08/2025",
-        "31/08/2025 - 06/09/2025",
-        "07/09/2025 - 13/09/2025",
-        "14/09/2025 - 20/09/2025",
-        "21/09/2025 - 27/09/2025"
-    ];
+    //     "23/03/2025 - 29/03/2025",
+    //     "30/03/2025 - 05/04/2025",
+    //     "06/04/2025 - 12/04/2025",
+    //     "13/04/2025 - 19/04/2025",
+    //     "20/04/2025 - 26/04/2025",
+    //     "27/04/2025 - 03/05/2025",
+    //     "04/05/2025 - 10/05/2025",
+    //     "11/05/2025 - 17/05/2025",
+    //     "18/05/2025 - 24/05/2025",
+    //     "25/05/2025 - 31/05/2025",
+    //     "01/06/2025 - 07/06/2025"
 
-    const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+    // ];
+    // const weekRangesColheita = [
+    //     // "12/01/2025 - 18/01/2025",
+    //     // "19/01/2025 - 25/01/2025",
+    //     // "26/01/2025 - 01/02/2025",
+    //     // "02/02/2025 - 08/02/2025",
+    //     // "09/02/2025 - 15/02/2025",
+    //     // "16/02/2025 - 22/02/2025",
+    //     // "23/02/2025 - 01/03/2025",
+    //     // "02/03/2025 - 08/03/2025",
+    //     // "09/03/2025 - 15/03/2025",
+    //     // "16/03/2025 - 22/03/2025",
+    //     // "23/03/2025 - 29/03/2025",
+    //     // "30/03/2025 - 05/04/2025",
+    //     // "06/04/2025 - 12/04/2025",
+    //     // "13/04/2025 - 19/04/2025",
+    //     // "20/04/2025 - 26/04/2025",
+    //     // "27/04/2025 - 03/05/2025",
+    //     // "04/05/2025 - 10/05/2025",
+    //     // "11/05/2025 - 17/05/2025",
+    //     // "18/05/2025 - 24/05/2025",
+    //     // "25/05/2025 - 31/05/2025",
+    //     // "01/06/2025 - 07/06/2025"
+    //     "01/06/2025 - 07/06/2025",
+    //     "08/06/2025 - 14/06/2025",
+    //     "15/06/2025 - 21/06/2025",
+    //     "22/06/2025 - 28/06/2025",
+    //     "29/06/2025 - 05/07/2025",
+    //     "06/07/2025 - 12/07/2025",
+    //     "13/07/2025 - 19/07/2025",
+    //     "20/07/2025 - 26/07/2025",
+    //     "27/07/2025 - 02/08/2025",
+    //     "03/08/2025 - 09/08/2025",
+    //     "10/08/2025 - 16/08/2025",
+    //     "17/08/2025 - 23/08/2025",
+    //     "24/08/2025 - 30/08/2025",
+    //     "31/08/2025 - 06/09/2025",
+    //     "07/09/2025 - 13/09/2025",
+    //     "14/09/2025 - 20/09/2025",
+    //     "21/09/2025 - 27/09/2025"
+    // ];
+
+    // const weekRanges = plantioView ? weekRangesPlantio : weekRangesColheita
+
+    const weekRanges = getWeeklyRanges(
+        qs_planned,
+        plantioView ? 'data_prevista_plantio' : 'colheitaDate'
+    );
+    console.log('weekRange here ', weekRanges)
+    
+    const firstWeekRange = weekRanges[0];
+
     const groupByWeeks = qs_planned.reduce((acc, entry) => {
-        const newDate = entry.data_prevista_plantio
-        const entryDate = moment(newDate)
-        entryDate.add(1, 'days')
+        const field = plantioView ? entry.data_prevista_plantio : entry.colheitaDate;
 
+        let entryDate = field ? moment(field) : null;
 
-        // Find the week difference from the start of the first week
-        const weekDiff = Math.floor(
-            (entryDate - weekStart) / (7 * 24 * 60 * 60 * 1000)
-        ); // Convert ms to weeks
-
-        const weekStartDate = new Date(weekStart);
-        weekStartDate.setDate(weekStartDate.getDate() + weekDiff * 7);
-
-        const weekEndDate = new Date(weekStartDate);
-        weekEndDate.setDate(weekEndDate.getDate() + 6); // End of the week (Saturday)
-
-        const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
-
-
-        // Group by week range
-        if (!acc[weekRange]) {
-            acc[weekRange] = [];
+        if (!entryDate || !entryDate.isValid()) {
+            // Se a data for inválida ou undefined, envia para a primeira semana
+            if (!acc[firstWeekRange]) acc[firstWeekRange] = [];
+            acc[firstWeekRange].push(entry);
+            return acc;
         }
+
+        // Calcular o início da primeira semana (Date real, não string)
+        const baseWeekStart = moment(firstWeekRange.split(" - ")[0], "DD/MM/YYYY");
+
+        // Calcula a diferença de semanas entre entryDate e a primeira semana
+        const weekDiff = Math.floor(entryDate.diff(baseWeekStart, 'days') / 7);
+
+        const weekStart = moment(baseWeekStart).add(weekDiff * 7, 'days');
+        const weekEnd = moment(weekStart).add(6, 'days');
+
+        const weekRange = `${weekStart.format("DD/MM/YYYY")} - ${weekEnd.format("DD/MM/YYYY")}`;
+
+        if (!acc[weekRange]) acc[weekRange] = [];
         acc[weekRange].push(entry);
         return acc;
     }, {});
+    // const groupByWeeks = qs_planned.reduce((acc, entry) => {
+    //     const newDate = entry.data_prevista_plantio
+    //     const entryDate = moment(newDate)
+    //     entryDate.add(1, 'days')
+
+
+    //     // Find the week difference from the start of the first week
+    //     const weekDiff = Math.floor(
+    //         (entryDate - weekStart) / (7 * 24 * 60 * 60 * 1000)
+    //     ); // Convert ms to weeks
+
+    //     const weekStartDate = new Date(weekStart);
+    //     weekStartDate.setDate(weekStartDate.getDate() + weekDiff * 7);
+
+    //     const weekEndDate = new Date(weekStartDate);
+    //     weekEndDate.setDate(weekEndDate.getDate() + 6); // End of the week (Saturday)
+
+    //     const weekRange = `${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()}`;
+
+
+    //     // Group by week range
+    //     if (!acc[weekRange]) {
+    //         acc[weekRange] = [];
+    //     }
+    //     acc[weekRange].push(entry);
+    //     return acc;
+    // }, {});
     const result = weekRanges.reduce((acc, range) => {
         if (!groupByWeeks[range]) {
             acc[range] = []; // Initialize empty array for weeks with no data

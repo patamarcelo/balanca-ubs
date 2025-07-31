@@ -67,6 +67,7 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
             projectTotalsDone[project] += value;
         });
     });
+    console.log('dataExec', dataExec)
 
     const totalExec = dataExec?.reduce((acc, curr) => acc += curr.totalPlanned, 0)
 
@@ -157,6 +158,9 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
     // -----------------------------------PLANNED TABLE-----------------------------------
     // -----------------------------------EXEC TABLE-----------------------------------
     if (type === 'executed') {
+        console.log('onlyWeeks: ', onlyWeeks)
+        console.log('onlyFarmsArr: ', onlyFarmsArr)
+        console.log('data', data)
         return (
             <table className={styles.table}>
                 <thead style={{ backgroundColor: colors.blueOrigin[500] }}>
@@ -195,10 +199,11 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
                                         ? formatNumber(dataProj.projects[farms])
                                         : " - ";
                                     const getValue = dataExec.find((data) => data.weekRange === dataProj.weekRange);
+                                    console.log('getValue: ', getValue)
                                     let valueByFarm = " - "
-                                    if (getValue) {
-                                        valueByFarm = getValue.projects[farms] ? formatNumber(getValue.projects[farms]) : ' - '
-
+                                    if (getValue || getValuePlanned) {
+                                        valueByFarm = getValue?.projects[farms] ? formatNumber(getValue?.projects[farms]) : ' - '
+                                        console.log('valueByFarm', valueByFarm, getValue?.projects[farms])
                                         const defineColor = () => {
                                             if (getValuePlanned === "") {
                                                 return colors.textColor[100]

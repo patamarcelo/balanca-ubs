@@ -201,7 +201,6 @@ const DashboardTable = ({ data, isLoading, dataToReport }) => {
                         {/* Table Body */}
                         <TableBody>
                             {filteredRows.map((row, index) => {
-                                console.log('rows here: ',row)
                                 return (
                                 <TableRow key={index}
                                     className={`${index % 2 !== 0 && styles.oddRow}`}

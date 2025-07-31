@@ -10,6 +10,9 @@ const BarPlantioPlanner = ({ data }) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    
+    console.log('data here', data)
+
     const formatNumber = (data) => {
         return data.toLocaleString(
             "pt-br",

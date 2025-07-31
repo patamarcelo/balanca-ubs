@@ -169,8 +169,9 @@ const PlantioAtual = ({params}) => {
     useEffect(() => {
         // console.log('data from api', dataFromApi)
         // console.log('data from api', executedAreaArr)
-        if (executedAreaArr.length > 0 && dataToBarChartPlanned.length > 0) {
+        if (executedAreaArr.length > 0 || dataToBarChartPlanned.length > 0) {
             const newArr = consolidateData(dataToBarChartPlanned, executedAreaArr)
+            console.log('dataTobarChart: ', newArr)
             setDataToBarChart(newArr)
         }
     }, [dataToBarChartPlanned, executedAreaArr]);
@@ -399,10 +400,12 @@ const PlantioAtual = ({params}) => {
                         <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px' }}>
                             <BarPlantioPlanner data={dataToBarChart} />
                         </Paper>
-                        {
+                        {/* {
                             totalsSet.planejado && totalsSet.plantado &&
                             <TotalCOmp totalsSet={totalsSet} />
-                        }
+                        } */}
+                        
+                        <TotalCOmp totalsSet={totalsSet} />
                         <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
                             <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
                         </Box>
