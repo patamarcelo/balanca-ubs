@@ -104,14 +104,16 @@ const ModalDataFarmbox = (props) => {
 	};
 
 	useEffect(() => {
-		getTrueApiFarmData();
-	}, []);
-
-	useEffect(() => {
-		if (refreshData) {
+		if (open && refreshData) {
 			getTrueApiFarmData();
 		}
-	}, [refreshData]);
+	}, [open, refreshData]);
+
+	// useEffect(() => {
+	// 	if (refreshData) {
+	// 		getTrueApiFarmData();
+	// 	}
+	// }, [refreshData]);
 
 	const handleOpOrProducts = () => {
 		setOnlyAppNotProducts(!onlyAppNotProducts);

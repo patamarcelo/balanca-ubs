@@ -1,8 +1,8 @@
 import classes from "./farmbox.module.css";
 import djangoApi, { nodeServer } from "../../../utils/axios/axios.utils";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
 import { Box, Button, CircularProgress, Typography, useTheme, Paper } from "@mui/material";
-import { tokens } from "../../../theme";
+import { tokens, ColorModeContext } from "../../../theme";
 
 import {
 	selectApp,
@@ -68,6 +68,7 @@ const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const colorMode = useContext(ColorModeContext);
 
 	const isDark = theme.palette.mode === 'dark'
 
@@ -247,7 +248,13 @@ const FarmBoxPage = () => {
 	};
 
 	const [openFarm, setOpenFarm] = useState(false);
-	const handleOpenFarm = () => setOpenFarm(true);
+
+	const handleOpenFarm =  () => {
+		setOpenFarm(true);
+		if(theme.palette.mode !== 'dark'){
+			colorMode.toggleColorMode()
+		}
+	}
 
 	const handleCloseFarm = () => {
 		setOpenFarm(false);

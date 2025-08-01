@@ -202,7 +202,7 @@ const DataProgramPage = (props) => {
 								getOptionLabel={(opt) => opt.name}
 								onChange={(_, value) => (selectedProd.current = value)}
 								renderInput={(params) => (
-									<TextField {...params} label="Insumo" />
+									<TextField {...params} label="Insumo" autoFocus />
 								)}
 								sx={{ width: 280 }}
 							/>
@@ -219,6 +219,12 @@ const DataProgramPage = (props) => {
 						</Box>
 					</Box>
 				);
+				// Espera o React montar e aplica foco no input do Autocomplete
+				setTimeout(() => {
+					const input = document.querySelector('#swal-prod input');
+					if (input) input.focus();
+				}, 100);
+
 
 				/** desmonta o React quando o Swal fechar */
 				MySwal.getPopup().addEventListener("swalClose", () => root.unmount());

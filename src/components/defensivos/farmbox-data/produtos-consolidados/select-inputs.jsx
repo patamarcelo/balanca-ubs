@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
-import { tokens } from '../../../../theme'
+import { tokens, ColorModeContext } from '../../../../theme'
 
 import { useEffect } from 'react';
 
@@ -11,9 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 
-
-
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 const SelectInputs = (props) => {
 
@@ -21,6 +19,7 @@ const SelectInputs = (props) => {
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
 
     const [personName, setPersonName] = useState([]);
     const [arrToMap, setarrToMap] = useState([]);
@@ -58,6 +57,19 @@ const SelectInputs = (props) => {
             }
         }
     }, [inputsArr, selectedData]);
+
+    useEffect(() => {
+        if (label === 'Projeto') {
+            const projetos = selectedData['Projeto'] || []
+
+            if (theme.palette.mode === 'dark' && projetos?.length > 0) {
+                colorMode.toggleColorMode()
+            }
+            if (projetos.length === 0 && theme.palette.mode !== 'dark') {
+                colorMode.toggleColorMode()
+            }
+        }
+    }, [selectedData]);
 
     const MenuProps = {
         PaperProps: {

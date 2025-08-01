@@ -168,6 +168,7 @@ const OpenApsAllprodsPage = ({ data, selectedData, setFilteredData, filteredData
                             filteredData?.sort((a, b) => a.inputName.localeCompare(b.inputName)).map((data, i) => {
                                 return (
                                     <Box pl="2px" pr="2px"
+                                        key={i}
                                         sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: i % 2 === 0 && colors.grey[900] }}>
                                         <Typography variant="h5" color={colors.grey[300]}>{data.inputName}</Typography>
                                         <Typography variant="h5" color={colors.grey[400]}>{formatNumber(data.totalQuantityOpen)}</Typography>
