@@ -523,18 +523,18 @@ const DataProgramPage = (props) => {
 		setShowMapps(!showMapps);
 	};
 
-	const handlerShowMaps = useCallback(() => {
-		if (showMapps && farmSelected) {
-			setShowMapps(false);
-			setTimeout(() => {
-				setShowMapps(true);
-			}, 500);
-		}
-	}, [farmSelected, showMapps]);
+	// const handlerShowMaps = useCallback(() => {
+	// 	if (showMapps && farmSelected) {
+	// 		setShowMapps(false);
+	// 		setTimeout(() => {
+	// 			setShowMapps(true);
+	// 		}, 500);
+	// 	}
+	// }, [farmSelected, showMapps]);
 
-	useEffect(() => {
-		handlerShowMaps();
-	}, [farmSelected, handlerShowMaps]);
+	// useEffect(() => {
+	// 	handlerShowMaps();
+	// }, [farmSelected, handlerShowMaps]);
 
 	const filteredIcon = (data) => {
 		const filtered = iconDict.filter(
