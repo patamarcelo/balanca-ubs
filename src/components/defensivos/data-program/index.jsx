@@ -866,11 +866,14 @@ const DataProgramPage = (props) => {
 					});
 				}
 
-				if (parcela && !parcelasSet.has(parcela)) {
-					parcelasSet.add(parcela);
+				const keyParcela = `${parcela}|${cultura}|${variedade}`;
+				if (parcela && !parcelasSet.has(keyParcela)) {
+					parcelasSet.add(keyParcela);
 					parcelas.push({
 						id: parcela.toLowerCase().replace(/\s+/g, "_"),
 						nome: parcela,
+						cultura: cultura?.toLowerCase() || null,
+						variedade: variedade || null,
 					});
 				}
 			});
@@ -907,12 +910,12 @@ const DataProgramPage = (props) => {
 					const atendeVariedade =
 						variedadeSelecionada.length === 0 ||
 						(vObj && variedadeSelecionada.includes(vObj.id));
-					
-				const atendeParcela =
-					parcelasSelecionada.length === 0 ||
-					parcelasSelecionada.includes(
-						nomeParcela?.toLowerCase().replace(/\s+/g, "_")
-					);
+
+					const atendeParcela =
+						parcelasSelecionada.length === 0 ||
+						parcelasSelecionada.includes(
+							nomeParcela?.toLowerCase().replace(/\s+/g, "_")
+						);
 
 					return atendeCultura && atendeVariedade && atendeParcela;
 				});
@@ -975,12 +978,12 @@ const DataProgramPage = (props) => {
 	useEffect(() => {
 		if (!objList || objList.length === 0) return;
 
-			const { culturas, variedades, parcelas } = gerarCulturasEVariedadesParaSelect(objList);
+		const { culturas, variedades, parcelas } = gerarCulturasEVariedadesParaSelect(objList);
 		setFilterCultura(culturas);
 		setFilterVariedade(variedades);
 		setFilterParcela(parcelas); // 👈 agora também atualiza parcelas
 
-	}, [objList ]);
+	}, [objList]);
 
 	// useEffect(() => {
 	// 	const useArr = [...objList];
@@ -1338,8 +1341,8 @@ const DataProgramPage = (props) => {
 				culturas={filterCultura}
 				variedades={filterVariedade}
 				parcelas={filterParcela}
-    			parcelaSelecionada={parcelasSelecionada}
-    			setParcelaSelecionada={setParcelasSelecionada}
+				parcelaSelecionada={parcelasSelecionada}
+				setParcelaSelecionada={setParcelasSelecionada}
 			/>
 			<Box
 				className={[

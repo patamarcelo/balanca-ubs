@@ -29,6 +29,15 @@ const SelectCulturaVariedade = ({
     const variedadesFiltradas = variedades.filter((v) =>
         culturaSelecionada.includes(v.cultura)
     );
+    const nomesVariedadesSelecionadas = variedadesFiltradas
+        .filter((v) => variedadeSelecionada.includes(v.id))
+        .map((v) => v.nome);
+
+    const parcelasFiltradas = parcelas.filter(
+        (p) =>
+            (culturaSelecionada.length === 0 || culturaSelecionada.includes(p.cultura)) &&
+            (variedadeSelecionada.length === 0 || nomesVariedadesSelecionadas.includes(p.variedade))
+    );
 
     const limparFiltros = () => {
         setCulturaSelecionada([]);
@@ -139,7 +148,7 @@ const SelectCulturaVariedade = ({
                     <FormControl
                         sx={{
                             minWidth: '200px',
-                            width: Math.min(100 + parcelaSelecionada.length * 20, 400), // limita a 400px
+                            width: Math.min(100 + parcelaSelecionada.length * 20, 400), // dinâmica
                             transition: 'width 0.3s ease',
                         }}
                     >
@@ -152,18 +161,20 @@ const SelectCulturaVariedade = ({
                             size="small"
                             onChange={(e) => setParcelaSelecionada(e.target.value)}
                             renderValue={(selected) =>
-                                parcelas
+                                parcelasFiltradas
                                     .filter((p) => selected.includes(p.id))
                                     .sort((a, b) => a.nome.localeCompare(b.nome))
                                     .map((p) => p.nome)
                                     .join(', ')
                             }
                         >
-                            {parcelas.sort((a, b) => a.nome.localeCompare(b.nome)).map((p) => (
-                                <MenuItem key={p.id} value={p.id}>
-                                    {p.nome}
-                                </MenuItem>
-                            ))}
+                            {parcelasFiltradas
+                                .sort((a, b) => a.nome.localeCompare(b.nome))
+                                .map((p) => (
+                                    <MenuItem key={p.id} value={p.id}>
+                                        {p.nome}
+                                    </MenuItem>
+                                ))}
                         </Select>
                     </FormControl>
 
