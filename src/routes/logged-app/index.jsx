@@ -31,6 +31,8 @@ import PageNotFound from "../../pages/NotFound";
 import MenuIcon from "@mui/icons-material/Menu";
 import UsersPage from "../../pages/Users";
 
+import Slide from "@mui/material/Slide";
+
 const AuthApp = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -61,33 +63,33 @@ const AuthApp = () => {
 			}}
 		>
 			{
-				isNonMobile ? 
-				<Header toggleDrawer={toggleDrawer} isdrawerOpen={isdrawerOpen} />
-				: 
-				<Box
-				display="flex"
-				flexDirection="column"
-				alignItems="flex-start"
-				justifyContent={"flex-start"}
-				onClick={toggleDrawer}
-				sx={{
-					cursor: "pointer",
-					width: "100%",
-					height: "30px",
-					marginRight: "20px",
-					marginLeft: '10px',
-					position: 'absolute',
-					top: '10px'
+				isNonMobile ?
+					<Header toggleDrawer={toggleDrawer} isdrawerOpen={isdrawerOpen} />
+					:
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignItems="flex-start"
+						justifyContent={"flex-start"}
+						onClick={toggleDrawer}
+						sx={{
+							cursor: "pointer",
+							width: "100%",
+							height: "30px",
+							marginRight: "20px",
+							marginLeft: '10px',
+							position: 'absolute',
+							top: '10px'
 
-				}}
-			>
-				<MenuIcon
-					sx={{
-						fontSize: "32px"
-					}}
-				/>
-				</Box>
-				
+						}}
+					>
+						<MenuIcon
+							sx={{
+								fontSize: "32px"
+							}}
+						/>
+					</Box>
+
 			}
 
 			<TempDrawer
@@ -95,62 +97,70 @@ const AuthApp = () => {
 				toggleDrawer={toggleDrawer}
 			/>
 
-			<Box
-				width="100%"
-				height="100%"
-				display="flex"
-				justifyContent="center"
-				alignItems={(location.pathname === "/rcprint" || location.pathname === "/print")  && 'center'}
-				id="mainPrintDivContainer"
-				sx={{
-					padding: !isNonMobile ? "" : "10px",
-					overflow: "auto",
-					height: "100%",
-					backgroundColor:
-						location.pathname === "/print"
-							? "lightgrey !important"
-							: location.pathname.includes("visitas/")
-							? "whitesmoke"
-							: ""
-				}}
+			<Slide
+				direction={isdrawerOpen ? "right" : "up"}
+				in={true}
+				mountOnEnter
+				unmountOnExit={false}
+				timeout={400}
 			>
-				<Routes>
-					<Route path="/" element={<HomePage />} />
-					<Route path="/report" element={<ReportPage />} />
-					<Route path="/print" element={<PrintPage />} />
-					<Route path="/rcprint" element={<PrintRCPage />} />
-					{unidadeOpUser === "ubs" && (
-						<Route path="/sendseed" element={<SendSeed />} />
-					)}
-					{unidadeOpUser === "ubs" && (
-						<Route path="/ordem" element={<OrdemPage />} />
-					)}
-					{isDefensivosUser && (
-						<Route path="/defensivo" element={<DefensivoPage />} />
-					)}
-					{isDefensivosUser && (
-						<>
-							<Route path="/visitas" element={<VisitasPage />} />
-							<Route
-								path="/visitas/:visitaId"
-								element={<VisitaIDPage />}
+				<Box
+					width="100%"
+					height="100%"
+					display="flex"
+					justifyContent="center"
+					alignItems={(location.pathname === "/rcprint" || location.pathname === "/print") && 'center'}
+					id="mainPrintDivContainer"
+					sx={{
+						padding: !isNonMobile ? "" : "10px",
+						overflow: "auto",
+						height: "100%",
+						backgroundColor:
+							location.pathname === "/print"
+								? "lightgrey !important"
+								: location.pathname.includes("visitas/")
+									? "whitesmoke"
+									: ""
+					}}
+				>
+					<Routes>
+						<Route path="/" element={<HomePage />} />
+						<Route path="/report" element={<ReportPage />} />
+						<Route path="/print" element={<PrintPage />} />
+						<Route path="/rcprint" element={<PrintRCPage />} />
+						{unidadeOpUser === "ubs" && (
+							<Route path="/sendseed" element={<SendSeed />} />
+						)}
+						{unidadeOpUser === "ubs" && (
+							<Route path="/ordem" element={<OrdemPage />} />
+						)}
+						{isDefensivosUser && (
+							<Route path="/defensivo" element={<DefensivoPage />} />
+						)}
+						{isDefensivosUser && (
+							<>
+								<Route path="/visitas" element={<VisitasPage />} />
+								<Route
+									path="/visitas/:visitaId"
+									element={<VisitaIDPage />}
 								/>
-						</>
-					)}
-					{isDefensivosUser && (
-						<>
-							<Route
-								path="/plantio-colheita"
-								element={<PlantioColheitaPage />}
+							</>
+						)}
+						{isDefensivosUser && (
+							<>
+								<Route
+									path="/plantio-colheita"
+									element={<PlantioColheitaPage />}
 								/>
-						</>
-					)}
-					{isAdminUser && (
-						<Route path="/users" element={<UsersPage />} />
-					)}
-					<Route path="*" element={<PageNotFound />} />
-				</Routes>
-			</Box>
+							</>
+						)}
+						{isAdminUser && (
+							<Route path="/users" element={<UsersPage />} />
+						)}
+						<Route path="*" element={<PageNotFound />} />
+					</Routes>
+				</Box>
+			</Slide>
 		</Box>
 	);
 };

@@ -126,8 +126,10 @@ const DataProgramPage = (props) => {
 
 	const [culturaSelecionada, setCulturaSelecionada] = useState([]);
 	const [variedadeSelecionada, setVariedadeSelecionada] = useState([]);
+	const [parcelasSelecionada, setParcelasSelecionada] = useState([]);
 	const [filterCultura, setFilterCultura] = useState([]);
 	const [filterVariedade, setFilterVariedade] = useState([]);
+	const [filterParcela, setFilterParcela] = useState([]);
 
 
 
@@ -832,9 +834,12 @@ const DataProgramPage = (props) => {
 	}, [filteredList, initialDateForm, finalDateForm, onlyOpenApp, showProducts]);
 
 	function gerarCulturasEVariedadesParaSelect(objList) {
-		const culturaMap = new Map();     // para culturas únicas
-		const variedadeSet = new Set();   // para evitar variedade duplicada
+		const culturaMap = new Map();
+		const variedadeSet = new Set();
+		const parcelasSet = new Set();
+
 		const variedades = [];
+		const parcelas = [];
 
 		objList.forEach((item) => {
 			const cronograma = item.cronograma || [];
@@ -842,6 +847,7 @@ const DataProgramPage = (props) => {
 			cronograma.forEach((p) => {
 				const cultura = p.cultura?.trim();
 				const variedade = p.variedade?.trim();
+				const parcela = p.parcela?.trim(); // ← supondo que o nome do campo seja esse
 
 				if (cultura && !culturaMap.has(cultura)) {
 					culturaMap.set(cultura, {
@@ -859,12 +865,21 @@ const DataProgramPage = (props) => {
 						cultura: cultura.toLowerCase(),
 					});
 				}
+
+				if (parcela && !parcelasSet.has(parcela)) {
+					parcelasSet.add(parcela);
+					parcelas.push({
+						id: parcela.toLowerCase().replace(/\s+/g, "_"),
+						nome: parcela,
+					});
+				}
 			});
 		});
 
 		return {
 			culturas: Array.from(culturaMap.values()),
 			variedades,
+			parcelas,
 		};
 	}
 
@@ -879,6 +894,7 @@ const DataProgramPage = (props) => {
 				const parcelasFiltradas = cronograma.filter((item) => {
 					const nomeVar = item.variedade?.trim();
 					const nomeCult = item.cultura?.trim().toLowerCase();
+					const nomeParcela = item.parcela?.trim();
 
 					const atendeCultura =
 						culturaSelecionada.length === 0 ||
@@ -891,8 +907,14 @@ const DataProgramPage = (props) => {
 					const atendeVariedade =
 						variedadeSelecionada.length === 0 ||
 						(vObj && variedadeSelecionada.includes(vObj.id));
+					
+				const atendeParcela =
+					parcelasSelecionada.length === 0 ||
+					parcelasSelecionada.includes(
+						nomeParcela?.toLowerCase().replace(/\s+/g, "_")
+					);
 
-					return atendeCultura && atendeVariedade;
+					return atendeCultura && atendeVariedade && atendeParcela;
 				});
 
 				// Se nenhuma parcela passou no filtro, descarta o bloco
@@ -947,16 +969,18 @@ const DataProgramPage = (props) => {
 			data.data.cronograma.map((p) => p.parcela)
 		);
 		setfilteredAndDucplicatedParcelas(parcelasArr);
-	}, [objList, culturaSelecionada, variedadeSelecionada, filterVariedade]);
+	}, [objList, culturaSelecionada, variedadeSelecionada, filterVariedade, parcelasSelecionada]);
 
 
 	useEffect(() => {
 		if (!objList || objList.length === 0) return;
 
-		const { culturas, variedades } = gerarCulturasEVariedadesParaSelect(objList);
+			const { culturas, variedades, parcelas } = gerarCulturasEVariedadesParaSelect(objList);
 		setFilterCultura(culturas);
 		setFilterVariedade(variedades);
-	}, [objList]);
+		setFilterParcela(parcelas); // 👈 agora também atualiza parcelas
+
+	}, [objList ]);
 
 	// useEffect(() => {
 	// 	const useArr = [...objList];
@@ -1313,6 +1337,9 @@ const DataProgramPage = (props) => {
 				setVariedadeSelecionada={setVariedadeSelecionada}
 				culturas={filterCultura}
 				variedades={filterVariedade}
+				parcelas={filterParcela}
+    			parcelaSelecionada={parcelasSelecionada}
+    			setParcelaSelecionada={setParcelasSelecionada}
 			/>
 			<Box
 				className={[

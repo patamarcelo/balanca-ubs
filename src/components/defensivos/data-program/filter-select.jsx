@@ -19,6 +19,9 @@ const SelectCulturaVariedade = ({
     setVariedadeSelecionada,
     culturas,
     variedades,
+    parcelas,
+    parcelaSelecionada,
+    setParcelaSelecionada
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const containerRef = useRef(null);
@@ -30,6 +33,7 @@ const SelectCulturaVariedade = ({
     const limparFiltros = () => {
         setCulturaSelecionada([]);
         setVariedadeSelecionada([]);
+        setParcelaSelecionada([]);
     };
 
     return (
@@ -65,8 +69,9 @@ const SelectCulturaVariedade = ({
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
+                        justifyContent: 'flex-start',
                         gap: '20px',
-                        width: '500px',
+                        minWidth: '500px',
                         marginTop: '10px',
                         paddingLeft: '10px',
                     }}
@@ -106,7 +111,7 @@ const SelectCulturaVariedade = ({
                     </FormControl>
 
                     <FormControl
-                        sx={{ width: '300px' }}
+                        sx={{ width: '200px' }}
                         disabled={culturaSelecionada.length === 0}
                     >
                         <InputLabel id="variedade-label">Variedade</InputLabel>
@@ -131,12 +136,42 @@ const SelectCulturaVariedade = ({
                             ))}
                         </Select>
                     </FormControl>
+                    <FormControl
+                        sx={{
+                            minWidth: '200px',
+                            width: Math.min(100 + parcelaSelecionada.length * 20, 400), // limita a 400px
+                            transition: 'width 0.3s ease',
+                        }}
+                    >
+                        <InputLabel id="parcela-label">Parcela</InputLabel>
+                        <Select
+                            labelId="parcela-label"
+                            multiple
+                            value={parcelaSelecionada}
+                            label="Parcela"
+                            size="small"
+                            onChange={(e) => setParcelaSelecionada(e.target.value)}
+                            renderValue={(selected) =>
+                                parcelas
+                                    .filter((p) => selected.includes(p.id))
+                                    .sort((a, b) => a.nome.localeCompare(b.nome))
+                                    .map((p) => p.nome)
+                                    .join(', ')
+                            }
+                        >
+                            {parcelas.sort((a, b) => a.nome.localeCompare(b.nome)).map((p) => (
+                                <MenuItem key={p.id} value={p.id}>
+                                    {p.nome}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                    {(culturaSelecionada.length > 0 || variedadeSelecionada.length > 0) && (
+                    {(culturaSelecionada.length > 0 || variedadeSelecionada.length > 0 || parcelaSelecionada.length > 0) && (
                         <IconButton
                             size="small"
                             onClick={limparFiltros}
-                            sx={{ marginLeft: 'auto', marginRight: 1 }}
+                            sx={{ marginLeft: '10px', marginRight: 1 }}
                             title="Limpar filtros"
                         >
                             <CloseIcon />
