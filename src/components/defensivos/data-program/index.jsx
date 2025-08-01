@@ -64,6 +64,7 @@ import { createRoot } from "react-dom/client";
 
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import SelectCulturaVariedade from "./filter-select";
 
 
 
@@ -122,6 +123,12 @@ const DataProgramPage = (props) => {
 	const MySwal = withReactContent(Swal);
 
 	const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+	const [culturaSelecionada, setCulturaSelecionada] = useState([]);
+	const [variedadeSelecionada, setVariedadeSelecionada] = useState([]);
+	const [filterCultura, setFilterCultura] = useState([]);
+	const [filterVariedade, setFilterVariedade] = useState([]);
+
 
 
 
@@ -609,6 +616,8 @@ const DataProgramPage = (props) => {
 				(data.dados.plantio_finalizado === true)
 		);
 		setFilteredList(filtList);
+		setCulturaSelecionada([])
+		setVariedadeSelecionada([])
 	};
 
 	const handleFilterTable = () => {
@@ -816,43 +825,174 @@ const DataProgramPage = (props) => {
 		setObjList(dictTotal);
 	}, [filteredList, initialDateForm, finalDateForm, onlyOpenApp, showProducts]);
 
+	function gerarCulturasEVariedadesParaSelect(objList) {
+		const culturaMap = new Map();     // para culturas únicas
+		const variedadeSet = new Set();   // para evitar variedade duplicada
+		const variedades = [];
+
+		objList.forEach((item) => {
+			const cronograma = item.cronograma || [];
+
+			cronograma.forEach((p) => {
+				const cultura = p.cultura?.trim();
+				const variedade = p.variedade?.trim();
+
+				if (cultura && !culturaMap.has(cultura)) {
+					culturaMap.set(cultura, {
+						id: cultura.toLowerCase(),
+						nome: cultura,
+					});
+				}
+
+				const key = `${cultura}|${variedade}`;
+				if (cultura && variedade && !variedadeSet.has(key)) {
+					variedadeSet.add(key);
+					variedades.push({
+						id: variedades.length + 1,
+						nome: variedade,
+						cultura: cultura.toLowerCase(),
+					});
+				}
+			});
+		});
+
+		return {
+			culturas: Array.from(culturaMap.values()),
+			variedades,
+		};
+	}
+
 	useEffect(() => {
 		const useArr = [...objList];
-		const filtArr = useArr.map((data, i) => {
-			const dataProdutos = data.produtos;
-			var result = [];
-			// const area_total = data.total.replace(".", "").replace(",", ".");
-			// console.log(parseFloat(area_total));
-			dataProdutos.reduce(function (res, value) {
-				if (!res[value.produto]) {
-					res[value.produto] = {
-						produto: value.produto,
-						qty: 0,
-						dose: Number(value.dose),
-						tipo: value.tipo
-					};
-					result.push(res[value.produto]);
-				}
-				res[value.produto].qty += value.area * Number(value.dose);
-				return res;
-			}, {});
-			return { data, totais: result };
-		});
+
+		const filtArr = useArr
+			.map((data) => {
+				const cronograma = data?.cronograma || [];
+
+				// Filtra apenas as parcelas que atendem aos critérios
+				const parcelasFiltradas = cronograma.filter((item) => {
+					const nomeVar = item.variedade?.trim();
+					const nomeCult = item.cultura?.trim().toLowerCase();
+
+					const atendeCultura =
+						culturaSelecionada.length === 0 ||
+						culturaSelecionada.includes(nomeCult);
+
+					const vObj = filterVariedade.find(
+						(v) => v.nome === nomeVar && v.cultura === nomeCult
+					);
+
+					const atendeVariedade =
+						variedadeSelecionada.length === 0 ||
+						(vObj && variedadeSelecionada.includes(vObj.id));
+
+					return atendeCultura && atendeVariedade;
+				});
+
+				// Se nenhuma parcela passou no filtro, descarta o bloco
+				if (parcelasFiltradas.length === 0) return null;
+
+				// Gerar totais com base nas parcelas filtradas
+				const produtosFiltrados = parcelasFiltradas.flatMap((p) => p.produtos);
+				let result = [];
+
+				produtosFiltrados.reduce((res, value) => {
+					if (!res[value.produto]) {
+						res[value.produto] = {
+							produto: value.produto,
+							qty: 0,
+							dose: Number(value.dose),
+							tipo: value.tipo,
+						};
+						result.push(res[value.produto]);
+					}
+					res[value.produto].qty += value.area * Number(value.dose);
+					return res;
+				}, {});
+
+				// Calcula total de área das parcelas filtradas
+				const totalArea = parcelasFiltradas.reduce(
+					(acc, p) => acc + Number(p.area),
+					0
+				);
+
+				return {
+					data: {
+						...data,
+						cronograma: parcelasFiltradas,
+						total: totalArea.toFixed(2).replace('.', ','), // mantém compatibilidade
+					},
+					totais: result,
+				};
+			})
+			.filter(Boolean); // remove os blocos nulos
+
+		// Área total geral
 		const totalArea = filtArr.map((data) =>
-			Number(data.data.total.replace(".", "").replace(",", "."))
+			Number(data.data.total.replace('.', '').replace(',', '.'))
 		);
-		var sum = totalArea.reduce((accumulator, currentValue) => {
-			return accumulator + currentValue;
-		}, 0);
+		const sum = totalArea.reduce((acc, val) => acc + val, 0);
+
 		setAreaFiltTotal(sum);
 		setObjResumValues(filtArr);
-		const parcelasArr = filtArr.map((data) => {
-			const parcelasHere = data.data.cronograma.map((parcela) => parcela.parcela)
-			return parcelasHere.flat()
-		})
-		setfilteredAndDucplicatedParcelas(parcelasArr.flat())
 
+		// Parcelas filtradas
+		const parcelasArr = filtArr.flatMap((data) =>
+			data.data.cronograma.map((p) => p.parcela)
+		);
+		setfilteredAndDucplicatedParcelas(parcelasArr);
+	}, [objList, culturaSelecionada, variedadeSelecionada, filterVariedade]);
+
+
+	useEffect(() => {
+		if (!objList || objList.length === 0) return;
+
+		const { culturas, variedades } = gerarCulturasEVariedadesParaSelect(objList);
+		setFilterCultura(culturas);
+		setFilterVariedade(variedades);
 	}, [objList]);
+
+	// useEffect(() => {
+	// 	const useArr = [...objList];
+	// 	const filtArr = useArr.map((data, i) => {
+	// 		const dataProdutos = data.produtos;
+	// 		var result = [];
+	// 		// const area_total = data.total.replace(".", "").replace(",", ".");
+	// 		// console.log(parseFloat(area_total));
+	// 		dataProdutos.reduce(function (res, value) {
+	// 			if (!res[value.produto]) {
+	// 				res[value.produto] = {
+	// 					produto: value.produto,
+	// 					qty: 0,
+	// 					dose: Number(value.dose),
+	// 					tipo: value.tipo
+	// 				};
+	// 				result.push(res[value.produto]);
+	// 			}
+	// 			res[value.produto].qty += value.area * Number(value.dose);
+	// 			return res;
+	// 		}, {});
+	// 		return { data, totais: result };
+	// 	});
+	// 	const totalArea = filtArr.map((data) =>
+	// 		Number(data.data.total.replace(".", "").replace(",", "."))
+	// 	);
+	// 	var sum = totalArea.reduce((accumulator, currentValue) => {
+	// 		return accumulator + currentValue;
+	// 	}, 0);
+	// 	setAreaFiltTotal(sum);
+	// 	setObjResumValues(filtArr);
+	// 	console.log('filtArr: ', filtArr)
+	// 	const { culturas, variedades } = gerarCulturasEVariedadesParaSelect(filtArr);
+	// 	setFilterCultura(culturas)
+	// 	setFilterVariedade(variedades)
+	// 	const parcelasArr = filtArr.map((data) => {
+	// 		const parcelasHere = data.data.cronograma.map((parcela) => parcela.parcela)
+	// 		return parcelasHere.flat()
+	// 	})
+	// 	setfilteredAndDucplicatedParcelas(parcelasArr.flat())
+
+	// }, [objList]);
 
 	const formatName = () => {
 		const saveFile = farmSelected;
@@ -1160,13 +1300,21 @@ const DataProgramPage = (props) => {
 					)}
 				</Box>
 			</Box>
+			<SelectCulturaVariedade
+				culturaSelecionada={culturaSelecionada}
+				setCulturaSelecionada={setCulturaSelecionada}
+				variedadeSelecionada={variedadeSelecionada}
+				setVariedadeSelecionada={setVariedadeSelecionada}
+				culturas={filterCultura}
+				variedades={filterVariedade}
+			/>
 			<Box
 				className={[
 					classes["box-program"],
 					classes["printableGeralProgramaDiv"]
 				]}
 				id="printableGeralProgramaDiv"
-				mt={2}
+			// mt={2}
 			>
 				<Box
 					className={`${classes["fazenda-div"]} fazenda-div`}
@@ -1732,7 +1880,7 @@ const DataProgramPage = (props) => {
 																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
 																aria-label="adicionar"
 																disabled={prodsToUse.length === 0}
-																sx={{marginBottom: '10px'}}
+																sx={{ marginBottom: '10px' }}
 															>
 																<AddCircleRoundedIcon fontSize="small" />
 															</IconButton>
