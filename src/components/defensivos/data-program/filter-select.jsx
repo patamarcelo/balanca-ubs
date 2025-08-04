@@ -150,6 +150,13 @@ const SelectCulturaVariedade = ({
                                         .map((p) => p.nome)
                                         .join(', ')
                                 }
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 500, // altura máxima do dropdown em pixels
+                                        },
+                                    },
+                                }}
                             >
                                 {parcelasFiltradas
                                     .sort((a, b) => a.nome.localeCompare(b.nome))

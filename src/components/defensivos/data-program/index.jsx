@@ -20,6 +20,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import Zoom from "@mui/material/Zoom";
 // import CustomButton from "../../button";
@@ -1583,20 +1585,24 @@ const DataProgramPage = (props) => {
 											aria-label="delete"
 											color="warning"
 											sx={{
-												alignSelf: "start",
+												alignSelf: "flex-end",
 												borderRadius: "12px"
 											}}
 										>
-											<DeleteIcon />
+											{!hidenAppsArr.includes(hiddenAppName) ?
+												<VisibilityIcon color="success" fontSize="small"/> :
+												<VisibilityOffIcon />
+											}
 											<Typography
 												variant="h6"
 												color={colors.textColor[100]}
+												sx={{marginLeft: '5px'}}
 											>
 												{estagio}
 											</Typography>
 										</IconButton>
 										{
-											isAdminUser &&
+											isAdminUser && !hidenAppsArr?.includes(hiddenAppName) &&
 											(
 												appIsLoading === data.estagio ?
 													<CircularProgress
