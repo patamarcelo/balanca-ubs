@@ -948,10 +948,16 @@ const DataProgramPage = (props) => {
 					(acc, p) => acc + Number(p.area),
 					0
 				);
-
+				// console.log('checkHere: ', data.dataToFarmBox)
+				// console.log('parcelasFiltadas: ', parcelasFiltradas.map((data) => data.plantioIdFarmbox))
+				const onlyFiltersFarmsIds = parcelasFiltradas.map((data) => data.plantioIdFarmbox)
 				return {
 					data: {
 						...data,
+						dataToFarmBox:{
+							...data.dataToFarmBox,
+							plantations: data.dataToFarmBox.plantations.filter((dataInside) => onlyFiltersFarmsIds.includes(dataInside.plantation_id))
+						},
 						cronograma: parcelasFiltradas,
 						total: totalArea.toFixed(2).replace('.', ','), // mantém compatibilidade
 					},
@@ -1564,6 +1570,10 @@ const DataProgramPage = (props) => {
 								});
 
 							const linhasParaMostrar = [...totaisFiltrados, ...extrasRender];
+							// console.log('linhas para mostrar: ', linhasParaMostrar)
+							// console.log('openApp: ', openApp)
+							// console.log('openApp Cronograma: ', data.cronograma)
+
 							return (
 								<>
 									<Box
