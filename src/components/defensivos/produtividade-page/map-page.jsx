@@ -269,6 +269,9 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
+			// if (variedadeInside?.includes("424")) {
+			// 	return '#FFFFCC'
+			// }
 			if (!variedadeInside) {
 				return '#f0f0f0'
 			}
@@ -284,6 +287,9 @@ const MapPage = ({
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
 			}
+			// if (variedadeInside?.includes("424")) {
+			// 	return '#FFFFCC'
+			// }
 			if (!variedadeInside) {
 				return '#f0f0f0'
 			}

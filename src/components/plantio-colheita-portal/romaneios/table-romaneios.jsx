@@ -203,7 +203,7 @@ const RomaneiosTable = (props) => {
 		})
 		try {
 			const response = await nodeServerSrd
-				.post("upload-romaneio/", {
+				.post("resend-to-protheus/", {
 					id: carga?.id,
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
