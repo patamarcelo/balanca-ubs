@@ -165,7 +165,7 @@ const TableSrd = ({ data, setFilterDataArray }) => {
                                             }}
                                         />
                                     </td>
-                                    <td style={{ width: '100px' }}>{parcela?.VARIEDADE?.replace(/arroz/gi, '')}</td>
+                                    <td style={{ width: '100px' }}>{parcela?.VARIEDADE?.replace(/arroz/gi, '').replace(/feij(?:ão|ao)|FEIJ�O/gi, '').replace(/soja/gi, '').trim()}</td>
                                     <td style={{ width: '100px' }}>{parcela?.PLACA?.slice(0, 3) + "-" + parcela?.PLACA?.slice(3, 7)}</td>
                                     <td style={{ width: '300px', overflow: 'hidden', textOverflow: "ellipsis", whiteSpace: 'nowrap' }}>{parcela.MOTORISTA}</td>
                                     <td>{formatWei(parcela.BRUTO)}</td>
