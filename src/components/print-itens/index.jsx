@@ -1,7 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import { faPrint } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box} from "@mui/material";
 import "./index.css";
 import { useEffect, useState } from "react";
 
@@ -10,11 +7,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import LoaderPage from "../global/Loader";
 
-import { useSelector } from "react-redux";
-
 const PrintLayout = ({ data }) => {
-	const theme = useTheme();
-	const colors = tokens(theme.palette.mode);
+	
+	
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
 	const [printValue, setPrintValue] = useState();

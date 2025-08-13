@@ -23,6 +23,10 @@ import question from '../../../utils/assets/icons/question.png'
 
 import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 
+import Tooltip from '@mui/material/Tooltip';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 const RomaneiosTable = (props) => {
 	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected } = props;
 
@@ -251,6 +255,7 @@ const RomaneiosTable = (props) => {
 						</th>
 						<th>Cultura</th>
 						<th>Variedade</th>
+						<th>Obs</th>
 						<th>Placa</th>
 						<th>Motorista</th>
 						<th>Destino</th>
@@ -325,6 +330,27 @@ const RomaneiosTable = (props) => {
 										}
 									</td>
 									<td>{filtVariedade}</td>
+									<td>
+										{carga.observacoes ? (
+											<Tooltip title={carga.observacoes} arrow
+												slotProps={{
+													tooltip: {
+														sx: {
+															fontSize: '1.25rem', // Tamanho de fonte menor
+														},
+													},
+												}}
+											>
+												<Box>
+													<LightbulbOutlinedIcon color={'success'} />
+												</Box>
+											</Tooltip>
+										) : (
+											<Box>
+												<InfoOutlinedIcon color="disabled" />
+											</Box>
+										)}
+									</td>
 									<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>
 										{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
 									</td>

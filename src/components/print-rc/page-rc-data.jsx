@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import Logo from "../../utils/assets/img/logo2.jpg";
+import Logo from "../../utils/assets/img/logo2.png";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
