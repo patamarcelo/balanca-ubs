@@ -25,6 +25,7 @@ import { nodeServerSrd } from "../../../utils/axios/axios.utils";
 import { exportAsJson, handleJsonData } from "./json-export";
 
 import JsonFile from '../../../utils/assets/icons/json.png'
+import MultiSelectFilter from "./filters";
 
 const SRDPage = () => {
     const theme = useTheme();
@@ -51,6 +52,41 @@ const SRDPage = () => {
     const [initialDate, setInitialDate] = useState();
     const [finalDate, setFinalDate] = useState();
     const [ticketApi, setTicketApi] = useState("");
+
+
+    const [ticketPriorityOptions, setTicketPriorityOptions] = useState([]);
+    const [projetosOptions, setProjetosOptions] = useState([]);
+
+    const [selectedStatus, setSelectedStatus] = useState([]);
+    const [selectedPriority, setSelectedPriority] = useState([]);
+
+    const handleStatusChange = (newSelection) => {
+        setSelectedStatus(newSelection);
+        // Aqui você pode adicionar a lógica para filtrar os tickets com base no novo status selecionado
+        console.log('Projetos selecionados:', newSelection);
+    };
+
+    const handlePriorityChange = (newSelection) => {
+        setSelectedPriority(newSelection);
+        // Aqui você pode adicionar a lógica para filtrar os tickets com base na nova prioridade selecionada
+        console.log('Tickets selecionadas:', newSelection);
+    };
+    const handleClearFilters = () => {
+        setSelectedStatus([])
+        setSelectedPriority([])
+    }
+
+    useEffect(() => {
+        if (dataArray.length > 0) {
+            const onlyTickets = dataArray.sort((a, b) => a.TICKET.localeCompare(b.TICKET)).map((data) => data.TICKET)
+            setTicketPriorityOptions(onlyTickets)
+
+            const onlyProj = dataArray.sort((a, b) => a.PROJETO.localeCompare(b.PROJETO)).map((data) => data.PROJETO)
+            const uniqueOnlyProj = [...new Set(onlyProj)]
+            setProjetosOptions(uniqueOnlyProj)
+        }
+    }, [dataArray]);
+
 
     const handleSearch = async () => {
         setcsvData([])
@@ -129,31 +165,48 @@ const SRDPage = () => {
         const ticket = data.target.value
         if (ticket.length > 0 && Number(ticket) < 99999) {
             setTicketApi(ticket)
-        } 
-        if(ticket.length === 0){
-                setTicketApi('')
+        }
+        if (ticket.length === 0) {
+            setTicketApi('')
         }
     }
 
     useEffect(() => {
-        if (filterImp > 0) {
-            console.log(filterImp)
-            const filterArr = dataArray.filter((data) => parseFloat(data.IMPUREZA_ENTRADA) >= parseFloat(filterImp))
-            setFilterDataArray(filterArr)
-        } else {
-            setFilterDataArray(dataArray)
-        }
-        console.log('dados from SRD: ', dataArray)
-        if (dataArray?.length > 0) {
-            const csvData = formatData(dataArray)
+        // if (filterImp > 0) {
+        //     console.log(filterImp)
+        //     const filterArr = dataArray.filter((data) => parseFloat(data.IMPUREZA_ENTRADA) >= parseFloat(filterImp))
+        //     setFilterDataArray(filterArr)
+        // } else {
+        //     setFilterDataArray(dataArray)
+        // }
+        // Exemplo combinando todos os filtros
+        const filteredArray = dataArray.filter((data) => {
+            // Filtro de IMPUREZA_ENTRADA
+            const impurezaOk = filterImp > 0 ? parseFloat(data.IMPUREZA_ENTRADA) >= parseFloat(filterImp) : true;
+
+            // Filtro de tickets
+            const ticketOk = selectedPriority.length > 0 ? selectedPriority.includes(data.TICKET) : true;
+
+            // Filtro de projetos
+            const projetoOk = selectedStatus.length > 0 ? selectedStatus.includes(data.PROJETO) : true;
+
+            // Retorna apenas se passar em todos os filtros
+            return impurezaOk && ticketOk && projetoOk;
+        });
+
+        // Atualiza o estado
+        setFilterDataArray(filteredArray);
+        console.log('dados from SRD: ', filteredArray)
+        if (filteredArray?.length > 0) {
+            const csvData = formatData(filteredArray)
             setcsvData(csvData)
 
-            const jsonData = handleJsonData(dataArray)
+            const jsonData = handleJsonData(filteredArray)
             setJsonData(jsonData)
         }
 
 
-    }, [filterImp, setFilterDataArray, dataArray]);
+    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority]);
 
 
 
@@ -249,6 +302,7 @@ const SRDPage = () => {
 
 
             </Box>
+
             <Box display={"flex"} flexDirection={"row"} gap={2} ml={initialDate || finalDate || ticketApi || filterImp ? 7 : 2} mt={2} alignItems={"center"}
                 className={styles.dateRangeTransition}
             >
@@ -261,6 +315,38 @@ const SRDPage = () => {
                         <Button onClick={() => setFilterImp(3)}>
                             <Chip label="3%" color="info" style={{ cursor: 'pointer' }} />
                         </Button>
+                    </>
+                }
+                {
+                    dataArray.length > 0 &&
+                    <>
+                        <MultiSelectFilter
+                            data={projetosOptions}
+                            label="Projetos"
+                            selectedItems={selectedStatus}
+                            onSelectionChange={handleStatusChange}
+                            height={300}
+                        />
+                        <MultiSelectFilter
+                            data={ticketPriorityOptions}
+                            label="Ticktes"
+                            selectedItems={selectedPriority}
+                            onSelectionChange={handlePriorityChange}
+                            width={100}
+                            height={700}
+                        />
+                        {
+                            (selectedPriority.length > 0 || selectedStatus.length > 0) &&
+                            <IconButton
+                                aria-label="delete"
+                                size="sm"
+                                color="warning"
+                                onClick={(e) => handleClearFilters()}
+                                style={{ padding: "2px" }}
+                            >
+                                <CancelIcon fontSize="inherit" />
+                            </IconButton>
+                        }
                     </>
                 }
             </Box>
