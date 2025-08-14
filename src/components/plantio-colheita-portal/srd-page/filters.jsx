@@ -18,8 +18,8 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
         PaperProps: {
             style: {
                 // maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: 250,
-                height
+                maxWidth: 250,
+                maxHeight: height
             },
         },
     };
@@ -27,6 +27,7 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
         const {
             target: { value },
         } = event;
+        console.log('value', value  )
         onSelectionChange(
             // Em valores múltiplos, o evento value é sempre um array.
             typeof value === 'string' ? value.split(',') : value,
@@ -38,7 +39,7 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
     }
 
     return (
-        <FormControl sx={{ m: 1, width }}>
+        <FormControl sx={{ m: 1, maxWidth: width, minWidth: 200 }}>
             <InputLabel id={`multiple-chip-label-${label}`}>{label}</InputLabel>
             <Select
                 size='small'
@@ -48,23 +49,46 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
                 value={selectedItems}
                 onChange={handleChange}
                 input={<OutlinedInput id={`select-multiple-chip-${label}`} label={label} />}
+
                 renderValue={(selected) => (
                     <div style={{ display: 'flex', gap: 0.5 }}>
-                        {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                        ))}
+                        {label !== 'Projetos' ?
+                            selected.map((value, index) => (
+                                <Chip key={index} label={`${removeLeadingZeros(value)}`} />
+                            ))
+                            :
+                            selected.map((value) => (
+                                <Chip key={value} label={value} />
+                            ))
+                        }
                     </div>
                 )}
                 MenuProps={MenuProps}
             >
-                {data.map((item) => (
-                    <MenuItem
-                        key={item}
-                        value={item}
-                    >
-                        {removeLeadingZeros(item)}
-                    </MenuItem>
-                ))}
+                {
+                    label !== 'Projetos' ?
+
+                        data.map((item, index) => (
+                            <MenuItem
+                                key={index}
+                                value={item.ticket}
+                            >
+                                {item.projeto + " - " + removeLeadingZeros(item.ticket)}
+                            </MenuItem>
+                        ))
+
+                        :
+
+                        data.map((item) => (
+                            <MenuItem
+                                key={item}
+                                value={item}
+                            >
+                                {removeLeadingZeros(item)}
+                            </MenuItem>
+                        ))
+
+                }
             </Select>
         </FormControl>
     );

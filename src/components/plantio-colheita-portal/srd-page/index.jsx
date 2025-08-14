@@ -78,7 +78,21 @@ const SRDPage = () => {
 
     useEffect(() => {
         if (dataArray.length > 0) {
-            const onlyTickets = dataArray.sort((a, b) => a.TICKET.localeCompare(b.TICKET)).map((data) => data.TICKET)
+            // const onlyTickets = dataArray.sort((a, b) => a.TICKET.localeCompare(b.TICKET)).map((data) => ({projeto: data.PROJETO, ticket: data.TICKET}))
+            const onlyTickets = dataArray
+                .sort((a, b) => {
+                    // Primeiro compara pelo projeto
+                    const projetoCompare = a.PROJETO.localeCompare(b.PROJETO);
+                    if (projetoCompare !== 0) return projetoCompare;
+
+                    // Se os projetos forem iguais, compara pelo ticket
+                    return a.TICKET.localeCompare(b.TICKET);
+                })
+                .map(data => ({
+                    projeto: data.PROJETO,
+                    ticket: data.TICKET
+                }));
+            console.log('onlyTickets', onlyTickets)
             setTicketPriorityOptions(onlyTickets)
 
             const onlyProj = dataArray.sort((a, b) => a.PROJETO.localeCompare(b.PROJETO)).map((data) => data.PROJETO)
@@ -326,6 +340,7 @@ const SRDPage = () => {
                             selectedItems={selectedStatus}
                             onSelectionChange={handleStatusChange}
                             height={300}
+                            width={500}
                         />
                         <MultiSelectFilter
                             data={ticketPriorityOptions}
