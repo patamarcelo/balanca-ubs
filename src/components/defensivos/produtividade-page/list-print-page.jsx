@@ -33,6 +33,10 @@ const ListPrintPage = (props) => {
 	const [areaSemPlantio, setAreaSemPlantio] = useState(0);
 
 	useEffect(() => {
+		console.log('filtered arramp: ', filteredArray)
+	}, []);
+
+	useEffect(() => {
 		setTotalArea(0);
 		const newArr = [...filteredArray];
 		const newTotal = newArr.reduce(
@@ -83,10 +87,10 @@ const ListPrintPage = (props) => {
 							})
 							.map((row, i) => {
 								const variedade =
-									row.finalizado_plantio &&
+									// row.finalizado_plantio &&
 									row.variedade__nome_fantasia
-										? row.variedade__nome_fantasia
-										: " - ";
+										// ? row.variedade__nome_fantasia
+										// : " - ";
 								return (
 									<TableRow
 										className={styles.rowTableResume}

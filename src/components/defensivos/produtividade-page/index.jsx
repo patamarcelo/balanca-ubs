@@ -41,7 +41,7 @@ import { IconButton, Tooltip } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faPlane,
+	faPlane, faPrint, faprint
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -93,6 +93,7 @@ const ProdutividadePage = () => {
 
 
 	const [loadingMapKml, setLoadingMapKml] = useState(false);
+	const [printPageList, setPrintPageList] = useState(false);
 
 	const handleValueMap = () => {
 		setShowVarOrArea(prev => !prev)
@@ -567,6 +568,28 @@ const ProdutividadePage = () => {
 								</IconButton>
 							</Tooltip>
 						}
+						<Tooltip title="Mostar Tela expandida">
+							<IconButton onClick={() => setPrintPageList(!printPageList)}>
+								{!printPageList ?
+									<FontAwesomeIcon
+										icon={faPrint}
+										color={colors.greenAccent[100]}
+										style={{
+											cursor: "pointer"
+										}}
+									/>
+									:
+
+									<FontAwesomeIcon
+										icon={faPrint}
+										color={colors.greenAccent[300]}
+										style={{
+											cursor: "pointer"
+										}}
+									/>
+								}
+							</IconButton>
+						</Tooltip>
 					</Box>
 				</Collapse>
 			</Box>
@@ -580,7 +603,7 @@ const ProdutividadePage = () => {
 					backgroundColor: colors.blueOrigin[600],
 					padding: "0px 5px 5px 5px",
 					borderRadius: "8px",
-					height: filteredArray.length === 0 && '500px'
+					height: filteredArray.length === 0 && '80vh'
 				}}
 			>
 				{filteredArray.length === 0 ? (
@@ -610,20 +633,27 @@ const ProdutividadePage = () => {
 							resumo={resumoByVar}
 							sumTotalSelected={sumTotalSelected}
 						/>
-						<div
+						<Box
 							className={styles.mapListDiv}
 							id="printableMapPage"
+							sx={{
+								maxHeight: !printPageList ? "90vh" : '',
+								minHeight: !printPageList ? '90vh' : ''
+							}}
 						>
 							<Box
 								width={"100%"}
 								display="flex"
 								// justifyContent="center"
-								minHeight={bigMap ? "1500px" : "980px"}
+								// minHeight={bigMap ? "1500px" : "980px"} // <--- REMOVIDO
+								flexGrow={1} // <--- ADICIONADO: Diz ao Box para crescer e ocupar o espaço
 								alignItems={"stretch"}
 								sx={{
 									boxShadow:
 										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
-									borderRadius: "8px"
+									borderRadius: "8px",
+									// É uma boa prática mover o display para dentro do sx também
+									display: 'flex',
 								}}
 							>
 								<MapPage
@@ -640,7 +670,7 @@ const ProdutividadePage = () => {
 								/>
 							</Box>
 							{printPage ? (
-								<Box width={"20%"} ml={1}>
+								<Box width={"20%"} ml={1} sx={{ overflow: !printPageList ? 'auto' : '' }}>
 									<ListPrintPage
 										resumo={resumoByVar}
 										sumTotalSelected={sumTotalSelected}
@@ -671,7 +701,7 @@ const ProdutividadePage = () => {
 									/>
 								</Box>
 							)}
-						</div>
+						</Box>
 					</>
 				)}
 			</Box>

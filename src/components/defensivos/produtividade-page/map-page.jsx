@@ -261,10 +261,10 @@ const MapPage = ({
 		// console.log('data inside', data.variedade)
 		const getColor = (variedadeInside, colorInside) => {
 			if (variedadeInside === 'Mungo Preto') {
-				return 'rgba(170,88,57,1.0)'
+				return '#82202B'
 			}
 			if (variedadeInside === 'Mungo Verde') {
-				return '#82202B'
+				return 'rgba(170,88,57,1.0)'
 			}
 			if (variedadeInside === 'Caupi') {
 				return '#3F4B7D'
@@ -321,10 +321,14 @@ const MapPage = ({
 			data.descontinuado === false
 		) {
 			return {
-				color: data.color,
-				stroke: 0.8,
-				lineColor: "yellow",
-				lineStroke: 0.5
+				// color: data.color,
+				// stroke: 0.8,
+				// lineColor: "yellow",
+				// lineStroke: 0.5
+				color: getColor(data.data.data.variedade, data.variedadeColor),
+				stroke: data.data.data.variedade ? 0.8 : 0.3,
+				lineColor: getColorLine(data.data.data.variedade, data.variedadeColorLine),
+				lineStroke: data.data.data.variedade ? 1.5 : 0.5
 			};
 		}
 
