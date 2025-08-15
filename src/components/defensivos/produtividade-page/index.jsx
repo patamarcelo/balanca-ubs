@@ -41,8 +41,11 @@ import { IconButton, Tooltip } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faPlane, faPrint, faprint
+	faPlane, faPrint, faFilePdf
 } from "@fortawesome/free-solid-svg-icons";
+
+import { jsPDF } from 'jspdf';
+import MultiSelectFilter from "./filter-parcelas";
 
 
 const ProdutividadePage = () => {
@@ -94,6 +97,30 @@ const ProdutividadePage = () => {
 
 	const [loadingMapKml, setLoadingMapKml] = useState(false);
 	const [printPageList, setPrintPageList] = useState(false);
+
+	const [loadingMap, setLoadingMap] = useState(false);
+	const [farmIdPdf, setFarmIdPdf] = useState(null);
+
+	const [parcelasSelected, setParcelasSeleced] = useState([]);
+
+	useEffect(() => {
+		if (selectedProject) {
+			const getFarmId = filteredArray.find((data) => data.talhao__fazenda__nome === selectedProject[0])?.talhao__fazenda__id_farmbox
+			setFarmIdPdf(getFarmId)
+		}
+	}, [selectedProject, filteredArray]);
+
+	const handlerClearData = () => {
+		setShowResumeMap(!showResumeMap)
+		if (parcelasSelected.length > 0) {
+			setParcelasSeleced([])
+		}
+	}
+
+	const handleStatusChange = (newSelection) => {
+		setParcelasSeleced(newSelection);
+	};
+
 
 	const handleValueMap = () => {
 		setShowVarOrArea(prev => !prev)
@@ -291,9 +318,8 @@ const ProdutividadePage = () => {
 				// Otherwise, filter by the selected cultures
 				return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
 			});
-		console.log('filterArr: ', filterArray)
 
-			;
+		;
 		setFilteredArray(filterArray);
 	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter]);
 
@@ -394,6 +420,66 @@ const ProdutividadePage = () => {
 			setLoadingMapKml(false);
 		}
 	};
+
+	const handlePrintPdf = async () => {
+		setLoadingMap(true);
+
+		try {
+			const res = await djangoApi.post(
+				"plantio/get_matplot_draw/",
+				{
+					projeto: farmIdPdf,
+					parcelas: parcelasSelected,
+					safra: safraCiclo
+				},
+				{
+					responseType: "text",
+					headers: { Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}` },
+				}
+			);
+
+			const base64Image = res.data;
+			const img = new Image();
+			img.src = base64Image;
+
+			img.onload = () => {
+				const scaleFactor = 0.8; // reduz 20% da resolução para diminuir tamanho
+				const canvas = document.createElement("canvas");
+				canvas.width = img.width * scaleFactor;
+				canvas.height = img.height * scaleFactor;
+
+				const ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+				// mantém PNG para transparência
+				const resizedBase64 = canvas.toDataURL("image/png");
+
+				const pdf = new jsPDF({
+					orientation: "landscape",
+					unit: "px",
+					format: "a4",
+				});
+
+				const pageWidth = pdf.internal.pageSize.getWidth();
+				const pageHeight = pdf.internal.pageSize.getHeight();
+
+				const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+				const imgWidth = canvas.width * ratio;
+				const imgHeight = canvas.height * ratio;
+				const marginX = (pageWidth - imgWidth) / 2;
+				const marginY = (pageHeight - imgHeight) / 2;
+
+				pdf.addImage(resizedBase64, "PNG", marginX, marginY, imgWidth, imgHeight);
+				pdf.save(`${selectedProject}.pdf`);
+				setLoadingMap(false);
+			};
+		} catch (err) {
+			console.error("Error while generating PDF", err);
+			setLoadingMap(false);
+		}
+	};
+
+
 
 	if (loadingData) {
 		return (
@@ -531,8 +617,21 @@ const ProdutividadePage = () => {
 								/>
 							</Box>
 						)}
-						<Tooltip title="Mostar Resuno do Mapa">
-							<IconButton onClick={() => setShowResumeMap(!showResumeMap)}>
+						{filterDropVariety.length > 0 && selectedProject.length > 0 && (
+							<Box>
+								<MultiSelectFilter
+									data={filteredArray}
+									label="Parcelas"
+									selectedItems={parcelasSelected}
+									onSelectionChange={handleStatusChange}
+									height={300}
+									width={400}
+									selectedProject={selectedProject}
+								/>
+							</Box>
+						)}
+						<Tooltip title="Mostrar Resuno do Mapa">
+							<IconButton onClick={handlerClearData}>
 								{showResumeMap ?
 									<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
 									:
@@ -568,6 +667,20 @@ const ProdutividadePage = () => {
 								</IconButton>
 							</Tooltip>
 						}
+						<Tooltip title="Mostar Tela expandida">
+							<IconButton onClick={() => handlePrintPdf()}>
+								{loadingMap ? (
+									<CircularProgress size={24} color="inherit" />
+								) : (
+									<FontAwesomeIcon
+										icon={faFilePdf}
+										color={colors.greenAccent[100]}
+										style={{ cursor: "pointer" }}
+									/>
+								)
+								}
+							</IconButton>
+						</Tooltip>
 						<Tooltip title="Mostar Tela expandida">
 							<IconButton onClick={() => setPrintPageList(!printPageList)}>
 								{!printPageList ?
@@ -667,6 +780,7 @@ const ProdutividadePage = () => {
 									showAsPlanned={showAsPlanned}
 									setShowAsPlanned={setShowAsPlanned}
 									showResumeMap={showResumeMap}
+									parcelasSelected={parcelasSelected}
 								/>
 							</Box>
 							{printPage ? (

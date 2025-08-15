@@ -63,7 +63,8 @@ const MapPage = ({
 	showVarOrArea,
 	showAsPlanned,
 	setShowAsPlanned,
-	showResumeMap
+	showResumeMap,
+	parcelasSelected
 }) => {
 
 	const theme = useTheme();
@@ -380,15 +381,23 @@ const MapPage = ({
 							color: finalizado ? "white" : "black",
 							className: styles["marker-label"]
 						};
+						
+						const djangoId = dataF.data.data.plantio_id
+						const getFIlters = filtData.find((data) => data.id === djangoId)
+						// console.log('getFIlters', getFIlters)
+						const filtered = parcelasSelected.filter((data) => data === getFIlters.id_farmbox)
+						const isSelected = filtered.length > 0 ? true : false
+						// console.log('data check: ', dataF)
+						// console.log("dataArray: ", parcelasSelected)
 						return (
 							<>
 								<PolygonF
 									key={i}
 									options={{
 										fillColor: getColorStroke(dataF).color,
-										fillOpacity: getColorStroke(dataF).stroke,
+										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
-											getColorStroke(dataF).lineColor,
+											isSelected ? "rgba(2,2,2,0.2)": getColorStroke(dataF).lineColor,
 										strokeOpacity: 1,
 										strokeWeight:
 											getColorStroke(dataF).lineStroke,

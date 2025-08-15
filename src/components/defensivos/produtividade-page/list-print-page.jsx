@@ -31,11 +31,6 @@ const ListPrintPage = (props) => {
 	const [totalArea, setTotalArea] = useState(0);
 	const [totalAreaPlantada, setTotalAreaPlantada] = useState(0);
 	const [areaSemPlantio, setAreaSemPlantio] = useState(0);
-
-	useEffect(() => {
-		console.log('filtered arramp: ', filteredArray)
-	}, []);
-
 	useEffect(() => {
 		setTotalArea(0);
 		const newArr = [...filteredArray];
