@@ -44,8 +44,12 @@ import {
 	faPlane, faPrint, faFilePdf
 } from "@fortawesome/free-solid-svg-icons";
 
-import { jsPDF } from 'jspdf';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 import MultiSelectFilter from "./filter-parcelas";
+import { formatNumber } from '../../../utils/format-suport/data-format'
+
 
 
 const ProdutividadePage = () => {
@@ -430,7 +434,7 @@ const ProdutividadePage = () => {
 				{
 					projeto: farmIdPdf,
 					parcelas: parcelasSelected,
-					safra: safraCiclo
+					safra: safraCiclo,
 				},
 				{
 					responseType: "text",
@@ -443,7 +447,7 @@ const ProdutividadePage = () => {
 			img.src = base64Image;
 
 			img.onload = () => {
-				const scaleFactor = 0.8; // reduz 20% da resolução para diminuir tamanho
+				const scaleFactor = 0.8; // mantém boa qualidade, reduz levemente
 				const canvas = document.createElement("canvas");
 				canvas.width = img.width * scaleFactor;
 				canvas.height = img.height * scaleFactor;
@@ -451,7 +455,6 @@ const ProdutividadePage = () => {
 				const ctx = canvas.getContext("2d");
 				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-				// mantém PNG para transparência
 				const resizedBase64 = canvas.toDataURL("image/png");
 
 				const pdf = new jsPDF({
@@ -461,13 +464,19 @@ const ProdutividadePage = () => {
 				});
 
 				const pageWidth = pdf.internal.pageSize.getWidth();
-				const pageHeight = pdf.internal.pageSize.getHeight();
 
-				const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+				// Título colado no mapa
+				const titleText = selectedProject[0]?.replace('Projeto', 'Fazenda') || "Mapa";
+				pdf.setFont("helvetica", "bold");
+				pdf.setFontSize(27);
+				pdf.text(titleText, pageWidth / 2, 40, { align: "center" });
+
+				// Mantém a imagem do mapa no tamanho máximo possível sem alterar proporção
+				const ratio = Math.min(pageWidth / canvas.width, (pdf.internal.pageSize.getHeight() - 50) / canvas.height);
 				const imgWidth = canvas.width * ratio;
 				const imgHeight = canvas.height * ratio;
 				const marginX = (pageWidth - imgWidth) / 2;
-				const marginY = (pageHeight - imgHeight) / 2;
+				const marginY = 50; // título ocupa 40px, deixamos 10px de espaçamento
 
 				pdf.addImage(resizedBase64, "PNG", marginX, marginY, imgWidth, imgHeight);
 				pdf.save(`${selectedProject}.pdf`);
@@ -478,6 +487,152 @@ const ProdutividadePage = () => {
 			setLoadingMap(false);
 		}
 	};
+
+
+
+
+	
+	const handlePrintPdfWithTable = async () => {
+		setLoadingMap(true);
+
+		try {
+			const parcelas = mapPlantation
+				.map((data) => ({
+					parcela: data.talhao__id_talhao,
+					area: data.area_colheita,
+				}))
+				.sort((a, b) => a.parcela.localeCompare(b.parcela, undefined, { numeric: true }));
+
+			const res = await djangoApi.post(
+				"plantio/get_matplot_draw/",
+				{
+					projeto: farmIdPdf,
+					parcelas: parcelasSelected,
+					safra: safraCiclo,
+				},
+				{
+					responseType: "text",
+					headers: { Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}` },
+				}
+			);
+
+			const base64Image = res.data;
+			const img = new Image();
+			img.src = base64Image;
+
+			img.onload = () => {
+				const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: "a4" });
+				const pageWidth = pdf.internal.pageSize.getWidth();
+				const pageHeight = pdf.internal.pageSize.getHeight();
+
+				// ---------- TÍTULO ----------
+				const titleText = selectedProject[0]?.replace("Projeto", "Fazenda") || "Mapa";
+				pdf.setFont("helvetica", "bold");
+				pdf.setFontSize(25);
+				const titleTopMargin = 20; // metade do valor anterior
+				pdf.text(titleText, pageWidth / 2, titleTopMargin, { align: "center" });
+
+				// ---------- SUBTÍTULO (TOTAL ÁREA) ----------
+				const totalArea = parcelas.reduce((sum, p) => sum + Number(p.area), 0);
+				const subtitleText = `${totalArea.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
+				// Cor cinza
+				pdf.setTextColor(100); // 0 = preto, 255 = branco
+
+				// Subtítulo
+				pdf.setFont("helvetica", "bold");
+				pdf.setFontSize(6);
+				pdf.text(subtitleText, pageWidth / 2, 31, { align: "center" });
+
+				// Volta para cor preta para outros elementos
+				pdf.setTextColor(0);
+
+
+				// ---------- CONFIGURAÇÃO DAS TABELAS ----------
+				const tableTop = titleTopMargin + 10; // metade da distância anterior
+				const bottomMargin = 20;
+				const tableHeight = pageHeight - tableTop - bottomMargin;
+				const rowHeight = 10;
+				const colWidths = [40, 30]; // Parcelas | Área
+
+				const maxRowsPerTable = Math.floor(tableHeight / rowHeight);
+
+				const col1 = parcelas.slice(0, maxRowsPerTable);
+				const col2 = parcelas.slice(maxRowsPerTable);
+
+				const tableLeftX = 10;
+
+				const rightTableWidthPx = col2.length ? colWidths.reduce((a, b) => a + b, 0) : 0;
+				const rightMargin = 10;
+				const tableRightX = pageWidth - rightTableWidthPx - rightMargin;
+
+				const drawTable = (startX, data) => {
+					if (!data.length) return;
+
+					// Cabeçalho com fundo cinza e borda
+					pdf.setFillColor(200, 200, 200);
+					pdf.setDrawColor(0);
+					pdf.rect(startX, tableTop, colWidths[0], rowHeight, "FD");
+					pdf.rect(startX + colWidths[0], tableTop, colWidths[1], rowHeight, "FD");
+					pdf.setFont("helvetica", "bold");
+					pdf.setFontSize(9);
+					pdf.text("Parcela", startX + 2, tableTop + 7, { align: "left" });
+					pdf.text("Área", startX + colWidths[0] + colWidths[1] - 2, tableTop + 7, { align: "right" });
+
+					// Linhas
+					pdf.setFont("helvetica", "normal");
+					pdf.setFontSize(8);
+					data.forEach((row, index) => {
+						const y = tableTop + rowHeight * (index + 1);
+						pdf.rect(startX, y, colWidths[0], rowHeight);
+						pdf.text(row.parcela, startX + 2, y + 7, { align: "left" });
+
+						pdf.rect(startX + colWidths[0], y, colWidths[1], rowHeight);
+						pdf.text(String(formatNumber(row.area,2)), startX + colWidths[0] + colWidths[1] - 2, y + 7, { align: "right" });
+					});
+				};
+
+				drawTable(tableLeftX, col1);
+				drawTable(tableRightX, col2);
+
+				// ---------- MAPA ----------
+				const topMargin = tableTop;
+				const availableHeight = pageHeight - topMargin - bottomMargin;
+				const leftTableWidth = col1.length ? colWidths.reduce((a, b) => a + b, 0) + 10 : 0;
+				const rightTableWidth = col2.length ? colWidths.reduce((a, b) => a + b, 0) + 10 : 0;
+				const availableWidth = pageWidth - leftTableWidth - rightTableWidth - 20;
+
+				const canvas = document.createElement("canvas");
+				canvas.width = img.width;
+				canvas.height = img.height;
+				const ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				const resizedBase64 = canvas.toDataURL("image/png");
+
+				const scaleHeight = availableHeight / canvas.height;
+				const scaleWidth = availableWidth / canvas.width;
+				const scale = Math.min(scaleHeight, scaleWidth);
+
+				const mapWidth = canvas.width * scale;
+				const mapHeight = canvas.height * scale;
+
+				const mapX = (pageWidth - mapWidth) / 2;
+				const mapY = topMargin;
+
+				pdf.addImage(resizedBase64, "PNG", mapX, mapY, mapWidth, mapHeight);
+
+				pdf.save(`${selectedProject[0]?.replace("Projeto", "Fazenda") || "Mapa"}.pdf`);
+				setLoadingMap(false);
+			};
+		} catch (err) {
+			console.error("Error while generating PDF", err);
+			setLoadingMap(false);
+		}
+	};
+
+
+
+
+
 
 
 
@@ -667,8 +822,22 @@ const ProdutividadePage = () => {
 								</IconButton>
 							</Tooltip>
 						}
-						<Tooltip title="Mostar Tela expandida">
+						<Tooltip title="Gerar pdf Do Mapa">
 							<IconButton onClick={() => handlePrintPdf()}>
+								{loadingMap ? (
+									<CircularProgress size={24} color="inherit" />
+								) : (
+									<FontAwesomeIcon
+										icon={faFilePdf}
+										color={colors.greenAccent[100]}
+										style={{ cursor: "pointer" }}
+									/>
+								)
+								}
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Gerar pdf Do Mapa">
+							<IconButton onClick={() => handlePrintPdfWithTable()}>
 								{loadingMap ? (
 									<CircularProgress size={24} color="inherit" />
 								) : (
