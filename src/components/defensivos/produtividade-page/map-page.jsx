@@ -381,13 +381,17 @@ const MapPage = ({
 							color: finalizado ? "white" : "black",
 							className: styles["marker-label"]
 						};
-
-						const djangoId = dataF.data.data.plantio_id;
-						const getFilters = filtData.find((data) => data.id === djangoId);
-
-						const isSelected = getFilters
-							? parcelasSelected.includes(getFilters.id_farmbox)
-							: false;
+						
+						const djangoId = dataF.data.data.plantio_id
+						const getFIlters = filtData.find((data) => data.id === djangoId)
+						// console.log('getFIlters', getFIlters)
+						let isSelected;
+						if(getFIlters){
+							const filtered = parcelasSelected.filter((data) => data === getFIlters.id_farmbox)
+							isSelected = filtered.length > 0 ? true : false
+						} else {
+							isSelected = false
+						}
 						// console.log('data check: ', dataF)
 						// console.log("dataArray: ", parcelasSelected)
 						return (
@@ -398,7 +402,7 @@ const MapPage = ({
 										fillColor: getColorStroke(dataF).color,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
-											isSelected ? "rgba(2,2,2,0.2)" : getColorStroke(dataF).lineColor,
+											isSelected ? "rgba(2,2,2,0.2)": getColorStroke(dataF).lineColor,
 										strokeOpacity: 1,
 										strokeWeight:
 											getColorStroke(dataF).lineStroke,
