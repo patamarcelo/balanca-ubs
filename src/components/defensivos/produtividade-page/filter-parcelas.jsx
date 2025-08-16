@@ -5,7 +5,8 @@ import {
     MenuItem,
     FormControl,
     Select,
-    Chip
+    Chip,
+    Box
 } from '@mui/material';
 
 
@@ -42,20 +43,30 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
                 value={selectedItems}
                 onChange={handleChange}
                 input={<OutlinedInput id={`select-multiple-chip-${label}`} label={label} />}
-                renderValue={(selected) => (
-                    <div style={{ display: 'flex', gap: 0.5, flexDirection: 'row' }}>
-                        {selected.map((value, index) => {
-                            // Para Projetos, mostra o valor diretamente
-                            if (label === 'Projetos') return <Chip key={value} label={value} />;
-                            // Para parcelas, procura o item correspondente no data e mostra "Fazenda - Talhão"
-                            const item = data.find((d) => d.id_farmbox === value);
-                            const chipLabel = item
-                                ? `${item.talhao__fazenda__nome.replace('Projeto', '')} - ${item.talhao__id_talhao}`
-                                : value;
-                            return <Chip key={value} label={chipLabel} />;
-                        })}
-                    </div>
-                )}
+                renderValue={(selected) => {
+                    const chips = selected.map((value) => {
+                        if (label === 'Projetos') return <Chip key={value} label={value} />;
+                        const item = data.find((d) => d.id_farmbox === value);
+                        const chipLabel = item
+                            ? `${item.talhao__fazenda__nome.replace('Projeto', '')} - ${item.talhao__id_talhao}`
+                            : value;
+                        return <Chip key={value} label={chipLabel} />;
+                    });
+
+                    return (
+                        <Box
+                            sx={{
+                                display: 'inline-block',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '100%',
+                            }}
+                        >
+                            {chips}
+                        </Box>
+                    );
+                }}
                 MenuProps={MenuProps}
             >
                 {label === 'Projetos'

@@ -1,18 +1,11 @@
 import {
 	GoogleMap,
 	useJsApiLoader,
-	MarkerF,
 	Marker,
 	InfoWindowF,
-	InfoWindow,
-	OverlayView,
-	InfoBox,
-	InfoBoxF
 } from "@react-google-maps/api";
 import { PolygonF } from "@react-google-maps/api";
-import { Children, useEffect } from "react";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { useState, useEffect, useMemo } from "react";
 
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
@@ -20,18 +13,18 @@ import rice from "../../../utils/assets/icons/rice.png";
 
 import styles from "./produtividade.module.css";
 
-import { useTheme, Box, Typography } from "@mui/material";
+import { useTheme, Box } from "@mui/material";
 import { tokens } from '../../../theme'
 import MapResumePage from "./map-page-resume";
 
-const svgMarker = {
-	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-	fillColor: "blue",
-	fillOpacity: 0.6,
-	strokeWeight: 0,
-	rotation: 0,
-	scale: 2
-};
+// const svgMarker = {
+// 	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+// 	fillColor: "blue",
+// 	fillOpacity: 0.6,
+// 	strokeWeight: 0,
+// 	rotation: 0,
+// 	scale: 2
+// };
 
 const containerStyle = {
 	width: "100%",
@@ -64,7 +57,8 @@ const MapPage = ({
 	showAsPlanned,
 	setShowAsPlanned,
 	showResumeMap,
-	parcelasSelected
+	parcelasSelected,
+	toggleParcela
 }) => {
 
 	const theme = useTheme();
@@ -97,22 +91,30 @@ const MapPage = ({
 	const [markerList, setMarkerList] = useState([]);
 
 	const handleClick = (d, e) => {
-		setMarkerList((prev) => [
-			...prev,
-			{ lat: d.latLng.lat(), lng: d.latLng.lng(), data: e }
-		]);
-		console.log(markerList);
-		handleSUm({
-			parcela: e.parcela,
-			area: e.data.data.area_colheita
-		});
-		const msg = `${e.parcela} - ${e.data.data.area_colheita.toLocaleString(
-			"pt-br",
-			{
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
-			}
-		)} - ${e.data.data.variedade}`;
+		console.log('d map: ', e)
+		const djangoId = e.data.data.plantio_id
+		const getFIlters = filtData.find((data) => data.id === djangoId)
+		console.log('getFIlters', getFIlters)
+		// console.log('getFIlters', getFIlters)
+		if (getFIlters) {
+			toggleParcela(getFIlters.id_farmbox)
+		}
+		// setMarkerList((prev) => [
+		// 	...prev,
+		// 	{ lat: d.latLng.lat(), lng: d.latLng.lng(), data: e }
+		// ]);
+		// console.log(markerList);
+		// handleSUm({
+		// 	parcela: e.parcela,
+		// 	area: e.data.data.area_colheita
+		// });
+		// const msg = `${e.parcela} - ${e.data.data.area_colheita.toLocaleString(
+		// 	"pt-br",
+		// 	{
+		// 		minimumFractionDigits: 2,
+		// 		maximumFractionDigits: 2
+		// 	}
+		// )} - ${e.data.data.variedade}`;
 	};
 	const { isLoaded } = useJsApiLoader({
 		id: "google-map-script",
@@ -130,28 +132,66 @@ const MapPage = ({
 
 	useEffect(() => {
 		if (mapArray?.length > 0) {
-			const groupedData = Object.values(
-				mapArray.reduce((acc, curr) => {
-					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
-					if (!acc[key]) {
-						acc[key] = {
-							cultura: curr.dados.cultura,
-							variedade: curr.dados.variedade,
-							total_area_colheita: 0,
-						};
-					}
-					acc[key].total_area_colheita += curr.dados.area_colheita;
-					return acc;
-				}, {})
-			);
-			setResumeContainerData(groupedData)
+			if (parcelasSelected.length > 0) {
+				console.log('mapArray: ', mapArray)
+				console.log("parcelasSelected", parcelasSelected)
+				console.log("filtData", filtData)
+				const filterSelectedparcelas = filtData.filter((data) => parcelasSelected.includes(data.id_farmbox))
+				const onlyFarmId = filterSelectedparcelas.map((data) => data.id)
+				const groupedData = Object.values(
+					mapArray.filter((data) => onlyFarmId.includes(data.dados.plantio_id)).reduce((acc, curr) => {
+						const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+						if (!acc[key]) {
+							acc[key] = {
+								cultura: curr.dados.cultura,
+								variedade: curr.dados.variedade,
+								total_area_colheita: 0,
+							};
+						}
+						acc[key].total_area_colheita += curr.dados.area_colheita;
+						return acc;
+					}, {})
+				);
+				setResumeContainerData(groupedData)
+
+			} else {
+
+				const groupedData = Object.values(
+					mapArray.reduce((acc, curr) => {
+						const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+						if (!acc[key]) {
+							acc[key] = {
+								cultura: curr.dados.cultura,
+								variedade: curr.dados.variedade,
+								total_area_colheita: 0,
+							};
+						}
+						acc[key].total_area_colheita += curr.dados.area_colheita;
+						return acc;
+					}, {})
+				);
+				setResumeContainerData(groupedData)
+			}
 		}
-	}, [mapArray]);
+	}, [mapArray, parcelasSelected]);
 
 
 
 
-	const MapOptions = {
+
+	// const MapOptions = {
+	// 	// disableDefaultUI: true
+	// 	zoomControl: true,
+	// 	mapTypeControl: false,
+	// 	scaleControl: true,
+	// 	streetViewControl: false,
+	// 	rotateControl: true,
+	// 	fullscreenControl: true,
+	// 	scrollwheel: false,
+	// 	zoom: zoomMap,
+	// 	mapTypeId: "satellite"
+	// }
+	const MapOptions = useMemo(() => ({
 		// disableDefaultUI: true
 		zoomControl: true,
 		mapTypeControl: false,
@@ -162,7 +202,8 @@ const MapPage = ({
 		scrollwheel: false,
 		zoom: zoomMap,
 		mapTypeId: "satellite"
-	};
+	}), [])
+
 
 	useEffect(() => {
 		if (filtData) {
@@ -355,11 +396,8 @@ const MapPage = ({
 			<GoogleMap
 				mapContainerStyle={containerStyle}
 				center={center}
-				disableDefaultUI={true}
 				options={MapOptions}
-				onLoad={(map) => {
-					new window.google.maps.LatLngBounds();
-				}}
+				onLoad={(map) => map.setZoom(zoomMap)}
 			>
 				{appArray &&
 					appArray.map((dataF, i) => {
@@ -381,13 +419,13 @@ const MapPage = ({
 							color: finalizado ? "white" : "black",
 							className: styles["marker-label"]
 						};
-						
+
 						const djangoId = dataF.data.data.plantio_id
 						const getFIlters = filtData.find((data) => data.id === djangoId)
 						// console.log('getFIlters', getFIlters)
 						let isSelected;
-						if(getFIlters){
-							const filtered = parcelasSelected.filter((data) => data === getFIlters.id_farmbox)
+						if (getFIlters) {
+							const filtered = parcelasSelected.filter((data) => data === getFIlters?.id_farmbox)
 							isSelected = filtered.length > 0 ? true : false
 						} else {
 							isSelected = false
@@ -402,7 +440,7 @@ const MapPage = ({
 										fillColor: getColorStroke(dataF).color,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
-											isSelected ? "rgba(2,2,2,0.2)": getColorStroke(dataF).lineColor,
+											isSelected ? "rgba(2,2,2,0.2)" : getColorStroke(dataF).lineColor,
 										strokeOpacity: 1,
 										strokeWeight:
 											getColorStroke(dataF).lineStroke,

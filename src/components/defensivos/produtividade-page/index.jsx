@@ -37,6 +37,7 @@ import LandscapeIcon from "@mui/icons-material/Landscape"; // Planted Area
 
 import MapIcon from "@mui/icons-material/Map";
 import CloseIcon from "@mui/icons-material/Close";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { IconButton, Tooltip } from "@mui/material";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -103,9 +104,12 @@ const ProdutividadePage = () => {
 	const [printPageList, setPrintPageList] = useState(false);
 
 	const [loadingMap, setLoadingMap] = useState(false);
+	const [loadingMapList, setLoadingMapList] = useState(false);
 	const [farmIdPdf, setFarmIdPdf] = useState(null);
 
 	const [parcelasSelected, setParcelasSeleced] = useState([]);
+
+	const [showTableList, setShowTableList] = useState(false);
 
 	useEffect(() => {
 		if (selectedProject) {
@@ -116,13 +120,23 @@ const ProdutividadePage = () => {
 
 	const handlerClearData = () => {
 		setShowResumeMap(!showResumeMap)
-		if (parcelasSelected.length > 0) {
-			setParcelasSeleced([])
-		}
+	}
+	const handlerClearParcelas = () => {
+		setParcelasSeleced([])
 	}
 
 	const handleStatusChange = (newSelection) => {
 		setParcelasSeleced(newSelection);
+	};
+	const toggleParcela = (value) => {
+		setParcelasSeleced((prev) => {
+			// se o valor já estiver presente, remove
+			if (prev.includes(value)) {
+				return prev.filter((v) => v !== value);
+			}
+			// se não estiver, adiciona
+			return [...prev, value];
+		});
 	};
 
 
@@ -491,9 +505,9 @@ const ProdutividadePage = () => {
 
 
 
-	
+
 	const handlePrintPdfWithTable = async () => {
-		setLoadingMap(true);
+		setLoadingMapList(true);
 
 		try {
 			const parcelas = mapPlantation
@@ -587,7 +601,7 @@ const ProdutividadePage = () => {
 						pdf.text(row.parcela, startX + 2, y + 7, { align: "left" });
 
 						pdf.rect(startX + colWidths[0], y, colWidths[1], rowHeight);
-						pdf.text(String(formatNumber(row.area,2)), startX + colWidths[0] + colWidths[1] - 2, y + 7, { align: "right" });
+						pdf.text(String(formatNumber(row.area, 2)), startX + colWidths[0] + colWidths[1] - 2, y + 7, { align: "right" });
 					});
 				};
 
@@ -621,11 +635,11 @@ const ProdutividadePage = () => {
 				pdf.addImage(resizedBase64, "PNG", mapX, mapY, mapWidth, mapHeight);
 
 				pdf.save(`${selectedProject[0]?.replace("Projeto", "Fazenda") || "Mapa"}.pdf`);
-				setLoadingMap(false);
+				setLoadingMapList(false);
 			};
 		} catch (err) {
 			console.error("Error while generating PDF", err);
-			setLoadingMap(false);
+			setLoadingMapList(false);
 		}
 	};
 
@@ -780,15 +794,22 @@ const ProdutividadePage = () => {
 									selectedItems={parcelasSelected}
 									onSelectionChange={handleStatusChange}
 									height={300}
-									width={400}
+									width={200}
 									selectedProject={selectedProject}
 								/>
 							</Box>
 						)}
+						{parcelasSelected.length > 0 &&
+							<Tooltip title="Limpar Parcelas">
+								<IconButton onClick={handlerClearParcelas}>
+									<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
+								</IconButton>
+							</Tooltip>
+						}
 						<Tooltip title="Mostrar Resuno do Mapa">
 							<IconButton onClick={handlerClearData}>
 								{showResumeMap ?
-									<CloseIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
+									<RemoveRedEyeIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[100] }} />
 									:
 
 									<MapIcon fontSize="medium" sx={{ color: showResumeMap ? colors.redAccent[100] : colors.greenAccent[300] }} />
@@ -836,9 +857,9 @@ const ProdutividadePage = () => {
 								}
 							</IconButton>
 						</Tooltip>
-						<Tooltip title="Gerar pdf Do Mapa">
+						<Tooltip title="Gerar pdf do Mapa Com Tabela dos Talhões">
 							<IconButton onClick={() => handlePrintPdfWithTable()}>
-								{loadingMap ? (
+								{loadingMapList ? (
 									<CircularProgress size={24} color="inherit" />
 								) : (
 									<FontAwesomeIcon
@@ -914,11 +935,17 @@ const ProdutividadePage = () => {
 							filtCult={filtCult}
 							resumo={resumoByVar}
 							sumTotalSelected={sumTotalSelected}
+							showTableList={showTableList}
+							setShowTableList={setShowTableList}
 						/>
 						<Box
 							className={styles.mapListDiv}
 							id="printableMapPage"
 							sx={{
+								// --- ESTILOS DO CONTAINER PAI ---
+								display: 'flex',          // 1. Ativa o Flexbox
+								width: '100%',            // 2. FORÇA o container a ter 100% da largura do seu elemento pai (MUITO IMPORTANTE)
+								overflow: 'hidden',       // 3. Impede que qualquer filho transborde para fora
 								maxHeight: !printPageList ? "90vh" : '',
 								minHeight: !printPageList ? '90vh' : ''
 							}}
@@ -931,11 +958,11 @@ const ProdutividadePage = () => {
 								flexGrow={1} // <--- ADICIONADO: Diz ao Box para crescer e ocupar o espaço
 								alignItems={"stretch"}
 								sx={{
-									boxShadow:
-										"rgba(0, 0, 0, 0.65) 0px 5px 15px",
-									borderRadius: "8px",
-									// É uma boa prática mover o display para dentro do sx também
+									flex: '1 1 0', // 4. Forma abreviada e mais robusta para flex-grow, flex-shrink, e flex-basis.
+									minWidth: 0,      // Garante que o mapa possa encolher.
 									display: 'flex',
+									boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 15px",
+									borderRadius: "8px",
 								}}
 							>
 								<MapPage
@@ -950,40 +977,52 @@ const ProdutividadePage = () => {
 									setShowAsPlanned={setShowAsPlanned}
 									showResumeMap={showResumeMap}
 									parcelasSelected={parcelasSelected}
+									toggleParcela={toggleParcela}
 								/>
 							</Box>
-							{printPage ? (
-								<Box width={"20%"} ml={1} sx={{ overflow: !printPageList ? 'auto' : '' }}>
-									<ListPrintPage
-										resumo={resumoByVar}
-										sumTotalSelected={sumTotalSelected}
-										printPage={printPage}
-										filteredArray={filteredArray}
-										projeto={selectedProject}
-										setSumTotalSelected={
-											setSumTotalSelected
-										}
-										handleSUm={handleSUm}
-										totalSelected={totalSelected}
-										setTotalSelected={setTotalSelected}
-										filtPlantioDone={filtPlantioDone}
-									/>
-								</Box>
-							) : (
-								<Box width={"30%"} ml={1}>
-									<ListPage
-										printPage={printPage}
-										filteredArray={filteredArray}
-										projeto={selectedProject}
-										setSumTotalSelected={
-											setSumTotalSelected
-										}
-										handleSUm={handleSUm}
-										totalSelected={totalSelected}
-										setTotalSelected={setTotalSelected}
-									/>
-								</Box>
-							)}
+							<Collapse orientation="horizontal" in={!showTableList}>
+
+								{printPage ? (
+									<Box sx={{
+										// 5. Tente usar uma largura fixa em pixels primeiro para confirmar que o problema é o %
+										width: printPage ? "250px" : "350px", // Mudei "30%" para "350px" para teste
+										flexShrink: 0, // Impede que a lista encolha
+										ml: printPage ? 3 : 1,
+										overflow: !printPageList ? 'auto' : ''
+									}}>
+
+										<ListPrintPage
+											resumo={resumoByVar}
+											sumTotalSelected={sumTotalSelected}
+											printPage={printPage}
+											filteredArray={filteredArray}
+											projeto={selectedProject}
+											setSumTotalSelected={
+												setSumTotalSelected
+											}
+											handleSUm={handleSUm}
+											totalSelected={totalSelected}
+											setTotalSelected={setTotalSelected}
+											filtPlantioDone={filtPlantioDone}
+											parcelasSelected={parcelasSelected}
+										/>
+									</Box>
+								) : (
+									<Box width={"30%"} ml={1}>
+										<ListPage
+											printPage={printPage}
+											filteredArray={filteredArray}
+											projeto={selectedProject}
+											setSumTotalSelected={
+												setSumTotalSelected
+											}
+											handleSUm={handleSUm}
+											totalSelected={totalSelected}
+											setTotalSelected={setTotalSelected}
+										/>
+									</Box>
+								)}
+							</Collapse>
 						</Box>
 					</>
 				)}

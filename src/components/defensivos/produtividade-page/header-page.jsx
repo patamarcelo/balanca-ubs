@@ -9,16 +9,29 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 
+import { useState } from "react";
+import Collapse from '@mui/material/Collapse';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 const HeaderPage = (props) => {
-	const { selectedProject, filtCult, resumo, sumTotalSelected } = props;
+	const { selectedProject, filtCult, resumo, sumTotalSelected, showTableList, setShowTableList } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const [showProdTable, setShowProdTable] = useState(false);
 
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" }
 	];
+	const handleChangeProd = () => {
+		setShowProdTable((prev) => !prev);
+	};
+	
+	const handleChangeList = () => {
+		setShowTableList((prev) => !prev);
+	};
 
 	const filteredAlt = (data) => {
 		const filtered = iconDict.filter((dictD) => dictD.cultura === data);
@@ -66,6 +79,14 @@ const HeaderPage = (props) => {
 					className={styles.titleProdutividade}
 				>
 					{formatProjectName}
+					<FormControlLabel
+						sx={{marginLeft: '30px'}}
+						control={<Switch checked={showProdTable} onChange={handleChangeProd} color="info"/>}
+					/>
+					<FormControlLabel
+						sx={{marginLeft: '10px'}}
+						control={<Switch checked={showTableList} onChange={handleChangeList} color="success"/>}
+					/>
 				</Typography>
 				{/* <div
 					className={styles.MainConteinerresumoByVar}
@@ -103,10 +124,13 @@ const HeaderPage = (props) => {
 					})}
 				</div> */}
 			</div>
-			<ResumoPage
-				filtCult={filtCult}
-				sumTotalSelected={sumTotalSelected}
-			/>
+			<Collapse orientation="horizontal" in={showProdTable}>
+				<ResumoPage
+					filtCult={filtCult}
+					sumTotalSelected={sumTotalSelected}
+				/>
+			</Collapse>
+
 		</div>
 	);
 };
