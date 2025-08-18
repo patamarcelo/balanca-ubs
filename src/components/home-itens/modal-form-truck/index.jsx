@@ -151,7 +151,7 @@ export default function FormDialog(props) {
 	const updateAndSendProtheus = async (cargaId) => {
 		try {
 			const response = await nodeServerSrd
-				.post("resend-to-protheus/", {
+				.post("updated-romaneio-data/", {
 					id: cargaId,
 				})
 				.catch((err) => console.log(err));
