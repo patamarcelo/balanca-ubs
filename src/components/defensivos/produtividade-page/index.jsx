@@ -507,7 +507,6 @@ const ProdutividadePage = () => {
 
 
 
-
 	const handlePrintPdfWithTable = async () => {
 		setLoadingMapList(true);
 
@@ -570,6 +569,20 @@ const ProdutividadePage = () => {
 					// Usa a altura total da página. PageHeight - margem
 					const bottomMarginPage = 10;
 					pdf.text(titleTextOperation, pageWidth / 2, pageHeight - bottomMarginPage, { align: "center" });
+
+
+					// ---------- SUBTÍTULO OPERACAO (TOTAL ÁREA) ----------
+					const totalParcelas = mapPlantation.filter((data) => parcelasSelected.includes(data.id_farmbox))
+					const totalValueOperation = totalParcelas.reduce((acc, curr) => curr.area_colheita += acc, 0)
+					const subtitleTextTotalOp = `Área Total Selecionada: ${totalValueOperation.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
+					// Cor cinza
+					pdf.setTextColor(100); // 0 = preto, 255 = branco
+
+					// Subtítulo
+					pdf.setFont("helvetica", "bold");
+					pdf.setFontSize(6);
+					const bottomMarginPageSubtitle = 5;
+					pdf.text(subtitleTextTotalOp, pageWidth / 2, pageHeight - bottomMarginPageSubtitle, { align: "center" });
 
 				}
 				// Volta para cor preta para outros elementos
@@ -644,7 +657,8 @@ const ProdutividadePage = () => {
 				const mapWidth = canvas.width * scale;
 				const mapHeight = canvas.height * scale;
 
-				const mapX = (pageWidth - mapWidth) / 2;
+				const availableStartX = leftTableWidth + 10;
+				const mapX = availableStartX + (availableWidth - mapWidth) / 2;
 				const mapY = topMargin;
 
 				pdf.addImage(resizedBase64, "PNG", mapX, mapY, mapWidth, mapHeight);
