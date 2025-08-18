@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, Box, TextField } from "@mui/material";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
@@ -15,7 +15,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 const HeaderPage = (props) => {
-	const { selectedProject, filtCult, resumo, sumTotalSelected, showTableList, setShowTableList } = props;
+	const { selectedProject, filtCult, resumo, sumTotalSelected, showTableList, setShowTableList, setOperationName, operationName } = props;
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const [showProdTable, setShowProdTable] = useState(false);
@@ -28,7 +28,7 @@ const HeaderPage = (props) => {
 	const handleChangeProd = () => {
 		setShowProdTable((prev) => !prev);
 	};
-	
+
 	const handleChangeList = () => {
 		setShowTableList((prev) => !prev);
 	};
@@ -80,50 +80,26 @@ const HeaderPage = (props) => {
 				>
 					{formatProjectName}
 					<FormControlLabel
-						sx={{marginLeft: '30px'}}
-						control={<Switch checked={showProdTable} onChange={handleChangeProd} color="info"/>}
+						sx={{ marginLeft: '30px' }}
+						control={<Switch checked={showProdTable} onChange={handleChangeProd} color="info" />}
 					/>
 					<FormControlLabel
-						sx={{marginLeft: '10px'}}
-						control={<Switch checked={showTableList} onChange={handleChangeList} color="success"/>}
+						sx={{ marginLeft: '10px' }}
+						control={<Switch checked={showTableList} onChange={handleChangeList} color="success" />}
 					/>
-				</Typography>
-				{/* <div
-					className={styles.MainConteinerresumoByVar}
-					style={{
-						backgroundColor: colors.blueOrigin[800],
-						padding: "10px 20px 10px 10px"
-					}}
-				>
-					{Object.keys(resumo).map((data, i) => {
-						const cultura = data.split("|")[0];
-						const variedade = data.split("|")[1];
-						const area = resumo[data].area;
 
-						return (
-							<div
-								key={i}
-								className={styles.resumoByVarContainer}
-								style={{ color: colors.primary[100] }}
-							>
-								<img
-									style={{ width: "20px", height: "20px" }}
-									src={filteredIcon(cultura)}
-									alt={filteredAlt(cultura)}
-								/>
-								<span>{variedade} |</span>
-								<span>
-									{area.toLocaleString("pt-br", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2
-									})}{" "}
-									ha
-								</span>
-							</div>
-						);
-					})}
-				</div> */}
+				</Typography>
 			</div>
+			<Collapse orientation="horizontal" in={showProdTable}>
+					<TextField
+						label="Nome da operação"
+						size="small"
+						value={operationName}
+						onChange={(e) => setOperationName(e.target.value)}
+						width={"500px"}
+					/>
+			</Collapse>
+
 			<Collapse orientation="horizontal" in={showProdTable}>
 				<ResumoPage
 					filtCult={filtCult}
@@ -131,7 +107,7 @@ const HeaderPage = (props) => {
 				/>
 			</Collapse>
 
-		</div>
+		</div >
 	);
 };
 

@@ -111,6 +111,8 @@ const ProdutividadePage = () => {
 
 	const [showTableList, setShowTableList] = useState(false);
 
+	const [operationName, setOperationName] = useState("");
+
 	useEffect(() => {
 		if (selectedProject) {
 			const getFarmId = filteredArray.find((data) => data.talhao__fazenda__nome === selectedProject[0])?.talhao__fazenda__id_farmbox
@@ -546,6 +548,7 @@ const ProdutividadePage = () => {
 				const titleTopMargin = 20; // metade do valor anterior
 				pdf.text(titleText, pageWidth / 2, titleTopMargin, { align: "center" });
 
+
 				// ---------- SUBTÍTULO (TOTAL ÁREA) ----------
 				const totalArea = parcelas.reduce((sum, p) => sum + Number(p.area), 0);
 				const subtitleText = `${totalArea.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
@@ -557,6 +560,18 @@ const ProdutividadePage = () => {
 				pdf.setFontSize(6);
 				pdf.text(subtitleText, pageWidth / 2, 31, { align: "center" });
 
+
+				if (operationName?.length > 0) {
+					// ---------- TÍTULO OPERACAO BOTTOM PAGE ----------
+					const titleTextOperation = operationName;
+					pdf.setFont("helvetica", "bold");
+					pdf.setFontSize(20);
+
+					// Usa a altura total da página. PageHeight - margem
+					const bottomMarginPage = 10;
+					pdf.text(titleTextOperation, pageWidth / 2, pageHeight - bottomMarginPage, { align: "center" });
+
+				}
 				// Volta para cor preta para outros elementos
 				pdf.setTextColor(0);
 
@@ -937,6 +952,8 @@ const ProdutividadePage = () => {
 							sumTotalSelected={sumTotalSelected}
 							showTableList={showTableList}
 							setShowTableList={setShowTableList}
+							operationName={operationName}
+							setOperationName={setOperationName}
 						/>
 						<Box
 							className={styles.mapListDiv}
