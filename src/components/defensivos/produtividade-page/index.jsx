@@ -1011,7 +1011,7 @@ const ProdutividadePage = () => {
 									toggleParcela={toggleParcela}
 								/>
 							</Box>
-							<Collapse orientation="horizontal" in={!showTableList}>
+							<Collapse orientation="horizontal" in={showTableList}>
 
 								{printPage ? (
 									<Box sx={{

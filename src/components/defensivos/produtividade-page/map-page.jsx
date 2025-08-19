@@ -193,7 +193,7 @@ const MapPage = ({
 	// }
 	const MapOptions = useMemo(() => ({
 		// disableDefaultUI: true
-		zoomControl: true,
+		zoomControl: false,
 		mapTypeControl: false,
 		scaleControl: true,
 		streetViewControl: false,
@@ -202,7 +202,7 @@ const MapPage = ({
 		scrollwheel: false,
 		zoom: zoomMap,
 		mapTypeId: "satellite"
-	}), [])
+	}), [zoomMap])
 
 
 	useEffect(() => {
@@ -528,6 +528,49 @@ const MapPage = ({
 					<MapResumePage data={resumeContainerData} />
 				</Box>
 			}
+			<div style={{ position: "absolute", bottom: 90, right: 10, display: "flex", flexDirection: "column", gap: 12, zIndex: 100 }}>
+				<button
+					onClick={() => setZoomMap((z) => z + 0.4)}
+					style={{
+						width: 40,
+						height: 40,
+						lineHeight: "32px",
+						textAlign: "center",
+						fontSize: 18,
+						background: "#fff",
+						border: "1px solid #d9d9d9",
+						borderRadius: '50%',
+						boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+						cursor: "pointer",
+						userSelect: "none"
+					}}
+					onMouseOver={(e) => (e.currentTarget.style.background = "#f5f5f5")}
+					onMouseOut={(e) => (e.currentTarget.style.background = "#fff")}
+				>
+					+
+				</button>
+
+				<button
+					onClick={() => setZoomMap((z) => z - 0.4)}
+					style={{
+						width: 40,
+						height: 40,
+						lineHeight: "32px",
+						textAlign: "center",
+						fontSize: 18,
+						background: "#fff",
+						border: "1px solid #d9d9d9",
+						borderRadius: '50%',
+						boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+						cursor: "pointer",
+						userSelect: "none"
+					}}
+					onMouseOver={(e) => (e.currentTarget.style.background = "#f5f5f5")}
+					onMouseOut={(e) => (e.currentTarget.style.background = "#fff")}
+				>
+					–
+				</button>
+			</div>
 		</div>
 	) : (
 		<></>
