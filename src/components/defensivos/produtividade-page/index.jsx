@@ -186,7 +186,7 @@ const ProdutividadePage = () => {
 
 		const totalResumo = {};
 		const totalResumoVariedades = {};
-		const filtCult = filteredArray
+		filteredArray
 			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
 			.filter((data) => {
 				// If selectedCultureFilter is empty, return all cultures
@@ -203,6 +203,14 @@ const ProdutividadePage = () => {
 				}
 				// Otherwise, filter by the selected cultures
 				return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
+			})
+			.filter((data) => {
+				// If selectedCultureFilter is empty, return all cultures
+				if (parcelasSelected.length === 0) {
+					return true;
+				}
+				// Otherwise, filter by the selected parcelas
+				return parcelasSelected.includes(data.id_farmbox);
 			})
 			.map((data) => {
 				const areaSum = data.finalizado_colheita
@@ -248,7 +256,7 @@ const ProdutividadePage = () => {
 		// 	return sum;
 		// }, {});
 		// console.log(totalFiltered);
-	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter]);
+	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter, parcelasSelected]);
 
 	useEffect(() => {
 		const filterCult = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.cultura)

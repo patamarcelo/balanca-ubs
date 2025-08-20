@@ -133,9 +133,6 @@ const MapPage = ({
 	useEffect(() => {
 		if (mapArray?.length > 0) {
 			if (parcelasSelected.length > 0) {
-				console.log('mapArray: ', mapArray)
-				console.log("parcelasSelected", parcelasSelected)
-				console.log("filtData", filtData)
 				const filterSelectedparcelas = filtData.filter((data) => parcelasSelected.includes(data.id_farmbox))
 				const onlyFarmId = filterSelectedparcelas.map((data) => data.id)
 				const groupedData = Object.values(
