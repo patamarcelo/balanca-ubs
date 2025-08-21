@@ -182,7 +182,14 @@ const ModalDataFarmbox = (props) => {
 							minimumFractionDigits: 2,
 							maximumFractionDigits: 2
 						}),
-						areaSought: areaSought,
+						areaSought: areaSought.toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}),
+						remaingArea: (areaSought - sumTotalApp).toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}),
 						initialAppDateAplicadaParc:
 							parcela.initialAppDateAplicada,
 						finalAppDateAplicadaParc: parcela.finalAppDateAplicada,
