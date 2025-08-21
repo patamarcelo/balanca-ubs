@@ -32,32 +32,55 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { TRUCK_INITIAL_STATE } from "../../../store/trucks/reducer.initials";
 
-import { newDateArr } from "../../../utils/format-suport/data-format";
+
 
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import Zoom from "@mui/material/Zoom";
 
-import { formatDate } from "../../../store/trucks/trucks.selector";
+
 
 import classes from "./table.module.css";
 
 import CustomToolbar from "../../../utils/format-suport/custom-toolbar";
+import { Dialog } from "@mui/material"; // ou outro modal da sua lib preferida
+import PrintRCLayout from "../../print-rc";
+import PrintPage from "../../../pages/Print";
+
 
 const ReportTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const navigate = useNavigate();
+	const [openModal, setOpenModal] = useState(false);
+	const [modalData, setModalData] = useState(null);
+	const [modalDataRc, setModalDataRc] = useState(null);
+
 
 	const handlerNavigatePrint = (data) => {
-		navigate("/print", { state: { data: data } });
+		setModalDataRc(data);
+		console.log('data: ', data)
+		setOpenModal(true);
 	};
 
+	// const handlerNavigatePrintRomaneio = (data) => {
+	// 	console.log('data inside roma: ', data)
+	// 	if(data?.createdBy === 'App'){
+	// 		navigate("/rcprint", { state: { data: data } });
+	// 	}
+	// };
+
 	const handlerNavigatePrintRomaneio = (data) => {
-		console.log('data inside roma: ', data)
-		if(data?.createdBy === 'App'){
-			navigate("/rcprint", { state: { data: data } });
+		if (data?.createdBy === "App") {
+			setModalData(data);
+			setOpenModal(true);
 		}
+	};
+
+	const handleClose = () => {
+		setOpenModal(false);
+		setModalData(null);
+		setModalDataRc(null);
 	};
 
 	const { dataTable, isLoading, handlerSave, saved } = props;
@@ -347,13 +370,13 @@ const ReportTable = (props) => {
 				<Typography sx={{ fontSize: defaultFontSize }}>
 					{params.row.valorFrete
 						? "R$ " +
-						  parseFloat(params.row.valorFrete)
-								.toFixed(2)
-								.replace(".", ",")
-								.toLocaleString("pt-BR", {
-									style: "currency",
-									currency: "BRL"
-								})
+						parseFloat(params.row.valorFrete)
+							.toFixed(2)
+							.replace(".", ",")
+							.toLocaleString("pt-BR", {
+								style: "currency",
+								currency: "BRL"
+							})
 						: "-"}
 				</Typography>
 			)
@@ -370,8 +393,8 @@ const ReportTable = (props) => {
 					{params.row.fazendaOrigem === "Outros"
 						? params.row.origem
 						: params.row.fazendaOrigem
-						? params.row.fazendaOrigem
-						: "-"}
+							? params.row.fazendaOrigem
+							: "-"}
 				</Typography>
 			)
 		},
@@ -400,8 +423,8 @@ const ReportTable = (props) => {
 					{params.row.fazendaDestino === "Outros"
 						? params.row.destino
 						: params.row.fazendaDestino
-						? params.row.fazendaDestino
-						: "-"}
+							? params.row.fazendaDestino
+							: "-"}
 				</Typography>
 			)
 		},
@@ -593,11 +616,11 @@ const ReportTable = (props) => {
 				>
 					{params.row.parcelasNovas
 						? params.row.parcelasNovas
-								.toString()
-								.replaceAll(",", " , ")
+							.toString()
+							.replaceAll(",", " , ")
 						: params.row.parcela
-						? params.row.parcela
-						: " - "}
+							? params.row.parcela
+							: " - "}
 				</Typography>
 			)
 		},
@@ -791,6 +814,47 @@ const ReportTable = (props) => {
 				TRUCK_INITIAL_STATE={TRUCK_INITIAL_STATE}
 				setDataTruck={setDataTruck}
 			/>
+			<Dialog
+				open={openModal}
+				onClose={handleClose}
+				fullScreen // <- deixa fullscreen
+				PaperProps={{
+					sx: {
+						width: "100%",
+						height: "100%",
+						margin: 0,
+						maxWidth: "100%",
+						maxHeight: "100%",
+					},
+				}}
+			>
+				{modalData && (
+					<Box
+						sx={{
+							width: "100%",
+							height: "100%",
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<PrintRCLayout data={modalData} />
+					</Box>
+				)}
+				{modalDataRc && (
+					<Box
+						sx={{
+							width: "100%",
+							height: "100%",
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<PrintPage data={modalDataRc} />
+					</Box>
+				)}
+			</Dialog>
 
 			<Box
 				height="100%"
