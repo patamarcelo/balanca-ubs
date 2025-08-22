@@ -347,7 +347,7 @@ const RomaneiosTable = (props) => {
 											</Tooltip>
 										) : (
 											<Box>
-												<InfoOutlinedIcon color="disabled" />
+												-
 											</Box>
 										)}
 									</td>
