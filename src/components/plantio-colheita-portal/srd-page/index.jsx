@@ -56,9 +56,16 @@ const SRDPage = () => {
 
     const [ticketPriorityOptions, setTicketPriorityOptions] = useState([]);
     const [projetosOptions, setProjetosOptions] = useState([]);
+    
+    const [culturaOptions, setCulturaOptions] = useState([]);
+    const [variedadeOptions, setVariedadeOptions] = useState([]);
 
     const [selectedStatus, setSelectedStatus] = useState([]);
     const [selectedPriority, setSelectedPriority] = useState([]);
+    
+    
+    const [selectedVariedade, setSelectedVariedade] = useState([]);
+    const [selectedCultura, setSelectedCultura] = useState([]);
 
     const handleStatusChange = (newSelection) => {
         setSelectedStatus(newSelection);
@@ -71,9 +78,20 @@ const SRDPage = () => {
         // Aqui você pode adicionar a lógica para filtrar os tickets com base na nova prioridade selecionada
         console.log('Tickets selecionadas:', newSelection);
     };
+    
+    const handleChangeCultura = (newSelection) => {
+        setSelectedCultura(newSelection);
+    };
+    
+    const handleChangeVariedade = (newSelection) => {
+        setSelectedVariedade(newSelection);
+    };
     const handleClearFilters = () => {
         setSelectedStatus([])
         setSelectedPriority([])
+        setSelectedVariedade([])
+        setSelectedCultura([])
+
     }
 
     useEffect(() => {
@@ -98,12 +116,24 @@ const SRDPage = () => {
             const onlyProj = dataArray.sort((a, b) => a.PROJETO.localeCompare(b.PROJETO)).map((data) => data.PROJETO)
             const uniqueOnlyProj = [...new Set(onlyProj)]
             setProjetosOptions(uniqueOnlyProj)
+            
+            const onlyVar = dataArray.sort((a, b) => a.VARIEDADE.localeCompare(b.VARIEDADE)).map((data) => data.VARIEDADE)
+            const uniqueOnlyVar = [...new Set(onlyVar)]
+            console.log('onlyVar: ', uniqueOnlyVar)
+            setVariedadeOptions(uniqueOnlyVar)
+            
+            console.log('dataArray', dataArray)
+            const onlyCult = dataArray.sort((a, b) => a.CULTURA.localeCompare(b.CULTURA)).map((data) => data.CULTURA)
+            const uniqueOnlyCult = [...new Set(onlyCult)]
+            console.log('onlyVar: ', uniqueOnlyCult)
+            setCulturaOptions(uniqueOnlyCult)
         }
     }, [dataArray]);
 
 
     const handleSearch = async () => {
         setcsvData([])
+        setDataArray([])
         console.log("Buscar os dados", paramsQuery);
         setIsLoading(true);
         try {
@@ -203,9 +233,16 @@ const SRDPage = () => {
 
             // Filtro de projetos
             const projetoOk = selectedStatus.length > 0 ? selectedStatus.includes(data.PROJETO) : true;
+            
+            // Filtro de Variedades
+            const variedadeOk = selectedVariedade.length > 0 ? selectedVariedade.includes(data.VARIEDADE) : true;
+            
+            
+            // Filtro de Culturas
+            const culturaOk = selectedCultura.length > 0 ? selectedCultura.includes(data.CULTURA) : true;
 
             // Retorna apenas se passar em todos os filtros
-            return impurezaOk && ticketOk && projetoOk;
+            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk;
         });
 
         // Atualiza o estado
@@ -220,7 +257,7 @@ const SRDPage = () => {
         }
 
 
-    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority]);
+    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade]);
 
 
 
@@ -350,8 +387,24 @@ const SRDPage = () => {
                             width={100}
                             height={700}
                         />
+                        <MultiSelectFilter
+                            data={culturaOptions}
+                            label="Cultura"
+                            selectedItems={selectedCultura}
+                            onSelectionChange={handleChangeCultura}
+                            width={100}
+                            height={700}
+                        />
+                        <MultiSelectFilter
+                            data={variedadeOptions}
+                            label="Variedade"
+                            selectedItems={selectedVariedade}
+                            onSelectionChange={handleChangeVariedade}
+                            width={100}
+                            height={700}
+                        />
                         {
-                            (selectedPriority.length > 0 || selectedStatus.length > 0) &&
+                            (selectedPriority?.length > 0 || selectedStatus?.length > 0 || selectedCultura?.length > 0 || selectedVariedade?.length > 0) &&
                             <IconButton
                                 aria-label="delete"
                                 size="sm"

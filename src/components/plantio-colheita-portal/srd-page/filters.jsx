@@ -35,7 +35,7 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
     };
 
     function removeLeadingZeros(numberString) {
-        return numberString.replace(/^0+/, '');
+        return numberString?.replace(/^0+/, '');
     }
 
     return (
@@ -52,7 +52,7 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
 
                 renderValue={(selected) => (
                     <div style={{ display: 'flex', gap: 0.5 }}>
-                        {label !== 'Projetos' ?
+                        {label === 'Ticktes' ?
                             selected.map((value, index) => (
                                 <Chip key={index} label={`${removeLeadingZeros(value)}`} />
                             ))
@@ -66,7 +66,7 @@ const MultiSelectFilter = ({ data, label, selectedItems, onSelectionChange, widt
                 MenuProps={MenuProps}
             >
                 {
-                    label !== 'Projetos' ?
+                    label === 'Ticktes' ?
 
                         data.map((item, index) => (
                             <MenuItem
