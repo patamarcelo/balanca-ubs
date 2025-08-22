@@ -77,7 +77,7 @@ const SRDPage = () => {
     }
 
     useEffect(() => {
-        if (dataArray.length > 0) {
+        if (dataArray?.length > 0) {
             // const onlyTickets = dataArray.sort((a, b) => a.TICKET.localeCompare(b.TICKET)).map((data) => ({projeto: data.PROJETO, ticket: data.TICKET}))
             const onlyTickets = dataArray
                 .sort((a, b) => {
@@ -194,7 +194,7 @@ const SRDPage = () => {
         //     setFilterDataArray(dataArray)
         // }
         // Exemplo combinando todos os filtros
-        const filteredArray = dataArray.filter((data) => {
+        const filteredArray = dataArray?.filter((data) => {
             // Filtro de IMPUREZA_ENTRADA
             const impurezaOk = filterImp > 0 ? parseFloat(data.IMPUREZA_ENTRADA) >= parseFloat(filterImp) : true;
 
@@ -332,7 +332,7 @@ const SRDPage = () => {
                     </>
                 }
                 {
-                    dataArray.length > 0 &&
+                    dataArray?.length > 0 &&
                     <>
                         <MultiSelectFilter
                             data={projetosOptions}
