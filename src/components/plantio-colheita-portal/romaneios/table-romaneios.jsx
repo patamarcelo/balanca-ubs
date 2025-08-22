@@ -386,7 +386,16 @@ const RomaneiosTable = (props) => {
 												<DoneAll fontSize="inherit" />
 											</IconButton>
 										) : (
-											<AgricultureIcon fontSize="small" color="warning" />
+											<IconButton
+												aria-label="delete"
+												size="sm"
+												color={"success"}
+												onClick={(e) => handleRefreshTicket(e, carga)}
+												style={{ padding: "2px", justifyContent: 'center' }}
+												disabled={isLoadingTicket[carga.id] || false}
+											>
+												<AgricultureIcon fontSize="small" color="warning" />
+											</IconButton>
 										)}
 									</td>
 								</tr>
