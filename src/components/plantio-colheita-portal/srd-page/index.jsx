@@ -27,6 +27,9 @@ import { exportAsJson, handleJsonData } from "./json-export";
 import JsonFile from '../../../utils/assets/icons/json.png'
 import MultiSelectFilter from "./filters";
 
+import { Switch, FormControlLabel, Tooltip } from "@mui/material";
+
+
 const SRDPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -56,16 +59,23 @@ const SRDPage = () => {
 
     const [ticketPriorityOptions, setTicketPriorityOptions] = useState([]);
     const [projetosOptions, setProjetosOptions] = useState([]);
-    
+
     const [culturaOptions, setCulturaOptions] = useState([]);
     const [variedadeOptions, setVariedadeOptions] = useState([]);
 
     const [selectedStatus, setSelectedStatus] = useState([]);
     const [selectedPriority, setSelectedPriority] = useState([]);
-    
-    
+
+
     const [selectedVariedade, setSelectedVariedade] = useState([]);
     const [selectedCultura, setSelectedCultura] = useState([]);
+
+    const [onlyZero, setOnlyZero] = useState(false);
+
+    const handleToggleClassZero = (event) => {
+        setOnlyZero(event.target.checked);
+    };
+
 
     const handleStatusChange = (newSelection) => {
         setSelectedStatus(newSelection);
@@ -78,11 +88,11 @@ const SRDPage = () => {
         // Aqui você pode adicionar a lógica para filtrar os tickets com base na nova prioridade selecionada
         console.log('Tickets selecionadas:', newSelection);
     };
-    
+
     const handleChangeCultura = (newSelection) => {
         setSelectedCultura(newSelection);
     };
-    
+
     const handleChangeVariedade = (newSelection) => {
         setSelectedVariedade(newSelection);
     };
@@ -116,12 +126,12 @@ const SRDPage = () => {
             const onlyProj = dataArray.sort((a, b) => a.PROJETO.localeCompare(b.PROJETO)).map((data) => data.PROJETO)
             const uniqueOnlyProj = [...new Set(onlyProj)]
             setProjetosOptions(uniqueOnlyProj)
-            
+
             const onlyVar = dataArray.sort((a, b) => a.VARIEDADE.localeCompare(b.VARIEDADE)).map((data) => data.VARIEDADE)
             const uniqueOnlyVar = [...new Set(onlyVar)]
             console.log('onlyVar: ', uniqueOnlyVar)
             setVariedadeOptions(uniqueOnlyVar)
-            
+
             console.log('dataArray', dataArray)
             const onlyCult = dataArray.sort((a, b) => a.CULTURA.localeCompare(b.CULTURA)).map((data) => data.CULTURA)
             const uniqueOnlyCult = [...new Set(onlyCult)]
@@ -233,16 +243,20 @@ const SRDPage = () => {
 
             // Filtro de projetos
             const projetoOk = selectedStatus.length > 0 ? selectedStatus.includes(data.PROJETO) : true;
-            
+
             // Filtro de Variedades
             const variedadeOk = selectedVariedade.length > 0 ? selectedVariedade.includes(data.VARIEDADE) : true;
-            
-            
+
+
             // Filtro de Culturas
             const culturaOk = selectedCultura.length > 0 ? selectedCultura.includes(data.CULTURA) : true;
 
+            const zeroOk = onlyZero ?
+                parseFloat(data.IMPUREZA_ENTRADA) === 0 && parseFloat(data.UMIDADE_ENTRADA) === 0
+                : true;
+
             // Retorna apenas se passar em todos os filtros
-            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk;
+            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk && zeroOk;
         });
 
         // Atualiza o estado
@@ -257,7 +271,7 @@ const SRDPage = () => {
         }
 
 
-    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade]);
+    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade, onlyZero]);
 
 
 
@@ -371,6 +385,33 @@ const SRDPage = () => {
                 {
                     dataArray?.length > 0 &&
                     <>
+                        <Tooltip
+                            title="Filtra somente entradas com Impureza e Umidade iguais a 0"
+                            slotProps={{
+                                tooltip: {
+                                    sx: {
+                                        fontSize: "16px",
+                                        bgcolor: "black",
+                                        color: "white",
+                                        borderRadius: 2,
+                                        px: 2,
+                                        py: 1,
+                                    },
+                                },
+                            }}
+                        >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={onlyZero}
+                                        onChange={handleToggleClassZero}
+                                        color="success"
+                                    />
+                                }
+                                // label="Classificação"
+                                sx={{ color: "black" }}
+                            />
+                        </Tooltip>
                         <MultiSelectFilter
                             data={projetosOptions}
                             label="Projetos"
