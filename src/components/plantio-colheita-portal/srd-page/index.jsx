@@ -71,9 +71,20 @@ const SRDPage = () => {
     const [selectedCultura, setSelectedCultura] = useState([]);
 
     const [onlyZero, setOnlyZero] = useState(false);
+    const [onlyNotZero, setOnlyNotZero] = useState(false);
 
     const handleToggleClassZero = (event) => {
+        if(onlyNotZero){
+            setOnlyNotZero(false)
+        }
         setOnlyZero(event.target.checked);
+    };
+    
+    const handleToggleClassNotZero = (event) => {
+        if(onlyZero){
+            setOnlyZero(false)
+        }
+        setOnlyNotZero(event.target.checked);
     };
 
 
@@ -254,9 +265,13 @@ const SRDPage = () => {
             const zeroOk = onlyZero ?
                 parseFloat(data.IMPUREZA_ENTRADA) === 0 && parseFloat(data.UMIDADE_ENTRADA) === 0
                 : true;
+            
+            const zeroDiff = onlyNotZero ?
+                parseFloat(data.IMPUREZA_ENTRADA) !== 0 || parseFloat(data.UMIDADE_ENTRADA) !== 0
+                : true;
 
             // Retorna apenas se passar em todos os filtros
-            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk && zeroOk;
+            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk && zeroOk && zeroDiff;
         });
 
         // Atualiza o estado
@@ -271,7 +286,7 @@ const SRDPage = () => {
         }
 
 
-    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade, onlyZero]);
+    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade, onlyZero, onlyNotZero]);
 
 
 
@@ -406,6 +421,33 @@ const SRDPage = () => {
                                         checked={onlyZero}
                                         onChange={handleToggleClassZero}
                                         color="success"
+                                    />
+                                }
+                                // label="Classificação"
+                                sx={{ color: "black" }}
+                            />
+                        </Tooltip>
+                        <Tooltip
+                            title="Filtra somente entradas com Impureza e Umidade Informadas"
+                            slotProps={{
+                                tooltip: {
+                                    sx: {
+                                        fontSize: "16px",
+                                        bgcolor: "black",
+                                        color: "white",
+                                        borderRadius: 2,
+                                        px: 2,
+                                        py: 1,
+                                    },
+                                },
+                            }}
+                        >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={onlyNotZero}
+                                        onChange={handleToggleClassNotZero}
+                                        color="info"
                                     />
                                 }
                                 // label="Classificação"
