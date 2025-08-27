@@ -174,6 +174,17 @@ const RomaneiosTable = (props) => {
 		}
 		return "-";
 	};
+	const formatPercent = (data) => {
+		if (data > Number(0)) {
+			return Number(data).toLocaleString("pt-br", {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			}) + " %"
+		}
+		return "-";
+	}
+
+
 
 	if (data.length === 0) {
 		return (
@@ -262,6 +273,8 @@ const RomaneiosTable = (props) => {
 						<th>Bruto</th>
 						<th>Tara</th>
 						<th>Líquido</th>
+						<th>Umidade</th>
+						<th>Impureza</th>
 						<th>Saída</th>
 						<th>Status</th>
 					</tr>
@@ -347,7 +360,7 @@ const RomaneiosTable = (props) => {
 											</Tooltip>
 										) : (
 											<Box>
-												
+
 											</Box>
 										)}
 									</td>
@@ -368,6 +381,16 @@ const RomaneiosTable = (props) => {
 										{carga.liquido
 											? formatWeight(carga.liquido)
 											: formatWeight(0)}
+									</td>
+									<td>
+										{carga?.umidade
+											? formatPercent(carga?.umidade)
+											: formatPercent(0)}
+									</td>
+									<td>
+										{carga?.impureza
+											? formatPercent(carga?.impureza)
+											: formatPercent(0)}
 									</td>
 									<td>
 										{carga?.saida
