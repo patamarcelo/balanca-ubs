@@ -57,6 +57,7 @@ const ColheitaAtual = (props) => {
 
 	const [checkedColheita, setCheckedColheita] = useState(true);
 	const [chekedAreasAvaiable, setChekedAreasAvaiable] = useState(false);
+	const [romaneiosPendente, setRomaneiosPendente] = useState(false);
 
 	const [dateSort, setDateSort] = useState(false);
 
@@ -135,6 +136,10 @@ const ColheitaAtual = (props) => {
 	};
 	const handleChangeAreasCheck = (event) => {
 		setChekedAreasAvaiable(event.target.checked);
+	};
+	
+	const handleChangeRomaneiosPendente = (event) => {
+		setRomaneiosPendente(event.target.checked);
 	};
 
 	const handleChangeVarSelect = (event) => {
@@ -412,6 +417,17 @@ const ColheitaAtual = (props) => {
 						label="Areas Dispoíveis"
 						sx={{ color: colors.textColor[100] }}
 					/>
+					<FormControlLabel
+						control={
+							<Switch
+								color="secondary"
+								checked={romaneiosPendente}
+								onChange={handleChangeRomaneiosPendente}
+							/>
+						}
+						label="Romaneios Pendentes"
+						sx={{ color: colors.textColor[100] }}
+					/>
 					<FormControl sx={{ m: 1, width: 300 }}>
 						<InputLabel id="demo-multiple-name-label">Variedade</InputLabel>
 						<Select
@@ -480,6 +496,11 @@ const ColheitaAtual = (props) => {
 							checkedColheita
 								? data.finalizado_colheita === false
 								: data.finalizado_colheita !== null
+						)
+						.filter((data) =>
+							romaneiosPendente
+								? idsPending[data.id] > 0
+								: true
 						)
 						.sort((b, a) =>
 							dateSort
