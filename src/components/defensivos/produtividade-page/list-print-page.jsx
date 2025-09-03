@@ -125,11 +125,11 @@ const ListPrintPage = (props) => {
 							.sort((a, b) =>
 								a.talhao__id_talhao.localeCompare(b.talhao__id_talhao)
 							)
-							.filter((data) =>
-								filtPlantioDone === false
-									? data.finalizado_plantio === true
-									: true
-							)
+							// .filter((data) =>
+							// 	filtPlantioDone === false
+							// 		? data.finalizado_plantio === true
+							// 		: true
+							// )
 							.map((row, i) => (
 								<TableRow
 									key={row.id}
@@ -229,7 +229,7 @@ const ListPrintPage = (props) => {
 							Object.keys(resumo).map((data, i) => (
 								<TableRow key={i}>
 									<TableCell align="left" colSpan={2} sx={{ color: lightTableColors.rowText, fontWeight: 'bold' }}>
-										<Box ml={4}>{data.split("|")[1]}</Box>
+									<Box ml={4}>{data.split("|")[1] === 'null' ? "N/D" : data.split("|")[1] }</Box>
 									</TableCell>
 									<TableCell sx={{ color: lightTableColors.rowText, fontWeight: 'bold' }} align="right">
 										<Box mr={margintR}>

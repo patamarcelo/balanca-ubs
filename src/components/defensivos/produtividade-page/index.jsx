@@ -179,8 +179,7 @@ const ProdutividadePage = () => {
 	useEffect(() => {
 		const filteredArray = produtividade.filter(
 			(data) =>
-				selectedProject.includes(data.talhao__fazenda__nome) &&
-				data.finalizado_plantio === true
+				selectedProject.includes(data.talhao__fazenda__nome)
 		);
 		setMapPlantation(filteredArray);
 
@@ -517,7 +516,6 @@ const ProdutividadePage = () => {
 
 	const handlePrintPdfWithTable = async () => {
 		setLoadingMapList(true);
-
 		try {
 			const parcelas = mapPlantation
 				.map((data) => ({
@@ -557,14 +555,15 @@ const ProdutividadePage = () => {
 
 
 				// ---------- SUBTÍTULO (TOTAL ÁREA) ----------
-				const totalArea = parcelas.reduce((sum, p) => sum + Number(p.area), 0);
+				let totalArea = 0
+				totalArea = parcelas.reduce((sum, p) => sum + Number(p.area), 0);
 				const subtitleText = `${totalArea.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
 				// Cor cinza
 				pdf.setTextColor(100); // 0 = preto, 255 = branco
 
 				// Subtítulo
 				pdf.setFont("helvetica", "bold");
-				pdf.setFontSize(6);
+				pdf.setFontSize(8);
 				pdf.text(subtitleText, pageWidth / 2, 31, { align: "center" });
 
 
@@ -578,17 +577,22 @@ const ProdutividadePage = () => {
 					const bottomMarginPage = 10;
 					pdf.text(titleTextOperation, pageWidth / 2, pageHeight - bottomMarginPage, { align: "center" });
 
+				}
 
-					// ---------- SUBTÍTULO OPERACAO (TOTAL ÁREA) ----------
-					const totalParcelas = mapPlantation.filter((data) => parcelasSelected.includes(data.id_farmbox))
-					const totalValueOperation = totalParcelas.reduce((acc, curr) => curr.area_colheita += acc, 0)
+				// ---------- SUBTÍTULO OPERACAO (TOTAL ÁREA) ----------
+				const totalParcelas = mapPlantation.filter((data) => parcelasSelected.includes(data.id_farmbox))
+				const totalValueOperation = totalParcelas.reduce(
+					(acc, curr) => acc + Number(curr.area_colheita || 0),
+					0
+				);
+				if (totalValueOperation > 0) {
 					const subtitleTextTotalOp = `Área Total Selecionada: ${totalValueOperation.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
 					// Cor cinza
 					pdf.setTextColor(100); // 0 = preto, 255 = branco
 
 					// Subtítulo
 					pdf.setFont("helvetica", "bold");
-					pdf.setFontSize(6);
+					pdf.setFontSize(12);
 					const bottomMarginPageSubtitle = 5;
 					pdf.text(subtitleTextTotalOp, pageWidth / 2, pageHeight - bottomMarginPageSubtitle, { align: "center" });
 
@@ -597,60 +601,103 @@ const ProdutividadePage = () => {
 				pdf.setTextColor(0);
 
 
-				// ---------- CONFIGURAÇÃO DAS TABELAS ----------
-				const tableTop = titleTopMargin + 10; // metade da distância anterior
-				const bottomMargin = 20;
-				const tableHeight = pageHeight - tableTop - bottomMargin;
-				const rowHeight = 10;
-				const colWidths = [40, 30]; // Parcelas | Área
+				// ---------- CONFIGURAÇÃO DAS TABELAS (2 colunas compactas) ----------
+				const selectedParcelNames = new Set(
+					mapPlantation
+						.filter(d => parcelasSelected.includes(d.id_farmbox))
+						.map(d => d.talhao__id_talhao) // o rótulo que aparece na tabela
+				);
 
-				const maxRowsPerTable = Math.floor(tableHeight / rowHeight);
+				// ---------- CONFIGURAÇÃO DAS TABELAS (2 colunas compactas) ----------
+				const tableTop = titleTopMargin + 8;
+				const bottomMargin = 18;
+
+				const rowHeight = 8;
+				const headerHeight = rowHeight;
+				const fontSizeHeader = 8;
+				const fontSizeBody = 7;
+				const colWidths = [28, 24];
+				const tableWidth = colWidths[0] + colWidths[1];
+				const tableLeftX = 10;
+				const rightMargin = 10;
+
+				const tableHeight = pageHeight - tableTop - bottomMargin;
+				const maxRowsPerTable = Math.max(0, Math.floor((tableHeight - headerHeight) / rowHeight));
+
+				// sempre com duas casas decimais
+				const fmtArea = (v) =>
+					Number(v || 0).toLocaleString("pt-BR", {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2,
+					});
 
 				const col1 = parcelas.slice(0, maxRowsPerTable);
-				const col2 = parcelas.slice(maxRowsPerTable);
+				const col2 = parcelas.slice(maxRowsPerTable, maxRowsPerTable * 2);
 
-				const tableLeftX = 10;
-
-				const rightTableWidthPx = col2.length ? colWidths.reduce((a, b) => a + b, 0) : 0;
-				const rightMargin = 10;
+				const rightTableWidthPx = tableWidth;
 				const tableRightX = pageWidth - rightTableWidthPx - rightMargin;
 
+				pdf.setDrawColor(0);
+				pdf.setLineWidth(0.1);
+
+				const HEADER_GRAY = [150, 150, 150];       // cabeçalho (escuro)
+				// const HIGHLIGHT_GRAY = [230, 230, 230];    // destaque (mais claro)
+				const HIGHLIGHT_BLUE = [200, 220, 255]; // azul bem clarinho
+
+				// função para desenhar uma tabela
 				const drawTable = (startX, data) => {
 					if (!data.length) return;
 
-					// Cabeçalho com fundo cinza e borda
-					pdf.setFillColor(200, 200, 200);
-					pdf.setDrawColor(0);
-					pdf.rect(startX, tableTop, colWidths[0], rowHeight, "FD");
-					pdf.rect(startX + colWidths[0], tableTop, colWidths[1], rowHeight, "FD");
+					// CABEÇALHO com fundo cinza escuro
+					pdf.setFillColor(...HEADER_GRAY);
+					pdf.rect(startX, tableTop, colWidths[0], headerHeight, "FD");
+					pdf.rect(startX + colWidths[0], tableTop, colWidths[1], headerHeight, "FD");
+
 					pdf.setFont("helvetica", "bold");
-					pdf.setFontSize(9);
-					pdf.text("Parcela", startX + 2, tableTop + 7, { align: "left" });
-					pdf.text("Área", startX + colWidths[0] + colWidths[1] - 2, tableTop + 7, { align: "right" });
+					pdf.setFontSize(fontSizeHeader);
+					pdf.setTextColor(255); // branco sobre cinza
+					pdf.text("Parcela", startX + 2, tableTop + headerHeight - 2, { align: "left" });
+					pdf.text("Área", startX + colWidths[0] + colWidths[1] - 2, tableTop + headerHeight - 2, { align: "right" });
 
-					// Linhas
+					// CORPO
 					pdf.setFont("helvetica", "normal");
-					pdf.setFontSize(8);
-					data.forEach((row, index) => {
-						const y = tableTop + rowHeight * (index + 1);
-						pdf.rect(startX, y, colWidths[0], rowHeight);
-						pdf.text(row.parcela, startX + 2, y + 7, { align: "left" });
+					pdf.setFontSize(fontSizeBody);
+					pdf.setTextColor(0); // volta ao preto
 
+					data.forEach((row, index) => {
+						const y = tableTop + headerHeight + rowHeight * index;
+
+						// >>> NOVO: fundo cinza claro se a parcela estiver selecionada
+						if (selectedParcelNames.has(String(row.parcela))) {
+							pdf.setFillColor(...HIGHLIGHT_BLUE);
+							pdf.rect(startX, y, tableWidth, rowHeight, "F"); // pinta a linha inteira das 2 colunas
+						}
+
+						// bordas das células
+						pdf.rect(startX, y, colWidths[0], rowHeight);
 						pdf.rect(startX + colWidths[0], y, colWidths[1], rowHeight);
-						pdf.text(String(formatNumber(row.area, 2)), startX + colWidths[0] + colWidths[1] - 2, y + 7, { align: "right" });
+
+						// textos
+						pdf.text(String(row.parcela ?? ""), startX + 2, y + rowHeight - 2, { align: "left" });
+						pdf.text(fmtArea(row.area), startX + colWidths[0] + colWidths[1] - 2, y + rowHeight - 2, { align: "right" });
 					});
 				};
 
 				drawTable(tableLeftX, col1);
 				drawTable(tableRightX, col2);
 
-				// ---------- MAPA ----------
+				// ---------- MAPA (ajuste de largura útil considerando 2 tabelas) ----------
 				const topMargin = tableTop;
 				const availableHeight = pageHeight - topMargin - bottomMargin;
-				const leftTableWidth = col1.length ? colWidths.reduce((a, b) => a + b, 0) + 10 : 0;
-				const rightTableWidth = col2.length ? colWidths.reduce((a, b) => a + b, 0) + 10 : 0;
+
+				// se a coluna existir, reserva sua largura + 10px de respiro
+				const leftTableWidth = col1.length ? tableWidth + 10 : 0;
+				const rightTableWidth = col2.length ? tableWidth + 10 : 0;
+
+				// largura central para o mapa
 				const availableWidth = pageWidth - leftTableWidth - rightTableWidth - 20;
 
+				// redimensiona a imagem já carregada anteriormente
 				const canvas = document.createElement("canvas");
 				canvas.width = img.width;
 				canvas.height = img.height;

@@ -93,6 +93,8 @@ const MapPage = ({
 	const handleClick = (d, e) => {
 		console.log('d map: ', e)
 		const djangoId = e.data.data.plantio_id
+		console.log('djamgoID', djangoId)
+		console.log("filtData", filtData)
 		const getFIlters = filtData.find((data) => data.id === djangoId)
 		console.log('getFIlters', getFIlters)
 		// console.log('getFIlters', getFIlters)
