@@ -40,24 +40,54 @@ const RomaneiosPage = () => {
     const [dataToCsv, setdataToCsv] = useState([]);
 
     const listSit = ["Descarregados", "Pendentes"];
-    
+
     const [filteredFarms, setFilteredFarms] = useState([]);
 
     useEffect(() => {
-        if(useData.length > 0 ){
+        if (useData.length > 0) {
             const onlyFarms = useData.map((data) => data.fazendaOrigem)
             const removeDupli = [...new Set(onlyFarms)]
             setFilteredFarms(removeDupli)
         }
     }, [useData]);
-    
+
+    useEffect(() => {
+        if (useData.length > 0) {
+            const onlyTickets = useData
+                .map((data) => ({
+                    ticket: data.codTicketPro,
+                    fazenda: data.fazendaOrigem,
+                }))
+                .sort((a, b) => {
+                    // compara fazenda primeiro
+                    if (a.fazenda < b.fazenda) return -1;
+                    if (a.fazenda > b.fazenda) return 1;
+
+                    // se a fazenda for igual, compara ticket
+                    if (a.ticket < b.ticket) return -1;
+                    if (a.ticket > b.ticket) return 1;
+
+                    return 0;
+                });
+            const removeDupli = [...new Set(onlyTickets)]
+            setFilteredTicket(removeDupli)
+        }
+    }, [useData]);
+
     const [selected, setSelected] = useState([]);
+    const [selectedTicket, setSelectedTicket] = useState([]);
+    const [filteredTickets, setFilteredTicket] = useState([]);
+
     const handleChange = (event) => {
         setSelected(event.target.value);
+    };
+    const handleChangeTicket = (event) => {
+        setSelectedTicket(event.target.value);
     };
 
     const handlerClearProjetosSelected = () => {
         setSelected([])
+        setSelectedTicket([])
     }
 
     const formatDateIn = (dateInit, dataFinal) => {
@@ -103,7 +133,7 @@ const RomaneiosPage = () => {
     useEffect(() => {
         if (useData.length > 0) {
             let filteredData = useData.filter((data) => data.uploadedToProtheus === false);
-    
+
             if (filterDataArr) {
                 const addOneDay = new Date(filterDataArr);
                 addOneDay.setDate(addOneDay.getDate() + 1);
@@ -111,21 +141,24 @@ const RomaneiosPage = () => {
                     (data) => new Date(data.syncDate.toDate().toDateString()) <= addOneDay
                 );
             }
-    
+
             if (filterDataArrInit) {
                 filteredData = filteredData.filter(
                     (data) => new Date(data.syncDate.toDate().toDateString()) >= new Date(filterDataArrInit)
                 );
             }
-    
+
             // Apply the selected array filter only if it's not empty
             if (selected.length > 0) {
                 filteredData = filteredData.filter((data) => selected.includes(data.fazendaOrigem));
             }
-    
+            if (selectedTicket.length > 0) {
+                filteredData = filteredData.filter((data) => selectedTicket.includes(data.codTicketPro));
+            }
+
             setfilteredUserData(filteredData);
         }
-    }, [useData, filterDataArr, filterDataArrInit, selected]);
+    }, [useData, filterDataArr, filterDataArrInit, selected, selectedTicket]);
 
     const handleUpdateCarga = async (event, cargaDetail) => {
         if (
@@ -165,7 +198,6 @@ const RomaneiosPage = () => {
     };
 
     useEffect(() => {
-        console.log("dados para CSV", filteredUserData);
         if (filteredUserData?.length > 0) {
             const dataCsv = [
                 [
@@ -308,10 +340,10 @@ const RomaneiosPage = () => {
                         value={filterDataArr}
                     />
                 </LocalizationProvider>
-                <Button color="warning" variant="outlined" onClick={handlerYesterday} sx={{height: '100%'}}>
+                <Button color="warning" variant="outlined" onClick={handlerYesterday} sx={{ height: '100%' }}>
                     Ontem
                 </Button>
-                <Button color="success" variant="outlined" onClick={handlerToday} sx={{height: '100%'}}>
+                <Button color="success" variant="outlined" onClick={handlerToday} sx={{ height: '100%' }}>
                     Hoje
                 </Button>
                 <Box>
@@ -324,7 +356,7 @@ const RomaneiosPage = () => {
                         />
                     </CSVLink>
                 </Box>
-                <FormControl sx={{minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px'}} size="small">
+                <FormControl sx={{ minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
                     <InputLabel>Filtre por Projeto</InputLabel>
                     <Select
                         multiple
@@ -345,7 +377,28 @@ const RomaneiosPage = () => {
                         ))}
                     </Select>
                 </FormControl>
-                {selected.length > 0 && (
+                <FormControl sx={{ minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
+                    <InputLabel>Filtre por Ticket</InputLabel>
+                    <Select
+                        multiple
+                        value={selectedTicket}
+                        onChange={handleChangeTicket}
+                        renderValue={(selected) => (
+                            <Box sx={{ display: "flex", gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value.replace('Projeto', '').replace(/^0+/, '') || '0'} />
+                                ))}
+                            </Box>
+                        )}
+                    >
+                        {filteredTickets.map((option) => (
+                            <MenuItem key={option.ticket} value={option.ticket}>
+                                {option.fazenda.replace('Projeto ', '')} - {option.ticket.replace(/^0+/, '') || '0'}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                {(selected.length > 0 || selectedTicket.length > 0) && (
                     <IconButton
                         aria-label="delete"
                         size="sm"
@@ -542,6 +595,7 @@ const RomaneiosPage = () => {
                                     duplicates={duplicates}
                                     duplicatesPlates={duplicatesPlates}
                                     selected={selected}
+                                    selectedTicket={selectedTicket}
                                 />
                             </>
                         ) : (

@@ -112,7 +112,6 @@ const PlantioColheitaPage = () => {
 		const filteredFarm = dataArray.map(
 			(farm) => farm.talhao__fazenda__nome
 		);
-		console.log(filteredFarm);
 		const filteredSet = [...new Set(filteredFarm)];
 		setFilteredFarm(filteredSet);
 		setSelectedFarm(filteredSet[0]);

@@ -28,7 +28,7 @@ import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const RomaneiosTable = (props) => {
-	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected } = props;
+	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected, selectedTicket } = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -43,9 +43,6 @@ const RomaneiosTable = (props) => {
 
 	const [sortDirection, setSortDirection] = useState("asc"); // or 'desc'
 
-	useEffect(() => {
-		console.log('direccc', sortDirection)
-	}, [sortDirection]);
 
 	// useEffect(() => {
 	// 	setdataFilter(data);
