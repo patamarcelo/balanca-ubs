@@ -45,7 +45,7 @@ const RomaneiosPage = () => {
 
     useEffect(() => {
         if (useData.length > 0) {
-            const onlyFarms = useData.map((data) => data.fazendaOrigem)
+            const onlyFarms = useData.map((data) => data.fazendaOrigem.replace('Projeto ', '')).sort((a,b) => a.localeCompare(b))
             const removeDupli = [...new Set(onlyFarms)]
             setFilteredFarms(removeDupli)
         }
