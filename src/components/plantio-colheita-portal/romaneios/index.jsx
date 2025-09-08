@@ -45,7 +45,7 @@ const RomaneiosPage = () => {
 
     useEffect(() => {
         if (useData.length > 0) {
-            const onlyFarms = useData.map((data) => data.fazendaOrigem.replace('Projeto ', '')).sort((a,b) => a.localeCompare(b))
+            const onlyFarms = useData.map((data) => data.fazendaOrigem)
             const removeDupli = [...new Set(onlyFarms)]
             setFilteredFarms(removeDupli)
         }
@@ -370,9 +370,9 @@ const RomaneiosPage = () => {
                             </Box>
                         )}
                     >
-                        {filteredFarms.map((option) => (
+                        {filteredFarms.sort((a,b) => a.localeCompare(b)).map((option) => (
                             <MenuItem key={option} value={option}>
-                                {option}
+                                {option.replace('Projeto ', '')}
                             </MenuItem>
                         ))}
                     </Select>
