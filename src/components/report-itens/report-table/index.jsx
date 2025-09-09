@@ -492,7 +492,7 @@ const ReportTable = (props) => {
 			renderCell: (params) => (
 				<Typography
 					sx={{ fontSize: defaultFontSize }}
-					color={colors.blueOrigin[400]}
+					color={colors.blueOrigin[200]}
 				>
 					{params.row.saida}
 				</Typography>
