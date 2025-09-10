@@ -296,24 +296,48 @@ const RomaneiosTable = (props) => {
 									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 									{
 										(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ?
-											<td>
-												<IconButton
-													aria-label="delete"
-													size="sm"
-													color={"success"}
-													onClick={(e) => handleRefreshTicket(e, carga)}
-													style={{ padding: "2px", justifyContent: 'center' }}
-													disabled={isLoadingTicket[carga.id] || false}
+											<td
+											>
+												<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
+													slotProps={{
+														tooltip: {
+															sx: {
+																fontSize: '1.25rem', // Tamanho de fonte menor
+															},
+														},
+													}}
 												>
-													{isLoadingTicket[carga.id] ? (
-														<CircularProgress size={16} color="inherit" />
-													) : (
-														<PublishedWithChanges fontSize="inherit" />
-													)}
-												</IconButton>
+
+													<IconButton
+														aria-label="delete"
+														size="sm"
+														color={"success"}
+														onClick={(e) => handleRefreshTicket(e, carga)}
+														style={{ padding: "2px", justifyContent: 'center' }}
+														disabled={isLoadingTicket[carga.id] || false}
+													>
+														{isLoadingTicket[carga.id] ? (
+															<CircularProgress size={16} color="inherit" />
+														) : (
+															<PublishedWithChanges fontSize="inherit" />
+														)}
+													</IconButton>
+												</Tooltip>
 											</td>
 											:
-											<td style={{ color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold' }}>{getTicket}</td>
+											<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
+												slotProps={{
+													tooltip: {
+														sx: {
+															fontSize: '1.25rem', // Tamanho de fonte menor
+														},
+													},
+												}}
+											>
+												<td style={{
+													color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold', cursor: 'help'
+												}}>{getTicket}</td>
+											</Tooltip>
 									}
 									<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
 									<td>
