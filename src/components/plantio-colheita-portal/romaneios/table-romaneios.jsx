@@ -403,7 +403,12 @@ const RomaneiosTable = (props) => {
 												onClick={(e) => isAdmin && handleUpdateCarga(e, carga)}
 												style={{ padding: "2px" }}
 											>
-												<DoneAll fontSize="inherit" />
+												{
+													isAdmin ?
+														<DoneAll fontSize="inherit" />
+														:
+														<AgricultureIcon fontSize="small" color="warning" />
+												}
 											</IconButton>
 										) : (
 											<IconButton
