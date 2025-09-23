@@ -439,9 +439,9 @@ const MapPage = ({
 										fillColor: getColorStroke(dataF).color,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
-											isSelected ? "rgba(2,2,2,0.2)" : getColorStroke(dataF).lineColor,
+											isSelected ? "blue" : getColorStroke(dataF).lineColor,
 										strokeOpacity: 1,
-										strokeWeight:
+										strokeWeight: isSelected ? 1 : 
 											getColorStroke(dataF).lineStroke,
 										clickable: true,
 										draggable: false,
