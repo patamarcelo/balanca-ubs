@@ -61,6 +61,7 @@ const handlerDataColheita = (data) => {
         const progressos = details.progresses.map((progress) => {
             const dataApplied = progress.date;
             const updatedAt = progress.updated_at.split('T')[0];
+            const equipment = progress?.equipment?.name
             const eachProgress = progress.plantations.map((plantProgr) => {
                 const plantioId = plantProgr.plantation_id;
                 return {
@@ -78,6 +79,7 @@ const handlerDataColheita = (data) => {
                     variedade: talhoesArr.find((talhao) => talhao.parcelaId === plantioId)
                         ?.variedade,
                     updatedAt,
+                    equipment,
                 };
             });
             return eachProgress;
@@ -87,8 +89,9 @@ const handlerDataColheita = (data) => {
 
     const formatExtratoColheitaCsv = newExtratoArr.flat();
     const formatExtratoColheita = [
-        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId", 'editado', 'cultura', 'variedade']
+        ["Projeto", "AP", "Parcela", "Area Aplicada", "Data Aplicacao","Hora Aplicacao","Total Aplicado", "plantioId", 'editado', 'cultura', 'variedade', 'Máquina']
     ];
+    
     formatExtratoColheitaCsv.forEach((element) => {
         const dateApp = element.dataApplied.split('T')[0]
         const horaAp = element.dataApplied.split('T')[1].substring(0,5)
@@ -116,7 +119,8 @@ const handlerDataColheita = (data) => {
             element.plantationId,
             element.updatedAt,
             element.cultura,
-            element.variedade
+            element.variedade,
+            element.equipment
         ];
         formatExtratoColheita.push(arrToAdd);
     });
