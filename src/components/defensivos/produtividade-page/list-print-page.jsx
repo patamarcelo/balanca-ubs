@@ -13,7 +13,16 @@ import { useEffect, useState } from "react";
 
 import { IconButton, Menu, MenuItem } from "@mui/material";
 
-const colorOptions = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"];
+const colorOptions = [
+	"#FFF",       // crucial (sem cor)
+	"#8B5A2B",    // marrom feijão (terra/leguminosas)
+	"#FFD700",    // amarelo soja (grão maduro)
+	"#228B22",    // verde floresta (milho/folhagem)
+	"#00FF00",
+	"#BDB76B",    // cáqui (folha seca)
+	"#0000FF",
+	"#FFFF00",
+];
 
 const lightTableColors = {
 	containerBg: "#FAFAFA",       // Fundo da tabela
@@ -34,12 +43,15 @@ const ListPrintPage = (props) => {
 		resumo,
 		filtPlantioDone,
 		parcelasSelected,
+		setParcelasSeleced,
+		useRealArray,
+		setUseRealArray
 	} = props;
 
 	const [totalArea, setTotalArea] = useState(0);
 	const [totalAreaPlantada, setTotalAreaPlantada] = useState(0);
 	const [areaSemPlantio, setAreaSemPlantio] = useState(0);
-	const [useRealArray, setUseRealArray] = useState([]);
+
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [targetRowId, setTargetRowId] = useState(null);
@@ -51,7 +63,17 @@ const ListPrintPage = (props) => {
 			const onlySelected = filteredArray.filter((data) =>
 				parcelasSelected.includes(data.id_farmbox)
 			);
-			setUseRealArray(onlySelected);
+
+			setUseRealArray((prev) => {
+				// normaliza as chaves (string vs number)
+				const prevById = new Map(prev.map(it => [String(it.id_farmbox), it]));
+				const merged = onlySelected.map((it) => {
+					const k = String(it.id_farmbox);
+					const old = prevById.get(k);
+					return old ? { ...it, ...old } : it;
+				});
+				return merged;
+			});
 			setShowColors(true)
 		} else {
 			setUseRealArray(filteredArray);
@@ -90,15 +112,21 @@ const ListPrintPage = (props) => {
 	};
 
 	const handleColorChange = (rowId, newColor) => {
-		setUseRealArray((prev) =>
-			prev.map((item) =>
-				item.id === rowId ? { ...item, variedadeColor: newColor } : item
-			)
-		);
+		if (newColor === '#FFF') {
+			setUseRealArray((prev) =>
+				prev.map((item) =>
+					item.id === rowId ? { ...item, variedadeColor: '' } : item
+				)
+			);
+		} else {
+			setUseRealArray((prev) =>
+				prev.map((item) =>
+					item.id === rowId ? { ...item, variedadeColor: newColor } : item
+				)
+			);
+		}
 		handleClose();
 	};
-
-
 
 	return (
 		<Box>
@@ -229,7 +257,7 @@ const ListPrintPage = (props) => {
 							Object.keys(resumo).map((data, i) => (
 								<TableRow key={i}>
 									<TableCell align="left" colSpan={2} sx={{ color: lightTableColors.rowText, fontWeight: 'bold' }}>
-									<Box ml={4}>{data.split("|")[1] === 'null' ? "N/D" : data.split("|")[1] }</Box>
+										<Box ml={4}>{data.split("|")[1] === 'null' ? "N/D" : data.split("|")[1]}</Box>
 									</TableCell>
 									<TableCell sx={{ color: lightTableColors.rowText, fontWeight: 'bold' }} align="right">
 										<Box mr={margintR}>

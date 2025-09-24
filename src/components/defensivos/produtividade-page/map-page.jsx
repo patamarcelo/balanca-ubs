@@ -58,7 +58,8 @@ const MapPage = ({
 	setShowAsPlanned,
 	showResumeMap,
 	parcelasSelected,
-	toggleParcela
+	toggleParcela,
+	useRealArray
 }) => {
 
 	const theme = useTheme();
@@ -91,12 +92,12 @@ const MapPage = ({
 	const [markerList, setMarkerList] = useState([]);
 
 	const handleClick = (d, e) => {
-		console.log('d map: ', e)
+		// console.log('d map: ', e)
 		const djangoId = e.data.data.plantio_id
-		console.log('djamgoID', djangoId)
-		console.log("filtData", filtData)
+		// console.log('djamgoID', djangoId)
+		// console.log("filtData", filtData)
 		const getFIlters = filtData.find((data) => data.id === djangoId)
-		console.log('getFIlters', getFIlters)
+		// console.log('getFIlters', getFIlters)
 		// console.log('getFIlters', getFIlters)
 		if (getFIlters) {
 			toggleParcela(getFIlters.id_farmbox)
@@ -423,20 +424,26 @@ const MapPage = ({
 						const getFIlters = filtData.find((data) => data.id === djangoId)
 						// console.log('getFIlters', getFIlters)
 						let isSelected;
+						let colorSelected;
 						if (getFIlters) {
 							const filtered = parcelasSelected.filter((data) => data === getFIlters?.id_farmbox)
 							isSelected = filtered.length > 0 ? true : false
+							const checkColorSelected = useRealArray.find((data) => data.id_farmbox === getFIlters?.id_farmbox)
+							if(checkColorSelected){
+								colorSelected = checkColorSelected.variedadeColor
+							}
 						} else {
 							isSelected = false
 						}
 						// console.log('data check: ', dataF)
 						// console.log("dataArray: ", parcelasSelected)
+
 						return (
 							<>
 								<PolygonF
 									key={i}
 									options={{
-										fillColor: getColorStroke(dataF).color,
+										fillColor: colorSelected || getColorStroke(dataF).color,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
 											isSelected ? "blue" : getColorStroke(dataF).lineColor,
@@ -466,7 +473,7 @@ const MapPage = ({
 
 				{markerList &&
 					markerList.map((data, i) => {
-						console.log(data.lat, data.lng);
+						// console.log(data.lat, data.lng);
 						return (
 							<>
 								<InfoWindowF

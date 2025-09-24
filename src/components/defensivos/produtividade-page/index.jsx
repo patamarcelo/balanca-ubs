@@ -113,6 +113,8 @@ const ProdutividadePage = () => {
 
 	const [operationName, setOperationName] = useState("");
 
+	const [useRealArray, setUseRealArray] = useState([]);
+
 	useEffect(() => {
 		if (selectedProject) {
 			const getFarmId = filteredArray.find((data) => data.talhao__fazenda__nome === selectedProject[0])?.talhao__fazenda__id_farmbox
@@ -516,6 +518,7 @@ const ProdutividadePage = () => {
 
 	const handlePrintPdfWithTable = async () => {
 		setLoadingMapList(true);
+		const colorArray = useRealArray.filter((data) => !!data.variedadeColor).map((data) =>  ({id_farmbox: data.id_farmbox, color_selected: data.variedadeColor}))
 		try {
 			const parcelas = mapPlantation
 				.map((data) => ({
@@ -530,6 +533,7 @@ const ProdutividadePage = () => {
 					projeto: farmIdPdf,
 					parcelas: parcelasSelected,
 					safra: safraCiclo,
+					colorArray: colorArray
 				},
 				{
 					responseType: "text",
@@ -1064,6 +1068,7 @@ const ProdutividadePage = () => {
 									showResumeMap={showResumeMap}
 									parcelasSelected={parcelasSelected}
 									toggleParcela={toggleParcela}
+									useRealArray={useRealArray}
 								/>
 							</Box>
 							<Collapse orientation="horizontal" in={showTableList}>
@@ -1091,6 +1096,10 @@ const ProdutividadePage = () => {
 											setTotalSelected={setTotalSelected}
 											filtPlantioDone={filtPlantioDone}
 											parcelasSelected={parcelasSelected}
+											setParcelasSeleced={setParcelasSeleced}
+											setUseRealArray={setUseRealArray}
+											useRealArray={useRealArray}
+
 										/>
 									</Box>
 								) : (
