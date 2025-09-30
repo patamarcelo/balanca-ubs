@@ -178,86 +178,159 @@ const ProdutividadePage = () => {
 		setFiltPlantioDone(e.target.checked);
 	};
 
-	useEffect(() => {
-		const filteredArray = produtividade.filter(
-			(data) =>
-				selectedProject.includes(data.talhao__fazenda__nome)
-		);
-		setMapPlantation(filteredArray);
+	// useEffect(() => {
+	// 	const filteredArray = produtividade.filter(
+	// 		(data) =>
+	// 			selectedProject.includes(data.talhao__fazenda__nome)
+	// 	);
+	// 	setMapPlantation(filteredArray);
 
+	// 	const totalResumo = {};
+	// 	const totalResumoVariedades = {};
+	// 	filteredArray
+	// 		.filter((data) => data.variedade__cultura__cultura !== "Milheto")
+	// 		.filter((data) => {
+	// 			// If selectedCultureFilter is empty, return all cultures
+	// 			if (selectedCultureFilter.length === 0) {
+	// 				return true;
+	// 			}
+	// 			// Otherwise, filter by the selected cultures
+	// 			return selectedCultureFilter.includes(data.variedade__cultura__cultura);
+	// 		})
+	// 		.filter((data) => {
+	// 			// If selectedCultureFilter is empty, return all cultures
+	// 			if (selectedVarietyFilter.length === 0) {
+	// 				return true;
+	// 			}
+	// 			// Otherwise, filter by the selected cultures
+	// 			return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
+	// 		})
+	// 		.filter((data) => {
+	// 			// If selectedCultureFilter is empty, return all cultures
+	// 			if (parcelasSelected.length === 0) {
+	// 				return true;
+	// 			}
+	// 			// Otherwise, filter by the selected parcelas
+	// 			return parcelasSelected.includes(data.id_farmbox);
+	// 		})
+	// 		.map((data) => {
+	// 			const areaSum = data.finalizado_colheita
+	// 				? data.area_colheita
+	// 				: data.area_parcial;
+	// 			const getArea = areaSum ? areaSum : 0;
+	// 			const pesoSum = data?.peso_kg ? data?.peso_kg : 0;
+	// 			const dataSum = {
+	// 				area: getArea,
+	// 				peso: pesoSum
+	// 			};
+	// 			const areaSumByVar = {
+	// 				area: data.area_colheita
+	// 			};
+	// 			const nameOfArea =
+	// 				data.variedade__cultura__cultura +
+	// 				"|" +
+	// 				data.variedade__nome_fantasia;
+	// 			if (totalResumo[data.variedade__cultura__cultura]) {
+	// 				totalResumo[data.variedade__cultura__cultura].peso +=
+	// 					pesoSum;
+	// 				totalResumo[data.variedade__cultura__cultura].area +=
+	// 					getArea;
+	// 			} else {
+	// 				totalResumo[data.variedade__cultura__cultura] = dataSum;
+	// 			}
+
+	// 			if (totalResumoVariedades[nameOfArea]) {
+	// 				totalResumoVariedades[nameOfArea].area +=
+	// 					data.area_colheita;
+	// 			} else {
+	// 				totalResumoVariedades[nameOfArea] = areaSumByVar;
+	// 			}
+
+	// 			return totalResumo;
+	// 		});
+
+	// 	setResumoByVar(totalResumoVariedades);
+	// 	setFiltCult(totalResumo);
+	// 	// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
+	// 	// 	const keyDic = cur.dados
+	// 	// 	if(sum[cur.])
+	// 	// 	return sum;
+	// 	// }, {});
+	// 	// console.log(totalFiltered);
+	// }, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter, parcelasSelected]);
+
+	useEffect(() => {
+		// 1) Base: filtra pelo(s) projeto(s) selecionado(s)
+		let base = produtividade.filter((d) =>
+			selectedProject.includes(d.talhao__fazenda__nome)
+		);
+
+		// 2) Se showAsPlanned === true → mantém apenas plantios finalizados
+		if (!showAsPlanned) {
+			base = base.filter((d) => d.finalizado_plantio === true);
+		}
+
+		// continua expondo o "mapa" com a base (igual ao teu comportamento original)
+		setMapPlantation(base);
+
+		// 3) Filtros adicionais: cultura, variedade, parcelas, e remover "Milheto"
+		const filtered = base
+			.filter((d) => d.variedade__cultura__cultura !== "Milheto")
+			.filter((d) =>
+				selectedCultureFilter.length === 0
+					? true
+					: selectedCultureFilter.includes(d.variedade__cultura__cultura)
+			)
+			.filter((d) =>
+				selectedVarietyFilter.length === 0
+					? true
+					: selectedVarietyFilter.includes(d.variedade__nome_fantasia)
+			)
+			.filter((d) =>
+				parcelasSelected.length === 0
+					? true
+					: parcelasSelected.includes(d.id_farmbox)
+			);
+
+		// 4) Agrupamentos (iguais aos teus, só aplicados em "filtered")
 		const totalResumo = {};
 		const totalResumoVariedades = {};
-		filteredArray
-			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
-			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (selectedCultureFilter.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected cultures
-				return selectedCultureFilter.includes(data.variedade__cultura__cultura);
-			})
-			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (selectedVarietyFilter.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected cultures
-				return selectedVarietyFilter.includes(data.variedade__nome_fantasia);
-			})
-			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (parcelasSelected.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected parcelas
-				return parcelasSelected.includes(data.id_farmbox);
-			})
-			.map((data) => {
-				const areaSum = data.finalizado_colheita
-					? data.area_colheita
-					: data.area_parcial;
-				const getArea = areaSum ? areaSum : 0;
-				const pesoSum = data?.peso_kg ? data?.peso_kg : 0;
-				const dataSum = {
-					area: getArea,
-					peso: pesoSum
-				};
-				const areaSumByVar = {
-					area: data.area_colheita
-				};
-				const nameOfArea =
-					data.variedade__cultura__cultura +
-					"|" +
-					data.variedade__nome_fantasia;
-				if (totalResumo[data.variedade__cultura__cultura]) {
-					totalResumo[data.variedade__cultura__cultura].peso +=
-						pesoSum;
-					totalResumo[data.variedade__cultura__cultura].area +=
-						getArea;
-				} else {
-					totalResumo[data.variedade__cultura__cultura] = dataSum;
-				}
 
-				if (totalResumoVariedades[nameOfArea]) {
-					totalResumoVariedades[nameOfArea].area +=
-						data.area_colheita;
-				} else {
-					totalResumoVariedades[nameOfArea] = areaSumByVar;
-				}
+		filtered.forEach((data) => {
+			const areaSum = data.finalizado_colheita ? data.area_colheita : data.area_parcial;
+			const getArea = areaSum || 0;
+			const pesoSum = data?.peso_kg || 0;
 
-				return totalResumo;
-			});
+			const cultura = data.variedade__cultura__cultura;
+			const variedade = data.variedade__nome_fantasia;
+			const nameOfArea = `${cultura}|${variedade}`;
+
+			// por cultura
+			if (totalResumo[cultura]) {
+				totalResumo[cultura].peso += pesoSum;
+				totalResumo[cultura].area += getArea;
+			} else {
+				totalResumo[cultura] = { area: getArea, peso: pesoSum };
+			}
+
+			// por variedade (usa area_colheita como no teu original)
+			if (totalResumoVariedades[nameOfArea]) {
+				totalResumoVariedades[nameOfArea].area += data.area_colheita || 0;
+			} else {
+				totalResumoVariedades[nameOfArea] = { area: data.area_colheita || 0 };
+			}
+		});
 
 		setResumoByVar(totalResumoVariedades);
 		setFiltCult(totalResumo);
-		// const totalFiltered = filteredPlantioMal.reduce((cur, sum) => {
-		// 	const keyDic = cur.dados
-		// 	if(sum[cur.])
-		// 	return sum;
-		// }, {});
-		// console.log(totalFiltered);
-	}, [selectedProject, produtividade, selectedCultureFilter, selectedVarietyFilter, parcelasSelected]);
+	}, [
+		selectedProject,
+		produtividade,
+		selectedCultureFilter,
+		selectedVarietyFilter,
+		parcelasSelected,
+		showAsPlanned, // <<< importante!
+	]);
 
 	useEffect(() => {
 		const filterCult = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.cultura)
@@ -518,7 +591,7 @@ const ProdutividadePage = () => {
 
 	const handlePrintPdfWithTable = async () => {
 		setLoadingMapList(true);
-		const colorArray = useRealArray.filter((data) => !!data.variedadeColor).map((data) =>  ({id_farmbox: data.id_farmbox, color_selected: data.variedadeColor}))
+		const colorArray = useRealArray.filter((data) => !!data.variedadeColor).map((data) => ({ id_farmbox: data.id_farmbox, color_selected: data.variedadeColor }))
 		try {
 			const parcelas = mapPlantation
 				.map((data) => ({

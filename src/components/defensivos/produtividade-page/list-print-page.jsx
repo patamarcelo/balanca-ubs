@@ -10,8 +10,15 @@ import Paper from "@mui/material/Paper";
 import { TableFooter } from "@mui/material";
 import styles from "./produtividade.module.css";
 import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import { IconButton, Menu, MenuItem } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check"; // ícone pronto do MUI
+import DoneIcon from "@mui/icons-material/Done";
+import CloseIcon from "@mui/icons-material/Close";
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+
+
 
 const colorOptions = [
 	"#FFF",       // crucial (sem cor)
@@ -58,26 +65,68 @@ const ListPrintPage = (props) => {
 	const open = Boolean(anchorEl);
 	const [showColors, setShowColors] = useState(false);
 
+	const [sort, setSort] = useState({ by: null, dir: "asc" }); // by: 'parcela' | 'variedade' | null
+
+	const resetSort = () => setSort({ by: null, dir: "asc" });
+
+	const toggleSort = (by) => {
+		setSort((prev) =>
+			prev.by === by ? { by, dir: prev.dir === "asc" ? "desc" : "asc" } : { by, dir: "asc" }
+		);
+	};
+
+	const getArrow = (by) => {
+		if (!sort.by) {
+			// estado "resetado" → check no header clicado
+			return <CheckIcon fontSize="small" sx={{ ml: 0.5, verticalAlign: "middle" }} />;
+		}
+		if (sort.by !== by) return "";
+		return sort.dir === "asc" ? " ↑" : " ↓";
+	};
+
+	// rows computadas (ordenadas ou não)
+	const displayedRows = useMemo(() => {
+		if (!sort.by) return useRealArray; // mantém ordem de inserção
+		const rows = [...useRealArray];
+		const collator = new Intl.Collator("pt-BR", { sensitivity: "base", numeric: true });
+
+		const pick = (row) => {
+			console.log('rowHere: ', row)
+			if (sort.by === "parcela") return row.talhao__id_talhao ?? "";
+			if (sort.by === "variedade") return row.variedade__nome_fantasia ?? "";
+			return "";
+		};
+
+		rows.sort((a, b) => {
+			const va = pick(a), vb = pick(b);
+			const r = collator.compare(String(va), String(vb));
+			return sort.dir === "asc" ? r : -r;
+		});
+
+		return rows;
+	}, [useRealArray, sort]);
+
 	useEffect(() => {
 		if (parcelasSelected?.length > 0) {
-			const onlySelected = filteredArray.filter((data) =>
-				parcelasSelected.includes(data.id_farmbox)
-			);
+			// 1) Monte a lista na MESMA ORDEM em que o usuário selecionou
+			const onlySelected = parcelasSelected
+				.map((id) => filteredArray.find((d) => String(d.id_farmbox) === String(id)))
+				.filter(Boolean);
 
 			setUseRealArray((prev) => {
-				// normaliza as chaves (string vs number)
-				const prevById = new Map(prev.map(it => [String(it.id_farmbox), it]));
+				// 2) Preserve dados já definidos (ex: variedadeColor) sem perder a ordem de seleção
+				const prevById = new Map(prev.map((it) => [String(it.id_farmbox), it]));
 				const merged = onlySelected.map((it) => {
-					const k = String(it.id_farmbox);
-					const old = prevById.get(k);
+					const old = prevById.get(String(it.id_farmbox));
 					return old ? { ...it, ...old } : it;
 				});
 				return merged;
 			});
-			setShowColors(true)
+
+			setShowColors(true);
 		} else {
-			setUseRealArray(filteredArray);
-			setShowColors(false)
+			setUseRealArray(filteredArray.sort((a,b) => a.talhao__id_talhao.localeCompare(b.talhao__id_talhao)));
+			setShowColors(false);
 		}
 	}, [parcelasSelected, filteredArray]);
 
@@ -136,23 +185,46 @@ const ListPrintPage = (props) => {
 			>
 				<Table aria-label="simple table" stickyHeader>
 					<TableHead>
-
 						<TableRow>
-							<TableCell sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }} align="left"><Box ml={margintR}>Parcela</Box></TableCell>
-							<TableCell sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }} align="right"><Box mr={margintR}>Área</Box></TableCell>
-							<TableCell sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }} align="right"><Box mr={margintR}>Variedade</Box></TableCell>
+							<TableCell
+								sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg, cursor: 'pointer' }}
+								align="left"
+								onClick={() => toggleSort("parcela")}
+								onDoubleClick={resetSort}
+							>
+								<Box ml={margintR}>Parcela{getArrow("parcela")}</Box>
+							</TableCell>
+
+							<TableCell
+								sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }}
+								align="right"
+							>
+								<Box mr={margintR}>Área</Box>
+							</TableCell>
+
+							<TableCell
+								sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg, cursor: 'pointer' }}
+								align="right"
+								onClick={() => toggleSort("variedade")}
+							>
+								<Box mr={margintR}>Variedade{getArrow("variedade")}</Box>
+							</TableCell>
+
 							{showColors && (
-								<TableCell sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }} align="center">
+								<TableCell
+									sx={{ color: lightTableColors.headerText + '!important', fontWeight: 'bold', position: 'sticky', top: 0, zIndex: 10, backgroundColor: lightTableColors.headerBg }}
+									align="center"
+								>
 									Cor
 								</TableCell>
 							)}
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{useRealArray
-							.sort((a, b) =>
-								a.talhao__id_talhao.localeCompare(b.talhao__id_talhao)
-							)
+						{displayedRows
+							// .sort((a, b) =>
+							// 	a.talhao__id_talhao.localeCompare(b.talhao__id_talhao)
+							// )
 							// .filter((data) =>
 							// 	filtPlantioDone === false
 							// 		? data.finalizado_plantio === true
@@ -178,7 +250,26 @@ const ListPrintPage = (props) => {
 									}}
 								>
 									<TableCell sx={{ color: lightTableColors.rowText }} align="left">
-										<Box ml={margintR}>
+										<Box ml={0} display="flex" alignItems="center" gap={1}>
+											
+
+											{/* STATUS */}
+											{row.finalizado_plantio && !row.finalizado_colheita && (
+												<Box display="flex" alignItems="center" ml={1}>
+													<DoneIcon fontSize="small" sx={{ color: "green" }} />
+												</Box>
+											)}
+
+											{row.finalizado_plantio && row.finalizado_colheita && (
+												<Box display="flex" alignItems="center" ml={1}>
+													<DoneAllIcon fontSize="small" sx={{ color: "green" }} />
+												</Box>
+											)}
+
+											{!row.finalizado_plantio && !row.finalizado_colheita && (
+												<CloseIcon fontSize="small" sx={{ color: "red", ml: 1 }} />
+											)}
+
 											{row.talhao__id_talhao}
 										</Box>
 									</TableCell>

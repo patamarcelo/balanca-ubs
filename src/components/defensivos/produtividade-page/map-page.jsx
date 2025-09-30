@@ -133,31 +133,100 @@ const MapPage = ({
 	const [resumeContainerData, setResumeContainerData] = useState([]);
 
 
+	// useEffect(() => {
+	// 	if (mapArray?.length > 0) {
+	// 		if (parcelasSelected.length > 0) {
+	// 			const filterSelectedparcelas = filtData.filter((data) => parcelasSelected.includes(data.id_farmbox))
+	// 			const onlyFarmId = filterSelectedparcelas.map((data) => data.id)
+	// 			const groupedData = Object.values(
+	// 				mapArray.filter((data) => onlyFarmId.includes(data.dados.plantio_id)).reduce((acc, curr) => {
+	// 					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+	// 					if (!acc[key]) {
+	// 						acc[key] = {
+	// 							cultura: curr.dados.cultura,
+	// 							variedade: curr.dados.variedade,
+	// 							total_area_colheita: 0,
+	// 						};
+	// 					}
+	// 					acc[key].total_area_colheita += curr.dados.area_colheita;
+	// 					return acc;
+	// 				}, {})
+	// 			);
+	// 			setResumeContainerData(groupedData)
+
+	// 		} else {
+
+	// 			const groupedData = Object.values(
+	// 				mapArray.reduce((acc, curr) => {
+	// 					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+	// 					if (!acc[key]) {
+	// 						acc[key] = {
+	// 							cultura: curr.dados.cultura,
+	// 							variedade: curr.dados.variedade,
+	// 							total_area_colheita: 0,
+	// 						};
+	// 					}
+	// 					acc[key].total_area_colheita += curr.dados.area_colheita;
+	// 					return acc;
+	// 				}, {})
+	// 			);
+	// 			setResumeContainerData(groupedData)
+	// 		}
+	// 	}
+	// }, [mapArray, parcelasSelected]);
+
 	useEffect(() => {
 		if (mapArray?.length > 0) {
+			// se tiver parcelas selecionadas
 			if (parcelasSelected.length > 0) {
-				const filterSelectedparcelas = filtData.filter((data) => parcelasSelected.includes(data.id_farmbox))
-				const onlyFarmId = filterSelectedparcelas.map((data) => data.id)
-				const groupedData = Object.values(
-					mapArray.filter((data) => onlyFarmId.includes(data.dados.plantio_id)).reduce((acc, curr) => {
-						const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
-						if (!acc[key]) {
-							acc[key] = {
-								cultura: curr.dados.cultura,
-								variedade: curr.dados.variedade,
-								total_area_colheita: 0,
-							};
-						}
-						acc[key].total_area_colheita += curr.dados.area_colheita;
-						return acc;
-					}, {})
+				let filterSelectedparcelas = filtData.filter((data) =>
+					parcelasSelected.includes(data.id_farmbox)
 				);
-				setResumeContainerData(groupedData)
 
+				// aplica filtro adicional se showAsPlanned = true
+				if (!showAsPlanned) {
+					filterSelectedparcelas = filterSelectedparcelas.filter(
+						(data) => data.finalizado_plantio === true
+					);
+				}
+
+				const onlyFarmId = filterSelectedparcelas.map((data) => data.id);
+
+				const groupedData = Object.values(
+					mapArray
+						.filter((data) => onlyFarmId.includes(data.dados.plantio_id))
+						.reduce((acc, curr) => {
+							const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+							if (!acc[key]) {
+								acc[key] = {
+									cultura: curr.dados.cultura,
+									variedade: curr.dados.variedade,
+									total_area_colheita: 0,
+								};
+							}
+							acc[key].total_area_colheita += curr.dados.area_colheita;
+							return acc;
+						}, {})
+				);
+
+				setResumeContainerData(groupedData);
 			} else {
+				// sem seleção de parcelas
+				let baseArray = mapArray;
+
+				// aplica filtro global se showAsPlanned = true
+				if (!showAsPlanned) {
+					const onlyPlantedIds = filtData
+						.filter((data) => data.finalizado_plantio === true)
+						.map((d) => d.id);
+
+					baseArray = mapArray.filter((data) =>
+						onlyPlantedIds.includes(data.dados.plantio_id)
+					);
+				}
 
 				const groupedData = Object.values(
-					mapArray.reduce((acc, curr) => {
+					baseArray.reduce((acc, curr) => {
 						const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
 						if (!acc[key]) {
 							acc[key] = {
@@ -170,10 +239,11 @@ const MapPage = ({
 						return acc;
 					}, {})
 				);
-				setResumeContainerData(groupedData)
+
+				setResumeContainerData(groupedData);
 			}
 		}
-	}, [mapArray, parcelasSelected]);
+	}, [mapArray, parcelasSelected, showAsPlanned, filtData]);
 
 
 
@@ -429,7 +499,7 @@ const MapPage = ({
 							const filtered = parcelasSelected.filter((data) => data === getFIlters?.id_farmbox)
 							isSelected = filtered.length > 0 ? true : false
 							const checkColorSelected = useRealArray.find((data) => data.id_farmbox === getFIlters?.id_farmbox)
-							if(checkColorSelected){
+							if (checkColorSelected) {
 								colorSelected = checkColorSelected.variedadeColor
 							}
 						} else {
@@ -448,7 +518,7 @@ const MapPage = ({
 										strokeColor:
 											isSelected ? "blue" : getColorStroke(dataF).lineColor,
 										strokeOpacity: 1,
-										strokeWeight: isSelected ? 1 : 
+										strokeWeight: isSelected ? 1 :
 											getColorStroke(dataF).lineStroke,
 										clickable: true,
 										draggable: false,
@@ -531,7 +601,7 @@ const MapPage = ({
 			{/* Table Container */}
 			{showResumeMap &&
 				<Box sx={tableStyles}>
-					<MapResumePage data={resumeContainerData} />
+					<MapResumePage data={resumeContainerData} showAsPlanned={showAsPlanned} />
 				</Box>
 			}
 			<div style={{ position: "absolute", bottom: 90, right: 10, display: "flex", flexDirection: "column", gap: 12, zIndex: 100 }}>
