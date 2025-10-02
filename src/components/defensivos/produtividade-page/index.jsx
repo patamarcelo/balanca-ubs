@@ -526,15 +526,15 @@ const ProdutividadePage = () => {
 		} catch (err) {
 			console.log("Erro ao alterar as aplicações", err);
 			if (color) {
-				setLoadingMapKmlColor(true)
+				setLoadingMapKmlColor(false)
 			} else {
-				setLoadingMapKml(true);
+				setLoadingMapKml(false);
 			}
 		} finally {
 			if (color) {
-				setLoadingMapKmlColor(true)
+				setLoadingMapKmlColor(false)
 			} else {
-				setLoadingMapKml(true);
+				setLoadingMapKml(false);
 			}
 		}
 	};
