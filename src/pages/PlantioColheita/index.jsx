@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Slide } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import styles from "./PlantioColheita.module.css";
 
@@ -22,9 +22,6 @@ import { useDispatch } from "react-redux";
 import { setRomaneiosLoads } from "../../store/trucks/trucks.actions";
 import { selectRomaneiosLoads } from "../../store/trucks/trucks.selector";
 
-import toast from "react-hot-toast";
-
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 
 
 
@@ -48,7 +45,6 @@ const PlantioColheitaPage = () => {
 	const [resumeFarmRomaneios, setResumeFarmRomaneios] = useState({});
 	const [openDrawer, setOpenDrawer] = useState(true);
 
-	const visible = useSelector((state) => state.ui.headerVisible);
 	const params = useSelector(selectSafraCiclo);
 
 	const handleNagivationIcon = (route) => {

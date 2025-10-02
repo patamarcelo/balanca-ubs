@@ -101,6 +101,7 @@ const ProdutividadePage = () => {
 
 
 	const [loadingMapKml, setLoadingMapKml] = useState(false);
+	const [loadingMapKmlColor, setLoadingMapKmlColor] = useState(false);
 	const [printPageList, setPrintPageList] = useState(false);
 
 	const [loadingMap, setLoadingMap] = useState(false);
@@ -481,7 +482,7 @@ const ProdutividadePage = () => {
 	}, []);
 
 
-	const handleGenerateKml = async () => {
+	const handleGenerateKml = async (color) => {
 		const getIdFarm = [...new Set(filteredArray?.map((data) => data.talhao__fazenda__id_farmbox))];
 		const idFarm = getIdFarm
 		const getIdParcelas = filteredArray?.map((data) => data.id_farmbox)
@@ -493,9 +494,16 @@ const ProdutividadePage = () => {
 		const params = JSON.stringify({
 			projeto: idFarm,
 			parcelas: idParcelasSelected,
-			safra: safraCiclo
+			safra: safraCiclo,
+			shouldUsecolor: color
+
 		});
-		setLoadingMapKml(true);
+
+		if (color) {
+			setLoadingMapKmlColor(true)
+		} else {
+			setLoadingMapKml(true);
+		}
 		try {
 			const res = await djangoApi.post("plantio/get_kmls_aviacao/", params, {
 				headers: {
@@ -517,9 +525,17 @@ const ProdutividadePage = () => {
 			downloadKMLFile(); // Call this function to initiate the download
 		} catch (err) {
 			console.log("Erro ao alterar as aplicações", err);
-			setLoadingMapKml(false);
+			if (color) {
+				setLoadingMapKmlColor(true)
+			} else {
+				setLoadingMapKml(true);
+			}
 		} finally {
-			setLoadingMapKml(false);
+			if (color) {
+				setLoadingMapKmlColor(true)
+			} else {
+				setLoadingMapKml(true);
+			}
 		}
 	};
 
@@ -982,7 +998,7 @@ const ProdutividadePage = () => {
 							<Tooltip title="Gerar Kml">
 								<IconButton
 									onClick={() =>
-										handleGenerateKml()
+										handleGenerateKml(false)
 									}
 									sx={{
 										cursor: 'pointer'
@@ -995,6 +1011,33 @@ const ProdutividadePage = () => {
 											<FontAwesomeIcon
 												icon={faPlane}
 												color={colors.textColor[100]}
+												style={{
+													cursor: "pointer"
+												}}
+											/>
+									}
+
+								</IconButton>
+							</Tooltip>
+						}
+						{
+							selectedProject.length > 0 &&
+							<Tooltip title="Gerar Kml">
+								<IconButton
+									onClick={() =>
+										handleGenerateKml(true)
+									}
+									sx={{
+										cursor: 'pointer'
+									}}
+								>
+									{
+										loadingMapKmlColor ?
+											<CircularProgress size={24} color="inherit" />
+											:
+											<FontAwesomeIcon
+												icon={faPlane}
+												color={colors.blueOrigin[300]}
 												style={{
 													cursor: "pointer"
 												}}
