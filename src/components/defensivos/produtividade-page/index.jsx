@@ -46,18 +46,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 import MultiSelectFilter from "./filter-parcelas";
-import { formatNumber } from '../../../utils/format-suport/data-format'
 
 
 
 const ProdutividadePage = () => {
-	const [params, setParams] = useState({
-		safra: "2023/2024",
-		ciclo: "1"
-	});
 
 	const [printPage, setPrintPage] = useState(true);
 	const [bigMap, setBigMap] = useState(false);
@@ -640,11 +634,20 @@ const ProdutividadePage = () => {
 				const pageHeight = pdf.internal.pageSize.getHeight();
 
 				// ---------- TÍTULO ----------
-				const titleText = selectedProject[0]?.replace("Projeto", "Fazenda") || "Mapa";
+				const titleText = (selectedProject[0]?.replace("Projeto", "Fazenda")) || "Mapa";
+
+				pdf.setTextColor(0, 0, 0);
+				pdf.setDrawColor(0, 0, 0);
+
+				// deixa a helvetica mais "pesada" usando fill + stroke
 				pdf.setFont("helvetica", "bold");
-				pdf.setFontSize(25);
-				const titleTopMargin = 20; // metade do valor anterior
-				pdf.text(titleText, pageWidth / 2, titleTopMargin, { align: "center" });
+				pdf.setFontSize(28);                     // um pouco maior para lembrar Arial Black
+				pdf.setLineWidth(0.6);                   // espessura do contorno
+				const titleTopMargin = 25;               // aproxima do print
+				pdf.text(titleText, pageWidth / 2, titleTopMargin, {
+					align: "center",
+					renderingMode: "fillThenStroke"        // preenche e contorna
+				});
 
 
 				// ---------- SUBTÍTULO (TOTAL ÁREA) ----------
@@ -652,12 +655,13 @@ const ProdutividadePage = () => {
 				totalArea = parcelas.reduce((sum, p) => sum + Number(p.area), 0);
 				const subtitleText = `${totalArea.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ha`;
 				// Cor cinza
-				pdf.setTextColor(100); // 0 = preto, 255 = branco
+				pdf.setTextColor(0); // 0 = preto, 255 = branco
 
 				// Subtítulo
 				pdf.setFont("helvetica", "bold");
+				pdf.setLineWidth(0.6);
 				pdf.setFontSize(8);
-				pdf.text(subtitleText, pageWidth / 2, 31, { align: "center" });
+				pdf.text(subtitleText, pageWidth / 2, 35, { align: "center" });
 
 
 				if (operationName?.length > 0) {
@@ -995,7 +999,7 @@ const ProdutividadePage = () => {
 						</Tooltip>
 						{
 							selectedProject.length > 0 &&
-							<Tooltip title="Gerar Kml">
+							<Tooltip title="Gerar Kml Sem Cor">
 								<IconButton
 									onClick={() =>
 										handleGenerateKml(false)
@@ -1022,7 +1026,7 @@ const ProdutividadePage = () => {
 						}
 						{
 							selectedProject.length > 0 &&
-							<Tooltip title="Gerar Kml">
+							<Tooltip title="Gerar Kml Com as Cores do Plantio">
 								<IconButton
 									onClick={() =>
 										handleGenerateKml(true)
