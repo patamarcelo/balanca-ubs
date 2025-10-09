@@ -18,6 +18,7 @@ export const farmDictProject = [
     { projeto: "Fazenda Santa Maria", mainFarm: "Santa Maria" },
 
     { projeto: "Fazenda Fazendinha", mainFarm: "Fazendinha" },
+    { projeto: "Fazenda Ouro Verde", mainFarm: "Ouro Verde" },
 ]
 
 export const generalDataArr = (data) => {
@@ -179,6 +180,7 @@ export const farmDictCOde = [
     { projeto: "Fazenda Tucano", code: "0202" },
     { projeto: "Fazenda Tuiuiu", code: "0202" },
     { projeto: "Fazenda Fazendinha", code: "0207" },
+    { projeto: "Fazenda Ouro Verde", code: "0207" },
 ]
 
 export const armazemDictCode = [
@@ -195,5 +197,6 @@ export const armazemDictCode = [
     { projeto: "Fazenda Tucano", code: "01" },
     { projeto: "Fazenda Tuiuiu", code: "01" },
     { projeto: "Fazenda Fazendinha", code: "01" },
+    { projeto: "Fazenda Ouro Verde", code: "01" },
 ]
 
