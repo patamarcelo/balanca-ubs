@@ -17,6 +17,8 @@ import { useTheme, Box } from "@mui/material";
 import { tokens } from '../../../theme'
 import MapResumePage from "./map-page-resume";
 
+import Color from 'color';
+
 // const svgMarker = {
 // 	path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
 // 	fillColor: "blue",
@@ -186,7 +188,7 @@ const MapPage = ({
 				// aplica filtro adicional se showAsPlanned = true
 				if (!showAsPlanned) {
 					filterSelectedparcelas = filterSelectedparcelas.filter(
-						(data) => data.finalizado_plantio === true
+						(data) => data.inicializado_plantio === true
 					);
 				}
 
@@ -217,7 +219,7 @@ const MapPage = ({
 				// aplica filtro global se showAsPlanned = true
 				if (!showAsPlanned) {
 					const onlyPlantedIds = filtData
-						.filter((data) => data.finalizado_plantio === true)
+						.filter((data) => data.inicializado_plantio === true)
 						.map((d) => d.id);
 
 					baseArray = mapArray.filter((data) =>
@@ -235,7 +237,8 @@ const MapPage = ({
 								total_area_colheita: 0,
 							};
 						}
-						acc[key].total_area_colheita += curr.dados.area_colheita;
+						const areaToGet = !showAsPlanned ? curr.dados.area_colheita : curr.dados.area_planejamento_plantio 
+						acc[key].total_area_colheita += areaToGet;
 						return acc;
 					}, {})
 				);
@@ -428,7 +431,7 @@ const MapPage = ({
 			};
 		}
 		if (
-			data.finalizadoPlantio === true &&
+			data.data.data.inicializado_plantio === true &&
 			data.finalizadoColheita === false &&
 			data.descontinuado === false
 		) {
@@ -478,11 +481,14 @@ const MapPage = ({
 								maximumFractionDigits: 2
 							}
 						);
+						const { inicializado_plantio, area_planejamento_plantio, finalizado_plantio, area_colheita } = dataF?.data?.data;
 						const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
+						
 						// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
 						const finalizado =
 							dataF.finalizadoPlantio && !dataF.descontinuado;
-						const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
+						
+							const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
 						// const label = `${dataF.parcela} \n marce`;
 						const newLabel = {
 							text: finalizado ? label : label,
@@ -507,13 +513,20 @@ const MapPage = ({
 						}
 						// console.log('data check: ', dataF)
 						// console.log("dataArray: ", parcelasSelected)
+						
+
+						const plantioDoing = inicializado_plantio && !finalizado_plantio
+						const baseColor = colorSelected || getColorStroke(dataF).color;
+
 
 						return (
 							<>
 								<PolygonF
 									key={i}
 									options={{
-										fillColor: colorSelected || getColorStroke(dataF).color,
+										fillColor: plantioDoing
+											? Color(baseColor).lighten(0.7).hex() // Pega a cor base, clareia em 30% e converte para string hex
+											: baseColor,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
 											isSelected ? "blue" : getColorStroke(dataF).lineColor,

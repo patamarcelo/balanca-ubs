@@ -17,6 +17,7 @@ import CheckIcon from "@mui/icons-material/Check"; // ícone pronto do MUI
 import DoneIcon from "@mui/icons-material/Done";
 import CloseIcon from "@mui/icons-material/Close";
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import WarningIcon from '@mui/icons-material/Warning';
 
 
 
@@ -52,7 +53,8 @@ const ListPrintPage = (props) => {
 		parcelasSelected,
 		setParcelasSeleced,
 		useRealArray,
-		setUseRealArray
+		setUseRealArray,
+		showAsPlanned
 	} = props;
 
 	const [totalArea, setTotalArea] = useState(0);
@@ -177,6 +179,8 @@ const ListPrintPage = (props) => {
 		handleClose();
 	};
 
+	console.log('displayedRows', displayedRows)
+
 	return (
 		<Box>
 			<TableContainer
@@ -254,6 +258,13 @@ const ListPrintPage = (props) => {
 											
 
 											{/* STATUS */}
+											{!row.finalizado_plantio && row.inicializado_plantio && (
+												<Box display="flex" alignItems="center" ml={1}>
+													<WarningIcon fontSize="small" sx={{ color: "#FFD32C" }} />
+												</Box>
+											)}
+											
+											{/* STATUS */}
 											{row.finalizado_plantio && !row.finalizado_colheita && (
 												<Box display="flex" alignItems="center" ml={1}>
 													<DoneIcon fontSize="small" sx={{ color: "green" }} />
@@ -266,7 +277,7 @@ const ListPrintPage = (props) => {
 												</Box>
 											)}
 
-											{!row.finalizado_plantio && !row.finalizado_colheita && (
+											{!row.finalizado_plantio && !row.inicializado_plantio && !row.finalizado_colheita && (
 												<CloseIcon fontSize="small" sx={{ color: "red", ml: 1 }} />
 											)}
 
@@ -276,7 +287,10 @@ const ListPrintPage = (props) => {
 									<TableCell sx={{ color: lightTableColors.rowText }} align="right">
 										<Box mr={margintR}>
 
-											{row.area_colheita.toLocaleString("pt-br", {
+											{showAsPlanned && row?.area_planejamento_plantio ? row?.area_planejamento_plantio?.toLocaleString("pt-br", {
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2,
+											}) : row?.area_colheita?.toLocaleString("pt-br", {
 												minimumFractionDigits: 2,
 												maximumFractionDigits: 2,
 											})}

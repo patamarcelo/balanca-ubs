@@ -262,7 +262,8 @@ const ProdutividadePage = () => {
 
 		// 2) Se showAsPlanned === true → mantém apenas plantios finalizados
 		if (!showAsPlanned) {
-			base = base.filter((d) => d.finalizado_plantio === true);
+			console.log('base', base)
+			base = base.filter((d) => d.inicializado_plantio === true);
 		}
 
 		// continua expondo o "mapa" com a base (igual ao teu comportamento original)
@@ -292,7 +293,9 @@ const ProdutividadePage = () => {
 		const totalResumoVariedades = {};
 
 		filtered.forEach((data) => {
-			const areaSum = data.finalizado_colheita ? data.area_colheita : data.area_parcial;
+			const areaToget = showAsPlanned ? data.area_planejamento_plantio : data.area_colheita
+			
+			const areaSum = data.finalizado_colheita ? areaToget : data.area_parcial;
 			const getArea = areaSum || 0;
 			const pesoSum = data?.peso_kg || 0;
 
@@ -308,11 +311,11 @@ const ProdutividadePage = () => {
 				totalResumo[cultura] = { area: getArea, peso: pesoSum };
 			}
 
-			// por variedade (usa area_colheita como no teu original)
+			// por variedade (usa area_planejamento_plantio como no teu original)
 			if (totalResumoVariedades[nameOfArea]) {
-				totalResumoVariedades[nameOfArea].area += data.area_colheita || 0;
+				totalResumoVariedades[nameOfArea].area += areaToget || 0;
 			} else {
-				totalResumoVariedades[nameOfArea] = { area: data.area_colheita || 0 };
+				totalResumoVariedades[nameOfArea] = { area: areaToget || 0 };
 			}
 		});
 
@@ -1219,6 +1222,7 @@ const ProdutividadePage = () => {
 											setParcelasSeleced={setParcelasSeleced}
 											setUseRealArray={setUseRealArray}
 											useRealArray={useRealArray}
+											showAsPlanned={showAsPlanned}
 
 										/>
 									</Box>
