@@ -1,10 +1,9 @@
-import { Box, Typography, Button, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import { useEffect, useState } from "react";
 
-import classes from "./data-by-day.module.css";
 import DataDefensivoDaysTable from "./data-table-mui";
 
 const DataDefensivoPageByDay = (props) => {

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Typography, useTheme, Autocomplete, TextField, } from "@mui/material";
 import { tokens, ColorModeContext } from "../../../theme";
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
