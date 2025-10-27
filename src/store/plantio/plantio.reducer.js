@@ -7,7 +7,8 @@ const INITIAL_STATE = {
 	appFarmBox: [],
 	safraCiclo: { safra: "2025/2026", ciclo: "2" },
 	pluvi: [],
-	plantioCalendarDone: []
+	plantioCalendarDone: [],
+	plantioColheitaAtual: []
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -47,6 +48,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				plantioCalendarDone: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_PLANTIO_COLHEITA_ATUAL:
+			return {
+				...state,
+				plantioColheitaAtual: payload
 			};
 		default:
 			return state;

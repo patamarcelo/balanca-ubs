@@ -27,8 +27,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-
-import dataParcelas from "../../../store/parcelas.json";
+import { selectPlantioColheitaAtual } from "../../../store/plantio/plantio.selector";
 
 const ModalFormFields = (props) => {
 	const { handleChangeTruck, truckValues, handleBlurTruck, setTruckValues } =
@@ -39,6 +38,7 @@ const ModalFormFields = (props) => {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isVendasUser = useSelector(selectIsVendasUser);
 	const isNonMobile = useMediaQuery("(min-width: 900px)");
+	const dataParcelas = useSelector(selectPlantioColheitaAtual)
 
 	const origemDest = [];
 	const filteredOrigemDestino = FAZENDA_ORIGEM.filter(

@@ -4,6 +4,8 @@ import { createSelector } from 'reselect';
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
+export const selectPlantioColheitaAtual = (state) => state.plantio.plantioColheitaAtual;
+
 export const selectPlantioDoneResume = (filterVar) => (state) => {
 	let data = [];
 	if (filterVar === "Todas") {

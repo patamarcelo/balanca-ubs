@@ -32,3 +32,7 @@ export const setPluvi = (pluviArray) => {
 export const setPlantioCalendarDone = (calendarArray) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_CALENDAR_DONE, calendarArray);
 };
+
+export const setPlantioColheitaAtual = (plantioColheitaArray) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_PLANTIO_COLHEITA_ATUAL, plantioColheitaArray);
+};

@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import CustomButton from "../../components/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
+import { faTruckMoving, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import HomeTable from "../../components/home-itens/home-table";
 import { useState, useEffect } from "react";
 
@@ -49,6 +49,10 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 import { formatDate } from "../../store/trucks/trucks.selector";
+
+import { setPlantioColheitaAtual } from "../../store/plantio/plantio.actions";
+import djangoApi from "../../utils/axios/axios.utils";
+
 
 const dataModalText = {
 	carregando: {
@@ -98,6 +102,8 @@ const HomePage = () => {
 
 	const [formatUnidade, setFormatUnidade] = useState("");
 
+	const [loadingPlantioColheitaAtual, setLoadingPlantioColheitaAtual] = useState(false);
+
 	// useEffect(() => {
 	// 	djangoApi
 	// 		.get("/get_plantio/", {
@@ -110,6 +116,33 @@ const HomePage = () => {
 	// 		})
 	// 		.catch((err) => console.log(err));
 	// }, []);
+
+	useEffect(() => {
+		const getPlantioColheitaAtualData = async () => {
+			setLoadingPlantioColheitaAtual(true)
+			try {
+				await djangoApi
+					.get("plantio/get_plantio/", {
+						headers: {
+							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+						}
+					})
+					.then((res) => {
+						// console.log('res django: ', res.data);
+						dispatch(setPlantioColheitaAtual(res.data));
+						setLoadingPlantioColheitaAtual(false)
+					})
+					.catch((err) => console.log(err));
+			} catch (err) {
+				console.log("Erro ao consumir a API", err);
+				setLoadingPlantioColheitaAtual(false)
+			} finally {
+				setLoadingPlantioColheitaAtual(false)
+				// console.log("Finally statement");
+			}
+		};
+		getPlantioColheitaAtualData()
+	}, [dispatch]);
 
 	useEffect(() => {
 		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);
@@ -296,10 +329,11 @@ const HomePage = () => {
 				sx={{
 					marginTop: !isNonMobile && '30px',
 					padding: !isNonMobile && '10px',
-				}}			
+				}}
 			>
 				<CustomButton
 					// isBalanca={!isBalanca}
+					isBalanca={loadingPlantioColheitaAtual}
 					title={`Carregando: ${totalCarregando}`}
 					color={colors.greenAccent[600]}
 					handleOpenModal={() => {
@@ -312,16 +346,25 @@ const HomePage = () => {
 						handleOpenModal(dataModalText.carregando);
 					}}
 				>
-					<FontAwesomeIcon
-						icon={faTruckMoving}
-						style={{
-							filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-						}}
-					/>
+					{loadingPlantioColheitaAtual ? (
+						<FontAwesomeIcon
+							icon={faSpinner}
+							spin
+							style={{ fontSize: 20 }}
+						/>
+					) : (
+						<FontAwesomeIcon
+							icon={faTruckMoving}
+							style={{
+								filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+							}}
+						/>
+					)}
 				</CustomButton>
 
 				<CustomButton
 					// isBalanca={!isBalanca}
+					isBalanca={loadingPlantioColheitaAtual}
 					title={`Descarregando: ${totalDescarregando}`}
 					color={colors.redAccent[600]}
 					ml={20}
@@ -335,12 +378,20 @@ const HomePage = () => {
 						handleOpenModal(dataModalText.descarregando);
 					}}
 				>
-					<FontAwesomeIcon
-						icon={faTruckMoving}
-						style={{
-							filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-						}}
-					/>
+					{loadingPlantioColheitaAtual ? (
+						<FontAwesomeIcon
+							icon={faSpinner}
+							spin
+							style={{ fontSize: 20 }}
+						/>
+					) : (
+						<FontAwesomeIcon
+							icon={faTruckMoving}
+							style={{
+								filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+							}}
+						/>
+					)}
 				</CustomButton>
 			</Box>
 			<Box
