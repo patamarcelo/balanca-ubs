@@ -15,7 +15,7 @@ import TableColheita from "./table";
 import { useEffect, useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDownAZ } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownAZ, faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
@@ -27,6 +27,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 import LinearProgressWithLabel from './progress-bar'
+import { useSelector } from "react-redux";
+import { selectColheitaPortalData } from "../../../store/plantio/plantio.selector";
+import { exportPlantiosToExcel } from "./export-excel-helper";
 
 const ColheitaAtual = (props) => {
 	const {
@@ -64,6 +67,8 @@ const ColheitaAtual = (props) => {
 	const [varieSelect, setVarieSelect] = useState([]);
 
 	const [varSelectedArr, setVarSelectedArr] = useState([]);
+	
+	const colheitaPortalData = useSelector(selectColheitaPortalData)
 
 	const formatArea = (number) => {
 		return Number(number).toLocaleString("pt-br", {
@@ -89,7 +94,7 @@ const ColheitaAtual = (props) => {
 				: data.area_colheita !== null
 		)
 			.forEach((data) => {
-				console.log('data to check', data)
+				// console.log('data to check', data)
 				areaTotalSoma += data.area_colheita;
 				parcelasTotalCount += 1;
 				areaColhida += data.area_parcial;
@@ -130,6 +135,10 @@ const ColheitaAtual = (props) => {
 	const handleFilterTable = () => {
 		setDateSort(!dateSort);
 	};
+
+	const handleExportData = () => {
+		exportPlantiosToExcel(colheitaPortalData)
+	}
 
 	const handleChangeCheck = (event) => {
 		setCheckedColheita(event.target.checked);
@@ -395,6 +404,16 @@ const ColheitaAtual = (props) => {
 						}}
 						onClick={() => handleFilterTable()}
 					/>
+					<FontAwesomeIcon
+						icon={faFileExcel}
+						color={colors.greenAccent[500]}
+						size="lg"
+						style={{
+							margin: "0px 0px",
+							cursor: "pointer"
+						}}
+						onClick={() => handleExportData()}
+					/>
 					<FormControlLabel
 						control={
 							<Switch
@@ -414,7 +433,7 @@ const ColheitaAtual = (props) => {
 								onChange={handleChangeAreasCheck}
 							/>
 						}
-						label="Areas Dispoíveis"
+						label="Areas Disponíveis"
 						sx={{ color: colors.textColor[100] }}
 					/>
 					<FormControlLabel

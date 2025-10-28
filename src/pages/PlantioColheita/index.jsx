@@ -21,6 +21,7 @@ import PlantioColheitaPortal from "../../components/plantio-colheita-portal";
 import { useDispatch } from "react-redux";
 import { setRomaneiosLoads } from "../../store/trucks/trucks.actions";
 import { selectRomaneiosLoads } from "../../store/trucks/trucks.selector";
+import { setColheitaPortalData } from "../../store/plantio/plantio.actions";
 
 
 
@@ -122,7 +123,8 @@ const PlantioColheitaPage = () => {
 		} else {
 			setSelectedFilteredData(combinedData);
 		}
-	}, [selectedFarm, combinedData]);
+		dispatch(setColheitaPortalData(combinedData))
+	}, [selectedFarm, combinedData, dispatch]);
 
 	const handlerFilter = (farm) => {
 		console.log(farm);

@@ -45,7 +45,6 @@ const TableColheita = ({ data, idsPending }) => {
 
 
 
-	console.log('dataTable', data);
 
 	return (
 		<Table striped bordered hover style={{ width: "100%", color: colors.textColor[100] }} size="sm" className={styles.mainTable}>
@@ -99,7 +98,7 @@ const TableColheita = ({ data, idsPending }) => {
 					const mediaPrev = carga.peso && carga.area_parcial ?  Number(carga.peso / 60) / carga.area_parcial : 0
 
 					const romaneiosPending =  idsPending[carga.id] ? idsPending[carga.id] : " - "
-					console.log('romaneio is pendingn here: ', romaneiosPending)
+					// console.log('romaneio is pendingn here: ', romaneiosPending)
 					return (
 						<tr key={i}
 							className={`${

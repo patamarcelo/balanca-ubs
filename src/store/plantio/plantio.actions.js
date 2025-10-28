@@ -36,3 +36,7 @@ export const setPlantioCalendarDone = (calendarArray) => {
 export const setPlantioColheitaAtual = (plantioColheitaArray) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_PLANTIO_COLHEITA_ATUAL, plantioColheitaArray);
 };
+
+export const setColheitaPortalData = (colheitaDataArray) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_COLHEITA_PORTAL_DATA, colheitaDataArray);
+};

@@ -6,6 +6,8 @@ export const selectPlantio = (state) => state.plantio.plantio;
 
 export const selectPlantioColheitaAtual = (state) => state.plantio.plantioColheitaAtual;
 
+export const selectColheitaPortalData = (state) => state.plantio.colheitaPortaldata;
+
 export const selectPlantioDoneResume = (filterVar) => (state) => {
 	let data = [];
 	if (filterVar === "Todas") {

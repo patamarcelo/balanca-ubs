@@ -8,7 +8,8 @@ const INITIAL_STATE = {
 	safraCiclo: { safra: "2025/2026", ciclo: "2" },
 	pluvi: [],
 	plantioCalendarDone: [],
-	plantioColheitaAtual: []
+	plantioColheitaAtual: [],
+	colheitaPortaldata: [],
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -53,6 +54,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				plantioColheitaAtual: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_COLHEITA_PORTAL_DATA:
+			return {
+				...state,
+				colheitaPortaldata: payload
 			};
 		default:
 			return state;
