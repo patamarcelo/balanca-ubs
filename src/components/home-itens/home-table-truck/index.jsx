@@ -1,8 +1,8 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Stack, Avatar } from "@mui/material";
 import { tokens } from "../../../theme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruckMoving } from "@fortawesome/free-solid-svg-icons";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faLaptop, faMobileScreenButton } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 
@@ -10,7 +10,6 @@ import DateTruck from "./truck-date";
 import PlateTruck from "./truck-plate";
 import QuantityTruckTara from "./truck-quantity-tara";
 import QuantityTruckBruto from "./truck-quantity-bruto";
-import QuantityTruckHold from "./truck-quantity-hold";
 import MercadoriaTruck from "./truck-mercadoria";
 import OrigemTruck from "./truck-origem";
 import DestinoTruck from "./truck-destino";
@@ -21,7 +20,6 @@ import { handleDeleteTruck } from "../../../utils/firebase/firebase.datatable";
 
 import { useSelector } from "react-redux";
 import {
-	selectTruckLoads,
 	selectTruckLoadsOnWork
 } from "../../../store/trucks/trucks.selector";
 
@@ -144,11 +142,10 @@ const HomeTableTruck = (props) => {
 					return color;
 				};
 
-				const classesTruck = ` ${
-					setColorTruck(data) === colors.greenAccent[600]
-						? "fa-flip-horizontal"
-						: ""
-				} ${classes["hover-truck"]}`;
+				const classesTruck = ` ${setColorTruck(data) === colors.greenAccent[600]
+					? "fa-flip-horizontal"
+					: ""
+					} ${classes["hover-truck"]}`;
 				return (
 					<Box
 						key={i}
@@ -176,7 +173,7 @@ const HomeTableTruck = (props) => {
 					>
 						<Box
 							className={classes["changeTruck"]}
-							display="grid"
+							display="flex"
 							gridTemplateColumns="repeat(2, 1fr)"
 							justifyContent="space-around"
 							alignItems="center"
@@ -189,35 +186,161 @@ const HomeTableTruck = (props) => {
 						>
 							{data?.createdBy === "App" ? (
 								<LightTooltip
-									title={data?.parcelasNovas.sort((a,b) => a.localeCompare(b)).join(', ')}
+									title={
+										<Stack
+											direction="column"
+											spacing={0.8}
+											sx={{ p: 0.5, minWidth: 180 }}
+										>
+											{/* Cabeçalho com avatar e usuário */}
+											<Stack direction="row" spacing={1} alignItems="center">
+												<Avatar
+													sx={{
+														width: 24,
+														height: 24,
+														bgcolor: "primary.main",
+														fontSize: 11,
+													}}
+												>
+													{data?.user?.[0]?.toUpperCase()}
+												</Avatar>
+												<Typography
+													variant="body2"
+													sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
+												>
+													{data?.user}
+												</Typography>
+											</Stack>
+
+											{/* Lista das parcelas (ordenada e com quebras de linha) */}
+											<Typography
+												variant="body2"
+												sx={{
+													fontSize: "0.8rem",
+													lineHeight: 1.2,
+													whiteSpace: "pre-line",
+													color: "text.secondary",
+												}}
+											>
+												{data?.parcelasNovas
+													?.sort((a, b) => a.localeCompare(b))
+													?.join(", ")}
+											</Typography>
+										</Stack>
+									}
 									placement="top"
 									arrow
 									TransitionComponent={Zoom}
+									componentsProps={{
+										tooltip: {
+											sx: {
+												p: 0.6,
+												borderRadius: 1,
+												fontSize: "0.8rem",
+												maxWidth: 260,
+											},
+										},
+									}}
 								>
-									<FontAwesomeIcon
-										color={setColorTruck(data)}
-										icon={faTruckMoving}
-										size="3x"
-										className={classesTruck}
-										style={{
-											cursor: "pointer",
-											filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-										}}
-										onClick={() =>
-											handlerNavigatePrint(data)
-										}
-									/>
+
+									<div style={{ position: "relative", display: "inline-block" }}>
+										<FontAwesomeIcon
+											color={setColorTruck(data)}
+											icon={faTruckMoving}
+											size="3x"
+											className={classesTruck}
+											style={{
+												cursor: "pointer",
+												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+											}}
+											onClick={() => handlerNavigatePrint(data)}
+										/>
+
+										{/* laptop sobreposto */}
+										<FontAwesomeIcon
+											icon={faMobileScreenButton}
+											size="sm"
+											style={{
+												position: "absolute",
+												bottom: 2,       // ajusta verticalmente
+												right: -8,        // ou left dependendo do visual desejado
+												zIndex: 10,      // garante que fica à frente
+												color: "rgba(255,255,255,0.9)", // contraste
+												textShadow: "0 0 3px rgba(0,0,0,0.6)",
+											}}
+										/>
+									</div>
 								</LightTooltip>
 							) : (
-								<FontAwesomeIcon
-									color={setColorTruck(data)}
-									icon={faTruckMoving}
-									size="3x"
-									className={classesTruck}
-									style={{
-										filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+								<LightTooltip
+									title={
+										<Stack
+											direction="row"
+											spacing={1}
+											alignItems="center"
+											sx={{ p: 0.2, minHeight: 28 }}
+										>
+											<Avatar
+												sx={{
+													width: 24,
+													height: 24,
+													bgcolor: "primary.main",
+													fontSize: 11,
+												}}
+											>
+												{data?.user?.[0]?.toUpperCase()}
+											</Avatar>
+											<Typography
+												variant="body2"
+												sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
+											>
+												{data?.user}
+											</Typography>
+										</Stack>
+									}
+									placement="top"
+									arrow
+									TransitionComponent={Zoom}
+									componentsProps={{
+										tooltip: {
+											sx: {
+												bgcolor: "background.paper",
+												color: "text.primary",
+												boxShadow: 2,
+												border: "1px solid",
+												borderColor: "divider",
+											},
+										},
 									}}
-								/>
+								>
+									<div style={{ position: "relative", display: "inline-block" }}>
+										<FontAwesomeIcon
+											color={setColorTruck(data)}
+											icon={faTruckMoving}
+											size="3x"
+											className={classesTruck}
+											style={{
+												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+												cursor: "pointer",
+											}}
+											onClick={() => handlerNavigatePrint(data)}
+										/>
+
+										{/* Ícone de celular sobreposto */}
+										<FontAwesomeIcon
+											icon={faLaptop}
+											size="sm"
+											style={{
+												position: "absolute",
+												bottom: 0,      // ajusta verticalmente
+												right: -8,       // ou left dependendo do lado desejado
+												zIndex: 10,
+												color: "rgba(255,255,255,0.9)",
+												textShadow: "0 0 3px rgba(0,0,0,0.6)",
+											}}
+										/>
+									</div>
+								</LightTooltip>
 							)}
 							<Typography
 								variant="h6"
@@ -242,8 +365,8 @@ const HomeTableTruck = (props) => {
 									size="3x"
 								/>
 							)} */}
-						
-						{/* <Typography sx={{fontSize: '8px'}} color={colors.grey[100]}>{data.userDataApp && data.userDataApp}</Typography> */}
+
+							{/* <Typography sx={{fontSize: '8px'}} color={colors.grey[100]}>{data.userDataApp && data.userDataApp}</Typography> */}
 						</Box>
 						<Box
 							display={!isNonMobile ? "flex" : "grid"}
