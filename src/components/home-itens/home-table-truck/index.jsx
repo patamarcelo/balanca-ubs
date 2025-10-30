@@ -208,7 +208,7 @@ const HomeTableTruck = (props) => {
 													variant="body2"
 													sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
 												>
-													{data?.user}
+													{data?.userCreateDoc}
 												</Typography>
 											</Stack>
 
