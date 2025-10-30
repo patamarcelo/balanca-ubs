@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { triggerResetEmail } from "../../utils/firebase/firebase";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,34 +10,38 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import toast from 'react-hot-toast';
 
+import { tokens } from "../../theme";
+
 const PassswordReset = () => {
 	const [open, setOpen] = useState(false);
 	const [email, setEmail] = useState("");
-	
-    const handleReset = () => {
+	const theme = useTheme();
+	const colors = tokens(theme.palette.mode);
+
+	const handleReset = () => {
 		setOpen(true);
 	};
 
 	const handleClose = (e) => {
-        e.stopPropagation();
+		e.stopPropagation();
 		setOpen(false);
 	};
 
-    const handleSendReset = async () => {
-        try{
-            await triggerResetEmail(email).then(data => console.log(data))
-            setEmail('')
-            setOpen(false);
-            toast.success('Email de redefinição enviado!!');
-        } catch(error) {
-            toast.error(`Erro ao enviar o Email: ${error}` );
+	const handleSendReset = async () => {
+		try {
+			await triggerResetEmail(email).then(data => console.log(data))
+			setEmail('')
+			setOpen(false);
+			toast.success('Email de redefinição enviado!!');
+		} catch (error) {
+			toast.error(`Erro ao enviar o Email: ${error}`);
 
-        }
-    }
+		}
+	}
 
-    const handleChangeMail = (e) => {
-        setEmail(e.target.value)
-    }
+	const handleChangeMail = (e) => {
+		setEmail(e.target.value)
+	}
 
 	return (
 		<Box
@@ -73,6 +77,12 @@ const PassswordReset = () => {
 						fullWidth
 						variant="standard"
 						onChange={handleChangeMail}
+						sx={{
+							"& .MuiInputLabel-root": { color: "#777" }, // cor padrão
+							"& .MuiInputLabel-root.Mui-focused": { color: 'whitesmoke' }, // cor quando focado
+							"& .MuiInput-underline:before": { borderBottomColor: colors.blueOrigin[200] }, // linha padrão
+							"& .MuiInput-underline:after": { borderBottomColor: colors.blueOrigin[500] }, // linha quando focado
+						}}
 					/>
 				</DialogContent>
 				<DialogActions>
