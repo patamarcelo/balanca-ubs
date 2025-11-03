@@ -59,7 +59,7 @@ const ReportTable = (props) => {
 
 	const handlerNavigatePrint = (data) => {
 		setModalDataRc(data);
-		console.log('data: ', data)
+		console.log('data here: ', data)
 		setOpenModal(true);
 	};
 

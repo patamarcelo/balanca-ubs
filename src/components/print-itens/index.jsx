@@ -1,6 +1,6 @@
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import "./index.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import PageData from "./page-data";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -8,13 +8,16 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import LoaderPage from "../global/Loader";
 
 const PrintLayout = ({ data }) => {
-	
-	
+
+
 	const isNonMobile = useMediaQuery("(min-width: 1020px)");
 	const isNonMobileLand = useMediaQuery("(min-width: 900px)");
 	const [printValue, setPrintValue] = useState();
 
 	const [isLoading, setIsLoading] = useState(true);
+
+	const firstRef = useRef(null);
+
 
 	useEffect(() => {
 		setPrintValue(data);
@@ -23,98 +26,95 @@ const PrintLayout = ({ data }) => {
 		}, 500);
 	}, []);
 
+	useEffect(() => {
+		const handleBeforePrint = () => {
+			const container = document.querySelector(".print-container");
+			const first = document.getElementById("printablediv"); // ou firstRef.current?.closest('#printablediv')
+			if (!container || !first) return;
+
+			// remove clone antigo, se existir
+			const old = document.getElementById("printablediv-clone");
+			if (old) old.remove();
+
+			// clona o primeiro bloco
+			const clone = first.cloneNode(true);
+			clone.id = "printablediv-clone";
+			container.appendChild(clone);
+		};
+
+		const handleAfterPrint = () => {
+			const old = document.getElementById("printablediv-clone");
+			if (old) old.remove();
+		};
+
+		// Chrome/Edge/Firefox (eventos nativos)
+		window.addEventListener("beforeprint", handleBeforePrint);
+		window.addEventListener("afterprint", handleAfterPrint);
+
+		// Fallback para navegadores que disparam via matchMedia
+		const media = window.matchMedia?.("print");
+		const mmListener = (e) => e.matches ? handleBeforePrint() : handleAfterPrint();
+		if (media && media.addEventListener) media.addEventListener("change", mmListener);
+
+		return () => {
+			window.removeEventListener("beforeprint", handleBeforePrint);
+			window.removeEventListener("afterprint", handleAfterPrint);
+			if (media && media.removeEventListener) media.removeEventListener("change", mmListener);
+		};
+	}, []);
+
 	return (
 		<div className="print-container">
 			<Box
-				width="100%"
 				display="flex"
-				// flexDirection="column"
 				justifyContent="center"
-				alignItems="start"
-				p="5px 30px 30px 30px"
-				id="printablediv"
+				alignItems="center"
 				sx={{
-					margin: "0 auto !important",
-					transform: !isNonMobileLand && "scale(0.98)",
-					padding: !isNonMobileLand && "0px",
-					zoom: !isNonMobileLand && '70%'
+					width: isNonMobile ? "90%" : "100%",
+					maxWidth: "925px",
+					backgroundColor: "white",
+					boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
 				}}
+				className="print-ticket"
 			>
-				<Box
-					display="flex"
-					justifyContent="center"
-					alignItems="center"
-					sx={{
-						width: isNonMobile ? "90%" : "100%",
-						maxWidth: "925px",
-						// marginTop: !isNonMobileLand ? "-265px" : "0px",
-						backgroundColor: "white",
-						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
-					}}
-				>
-					{isLoading || !data ? (
-						<Box
-							width="100%"
-							height="60vh"
-							id="printablediv"
-							sx={{
-								padding: "20px 50px"
-							}}
-						>
-							<LoaderPage isLoading={isLoading} />
-						</Box>
-					) : (
-						<PageData data={printValue} />
-					)}
-				</Box>
+				{isLoading || !data ? (
+					<Box width="100%" height="60vh" sx={{ padding: "20px 50px" }}>
+						<LoaderPage isLoading={isLoading} />
+					</Box>
+				) : (
+					<PageData data={printValue} />
+				)}
 			</Box>
+
+				<div
+				className="print-ticket print-duplicate"
+				>
+
+			{/* divisor pontilhado visível só na impressão */}
+			<div className="print-divider"></div>
+			{/* SEGUNDA CÓPIA – escondida na tela, visível no print */}
 			<Box
-				width="100%"
 				display="flex"
-				// flexDirection="column"
 				justifyContent="center"
-				alignItems="start"
-				p="5px 30px 30px 30px"
-				id="printablediv2"
+				alignItems="center"
 				sx={{
-					margin: "0 auto !important",
-					transform: !isNonMobileLand && "scale(0.6)",
-					marginTop: "-5px",
-					padding: !isNonMobileLand && "0px",
-					display: "none",
-					" body": {
-						// backgroundCOlor: "white !important"
-					}
+					width: isNonMobile ? "90%" : "100%",
+					maxWidth: "925px",
+					backgroundColor: "white",
+					boxShadow: "none" // no print já tiramos via CSS, na tela não precisa mostrar
 				}}
-			>
-				<Box
-					display="flex"
-					justifyContent="center"
-					alignItems="center"
-					sx={{
-						width: isNonMobile ? "90%" : "100%",
-						maxWidth: "925px",
-						marginTop: !isNonMobileLand ? "-265px" : "0px",
-						backgroundColor: "white",
-						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
-					}}
+				// className="print-ticket print-duplicate"
 				>
-					{isLoading ? (
-						<Box
-							width="100%"
-							height="60vh"
-							id="printablediv"
-							sx={{
-								padding: "20px 50px"
-							}}
-						>
-							<LoaderPage isLoading={isLoading} />
-						</Box>
-					) : (
-						<PageData data={printValue} />
-					)}
-				</Box>
+				{isLoading || !data ? (
+					<Box width="100%" height="60vh" sx={{ padding: "20px 50px" }}>
+						<LoaderPage isLoading={isLoading} />
+					</Box>
+				) : (
+					<PageData data={printValue} />
+				)}
 			</Box>
+			</div>
+
 		</div>
 	);
 };

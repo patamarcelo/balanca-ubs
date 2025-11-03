@@ -2,18 +2,20 @@
 	body * {
 		visibility: hidden;
 		zoom: 0.985;
-		top: -90px;
+		top: -60px;
 	}
 
-	
 
-	#printablediv,
-	#printablediv * {
+
+
+
+	.print-ticket * {
 		visibility: visible;
 	}
+
 	#printablediv2,
 	#printablediv2 * {
-		visibility: visible;
+		visibility: hidden;
 	}
 
 	#printablediv {
@@ -45,10 +47,10 @@
 		background-color: transparent;
 		box-shadow: none !important;
 	}
-	
-    
+
+
 	#printablediv {
-        border-bottom: 1px dotted black
+		border-bottom: 1px dotted black
 	}
 
 	.print-container {
@@ -60,4 +62,18 @@
 
 .print-container {
 	width: 100%;
+	display: flex;
+	justify-content: center;
+	transform: scale(0.95);
 }
+
+@media screen {
+	.print-duplicate {
+		display: none !important;
+	}
+}
+	.print-divider {
+		border-bottom: 1px dotted black !important;
+		margin: 10mm 0 6mm !important;
+		height: 0;
+	}
