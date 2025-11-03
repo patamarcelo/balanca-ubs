@@ -10,6 +10,83 @@ const PageData = ({ data }) => {
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
 
+	const pad2 = (n) => String(n).padStart(2, "0");
+
+	const isFirestoreTimestamp = (v) =>
+		v && typeof v === "object" &&
+		typeof v.seconds === "number" &&
+		typeof v.nanoseconds === "number";
+
+	const parseBrDateTimeStr = (s) => {
+		// aceita "03/11/2025 - 14:11" ou "03/11/2025 14:11"
+		const m = String(s).trim().match(
+			/^(\d{2})\/(\d{2})\/(\d{4})\s*(?:-|–)?\s*(\d{2}):(\d{2})$/
+		);
+		if (!m) return null;
+		const [, dd, MM, yyyy, HH, mm] = m.map(Number);
+		// mês no JS é 0-11
+		return new Date(yyyy, MM - 1, dd, HH, mm, 0, 0);
+	};
+
+	const toDate = (v) => {
+		if (!v && v !== 0) return null;
+
+		// Date
+		if (v instanceof Date && !isNaN(v.getTime())) return v;
+
+		// Firestore Timestamp
+		if (isFirestoreTimestamp(v)) {
+			return new Date(v.seconds * 1000 + Math.floor(v.nanoseconds / 1e6));
+		}
+
+		// Número ou string numérica (epoch)
+		if (typeof v === "number" || (typeof v === "string" && /^\d+$/.test(v.trim()))) {
+			const num = typeof v === "number" ? v : Number(v.trim());
+			// heurística: <= 1e12 ≈ segundos, > 1e12 ≈ milissegundos
+			const ms = num < 1e12 ? num * 1000 : num;
+			const d = new Date(ms);
+			return isNaN(d.getTime()) ? null : d;
+		}
+
+		// string vazia/placeholder
+		if (typeof v === "string") {
+			const s = v.trim();
+			if (!s || s === "-") return null;
+
+			// BR "dd/MM/yyyy - HH:mm" ou "dd/MM/yyyy HH:mm"
+			const br = parseBrDateTimeStr(s);
+			if (br) return br;
+
+			// tenta ISO/parse nativo
+			const d = new Date(s);
+			return isNaN(d.getTime()) ? null : d;
+		}
+
+		// fallback
+		return null;
+	};
+
+	const formatDateTime = (v) => {
+		// console.log('formattt: ', v); // mantenha se quiser debugar
+		const d = toDate(v);
+		if (!d) return " - ";
+		const dia = pad2(d.getDate());
+		const mes = pad2(d.getMonth() + 1);
+		const ano = d.getFullYear();
+		const hh = pad2(d.getHours());
+		const mm = pad2(d.getMinutes());
+		// usa " - " como no seu layout
+		return `${dia}/${mes}/${ano} - ${hh}:${mm}`;
+	};
+	const fmtText = (v) => (v === null || v === undefined || v === "" ? " - " : String(v));
+
+	const fmtKg = (v) => {
+		console.log('v here::: ', v, typeof v)
+		const n = Number(v);
+		if (!isFinite(n)) return " - ";
+		return n.toLocaleString("pt-BR") + " Kg";
+	};
+
 	const formatPlate = (placa) => {
 		return (
 			placa?.toUpperCase().slice(0, 3) +
@@ -27,22 +104,21 @@ const PageData = ({ data }) => {
 
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
-		{
-			label: "Motorista",
-			value: handleExistData(data?.motorista)
-		},
-		{ label: "Cultura", value: data?.cultura }
+		{ label: "Motorista", value: fmtText(data?.motorista) },
+		{ label: "Cultura", value: fmtText(data?.cultura) },
 	];
+
 	const dictDataR = [
-		{ label: "Peso Bruto", value: data?.pesoBruto },
-		{ label: "Tara Veículo", value: data?.tara },
-		{ label: "Peso Líquido", value: data?.liquido }
+		{ label: "Peso Bruto", value: fmtKg(data?.pesoBruto) },
+		{ label: "Tara Veículo", value: fmtKg(data?.tara) },
+		{ label: "Peso Líquido", value: fmtKg(data?.liquido) },
 	];
 
 	const DataDict = [
-		{ label: "Entrada", value: data?.entrada },
-		{ label: "Saída", value: data?.saida ? data.saida : " - " }
+		{ label: "Entrada", value: formatDateTime(data?.entrada) },
+		{ label: "Saída", value: formatDateTime(data?.saida) },
 	];
+
 
 	return (
 		<Box
@@ -73,8 +149,7 @@ const PageData = ({ data }) => {
 				<Box>
 					{[
 						"TICKET DE REQUISIÇÃO",
-						`LAGOA DA CONFUSÃO-TO / ${
-							data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
+						`LAGOA DA CONFUSÃO-TO / ${data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
 						}`
 					].map((data, i) => {
 						return (
@@ -246,9 +321,7 @@ const PageData = ({ data }) => {
 										// fontWeight="bold"
 										style={{ textAlign: "right" }}
 									>
-										{Number(data?.value)?.toLocaleString(
-											"pt-BR"
-										) + " Kg"}
+										{data.value}
 									</Typography>
 								</Box>
 							</Box>
@@ -390,13 +463,13 @@ const PageData = ({ data }) => {
 							{data?.valorFrete && <b>Valor do Frete: </b>}
 							{data?.valorFrete &&
 								"R$ " +
-									parseFloat(data.valorFrete)
-										.toFixed(2)
-										.replace(".", ",")
-										.toLocaleString("pt-BR", {
-											style: "currency",
-											currency: "BRL"
-										})}
+								parseFloat(data.valorFrete)
+									.toFixed(2)
+									.replace(".", ",")
+									.toLocaleString("pt-BR", {
+										style: "currency",
+										currency: "BRL"
+									})}
 							{data?.valorFrete && <br />}
 						</div>
 						<div>

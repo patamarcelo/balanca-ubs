@@ -47,6 +47,13 @@ import { Dialog } from "@mui/material"; // ou outro modal da sua lib preferida
 import PrintRCLayout from "../../print-rc";
 import PrintPage from "../../../pages/Print";
 
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import CloseIcon from "@mui/icons-material/Close";
+import PrintIcon from "@mui/icons-material/Print";
+
 
 const ReportTable = (props) => {
 	const theme = useTheme();
@@ -71,6 +78,7 @@ const ReportTable = (props) => {
 	// };
 
 	const handlerNavigatePrintRomaneio = (data) => {
+		console.log("dataaaaa", data)
 		if (data?.createdBy === "App") {
 			setModalData(data);
 			setOpenModal(true);
@@ -828,6 +836,42 @@ const ReportTable = (props) => {
 					},
 				}}
 			>
+				<AppBar
+					position="fixed"
+					color="primary"
+					elevation={1}
+					sx={{
+						backgroundColor: "background.paper",
+						borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+					}}
+				>
+					<Toolbar>
+						<Typography variant="h6" sx={{ flex: 1 }}>
+							Pré-visualização
+						</Typography>
+
+						<Button
+							onClick={() => window.print()}
+							startIcon={<PrintIcon color="white" />}
+							variant="outlined"
+							sx={{
+                            mr: 1,
+                            color: "white",
+                            backgroundColor: "#1e88e5",
+                            "&:hover": { backgroundColor: "#1565c0" },
+                        }}
+						>
+							Imprimir
+						</Button>
+
+						<IconButton edge="end" onClick={handleClose} aria-label="Fechar">
+							<CloseIcon />
+						</IconButton>
+					</Toolbar>
+				</AppBar>
+
+				{/* Espaçador para não ficar por baixo da AppBar */}
+				<Toolbar />
 				{modalData && (
 					<Box
 						sx={{

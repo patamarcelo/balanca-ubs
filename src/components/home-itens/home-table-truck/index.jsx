@@ -43,6 +43,11 @@ import { styled } from "@mui/material/styles";
 import Zoom from "@mui/material/Zoom";
 import EmptyField from "./EmptyString";
 
+import PreviewPrintDialog from "../../print-rc/PreviewPrintDialog";
+import { useState } from "react";
+import PrintRCLayout from "../../print-rc";
+import PrintPage from "../../../pages/Print";
+
 const editarModal = {
 	title: "Editar Carga",
 	color: "warning",
@@ -110,6 +115,16 @@ const HomeTableTruck = (props) => {
 		}
 	};
 
+	const [openPreview, setOpenPreview] = useState(false);
+	const [previewData, setPreviewData] = useState(null);
+	const [previewKind, setPreviewKind] = useState("rc"); // "rc" | "page"
+
+	const handlerOpenPreview = (data, kind = "rc") => {
+		setPreviewData(data);
+		setPreviewKind(kind);
+		setOpenPreview(true);
+	};
+
 	return (
 		<>
 			<FormDialog
@@ -147,53 +162,140 @@ const HomeTableTruck = (props) => {
 					: ""
 					} ${classes["hover-truck"]}`;
 				return (
-					<Box
-						key={i}
-						display="flex"
-						justifyContent="space-between"
-						alignItems="center"
-						gap="1px"
-						width="100%"
-						sx={{
-							width: isNonMobile ? "98%" : "95%",
-							backgroundColor: colors.blueOrigin[800],
-							border:
-								theme.palette.mode === "dark"
-									? ""
-									: `0.1px solid ${colors.primary[100]}`,
-							boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
-							borderRadius: "5px",
-							padding: "10px",
-							"&:hover": {
-								background: colors.blueOrigin[900],
-								border: "1px solid black"
-								// cursor: "pointer"
-							}
-						}}
-					>
+					<>
 						<Box
-							className={classes["changeTruck"]}
+							key={i}
 							display="flex"
-							gridTemplateColumns="repeat(2, 1fr)"
-							justifyContent="space-around"
+							justifyContent="space-between"
 							alignItems="center"
-							flexDirection={!isNonMobile ? "column" : "row"}
+							gap="1px"
+							width="100%"
 							sx={{
-								// backgroundColor: "red",
-								width: "9%",
-								marginLeft: !isNonMobile ? '25px' : "12px"
+								width: isNonMobile ? "98%" : "95%",
+								backgroundColor: colors.blueOrigin[800],
+								border:
+									theme.palette.mode === "dark"
+										? ""
+										: `0.1px solid ${colors.primary[100]}`,
+								boxShadow: "rgba(0, 0, 0, 0.65) 0px 5px 5px",
+								borderRadius: "5px",
+								padding: "10px",
+								"&:hover": {
+									background: colors.blueOrigin[900],
+									border: "1px solid black"
+									// cursor: "pointer"
+								}
 							}}
 						>
-							{data?.createdBy === "App" ? (
-								<LightTooltip
-									title={
-										<Stack
-											direction="column"
-											spacing={0.8}
-											sx={{ p: 0.5, minWidth: 180 }}
-										>
-											{/* Cabeçalho com avatar e usuário */}
-											<Stack direction="row" spacing={1} alignItems="center">
+							<Box
+								className={classes["changeTruck"]}
+								display="flex"
+								gridTemplateColumns="repeat(2, 1fr)"
+								justifyContent="space-around"
+								alignItems="center"
+								flexDirection={!isNonMobile ? "column" : "row"}
+								sx={{
+									// backgroundColor: "red",
+									width: "9%",
+									marginLeft: !isNonMobile ? '25px' : "12px"
+								}}
+							>
+								{data?.createdBy === "App" ? (
+									<LightTooltip
+										title={
+											<Stack
+												direction="column"
+												spacing={0.8}
+												sx={{ p: 0.5, minWidth: 180 }}
+											>
+												{/* Cabeçalho com avatar e usuário */}
+												<Stack direction="row" spacing={1} alignItems="center">
+													<Avatar
+														sx={{
+															width: 24,
+															height: 24,
+															bgcolor: "primary.main",
+															fontSize: 11,
+														}}
+													>
+														{data?.user?.[0]?.toUpperCase()}
+													</Avatar>
+													<Typography
+														variant="body2"
+														sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
+													>
+														{data?.userCreateDoc}
+													</Typography>
+												</Stack>
+
+												{/* Lista das parcelas (ordenada e com quebras de linha) */}
+												<Typography
+													variant="body2"
+													sx={{
+														fontSize: "0.8rem",
+														lineHeight: 1.2,
+														whiteSpace: "pre-line",
+														color: "text.secondary",
+													}}
+												>
+													{data?.parcelasNovas
+														?.sort((a, b) => a.localeCompare(b))
+														?.join(", ")}
+												</Typography>
+											</Stack>
+										}
+										placement="top"
+										arrow
+										TransitionComponent={Zoom}
+										componentsProps={{
+											tooltip: {
+												sx: {
+													p: 0.6,
+													borderRadius: 1,
+													fontSize: "0.8rem",
+													maxWidth: 260,
+												},
+											},
+										}}
+									>
+
+										<div style={{ position: "relative", display: "inline-block" }}>
+											<FontAwesomeIcon
+												color={setColorTruck(data)}
+												icon={faTruckMoving}
+												size="3x"
+												className={classesTruck}
+												style={{
+													cursor: "pointer",
+													filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+												}}
+												onClick={() => handlerOpenPreview(data, "rc")}
+											/>
+
+											{/* laptop sobreposto */}
+											<FontAwesomeIcon
+												icon={faMobileScreenButton}
+												size="sm"
+												style={{
+													position: "absolute",
+													bottom: 2,       // ajusta verticalmente
+													right: -8,        // ou left dependendo do visual desejado
+													zIndex: 10,      // garante que fica à frente
+													color: "rgba(255,255,255,0.9)", // contraste
+													textShadow: "0 0 3px rgba(0,0,0,0.6)",
+												}}
+											/>
+										</div>
+									</LightTooltip>
+								) : (
+									<LightTooltip
+										title={
+											<Stack
+												direction="row"
+												spacing={1}
+												alignItems="center"
+												sx={{ p: 0.2, minHeight: 28 }}
+											>
 												<Avatar
 													sx={{
 														width: 24,
@@ -208,150 +310,64 @@ const HomeTableTruck = (props) => {
 													variant="body2"
 													sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
 												>
-													{data?.userCreateDoc}
+													{data?.user}
 												</Typography>
 											</Stack>
-
-											{/* Lista das parcelas (ordenada e com quebras de linha) */}
-											<Typography
-												variant="body2"
-												sx={{
-													fontSize: "0.8rem",
-													lineHeight: 1.2,
-													whiteSpace: "pre-line",
-													color: "text.secondary",
-												}}
-											>
-												{data?.parcelasNovas
-													?.sort((a, b) => a.localeCompare(b))
-													?.join(", ")}
-											</Typography>
-										</Stack>
-									}
-									placement="top"
-									arrow
-									TransitionComponent={Zoom}
-									componentsProps={{
-										tooltip: {
-											sx: {
-												p: 0.6,
-												borderRadius: 1,
-												fontSize: "0.8rem",
-												maxWidth: 260,
+										}
+										placement="top"
+										arrow
+										TransitionComponent={Zoom}
+										componentsProps={{
+											tooltip: {
+												sx: {
+													bgcolor: "background.paper",
+													color: "text.primary",
+													boxShadow: 2,
+													border: "1px solid",
+													borderColor: "divider",
+												},
 											},
-										},
+										}}
+									>
+										<div style={{ position: "relative", display: "inline-block" }}>
+											<FontAwesomeIcon
+												color={setColorTruck(data)}
+												icon={faTruckMoving}
+												size="3x"
+												className={classesTruck}
+												style={{
+													filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+													cursor: "pointer",
+												}}
+												onClick={() => handlerOpenPreview(data, "page")}
+											/>
+
+											{/* Ícone de celular sobreposto */}
+											<FontAwesomeIcon
+												icon={faLaptop}
+												size="sm"
+												style={{
+													position: "absolute",
+													bottom: 0,      // ajusta verticalmente
+													right: -8,       // ou left dependendo do lado desejado
+													zIndex: 10,
+													color: "rgba(255,255,255,0.9)",
+													textShadow: "0 0 3px rgba(0,0,0,0.6)",
+												}}
+											/>
+										</div>
+									</LightTooltip>
+								)}
+								<Typography
+									variant="h6"
+									color={colors.redAccent[200]}
+									sx={{
+										margin: "2px 10px"
 									}}
 								>
-
-									<div style={{ position: "relative", display: "inline-block" }}>
-										<FontAwesomeIcon
-											color={setColorTruck(data)}
-											icon={faTruckMoving}
-											size="3x"
-											className={classesTruck}
-											style={{
-												cursor: "pointer",
-												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
-											}}
-											onClick={() => handlerNavigatePrint(data)}
-										/>
-
-										{/* laptop sobreposto */}
-										<FontAwesomeIcon
-											icon={faMobileScreenButton}
-											size="sm"
-											style={{
-												position: "absolute",
-												bottom: 2,       // ajusta verticalmente
-												right: -8,        // ou left dependendo do visual desejado
-												zIndex: 10,      // garante que fica à frente
-												color: "rgba(255,255,255,0.9)", // contraste
-												textShadow: "0 0 3px rgba(0,0,0,0.6)",
-											}}
-										/>
-									</div>
-								</LightTooltip>
-							) : (
-								<LightTooltip
-									title={
-										<Stack
-											direction="row"
-											spacing={1}
-											alignItems="center"
-											sx={{ p: 0.2, minHeight: 28 }}
-										>
-											<Avatar
-												sx={{
-													width: 24,
-													height: 24,
-													bgcolor: "primary.main",
-													fontSize: 11,
-												}}
-											>
-												{data?.user?.[0]?.toUpperCase()}
-											</Avatar>
-											<Typography
-												variant="body2"
-												sx={{ fontWeight: 500, fontSize: "0.8rem", lineHeight: 1 }}
-											>
-												{data?.user}
-											</Typography>
-										</Stack>
-									}
-									placement="top"
-									arrow
-									TransitionComponent={Zoom}
-									componentsProps={{
-										tooltip: {
-											sx: {
-												bgcolor: "background.paper",
-												color: "text.primary",
-												boxShadow: 2,
-												border: "1px solid",
-												borderColor: "divider",
-											},
-										},
-									}}
-								>
-									<div style={{ position: "relative", display: "inline-block" }}>
-										<FontAwesomeIcon
-											color={setColorTruck(data)}
-											icon={faTruckMoving}
-											size="3x"
-											className={classesTruck}
-											style={{
-												filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
-												cursor: "pointer",
-											}}
-											onClick={() => handlerNavigatePrint(data)}
-										/>
-
-										{/* Ícone de celular sobreposto */}
-										<FontAwesomeIcon
-											icon={faLaptop}
-											size="sm"
-											style={{
-												position: "absolute",
-												bottom: 0,      // ajusta verticalmente
-												right: -8,       // ou left dependendo do lado desejado
-												zIndex: 10,
-												color: "rgba(255,255,255,0.9)",
-												textShadow: "0 0 3px rgba(0,0,0,0.6)",
-											}}
-										/>
-									</div>
-								</LightTooltip>
-							)}
-							<Typography
-								variant="h6"
-								color={colors.redAccent[200]}
-								sx={{
-									margin: "2px 10px"
-								}}
-							>
-								{data.relatorioColheita}
-							</Typography>
-							{/* {data.tipo === "carregando" ? (
+									{data.relatorioColheita}
+								</Typography>
+								{/* {data.tipo === "carregando" ? (
 								<FontAwesomeIcon
 									color={colors.greenAccent[600]}
 									icon={faTruckMoving}
@@ -366,94 +382,110 @@ const HomeTableTruck = (props) => {
 								/>
 							)} */}
 
-							{/* <Typography sx={{fontSize: '8px'}} color={colors.grey[100]}>{data.userDataApp && data.userDataApp}</Typography> */}
+								{/* <Typography sx={{fontSize: '8px'}} color={colors.grey[100]}>{data.userDataApp && data.userDataApp}</Typography> */}
+							</Box>
+							<Box
+								display={!isNonMobile ? "flex" : "grid"}
+								gridTemplateColumns="repeat(7,1fr)"
+								flexDirection={!isNonMobile ? "column" : "row"}
+								alignSelf="stretch"
+								alignItems="center"
+								justifyContent="space-between"
+								sx={{
+									// backgroundColor: 'red',
+									flex: 0.95,
+									maxWidth: "100%"
+								}}
+							>
+								<DateTruck entrada={data.entrada} data={data} />
+								<PlateTruck data={data} />
+								<QuantityTruckTara data={data} />
+								<QuantityTruckBruto data={data} />
+								{/* <QuantityTruckHold data={data} /> */}
+								{(data.mercadoria || data.parcelasObjFiltered) ? (
+									<MercadoriaTruck data={data} />
+								) : (
+									<EmptyField />
+								)}
+								{data.origem || data.fazendaOrigem ? (
+									<OrigemTruck data={data} />
+								) : (
+									<EmptyField />
+								)}
+								{data.destino || data.fazendaDestino ? (
+									<DestinoTruck data={data} />
+								) : (
+									<EmptyField />
+								)}
+							</Box>
+							<Box display="flex" sx={{ cursor: "pointer" }}>
+								<IconButton
+									// disabled={!isBalanca || !disableInput}
+									aria-label="edit"
+									sx={{
+										filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+									}}
+									onClick={() => {
+										if (!isBalanca || (data?.codTicketPro && data?.filialPro && !isAdminUser)) {
+											toast.error(`Usuário Sem Permissão`, {
+												position: "top-center"
+											});
+											return;
+										}
+										handleOpenModal(editarModal, data);
+									}}
+								>
+									<FontAwesomeIcon
+										icon={faPenToSquare}
+										color={colors.yellow[600]}
+										size="1x"
+									/>
+								</IconButton>
+								<IconButton
+									// disabled={!isBalanca || !disableInput}
+									aria-label="delete"
+									sx={{
+										filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+									}}
+									onClick={() => {
+										if (!isBalanca || !isAdminUser) {
+											toast.error(`Usuário Sem Permissão`, {
+												position: "top-center"
+											});
+											return;
+										}
+										handlerDelete(data.id, data);
+									}}
+								>
+									<FontAwesomeIcon
+										icon={faTrashCan}
+										color={colors.redAccent[600]}
+										// color={
+										// 	!isBalanca || !disableInput
+										// 		? colors.grey[600]
+										// 		: colors.redAccent[600]
+										// }
+										size="1x"
+									/>
+								</IconButton>
+							</Box>
 						</Box>
-						<Box
-							display={!isNonMobile ? "flex" : "grid"}
-							gridTemplateColumns="repeat(7,1fr)"
-							flexDirection={!isNonMobile ? "column" : "row"}
-							alignSelf="stretch"
-							alignItems="center"
-							justifyContent="space-between"
-							sx={{
-								// backgroundColor: 'red',
-								flex: 0.95,
-								maxWidth: "100%"
-							}}
+						<PreviewPrintDialog
+							open={openPreview}
+							onClose={() => setOpenPreview(false)}
+							title={
+								previewKind === "rc"
+									? "Pré-visualização do Relatório de Colheita"
+									: "Pré-visualização (Página)"
+							}
 						>
-							<DateTruck entrada={data.entrada} data={data} />
-							<PlateTruck data={data} />
-							<QuantityTruckTara data={data} />
-							<QuantityTruckBruto data={data} />
-							{/* <QuantityTruckHold data={data} /> */}
-							{(data.mercadoria || data.parcelasObjFiltered) ? (
-								<MercadoriaTruck data={data} />
-							) : (
-								<EmptyField />
-							)}
-							{data.origem || data.fazendaOrigem ? (
-								<OrigemTruck data={data} />
-							) : (
-								<EmptyField />
-							)}
-							{data.destino || data.fazendaDestino ? (
-								<DestinoTruck data={data} />
-							) : (
-								<EmptyField />
-							)}
-						</Box>
-						<Box display="flex" sx={{ cursor: "pointer" }}>
-							<IconButton
-								// disabled={!isBalanca || !disableInput}
-								aria-label="edit"
-								sx={{
-									filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-								}}
-								onClick={() => {
-									if (!isBalanca || (data?.codTicketPro && data?.filialPro && !isAdminUser)) {
-										toast.error(`Usuário Sem Permissão`, {
-											position: "top-center"
-										});
-										return;
-									}
-									handleOpenModal(editarModal, data);
-								}}
-							>
-								<FontAwesomeIcon
-									icon={faPenToSquare}
-									color={colors.yellow[600]}
-									size="1x"
-								/>
-							</IconButton>
-							<IconButton
-								// disabled={!isBalanca || !disableInput}
-								aria-label="delete"
-								sx={{
-									filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-								}}
-								onClick={() => {
-									if (!isBalanca || !isAdminUser) {
-										toast.error(`Usuário Sem Permissão`, {
-											position: "top-center"
-										});
-										return;
-									}
-									handlerDelete(data.id, data);
-								}}
-							>
-								<FontAwesomeIcon
-									icon={faTrashCan}
-									color={colors.redAccent[600]}
-									// color={
-									// 	!isBalanca || !disableInput
-									// 		? colors.grey[600]
-									// 		: colors.redAccent[600]
-									// }
-									size="1x"
-								/>
-							</IconButton>
-						</Box>
-					</Box>
+							{previewData ? (
+								previewKind === "rc"
+									? <PrintRCLayout data={previewData} />
+									: <PrintPage data={previewData} />
+							) : null}
+						</PreviewPrintDialog>
+					</>
 				);
 			})}
 		</>

@@ -35,7 +35,7 @@ const PrintRCLayout = ({ data }) => {
 	}, []);
 
 	return (
-		<div className="print-container">
+		<div className={classes["print-container-romaneio"]}>
 			<Box
 				width="100%"
 				display="flex"
@@ -51,12 +51,13 @@ const PrintRCLayout = ({ data }) => {
 					// zoom: !isNonMobileLand && '50%',
 					transform: !isNonMobileShort ? 'scale(1)' : !isNonMobileLand ? 'scale(0.6)' : ''
 				}}
-				id="printablediv"
+				// id="printabledivRc"
 			>
 				<Box
 					display="flex"
 					justifyContent="center"
 					alignItems="center"
+					className="print-romaneio"
 					sx={{
 						width: isNonMobile ? "90%" : "100%",
 						maxWidth: "925px",
