@@ -107,6 +107,7 @@ const ProdutividadePage = () => {
 	const [showTableList, setShowTableList] = useState(false);
 
 	const [operationName, setOperationName] = useState("");
+	const [selectedColor, setSelectedColor] = useState('');
 
 	const [useRealArray, setUseRealArray] = useState([]);
 
@@ -619,7 +620,8 @@ const ProdutividadePage = () => {
 					projeto: farmIdPdf,
 					parcelas: parcelasSelected,
 					safra: safraCiclo,
-					colorArray: colorArray
+					colorArray: colorArray,
+					selectedColor: selectedColor
 				},
 				{
 					responseType: "text",
@@ -674,7 +676,7 @@ const ProdutividadePage = () => {
 					pdf.setFontSize(20);
 
 					// Usa a altura total da página. PageHeight - margem
-					const bottomMarginPage = 10;
+					const bottomMarginPage = 20;
 					pdf.text(titleTextOperation, pageWidth / 2, pageHeight - bottomMarginPage, { align: "center" });
 
 				}
@@ -1150,6 +1152,8 @@ const ProdutividadePage = () => {
 							setShowTableList={setShowTableList}
 							operationName={operationName}
 							setOperationName={setOperationName}
+							selectedColor={selectedColor} 
+							setSelectedColor={setSelectedColor}
 						/>
 						<Box
 							className={styles.mapListDiv}
