@@ -1,6 +1,6 @@
 import classes from "./farmbox.module.css";
 import djangoApi, { nodeServer } from "../../../utils/axios/axios.utils";
-import { useEffect, useState, useCallback, useContext } from "react";
+import { useEffect, useState, useCallback, useContext, useMemo } from "react";
 import { Box, Button, CircularProgress, Typography, useTheme, Paper } from "@mui/material";
 import { tokens, ColorModeContext } from "../../../theme";
 
@@ -64,6 +64,15 @@ import Swal from "sweetalert2";
 
 import { startTaskMonitor } from "../../../store/tasks/tasks-monitor.actions";
 
+import {
+	ListItemText,
+	Chip,
+	IconButton,
+	Tooltip,
+} from "@mui/material";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+
 const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -85,7 +94,7 @@ const FarmBoxPage = () => {
 	const [allFarmsSet, setAllFarmsSet] = useState(false);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
-	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
+
 
 	const [IsloadingDbFarm, setIsloadingDbFarm] = useState(false);
 
@@ -112,6 +121,18 @@ const FarmBoxPage = () => {
 	const [totalCountSelectedArea, setTotalCountSelectedArea] = useState(0);
 	const [totalCountSelectedAplicado, setTotalCountSelectedAplicado] = useState(0);
 	const [totalCountSelectedAberto, setTotalCountSelectedAberto] = useState(0);
+	const [filteredOperations, setFilteredOperations] = useState([]);
+
+	const [operationFilter, setOperationFilter] = useState([]);
+
+	const selector = useMemo(
+		() => geralAppDetail(showFutureApps, daysFilter, operationFilter),
+		[showFutureApps, daysFilter, operationFilter]
+	);
+
+	const dataGeral = useSelector(selector);
+	console.log('data Geral', dataGeral)
+
 
 
 	useEffect(() => {
@@ -154,16 +175,16 @@ const FarmBoxPage = () => {
 		}
 	};
 
-	const operationFilter = [
-		"Grade Niveladora 1",
-		"Rolo Compactador",
-		"Colheita de Grãos",
-		"Grade Incorporação",
-		"Grade Intermediária 1",
-		"Grade Preparo",
-		'GERAR MAPA',
-		'Semeadura'
-	];
+	// const operationFilter = [
+	// 	"Grade Niveladora 1",
+	// 	"Rolo Compactador",
+	// 	"Colheita de Grãos",
+	// 	"Grade Incorporação",
+	// 	"Grade Intermediária 1",
+	// 	"Grade Preparo",
+	// 	'GERAR MAPA',
+	// 	'Semeadura'
+	// ];
 
 	const handlePreaproSolo = (e) => {
 		setFilterPreaproSolo(e.target.checked);
@@ -200,6 +221,14 @@ const FarmBoxPage = () => {
 		);
 		setFilteredApps(filterFarm);
 	}, [filtFarm, dictSelect, openApp]);
+
+	useEffect(() => {
+		if (dictSelect) {
+			const onlyOperations = dictSelect.map((data) => data.operacao)
+			const removedDupliOperations = [...new Set(onlyOperations)]
+			setFilteredOperations(removedDupliOperations)
+		}
+	}, [dictSelect]);
 
 	const getTrueApi = async () => {
 		try {
@@ -249,9 +278,9 @@ const FarmBoxPage = () => {
 
 	const [openFarm, setOpenFarm] = useState(false);
 
-	const handleOpenFarm =  () => {
+	const handleOpenFarm = () => {
 		setOpenFarm(true);
-		if(theme.palette.mode !== 'dark'){
+		if (theme.palette.mode !== 'dark') {
 			colorMode.toggleColorMode()
 		}
 	}
@@ -282,7 +311,7 @@ const FarmBoxPage = () => {
 			}
 		});
 		setSaldoAplicar(saldoAplicar);
-	}, [filtFarm, showFutureApps]);
+	}, [filtFarm, showFutureApps, dataGeral]);
 
 	// handle data grom nodeServer ----- pluviometria
 
@@ -363,6 +392,30 @@ const FarmBoxPage = () => {
 			maximumFractionDigits: 2
 		})
 	}
+
+	const options = useMemo(
+		() =>
+			(filteredOperations ?? [])
+				.map((op) => (op ?? "").toString().trim())
+				.filter(Boolean)
+				.sort((a, b) => a.localeCompare(b, "pt-BR")),
+		[filteredOperations]
+	);
+
+	const isAllSelected =
+		options.length > 0 && operationFilter.length === options.length;
+
+	const handleChangeOpFilt = (event) => {
+		const value = event.target.value; // array
+		setOperationFilter(typeof value === "string" ? value.split(",") : value);
+	};
+
+	const handleToggleAll = () => {
+		setOperationFilter(isAllSelected ? [] : options);
+	};
+
+	const handleClear = () => setOperationFilter([]);
+
 
 
 	return (
@@ -538,6 +591,7 @@ const FarmBoxPage = () => {
 						}
 					</Box>
 				)}
+
 				{
 
 					filtFarm.length > 0 &&
@@ -552,6 +606,63 @@ const FarmBoxPage = () => {
 						{hojeH}
 					</Box>
 
+				}
+				{
+					filtFarm.length > 0 &&
+
+					<Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+						<FormControl size="small" sx={{ minWidth: 320 }}>
+							<InputLabel id="op-filter-label">Operações</InputLabel>
+							<Select
+								labelId="op-filter-label"
+								multiple
+								value={operationFilter}
+								onChange={handleChangeOpFilt}
+								input={<OutlinedInput label="Operações" />}
+								renderValue={(selected) => (
+									<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+										{selected.map((value) => (
+											<Chip key={value} label={value} size="small" />
+										))}
+									</Box>
+								)}
+								MenuProps={MenuProps}
+							>
+								{/* Selecionar todos / Limpar */}
+								<MenuItem onClick={handleToggleAll}>
+									<Checkbox checked={isAllSelected} indeterminate={!isAllSelected && operationFilter.length > 0} />
+									<ListItemText primary={isAllSelected ? "Desmarcar todos" : "Selecionar todos"} />
+								</MenuItem>
+								<MenuItem onClick={handleClear}>
+									<Checkbox checked={operationFilter.length === 0} />
+									<ListItemText primary="Limpar seleção" />
+								</MenuItem>
+
+								{/* Opções */}
+								{options.map((name) => {
+									const checked = operationFilter.indexOf(name) > -1;
+									return (
+										<MenuItem key={name} value={name}>
+											<Checkbox checked={checked} />
+											<ListItemText primary={name} />
+										</MenuItem>
+									);
+								})}
+							</Select>
+						</FormControl>
+
+						<Tooltip title={isAllSelected ? "Desmarcar todos" : "Selecionar todos"}>
+							<IconButton size="small" onClick={handleToggleAll}>
+								{isAllSelected ? <ClearAllIcon /> : <DoneAllIcon />}
+							</IconButton>
+						</Tooltip>
+
+						<Tooltip title="Limpar seleção">
+							<IconButton size="small" onClick={handleClear}>
+								<ClearAllIcon />
+							</IconButton>
+						</Tooltip>
+					</Box>
 				}
 				{
 					JSON.stringify(totalCountSelected) !== "{}" &&
@@ -632,6 +743,13 @@ const FarmBoxPage = () => {
 													)
 													: data.app.length > 0
 											)
+											// operação (MultiSelect)
+											.filter((data) => {
+												const op = (data?.operacao ?? "").toString().trim();
+												return operationFilter.length === 0
+													? true
+													: !operationFilter.includes(op);
+											})
 											.filter((data) =>
 												!showFutureApps
 													? new Date(data.date) <
@@ -648,7 +766,7 @@ const FarmBoxPage = () => {
 
 												if (dateA < dateB) return -1;
 												if (dateA > dateB) return 1;
-												
+
 												// Datas iguais: compara o número da app
 												const numA = parseInt(a.app.replace(/\D/g, ""), 10);
 												const numB = parseInt(b.app.replace(/\D/g, ""), 10);
@@ -753,6 +871,7 @@ const FarmBoxPage = () => {
 															daysFilter={
 																daysFilter
 															}
+															dataGeral={dataGeral}
 														/>
 													);
 												})}

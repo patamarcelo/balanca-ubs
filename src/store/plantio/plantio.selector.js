@@ -593,7 +593,7 @@ export const onlyFarm = (state) => {
 	return [...new Set(onlyfarm.flat())];
 };
 
-export const geralAppDetail = (showFutureApps, days) => (state) => {
+export const geralAppDetail = (showFutureApps, days, operationFilter) => (state) => {
 	const plantio = state.plantio.app;
 
 	const newArr = plantio
@@ -607,6 +607,15 @@ export const geralAppDetail = (showFutureApps, days) => (state) => {
 				? new Date(data.date) < getNextDays(days)
 				: new Date(data.date) < new Date("2031-10-17")
 		)
+		.filter((data) => {
+			const op = data?.inputs[0]?.input?.name?.trim() ?? "";
+
+			// Se não houver filtro → passa tudo
+			if (!operationFilter || operationFilter.length === 0) return true;
+
+			// Se tiver filtro → só passa se estiver contido
+			return !operationFilter.includes(op);
+		})
 		.map((data) => {
 			// console.log('dataApplications: : ', data)
 			const cultura = data.plantations[0].plantation.culture_name;

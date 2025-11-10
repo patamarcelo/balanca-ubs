@@ -17,9 +17,9 @@ const ResumoFazendasPage = (props) => {
 		filterPreaproSolo,
 		operationFilter,
 		showFutureApps,
-		daysFilter
+		daysFilter,
+		dataGeral
 	} = props;
-	const dataGeral = useSelector(geralAppDetail(showFutureApps, daysFilter));
 	// console.log('dataGeral: ', dataGeral)
 	const fazPlan = dataGeral.fazendas[fazenda];
 	// console.log('fazPlan', fazPlan)
