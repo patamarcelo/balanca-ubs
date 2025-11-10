@@ -179,7 +179,7 @@ const ListPrintPage = (props) => {
 		handleClose();
 	};
 
-	console.log('displayedRows', displayedRows)
+	// console.log('displayedRows', displayedRows)
 
 	return (
 		<Box>

@@ -111,6 +111,8 @@ const ProdutividadePage = () => {
 
 	const [useRealArray, setUseRealArray] = useState([]);
 
+	const [selectAllFarm, setSelectAllFarm] = useState(false);
+
 	useEffect(() => {
 		if (selectedProject) {
 			const getFarmId = filteredArray.find((data) => data.talhao__fazenda__nome === selectedProject[0])?.talhao__fazenda__id_farmbox
@@ -173,6 +175,12 @@ const ProdutividadePage = () => {
 	const handleListShowData = (e) => {
 		setFiltPlantioDone(e.target.checked);
 	};
+	
+	const handleSelectAllFarm = (e) => {
+		setSelectAllFarm(e.target.checked);
+	};
+
+
 
 	// useEffect(() => {
 	// 	const filteredArray = produtividade.filter(
@@ -830,6 +838,14 @@ const ProdutividadePage = () => {
 	};
 
 
+	useEffect(() => {
+		if(selectAllFarm){
+			const allIds = mapPlantation.map((data) => data.id_farmbox)
+			setParcelasSeleced(allIds)	
+		} else {
+			setParcelasSeleced([])
+		}
+	}, [selectAllFarm]);
 
 
 
@@ -908,6 +924,15 @@ const ProdutividadePage = () => {
 							<Switch
 								checked={filtPlantioDone}
 								onChange={handleListShowData}
+								inputProps={{ "aria-label": "controlled" }}
+								color="success"
+								size="small"
+							/>
+						</Tooltip>
+						<Tooltip title="Selecionar todas as Parcelas" placement="bottom">
+							<Switch
+								checked={selectAllFarm}
+								onChange={handleSelectAllFarm}
 								inputProps={{ "aria-label": "controlled" }}
 								color="success"
 								size="small"
