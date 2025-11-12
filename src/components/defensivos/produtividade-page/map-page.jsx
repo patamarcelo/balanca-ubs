@@ -525,7 +525,7 @@ const MapPage = ({
 									key={i}
 									options={{
 										fillColor: plantioDoing
-											? Color(baseColor).lighten(0.7).hex() // Pega a cor base, clareia em 30% e converte para string hex
+											? Color(baseColor).lighten(0.3).hex() // Pega a cor base, clareia em 30% e converte para string hex
 											: baseColor,
 										fillOpacity: isSelected ? 0.3 : getColorStroke(dataF).stroke,
 										strokeColor:
