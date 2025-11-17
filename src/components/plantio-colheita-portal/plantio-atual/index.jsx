@@ -122,7 +122,7 @@ const PlantioAtual = ({params}) => {
                     .then((res) => {
                         
                         const newData = dataPlannerHandler(res.data.dados.qs_planned)
-                        const newDataBar = dataPlannerHandler(res.data.dados.qs_planned)
+                        const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
                         // const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
                         setDataToBarChartPlanned(newDataBar)
                         setDataFromApiOriginal(res.data.dados.qs_planned)

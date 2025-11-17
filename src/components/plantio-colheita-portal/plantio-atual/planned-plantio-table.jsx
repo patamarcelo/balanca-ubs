@@ -158,9 +158,10 @@ const TableComponent = ({ data, onlyFarmsArr, type, dataExec }) => {
     // -----------------------------------PLANNED TABLE-----------------------------------
     // -----------------------------------EXEC TABLE-----------------------------------
     if (type === 'executed') {
-        console.log('onlyWeeks: ', onlyWeeks)
-        console.log('onlyFarmsArr: ', onlyFarmsArr)
-        console.log('data', data)
+        // console.log('onlyWeeks: ', onlyWeeks)
+        // console.log('onlyFarmsArr: ', onlyFarmsArr)
+        // console.log('data excuted', data)
+        // console.log('data excutedsss', dataExec)
         return (
             <table className={styles.table}>
                 <thead style={{ backgroundColor: colors.blueOrigin[500] }}>
