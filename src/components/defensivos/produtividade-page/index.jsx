@@ -51,7 +51,7 @@ import MultiSelectFilter from "./filter-parcelas";
 
 
 
-const ProdutividadePage = () => {
+const ProdutividadePage = ({ useMulti }) => {
 
 	const [printPage, setPrintPage] = useState(true);
 	const [bigMap, setBigMap] = useState(false);
@@ -113,7 +113,6 @@ const ProdutividadePage = () => {
 
 	const [selectAllFarm, setSelectAllFarm] = useState(false);
 
-	const [useMulti, setUseMulti] = useState(false);
 
 	useEffect(() => {
 		if (selectedProject) {

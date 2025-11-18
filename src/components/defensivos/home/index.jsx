@@ -25,6 +25,11 @@ import classes from "../data-program/data-program.module.css";
 import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
 import { useSelector } from "react-redux";
 
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Tooltip from "@mui/material/Tooltip";
+
+
 
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
@@ -48,6 +53,9 @@ const HomeDefensivoPage = (props) => {
 
 	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
+
+	const [checked, setChecked] = useState(false);
+
 
 	const visible = useSelector((state) => state.ui.headerVisible);
 
@@ -264,7 +272,7 @@ const HomeDefensivoPage = (props) => {
 		},
 		{
 			status: isProdutividadePage,
-			comp: <ProdutividadePage isLoadingHome={isLoadingHome} />
+			comp: <ProdutividadePage isLoadingHome={isLoadingHome} useMulti={checked} />
 		},
 		{
 			status: isOpenFarmbox,
@@ -283,6 +291,12 @@ const HomeDefensivoPage = (props) => {
 			comp: <InsumosBioPage isLoadingHome={isLoadingHome} />
 		}
 	];
+
+	const handleChange = (event) => {
+		const value = event.target.checked;
+		setChecked(value);
+	};
+
 	return (
 		<Box width="100%" height="100%" mt={!visible && 2} alignItems={"center"}>
 			<Box sx={{ marginLeft: "5px" }} mb={2}>
@@ -313,6 +327,27 @@ const HomeDefensivoPage = (props) => {
 								/>
 							);
 						})}
+						<Tooltip title="Possibilidade de filtrar mais de 1 ciclo na Produtividade" arrow>
+							<FormControlLabel
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									gap: 1,
+									".MuiFormControlLabel-label": {
+										fontWeight: 600,
+										color: checked ? "#2e7d32" : "#555",
+									},
+								}}
+								control={
+									<Switch
+										checked={checked}
+										onChange={handleChange}
+										color="success"
+									/>
+								}
+								label={checked ? "Multi" : "Single"}
+							/>
+						</Tooltip>
 					</Box>
 					{isOpenProductsProgram && (
 						<Box
