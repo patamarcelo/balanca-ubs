@@ -113,6 +113,8 @@ const ProdutividadePage = () => {
 
 	const [selectAllFarm, setSelectAllFarm] = useState(false);
 
+	const [useMulti, setUseMulti] = useState(false);
+
 	useEffect(() => {
 		if (selectedProject) {
 			const getFarmId = filteredArray.find((data) => data.talhao__fazenda__nome === selectedProject[0])?.talhao__fazenda__id_farmbox
@@ -175,7 +177,7 @@ const ProdutividadePage = () => {
 	const handleListShowData = (e) => {
 		setFiltPlantioDone(e.target.checked);
 	};
-	
+
 	const handleSelectAllFarm = (e) => {
 		setSelectAllFarm(e.target.checked);
 	};
@@ -303,7 +305,7 @@ const ProdutividadePage = () => {
 
 		filtered.forEach((data) => {
 			const areaToget = showAsPlanned ? data.area_planejamento_plantio : data.area_colheita
-			
+
 			const areaSum = data.finalizado_colheita ? areaToget : data.area_parcial;
 			const getArea = areaSum || 0;
 			const pesoSum = data?.peso_kg || 0;
@@ -444,9 +446,13 @@ const ProdutividadePage = () => {
 	useEffect(() => {
 		(async () => {
 			setLoadingData(true);
+			const newPayload = {
+				...safraCiclo,
+				use_multi: useMulti
+			}
 			try {
 				await djangoApi
-					.post("plantio/get_produtividade_plantio/", safraCiclo, {
+					.post("plantio/get_produtividade_plantio/", newPayload, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}
@@ -467,8 +473,12 @@ const ProdutividadePage = () => {
 	useEffect(() => {
 		(async () => {
 			try {
+				const newPayload = {
+					...safraCiclo,
+					use_multi: useMulti
+				}
 				await djangoApi
-					.post("plantio/get_plantio_detail_map/", safraCiclo, {
+					.post("plantio/get_plantio_detail_map/", newPayload, {
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 						}
@@ -839,9 +849,9 @@ const ProdutividadePage = () => {
 
 
 	useEffect(() => {
-		if(selectAllFarm){
+		if (selectAllFarm) {
 			const allIds = mapPlantation.map((data) => data.id_farmbox)
-			setParcelasSeleced(allIds)	
+			setParcelasSeleced(allIds)
 		} else {
 			setParcelasSeleced([])
 		}
@@ -1177,7 +1187,7 @@ const ProdutividadePage = () => {
 							setShowTableList={setShowTableList}
 							operationName={operationName}
 							setOperationName={setOperationName}
-							selectedColor={selectedColor} 
+							selectedColor={selectedColor}
 							setSelectedColor={setSelectedColor}
 						/>
 						<Box
