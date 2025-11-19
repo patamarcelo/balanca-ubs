@@ -96,7 +96,9 @@ const PlantioDonePage = () => {
 					})
 					.then((res) => {
 						// console.log("by day ");
-						setDataByDay(res.data.plantio_by_day);
+						setDataByDay(res.data.plantio_by_day_extrato);
+						console.log('plantio por dia ', res.data.plantio_by_day)
+						console.log('plantio por dia ', res.data.plantio_by_day_extrato)
 						const newData = res.data.data.map((data, i) => ({
 							...data,
 							id: i,
