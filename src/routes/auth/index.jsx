@@ -14,7 +14,7 @@ import "./index.css";
 
 import PasswordReset from "./password-reset";
 
-import background from "../../utils/assets/img/background.png";
+import background from "../../utils/assets/img/background.jpg";
 
 // import {
 // 	createNotification,
@@ -112,10 +112,22 @@ const Auth = () => {
 	return (
 		<Box
 			sx={{
-				height: "100%",
-				width: "100%",
+				height: "100vh",
+				width: "100vw",
 				backgroundImage: `url(${background})`,
-				opacity: "0.9"
+				backgroundSize: "cover",        // 🔥 cobre toda a tela sem distorcer
+				backgroundPosition: "center",    // 🔥 centraliza sempre
+				backgroundRepeat: "no-repeat",   // 🔥 evita repetição
+				position: "relative",
+
+				// overlay suave
+				"&::before": {
+					content: '""',
+					position: "absolute",
+					inset: 0,
+					backgroundColor: "rgba(0,0,0,0.25)", // 25% escuro por cima
+					zIndex: 1
+				}
 			}}
 			display="flex"
 			alignItems="center"
@@ -123,6 +135,7 @@ const Auth = () => {
 		>
 			<Box
 				sx={{
+					position: "relative",
 					backgroundColor: "rgba(18,117,181,0.9)",
 					margin: "20px 20px",
 					padding: "50px 20px",
@@ -130,7 +143,8 @@ const Auth = () => {
 					maxWidth: isNonMobile ? "50%" : "100%",
 					minHeight: "40vh",
 					borderRadius: " 8px",
-					boxShadow: "inset 0 0 7px black"
+					boxShadow: "inset 0 0 7px black",
+					zIndex: 2
 				}}
 			>
 				<Box
@@ -139,7 +153,7 @@ const Auth = () => {
 					justifyContent="center"
 					alignItems="center"
 					mb="50px"
-				>	
+				>
 					<img src={Logo} alt="logo" style={{ borderRadius: "4px" }} />
 				</Box>
 				<Formik
