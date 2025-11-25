@@ -298,7 +298,8 @@ const ProdutosConsolidados = () => {
                     <Box
                         ref={captureRef}
                         sx={{
-                            display: 'inline-block'
+                            display: 'inline-block',
+                            paddingRight: '20px'
                         }}
                     >
                         <Box
