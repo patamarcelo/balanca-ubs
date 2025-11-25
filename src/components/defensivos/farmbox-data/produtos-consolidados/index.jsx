@@ -1,11 +1,11 @@
-import { Box, Button, Typography, IconButton, useTheme, Divider,Paper } from '@mui/material'
+import { Box, Button, Typography, IconButton, useTheme, Divider, Paper, Fab } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import SelectInputs from './select-inputs';
 import DateTimeSelector from './date-time-select';
 
 import { tokens } from '../../../../theme';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { selectApp } from '../../../../store/plantio/plantio.selector';
 
@@ -21,6 +21,12 @@ import djangoApi from '../../../../utils/axios/axios.utils';
 
 import Swal from "sweetalert2";
 import OpenApsAllprodsPage from './list-prods-open-apss-all';
+
+import html2canvas from "html2canvas";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+
+
+
 
 
 const ProdutosConsolidados = () => {
@@ -50,6 +56,9 @@ const ProdutosConsolidados = () => {
 
     const [isLoadingBtn, setIsLoadingBtn] = useState(false);
 
+    const captureRef = useRef(null);
+
+
     // useEffect(() => {
     //     console.log('selectedData', selectedData);
     // }, [selectedData]);
@@ -62,6 +71,37 @@ const ProdutosConsolidados = () => {
         setObservations("")
         setFilteredData([])
     }
+
+    const handleCapture = async () => {
+        const element = captureRef.current;
+        if (!element) return;
+
+        try {
+            const canvas = await html2canvas(element, {
+                useCORS: true, // ajuda quando há imagens com CORS permitido
+                scale: 2,      // aumenta resolução
+            });
+
+            const dataUrl = canvas.toDataURL("image/png");
+
+            const link = document.createElement("a");
+            link.href = dataUrl;
+            link.download = `pre_st_${stOpened?.toString().trim() || 'gerada'}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success(
+                `Captura de tela gerada`,
+                {
+                    position: "top-center",
+                    duration: 5000
+                }
+            )
+        } catch (err) {
+            console.error("Erro ao gerar imagem:", err);
+            alert("Não foi possível gerar a imagem.");
+        }
+    };
 
     useEffect(() => {
         if (openApp.length > 0) {
@@ -112,7 +152,7 @@ const ProdutosConsolidados = () => {
                     console.log(res);
                     if (res.status === 201) {
                         const { st_number, sent_by_email } = res.data
-                        if(sent_by_email === 'Não'){
+                        if (sent_by_email === 'Não') {
                             console.log('Problema em abrir a ST', st_number)
                             setStOpened(st_number)
                             Swal.fire({
@@ -129,6 +169,24 @@ const ProdutosConsolidados = () => {
                                 icon: "success"
                             });
                         }
+
+                        // 🚀 espera 2s pra garantir que o número já foi renderizado
+                        setTimeout(async () => {
+                            try {
+                                await handleCapture();
+                                toast.success(
+                                    `Captura de tela gerada`,
+                                    {
+                                        position: "top-center",
+                                        duration: 5000
+                                    }
+                                )
+
+                            } catch (e) {
+                                console.error("Erro ao capturar a tela após abrir ST:", e);
+                            }
+                        }, 2000);
+
                     } else if (res.status === 208) {
                         const { msg, error } = res.data
                         Swal.fire({
@@ -209,6 +267,19 @@ const ProdutosConsolidados = () => {
                                 loading={isLoadingBtn}
                             >Gerar St</LoadingButton>
                         </Box>
+                        <Fab
+                            color="success"
+                            onClick={handleCapture}
+                            aria-label="Capturar imagem"
+                            sx={{
+                                position: "fixed",
+                                bottom: 24,
+                                right: 28,
+                                boxShadow: 4,
+                            }}
+                        >
+                            <PhotoCameraIcon />
+                        </Fab>
                         <Box
                             sx={{
                                 justifySelf: 'center',
@@ -225,29 +296,36 @@ const ProdutosConsolidados = () => {
                 Object.keys(selectedData).length > 0 &&
                 <Box>
                     <Box
-                        component={stOpened && Paper}
-                        elevation={stOpened && 8}
+                        ref={captureRef}
                         sx={{
-                            paddingLeft: '20px',
-                            marginTop: '5px',
-                            marginRight: '-10px',
-                            paddingTop: 1
+                            display: 'inline-block'
                         }}
                     >
-                        <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
-                        {
-                            stOpened && stOpened !== 0 &&
-                            <Typography sx={{ marginLeft: '-20px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 20px', }} color={colors.textColor[200]}>Pré ST:
-                                <span style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '10px', marginLeft: '10px', }} color={colors.textColor[100]}>{stOpened}</span>
-                            </Typography>
-                        }
-                        {stOpened && stOpened === 0 &&
-                            <Typography sx={{ marginLeft: '-30px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'red', padding: '0px 40px 0px 30px', }} color={colors.textColor[200]}>Erro ao abrir Pré ST
-                            </Typography>
+                        <Box
+                            component={stOpened && Paper}
+                            elevation={stOpened && 8}
+                            sx={{
+                                paddingLeft: '20px',
+                                marginTop: '5px',
+                                marginRight: '-10px',
+                                paddingTop: 1
+                            }}
+                        >
+                            <Typography sx={{ fontSize: '12px' }} color={colors.textColor[100]}>{showDateTime}</Typography>
+                            {
+                                stOpened && stOpened !== 0 &&
+                                <Typography sx={{ marginLeft: '-20px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'blue', padding: '0px 40px 0px 20px', }} color={colors.textColor[200]}>Pré ST:
+                                    <span style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '10px', marginLeft: '10px', }} color={colors.textColor[100]}>{stOpened}</span>
+                                </Typography>
+                            }
+                            {stOpened && stOpened === 0 &&
+                                <Typography sx={{ marginLeft: '-30px', fontWeight: '600', fontSize: '16px', marginTop: '0px', backgroundColor: 'red', padding: '0px 40px 0px 30px', }} color={colors.textColor[200]}>Erro ao abrir Pré ST
+                                </Typography>
 
-                        }
+                            }
+                        </Box>
+                        <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                     </Box>
-                    <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                     {
                         selectedData &&
                         <>
@@ -260,7 +338,7 @@ const ProdutosConsolidados = () => {
                                     marginBottom: '40px'
                                 }}
                             >
-                                <OpenApsAllprodsPage data={openApp} selectedData={selectedData} setFilteredData={setFilteredData} filteredData={filteredData}/>
+                                <OpenApsAllprodsPage data={openApp} selectedData={selectedData} setFilteredData={setFilteredData} filteredData={filteredData} />
                             </Box>
                         </>
                     }
