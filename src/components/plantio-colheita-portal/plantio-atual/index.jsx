@@ -1,14 +1,14 @@
 import { Box, Button, Divider, Typography, useTheme } from "@mui/material";
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 
 import { tokens } from "../../../theme";
 import BarPlantioPlanner from "./bar-chart-plantio-comp.jsx";
 
-import { dataPlannerHandler, consolidateData, groupExecutedByWeek, dataPlannerHandlerBarChart } from './data-handler.js'
+import { dataPlannerHandler, consolidateData, groupExecutedByWeek, dataPlannerHandlerBarChart } from './data-handler.js';
 import djangoApi from "../../../utils/axios/axios.utils";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import TableComonent from './planned-plantio-table'
+import TableComonent from './planned-plantio-table';
 import DashboardTable from "./sent-seeds.jsx";
 import TotalCOmp from "./planted-info.jsx";
 
@@ -17,14 +17,16 @@ import IconButton from '@mui/material/IconButton';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Switch from '@mui/material/Switch';
 
+import Fab from '@mui/material/Fab';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
+import html2canvas from 'html2canvas';
 
-
-const PlantioAtual = ({params}) => {
+const PlantioAtual = ({ params }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const isDark = theme.palette.mode === 'dark'
+    const isDark = theme.palette.mode === 'dark';
 
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingSeed, setIsLoadingSeed] = useState(false);
@@ -44,6 +46,11 @@ const PlantioAtual = ({params}) => {
 
     const [dataToReport, setDataToReport] = useState(null);
 
+    // refs para as 3 áreas a serem "printadas"
+    const plannerRef = useRef(null);
+    const acompanhamentoRef = useRef(null);
+    const realizadoRef = useRef(null);
+
     useEffect(() => {
         function getFormattedDate() {
             const now = new Date();
@@ -57,15 +64,14 @@ const PlantioAtual = ({params}) => {
 
             return `${day}/${month}/${year} - ${hours}:${minutes}`;
         }
-        const newDate = getFormattedDate()
-        setDataToReport(newDate)
+        const newDate = getFormattedDate();
+        setDataToReport(newDate);
     }, []);
-
 
     useEffect(() => {
         if (dataFromApiOriginal.length > 0) {
-            const newData = dataPlannerHandler(dataFromApiOriginal, togllePlantioColheitaView)
-            setDataFromApi(newData)
+            const newData = dataPlannerHandler(dataFromApiOriginal, togllePlantioColheitaView);
+            setDataFromApi(newData);
         }
     }, [togllePlantioColheitaView, dataFromApiOriginal]);
 
@@ -93,25 +99,25 @@ const PlantioAtual = ({params}) => {
 
                 return totalPlannedSum;
             }
-            console.log('datafromAPI::::', dataFromApi)
-            const totalProj = dataFromApi.reduce((acc, curr) => acc += curr.totalPlanned, 0)
+            console.log('datafromAPI::::', dataFromApi);
+            const totalProj = dataFromApi.reduce((acc, curr) => acc += curr.totalPlanned, 0);
 
-            const totalPlanned = getTotalPlannedUntilCurrentWeek(dataToBarChartPlanned)
-            const totalPlanted = executedAreaArr.reduce((acc, curr) => acc += curr.area_plantada, 0)
+            const totalPlanned = getTotalPlannedUntilCurrentWeek(dataToBarChartPlanned);
+            const totalPlanted = executedAreaArr.reduce((acc, curr) => acc += curr.area_plantada, 0);
             const newTotals = {
                 planejado: totalPlanned,
                 plantado: totalPlanted,
                 projetado: totalProj
-            }
+            };
 
-            setTotalsSet(newTotals)
+            setTotalsSet(newTotals);
         }
     }, [executedAreaArr, dataToBarChartPlanned, dataFromApi]);
 
     useEffect(() => {
         (async () => {
             try {
-                setIsLoading(true)
+                setIsLoading(true);
                 await djangoApi
                     .get("plantio/get_plantio_planner_data/", {
                         headers: {
@@ -120,15 +126,14 @@ const PlantioAtual = ({params}) => {
                         params
                     })
                     .then((res) => {
-                        
-                        const newData = dataPlannerHandler(res.data.dados.qs_planned)
-                        const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
-                        // const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
-                        setDataToBarChartPlanned(newDataBar)
-                        setDataFromApiOriginal(res.data.dados.qs_planned)
-                        setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
-                        setExecutedAreaArr(res.data.dados.qs_executed_area)
-                        setDataFromApi(newData)
+
+                        const newData = dataPlannerHandler(res.data.dados.qs_planned);
+                        const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned);
+                        setDataToBarChartPlanned(newDataBar);
+                        setDataFromApiOriginal(res.data.dados.qs_planned);
+                        setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))));
+                        setExecutedAreaArr(res.data.dados.qs_executed_area);
+                        setDataFromApi(newData);
                     })
                     .catch((err) => console.log(err));
                 setIsLoading(false);
@@ -144,7 +149,7 @@ const PlantioAtual = ({params}) => {
     useEffect(() => {
         (async () => {
             try {
-                setIsLoadingSeed(true)
+                setIsLoadingSeed(true);
                 await djangoApi
                     .get("plantio/get_sent_seeds_data/", {
                         headers: {
@@ -167,12 +172,10 @@ const PlantioAtual = ({params}) => {
     }, []);
 
     useEffect(() => {
-        // console.log('data from api', dataFromApi)
-        // console.log('data from api', executedAreaArr)
         if (executedAreaArr.length > 0 || dataToBarChartPlanned.length > 0) {
-            const newArr = consolidateData(dataToBarChartPlanned, executedAreaArr)
-            console.log('dataTobarChart: ', newArr)
-            setDataToBarChart(newArr)
+            const newArr = consolidateData(dataToBarChartPlanned, executedAreaArr);
+            console.log('dataTobarChart: ', newArr);
+            setDataToBarChart(newArr);
         }
     }, [dataToBarChartPlanned, executedAreaArr]);
 
@@ -189,10 +192,10 @@ const PlantioAtual = ({params}) => {
 
             return `${day}/${month}/${year} - ${hours}:${minutes}`;
         }
-        const newDate = getFormattedDate()
-        setDataToReport(newDate)
+        const newDate = getFormattedDate();
+        setDataToReport(newDate);
         try {
-            setIsLoadingSeed(true)
+            setIsLoadingSeed(true);
             await djangoApi
                 .get("plantio/get_sent_seeds_data/", {
                     headers: {
@@ -213,7 +216,7 @@ const PlantioAtual = ({params}) => {
         }
 
         try {
-            setIsLoading(true)
+            setIsLoading(true);
             await djangoApi
                 .get("plantio/get_plantio_planner_data/", {
                     headers: {
@@ -222,13 +225,13 @@ const PlantioAtual = ({params}) => {
                     params
                 })
                 .then((res) => {
-                    const newData = dataPlannerHandler(res.data.dados.qs_planned)
-                    const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned)
-                    setDataToBarChartPlanned(newDataBar)
-                    setDataFromApiOriginal(res.data.dados.qs_planned)
-                    setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))))
-                    setExecutedAreaArr(res.data.dados.qs_executed_area)
-                    setDataFromApi(newData)
+                    const newData = dataPlannerHandler(res.data.dados.qs_planned);
+                    const newDataBar = dataPlannerHandlerBarChart(res.data.dados.qs_planned);
+                    setDataToBarChartPlanned(newDataBar);
+                    setDataFromApiOriginal(res.data.dados.qs_planned);
+                    setOnlyFarmsArr(res.data.dados.qs_planned_projetos.sort((b, a) => b.replace('Projeto').localeCompare(a.replace('Projeto'))));
+                    setExecutedAreaArr(res.data.dados.qs_executed_area);
+                    setDataFromApi(newData);
                 })
                 .catch((err) => console.log(err));
             setIsLoading(false);
@@ -238,7 +241,31 @@ const PlantioAtual = ({params}) => {
         } finally {
             setIsLoading(false);
         }
-    }
+    };
+
+    // helper para tirar print de uma div
+    const captureElement = async (element, fileName) => {
+        if (!element) return;
+        const canvas = await html2canvas(element, {
+            scale: 2,        // melhor qualidade
+            useCORS: true,
+            backgroundColor: theme.palette.background.default, // 👈 mantém o mesmo fundo do app
+
+        });
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = fileName;
+        link.click();
+    };
+
+    const handleTakeSnapshots = async () => {
+        const safeDate = (dataToReport || '').replace(/[\/:\s-]/g, '_');
+
+        await captureElement(plannerRef.current, `planner_${safeDate}.png`);
+        await captureElement(acompanhamentoRef.current, `acompanhamento_${safeDate}.png`);
+        await captureElement(realizadoRef.current, `realizado_${safeDate}.png`);
+    };
 
     if (isLoading || isLoadingSeed) {
         return (
@@ -255,8 +282,9 @@ const PlantioAtual = ({params}) => {
                     sx={{ color: colors.blueAccent[100] }}
                 />
             </Box>
-        )
+        );
     }
+
     return (
         <Box
             width={"100%"}
@@ -271,15 +299,36 @@ const PlantioAtual = ({params}) => {
                 minWidth: "1365px",
             }}
         >
+            {/* Botão de refresh fixo */}
             <Box
                 sx={{
                     marginLeft: 'auto'
                 }}
             >
-                <IconButton color="secondary" aria-label="add an alarm" sx={{ cursor: 'pointer', position: 'fixed', right: 20 }} onClick={handleRefresh}>
+                <IconButton
+                    color="secondary"
+                    aria-label="refresh"
+                    sx={{ cursor: 'pointer', position: 'fixed', right: 20, top: 20 }}
+                    onClick={handleRefresh}
+                >
                     <AutorenewIcon />
                 </IconButton>
             </Box>
+
+            {/* FAB para tirar os 3 prints */}
+            <Fab
+                color="success"
+                aria-label="snapshot"
+                onClick={handleTakeSnapshots}
+                sx={{
+                    position: 'fixed',
+                    bottom: 24,
+                    right: 24,
+                    zIndex: 1300
+                }}
+            >
+                <PhotoCameraIcon />
+            </Fab>
 
             {
                 sentSeedsData && sentSeedsData.length > 0 &&
@@ -289,6 +338,8 @@ const PlantioAtual = ({params}) => {
                             margin: '10px 0px',
                             width: '100%',
                             borderRadius: '6px',
+                            boxShadow: theme.shadows[8],                // 👈 força sombra
+                            border: `1px solid ${theme.palette.divider}` // 👈 borda visível
                         }}
                     >
 
@@ -327,61 +378,26 @@ const PlantioAtual = ({params}) => {
                         />
                     </Box>
                     <Divider variant="fullWidth" />
-                    <Paper elevation={8}
+                    <Box ref={plannerRef}
                         sx={{
-                            margin: '0px 0px 10px 0px',
-                            width: '100%',
-                            borderRadius: '6px'
+                            p: 2, // dá um respiro em volta do Paper
+                            bgcolor: theme.palette.background.default, // mesmo fundo da tela
                         }}
                     >
-                        <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            p={1}
-                            sx={{
-                                backgroundColor: togllePlantioColheitaView ? colors.blueOrigin[400] : colors.greenAccent[`${isDark ? 700 : 300}`],
-                                color: colors.grey[900],
-                                minWidth: "1581px",
-                                width: '100%',
-                                borderRadius: '6px'
-                            }}
-                        >
-                            <Typography
-                                variant="h1"
-                                color={"whitesmoke"}
-                                sx={{ alignSelf: "center", justifySelf: "center" }}
-                            >
-                                {togllePlantioColheitaView ? "Planejamento Plantio" : 'Previsão Colheita'}
-                            </Typography>
-                        </Box>
-                    </Paper>
-                    <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
 
-                        <TableComonent data={dataFromApi} onlyFarmsArr={onlyFarmsArr} type={"planner"} dataToReport={dataToReport} />
-
-                    </Paper>
-                    <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
-                        <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
-                    </Box>
-                </>
-            }
-            {
-                dataToBarChart && dataToBarChart.length > 0 && (
-                    <>
                         <Paper elevation={8}
                             sx={{
-                                margin: '30px 0px 10px 0px',
+                                margin: '0px 0px 10px 0px',
                                 width: '100%',
                                 borderRadius: '6px'
                             }}
                         >
-
                             <Box
                                 display={"flex"}
                                 justifyContent={"center"}
                                 p={1}
                                 sx={{
-                                    backgroundColor: colors.blueOrigin[400],
+                                    backgroundColor: togllePlantioColheitaView ? colors.blueOrigin[400] : colors.greenAccent[`${isDark ? 700 : 300}`],
                                     color: colors.grey[900],
                                     minWidth: "1581px",
                                     width: '100%',
@@ -393,21 +409,80 @@ const PlantioAtual = ({params}) => {
                                     color={"whitesmoke"}
                                     sx={{ alignSelf: "center", justifySelf: "center" }}
                                 >
-                                    Acompanhamento Plantio
+                                    {togllePlantioColheitaView ? "Planejamento Plantio" : 'Previsão Colheita'}
                                 </Typography>
                             </Box>
                         </Paper>
-                        <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px' }}>
-                            <BarPlantioPlanner data={dataToBarChart} />
-                        </Paper>
-                        {/* {
-                            totalsSet.planejado && totalsSet.plantado &&
+
+                        {/* PRIMEIRO PRINT: Tabela planner + data */}
+                        <Box
+                            sx={{ width: '100%' }}
+                        >
+                            <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
+                                <TableComonent
+                                    data={dataFromApi}
+                                    onlyFarmsArr={onlyFarmsArr}
+                                    type={"planner"}
+                                    dataToReport={dataToReport}
+                                />
+                            </Paper>
+                            <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
+                                <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                </>
+            }
+            {
+                dataToBarChart && dataToBarChart.length > 0 && (
+                    <>
+                        {/* SEGUNDO PRINT: Acompanhamento Plantio + gráfico + totais + data */}
+                        <Box
+                            ref={acompanhamentoRef}
+                            sx={{
+                                width: '100%',
+                                p: 2, // dá um respiro em volta do Paper
+                                bgcolor: theme.palette.background.default, // mesmo fundo da tela
+
+                            }}
+                        >
+                            <Paper elevation={8}
+                                sx={{
+                                    margin: '30px 0px 10px 0px',
+                                    width: '100%',
+                                    borderRadius: '6px'
+                                }}
+                            >
+                                <Box
+                                    display={"flex"}
+                                    justifyContent={"center"}
+                                    p={1}
+                                    sx={{
+                                        backgroundColor: colors.blueOrigin[400],
+                                        color: colors.grey[900],
+                                        minWidth: "1581px",
+                                        width: '100%',
+                                        borderRadius: '6px'
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h1"
+                                        color={"whitesmoke"}
+                                        sx={{ alignSelf: "center", justifySelf: "center" }}
+                                    >
+                                        Acompanhamento Plantio
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                            <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px' }}>
+                                <BarPlantioPlanner data={dataToBarChart} />
+                            </Paper>
+
                             <TotalCOmp totalsSet={totalsSet} />
-                        } */}
-                        
-                        <TotalCOmp totalsSet={totalsSet} />
-                        <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
-                            <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+
+                            <Box justifyContent="flex-end" sx={{ marginTop: '5px', width: '100%', display: 'flex' }}>
+                                <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
+                            </Box>
                         </Box>
                     </>
                 )
@@ -415,45 +490,59 @@ const PlantioAtual = ({params}) => {
             {
                 dataFromApi && dataFromApi.length > 0 &&
                 <>
-                    <Paper elevation={8}
+                    {/* TERCEIRO PRINT: Realizado + tabela executado + data */}
+                    <Box
+                        ref={realizadoRef}
                         sx={{
-                            margin: '30px 0px 10px 0px',
                             width: '100%',
-                            borderRadius: '6px',
+                            p: 2, // dá um respiro em volta do Paper
+                            bgcolor: theme.palette.background.default, // mesmo fundo da tela
                         }}
                     >
-
-                        <Box
-                            display={"flex"}
-                            justifyContent={"center"}
-                            p={1}
+                        <Paper elevation={8}
                             sx={{
-                                backgroundColor: isDark ? colors.greenAccent[600] : colors.greenAccent[400],
-                                color: colors.grey[900],
-                                minWidth: "1581px",
+                                margin: '30px 0px 10px 0px',
                                 width: '100%',
-                                borderRadius: '6px'
+                                borderRadius: '6px',
                             }}
                         >
-                            <Typography
-                                variant="h1"
-                                color={"whitesmoke"}
-                                sx={{ alignSelf: "center", justifySelf: "center" }}
+                            <Box
+                                display={"flex"}
+                                justifyContent={"center"}
+                                p={1}
+                                sx={{
+                                    backgroundColor: isDark ? colors.greenAccent[600] : colors.greenAccent[400],
+                                    color: colors.grey[900],
+                                    minWidth: "1581px",
+                                    width: '100%',
+                                    borderRadius: '6px'
+                                }}
                             >
-                                Realizado
-                            </Typography>
+                                <Typography
+                                    variant="h1"
+                                    color={"whitesmoke"}
+                                    sx={{ alignSelf: "center", justifySelf: "center" }}
+                                >
+                                    Realizado
+                                </Typography>
+                            </Box>
+                        </Paper>
+                        <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
+                            <TableComonent
+                                data={dataToBarChartPlanned}
+                                onlyFarmsArr={onlyFarmsArr}
+                                type={"executed"}
+                                dataExec={groupExecutedByWeek(executedAreaArr)}
+                            />
+                        </Paper>
+                        <Box justifyContent="flex-end" sx={{ marginTop: '3px', width: '100%', display: 'flex' }}>
+                            <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
                         </Box>
-                    </Paper>
-                    <Paper elevation={8} sx={{ width: '100%', marginBottom: '10px', padding: '10px' }}>
-                        <TableComonent data={dataToBarChartPlanned} onlyFarmsArr={onlyFarmsArr} type={"executed"} dataExec={groupExecutedByWeek(executedAreaArr)} />
-                    </Paper>
-                    <Box justifyContent="flex-end" sx={{ marginTop: '3px', width: '100%', display: 'flex' }}>
-                        <Typography color={colors.primary[300]} fontSize={'10px'}>{dataToReport}</Typography>
                     </Box>
                 </>
             }
         </Box>
     );
-}
+};
 
 export default PlantioAtual;
