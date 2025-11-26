@@ -124,6 +124,7 @@ const FarmBoxPage = () => {
 	const [filteredOperations, setFilteredOperations] = useState([]);
 
 	const [operationFilter, setOperationFilter] = useState([]);
+	const [cultureFilter, setCultureFilter] = useState([]); // << NOVO
 
 	const selector = useMemo(
 		() => geralAppDetail(showFutureApps, daysFilter, operationFilter),
@@ -174,17 +175,6 @@ const FarmBoxPage = () => {
 			}
 		}
 	};
-
-	// const operationFilter = [
-	// 	"Grade Niveladora 1",
-	// 	"Rolo Compactador",
-	// 	"Colheita de Grãos",
-	// 	"Grade Incorporação",
-	// 	"Grade Intermediária 1",
-	// 	"Grade Preparo",
-	// 	'GERAR MAPA',
-	// 	'Semeadura'
-	// ];
 
 	const handlePreaproSolo = (e) => {
 		setFilterPreaproSolo(e.target.checked);
@@ -393,6 +383,7 @@ const FarmBoxPage = () => {
 		})
 	}
 
+	// opções para operações (já existia)
 	const options = useMemo(
 		() =>
 			(filteredOperations ?? [])
@@ -402,8 +393,22 @@ const FarmBoxPage = () => {
 		[filteredOperations]
 	);
 
+	// opções para cultura (NOVO)
+	const cultureOptions = useMemo(
+		() =>
+			(dictSelect ?? [])
+				.map((d) => (d.cultura ?? "").toString().trim())
+				.filter(Boolean)
+				.filter((value, index, self) => self.indexOf(value) === index)
+				.sort((a, b) => a.localeCompare(b, "pt-BR")),
+		[dictSelect]
+	);
+
 	const isAllSelected =
 		options.length > 0 && operationFilter.length === options.length;
+
+	const isAllCulturesSelected =
+		cultureOptions.length > 0 && cultureFilter.length === cultureOptions.length;
 
 	const handleChangeOpFilt = (event) => {
 		const value = event.target.value; // array
@@ -415,6 +420,18 @@ const FarmBoxPage = () => {
 	};
 
 	const handleClear = () => setOperationFilter([]);
+
+	// handlers para filtro de cultura (NOVO)
+	const handleChangeCultureFilt = (event) => {
+		const value = event.target.value;
+		setCultureFilter(typeof value === "string" ? value.split(",") : value);
+	};
+
+	const handleToggleAllCultures = () => {
+		setCultureFilter(isAllCulturesSelected ? [] : cultureOptions);
+	};
+
+	const handleClearCultures = () => setCultureFilter([]);
 
 
 
@@ -610,7 +627,8 @@ const FarmBoxPage = () => {
 				{
 					filtFarm.length > 0 &&
 
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+						{/* MultiSelect de Operações */}
 						<FormControl size="small" sx={{ minWidth: 320 }}>
 							<InputLabel id="op-filter-label">Operações</InputLabel>
 							<Select
@@ -662,6 +680,64 @@ const FarmBoxPage = () => {
 								<ClearAllIcon />
 							</IconButton>
 						</Tooltip>
+
+						{/* MultiSelect de Cultura (NOVO) */}
+						{cultureOptions.length > 0 && (
+							<>
+								<FormControl size="small" sx={{ minWidth: 260 }}>
+									<InputLabel id="cultura-filter-label">Cultura</InputLabel>
+									<Select
+										labelId="cultura-filter-label"
+										multiple
+										value={cultureFilter}
+										onChange={handleChangeCultureFilt}
+										input={<OutlinedInput label="Cultura" />}
+										renderValue={(selected) => (
+											<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+												{selected.map((value) => (
+													<Chip key={value} label={value} size="small" />
+												))}
+											</Box>
+										)}
+										MenuProps={MenuProps}
+									>
+										<MenuItem onClick={handleToggleAllCultures}>
+											<Checkbox
+												checked={isAllCulturesSelected}
+												indeterminate={!isAllCulturesSelected && cultureFilter.length > 0}
+											/>
+											<ListItemText primary={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"} />
+										</MenuItem>
+										<MenuItem onClick={handleClearCultures}>
+											<Checkbox checked={cultureFilter.length === 0} />
+											<ListItemText primary="Limpar seleção" />
+										</MenuItem>
+
+										{cultureOptions.map((name) => {
+											const checked = cultureFilter.indexOf(name) > -1;
+											return (
+												<MenuItem key={name} value={name}>
+													<Checkbox checked={checked} />
+													<ListItemText primary={name} />
+												</MenuItem>
+											);
+										})}
+									</Select>
+								</FormControl>
+
+								<Tooltip title={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}>
+									<IconButton size="small" onClick={handleToggleAllCultures}>
+										{isAllCulturesSelected ? <ClearAllIcon /> : <DoneAllIcon />}
+									</IconButton>
+								</Tooltip>
+
+								<Tooltip title="Limpar seleção de cultura">
+									<IconButton size="small" onClick={handleClearCultures}>
+										<ClearAllIcon />
+									</IconButton>
+								</Tooltip>
+							</>
+						)}
 					</Box>
 				}
 				{
@@ -749,6 +825,13 @@ const FarmBoxPage = () => {
 												return operationFilter.length === 0
 													? true
 													: !operationFilter.includes(op);
+											})
+											// cultura (MultiSelect NOVO)
+											.filter((data) => {
+												const cultura = (data?.cultura ?? "").toString().trim();
+												return cultureFilter.length === 0
+													? true
+													: cultureFilter.includes(cultura);
 											})
 											.filter((data) =>
 												!showFutureApps

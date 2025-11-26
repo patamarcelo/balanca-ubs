@@ -17,11 +17,12 @@ const DataDefensivoPage = (props) => {
 	const plantioRedux = useSelector(selectPlantio);
 
 	const [tableData, SetTableData] = useState([]);
-
+	console.log('new table here: ', plantioRedux)
 	useEffect(() => {
 		const newTable = createDataTable(plantioRedux);
 		if (newTable) {
 			SetTableData(newTable);
+			console.log('new Table', newTable)
 		}
 	}, [plantioRedux]);
 
