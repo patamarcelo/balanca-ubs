@@ -9,11 +9,11 @@ import {
     XAxis,
     YAxis,
     Tooltip,
-    Legend,
     CartesianGrid,
 } from 'recharts';
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Switch, FormControlLabel } from '@mui/material';
 
 
 /* ==========================
@@ -184,12 +184,8 @@ function groupByWeek(list) {
    Agregação para OPERAÇÕES (gráfico)
    ========================== */
 
-// função de operação (conforme pedido)
 function isOperacao(item) {
-    // Por enquanto, considera que todo item é uma operação válida
-    // return true;
-    // console.log('item', item)
-    return item.tipo === 'operacao'; // exemplo
+    return item.tipo === 'operacao';
 }
 
 // Soma da área por semana (dataPrevista) apenas para operações,
@@ -248,16 +244,13 @@ function getOperacoesPorSemanaComEstagio(data) {
             const dapA = a[1].minDap;
             const dapB = b[1].minDap;
 
-            // normaliza: sem DAP vai pro fim (Infinity)
             const normA = dapA == null ? Number.POSITIVE_INFINITY : dapA;
             const normB = dapB == null ? Number.POSITIVE_INFINITY : dapB;
 
             if (normA !== normB) {
-                // aqui  -10 < 0 < 5 < 30 < Infinity
                 return normA - normB;
             }
 
-            // se DAP "empatar", ordena alfabeticamente pelo nome do estágio
             return a[0].localeCompare(b[0]);
         })
         .map(([stageKey]) => stageKey);
@@ -267,8 +260,6 @@ function getOperacoesPorSemanaComEstagio(data) {
         stageKeys,
     };
 }
-
-
 
 
 /* ==========================
@@ -296,7 +287,6 @@ function getStageColor(stage, index, dark) {
     ];
     const palette = dark ? paletteDark : paletteLight;
 
-    // se quiser mapear por nome, dá pra fazer um switch aqui
     return palette[index % palette.length];
 }
 
@@ -304,11 +294,7 @@ function getStageColor(stage, index, dark) {
    Subcomponente: Gráfico semanal (operações empilhadas por estágio)
    ========================== */
 
-/* ==========================
-   Subcomponente: Gráfico semanal (operações empilhadas por estágio)
-   ========================== */
-
-const ProdutosSemanaChart = ({ data, dark }) => {
+const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
     const { weeks, stageKeys } = useMemo(
         () => getOperacoesPorSemanaComEstagio(data),
         [data]
@@ -325,10 +311,18 @@ const ProdutosSemanaChart = ({ data, dark }) => {
     const legendBorder = dark ? '#1f2937' : '#e5e7eb';
     const legendBg = dark ? '#020617' : '#ffffff';
 
-    // controla quais estágios estão ocultos
-    const [hiddenStages, setHiddenStages] = useState([]);
     const [accordionOpen, setAccordionOpen] = useState(true);
 
+    // 🔴 MAPA FIXO DE CORES POR ESTÁGIO (hook precisa vir ANTES de qualquer return condicional)
+    const stageColorMap = useMemo(() => {
+        const map = {};
+        stageKeys.forEach((stage, index) => {
+            map[stage] = getStageColor(stage, index, dark);
+        });
+        return map;
+    }, [stageKeys, dark]);
+
+    // ✅ depois de TODOS os hooks, aí sim o return condicional
     if (!weeks.length) {
         return <p>Nenhum dado de operações para exibir o gráfico.</p>;
     }
@@ -389,13 +383,13 @@ const ProdutosSemanaChart = ({ data, dark }) => {
                         />
 
                         {/* Barras empilhadas apenas para estágios visíveis */}
-                        {visibleStageKeys.map((stage, index) => (
+                        {visibleStageKeys.map((stage) => (
                             <Bar
                                 key={stage}
                                 dataKey={stage}
                                 name={stage}
                                 stackId="total"
-                                fill={getStageColor(stage, index, dark)}
+                                fill={stageColorMap[stage]} // 🎨 usa o mapa fixo
                             />
                         ))}
                     </BarChart>
@@ -459,20 +453,57 @@ const ProdutosSemanaChart = ({ data, dark }) => {
                             gap: 6,
                             maxHeight: 400,
                             overflowY: 'auto',
-                            scrollbarWidth: 'thin', // Firefox
+                            scrollbarWidth: 'thin',
                         }}
                     >
                         <div
                             style={{
                                 fontSize: 11,
                                 color: legendSub,
-                                marginBottom: 2,
+                                marginBottom: 4,
                             }}
                         >
-                            Marque/desmarque para mostrar/ocultar estágios no gráfico:
+                            Marque/desmarque para mostrar/ocultar estágios:
                         </div>
 
-                        {stageKeys.map((stage, index) => {
+                        {/* CHECKBOX MASTER (select all) */}
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                                fontSize: 13,
+                                cursor: 'pointer',
+                                paddingBottom: 6,
+                                borderBottom: `1px solid ${legendBorder}`,
+                                marginBottom: 6,
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={hiddenStages.length === 0}   // todos visíveis
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        // marcar TODOS → hiddenStages = []
+                                        setHiddenStages([]);
+                                    } else {
+                                        // desmarcar TODOS → hiddenStages = stageKeys
+                                        setHiddenStages(stageKeys);
+                                    }
+                                }}
+                                style={{
+                                    width: 14,
+                                    height: 14,
+                                    cursor: 'pointer',
+                                }}
+                            />
+                            <span style={{ fontWeight: 600 }}>
+                                Selecionar / Desmarcar todos
+                            </span>
+                        </label>
+
+                        {/* LISTA DOS ESTÁGIOS */}
+                        {stageKeys.map((stage) => {
                             const checked = !hiddenStages.includes(stage);
                             return (
                                 <label
@@ -500,7 +531,7 @@ const ProdutosSemanaChart = ({ data, dark }) => {
                                             width: 16,
                                             height: 16,
                                             borderRadius: 4,
-                                            backgroundColor: getStageColor(stage, index, dark),
+                                            backgroundColor: stageColorMap[stage], // 🎨 mesma cor das barras
                                             opacity: checked ? 1 : 0.35,
                                             border: `1px solid ${legendBorder}`,
                                         }}
@@ -518,6 +549,7 @@ const ProdutosSemanaChart = ({ data, dark }) => {
                     </div>
                 )}
             </div>
+
         </div>
     );
 };
@@ -559,38 +591,62 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                         key={week.weekKey}
                         style={{
                             borderRadius: 12,
-                            padding: 16,
+                            padding: 12,
                             border: `1px solid ${border}`,
                             backgroundColor: cardBg,
                             boxShadow: dark
-                                ? '0 10px 25px rgba(0,0,0,0.4)'
-                                : '0 4px 12px rgba(15,23,42,0.08)',
+                                ? '0 10px 25px rgba(0,0,0,0.35)'
+                                : '0 4px 12px rgba(15,23,42,0.06)',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 8,
                         }}
                     >
-                        <div>
-                            <h3
-                                style={{
-                                    marginBottom: 2,
-                                    marginTop: 0,
-                                    fontSize: 15,
-                                    color: titleColor,
-                                }}
-                            >
-                                Semana ({ind + 1})
-                            </h3>
+                        {/* Cabeçalho da semana */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'baseline',
+                                paddingBottom: 6,
+                                borderBottom: `1px dashed ${border}`,
+                                marginBottom: 4,
+                            }}
+                        >
+                            <div>
+                                <h3
+                                    style={{
+                                        marginBottom: 0,
+                                        marginTop: 0,
+                                        fontSize: 14,
+                                        color: titleColor,
+                                    }}
+                                >
+                                    Semana ({ind + 1})
+                                </h3>
+                                <div
+                                    style={{
+                                        fontSize: 12,
+                                        color: subText,
+                                    }}
+                                >
+                                    {label} (Dom - Sáb)
+                                </div>
+                            </div>
+
+                            {/* total de itens na semana – opcional */}
                             <div
                                 style={{
-                                    fontSize: 13,
+                                    fontSize: 11,
                                     color: subText,
+                                    whiteSpace: 'nowrap',
                                 }}
                             >
-                                {label} (Dom - Sáb)
+                                {week.produtos.length} prod.
                             </div>
                         </div>
 
+                        {/* Lista striped */}
                         <ul
                             style={{
                                 listStyle: 'none',
@@ -598,50 +654,96 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                                 margin: 0,
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: 4,
                             }}
                         >
-                            {week.produtos.map((p) => (
-                                <li
-                                    key={p.produto}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'flex-start',
-                                        fontSize: 13,
-                                        color: textColor,
-                                    }}
-                                >
-                                    <div style={{ maxWidth: '60%' }}>
-                                        <div style={{ fontWeight: 500 }}>{p.produto}</div>
-                                        {p.tipo && (
+                            {week.produtos.map((p, idx) => {
+                                const isEven = idx % 2 === 0;
+                                const rowBg = dark
+                                    ? (isEven ? '#020617' : '#0b1120')
+                                    : (isEven ? '#f9fafb' : '#eef2ff');
+
+                                return (
+                                    <li
+                                        key={p.produto}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'flex-start',
+                                            fontSize: 12,
+                                            color: textColor,
+                                            padding: '6px 8px',
+                                            backgroundColor: rowBg,
+                                            borderRadius: 6,
+                                            borderBottom: dark
+                                                ? '1px solid rgba(15,23,42,0.7)'
+                                                : '1px solid rgba(209,213,219,0.6)',
+                                            marginBottom: idx === week.produtos.length - 1 ? 0 : 2,
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                maxWidth: '60%',
+                                                paddingRight: 8,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontWeight: 500,
+                                                    letterSpacing: 0.2,
+                                                }}
+                                            >
+                                                {p.produto}
+                                            </div>
+                                            {/* {p.tipo && (
                                             <div style={{ fontSize: 11, color: subText }}>
                                                 {p.tipo}
                                             </div>
-                                        )}
-                                    </div>
-                                    <div style={{ textAlign: 'right', maxWidth: '40%' }}>
-                                        <div>
-                                            {p.quantidadeTotal.toLocaleString('pt-BR', {
-                                                maximumFractionDigits: 2,
-                                            })}{' '}
+                                        )} */}
                                         </div>
-                                        <div style={{ fontSize: 11, color: subText }}>
+                                        <div
+                                            style={{
+                                                textAlign: 'right',
+                                                maxWidth: '40%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'flex-end',
+                                                gap: 2,
+                                                fontFamily:
+                                                    'system-ui, -apple-system, BlinkMacSystemFont, "SF Mono", monospace',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: 12,
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {p.quantidadeTotal.toLocaleString('pt-BR', {
+                                                    maximumFractionDigits: 2,
+                                                    minimumFractionDigits: 2,
+                                                })}{' '}
+                                            </div>
+                                            {/* <div style={{ fontSize: 11, color: subText }}>
                                             área:{' '}
                                             {p.areaTotal.toLocaleString('pt-BR', {
                                                 maximumFractionDigits: 1,
                                             })}{' '}
                                             ha
+                                        </div> */}
                                         </div>
-                                    </div>
-                                </li>
-                            ))}
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 );
             })}
         </div>
     );
+
 };
 
 /* ==========================
@@ -676,6 +778,12 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const [selectedFazendas, setSelectedFazendas] = useState([]);
     const [selectedProjetos, setSelectedProjetos] = useState([]);
 
+    // estágios ocultos (compartilhado entre gráfico, KPIs e cards)
+    const [hiddenStages, setHiddenStages] = useState([]);
+
+    // switch: considerar apenas aplicações pendentes (situacaoApp === false)
+    const [onlyPendentes, setOnlyPendentes] = useState(false);
+
     const handleToggleFazenda = (value) => {
         setSelectedFazendas((prev) =>
             prev.includes(value)
@@ -699,7 +807,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         setShowProdutosSemana((prev) => !prev);
     };
 
-    // aplica filtros (fazendaGrupo e/ou projeto) em TODOS os dados
+    // 1) filtros básicos: fazenda, projeto, situação (pendente ou não)
     const filteredData = useMemo(() => {
         return normalizedData.filter((item) => {
             const passFazenda =
@@ -710,9 +818,33 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 !selectedProjetos.length ||
                 (item.projeto && selectedProjetos.includes(item.projeto));
 
-            return passFazenda && passProjeto;
+            const passSituacao =
+                !onlyPendentes || item.situacaoApp === false;
+
+            return passFazenda && passProjeto && passSituacao;
         });
-    }, [normalizedData, selectedFazendas, selectedProjetos]);
+    }, [normalizedData, selectedFazendas, selectedProjetos, onlyPendentes]);
+
+    // 2) aplica também o filtro de estágio (checkboxes) para KPIs + cards
+    const dataFiltradaPorEstagio = useMemo(() => {
+        if (!hiddenStages.length) return filteredData;
+
+        return filteredData.filter((item) => {
+            const stageKey = getStageKey(item.estagio);
+            return !hiddenStages.includes(stageKey);
+        });
+    }, [filteredData, hiddenStages]);
+
+    // dados para o calendário, baseados em dataFiltradaPorEstagio
+    const dataProdutosCalendario = useMemo(() => {
+        return dataFiltradaPorEstagio
+            .filter((item) => item.tipo !== 'operacao')
+            .sort((a, b) => {
+                const pa = a.produto || '';
+                const pb = b.produto || '';
+                return pa.localeCompare(pb);
+            });
+    }, [dataFiltradaPorEstagio]);
 
     const bg = dark ? '#020617' : '#f9fafb';
     const text = dark ? '#f9fafb' : '#0f172a';
@@ -723,15 +855,14 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const chipSelectedBg = dark ? '#1d4ed8' : '#2563eb';
     const chipSelectedText = '#f9fafb';
 
-    // KPIs simples (com base nos dados filtrados)
+    // KPIs agora baseados em dataFiltradaPorEstagio (inclui filtro de estágio)
     const kpis = useMemo(() => {
         let areaTotal = 0;
         let quantidadeTotal = 0;
         let primeiraData = null;
         let ultimaData = null;
 
-        filteredData.forEach((item) => {
-            // console.log('item here total: ', item)
+        dataFiltradaPorEstagio.forEach((item) => {
             if (item.tipo === 'operacao') {
                 areaTotal += item.area || 0;
             }
@@ -757,7 +888,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
             quantidadeTotal,
             periodoAplicacoes: periodo,
         };
-    }, [filteredData]);
+    }, [dataFiltradaPorEstagio]);
 
     return (
         <div
@@ -807,6 +938,33 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     gap: 12,
                 }}
             >
+                {/* Switch de aplicações pendentes */}
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: 4,
+                    }}
+                >
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={onlyPendentes}
+                                onChange={(e) => setOnlyPendentes(e.target.checked)}
+                                color="primary"
+                            />
+                        }
+                        label="Considerar Somente Aplicações Pendentes"
+                        sx={{
+                            '.MuiFormControlLabel-label': {
+                                fontSize: 13,
+                                color: subText,
+                            },
+                        }}
+                    />
+                </div>
+
                 <div style={{ fontSize: 13, color: subText, marginBottom: 4 }}>
                     Filtros (multiSeleção) — todos os gráficos e cards são afetados.
                 </div>
@@ -972,7 +1130,12 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     operações (tipo = &quot;operacao&quot;), empilhando por estágio da
                     operação. A altura total da barra é igual ao total de área da semana.
                 </p>
-                <ProdutosSemanaChart data={filteredData} dark={dark} />
+                <ProdutosSemanaChart
+                    data={filteredData}
+                    dark={dark}
+                    hiddenStages={hiddenStages}
+                    setHiddenStages={setHiddenStages}
+                />
             </section>
 
             {/* Calendário semanal (produtos) */}
@@ -997,7 +1160,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         Detalhamento por produto e semana
                     </h3>
 
-                    {/* Ícone Material UI — rotacionado */}
                     <ExpandMoreIcon
                         sx={{
                             fontSize: 24,
@@ -1008,7 +1170,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     />
                 </div>
 
-                {/* Texto sempre visível — exatamente como antes */}
                 <p
                     style={{
                         marginTop: 0,
@@ -1022,13 +1183,9 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     área aplicada.
                 </p>
 
-                {/* Conteúdo condicional (abre/fecha) */}
                 {showProdutosSemana && (
                     <ProdutosSemanaCalendar
-                        data={filteredData
-                            .filter((data) => data.tipo !== 'operacao')
-                            .sort((a, b) => a.produto.localeCompare(b.produto))
-                        }
+                        data={dataProdutosCalendario}
                         dark={dark}
                     />
                 )}
