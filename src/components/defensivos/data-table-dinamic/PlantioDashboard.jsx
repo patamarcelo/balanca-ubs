@@ -313,7 +313,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 
     const [accordionOpen, setAccordionOpen] = useState(true);
 
-    // 🔴 MAPA FIXO DE CORES POR ESTÁGIO (hook precisa vir ANTES de qualquer return condicional)
+    // mapa fixo de cores por estágio
     const stageColorMap = useMemo(() => {
         const map = {};
         stageKeys.forEach((stage, index) => {
@@ -322,7 +322,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
         return map;
     }, [stageKeys, dark]);
 
-    // ✅ depois de TODOS os hooks, aí sim o return condicional
     if (!weeks.length) {
         return <p>Nenhum dado de operações para exibir o gráfico.</p>;
     }
@@ -343,6 +342,127 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
     const visibleStageKeys = stageKeys.filter(
         (stage) => !hiddenStages.includes(stage)
     );
+
+    // ==========================
+    // Tooltip customizado
+    // ==========================
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (!active || !payload || !payload.length) return null;
+
+        // soma de todos os segmentos da barra
+        const total = payload.reduce((acc, entry) => {
+            const v = entry?.value ?? 0;
+            return acc + (isNaN(v) ? 0 : v);
+        }, 0);
+
+        return (
+            <div
+                style={{
+                    backgroundColor: tooltipBg,
+                    border: `1px solid ${tooltipBorder}`,
+                    borderRadius: 8,
+                    padding: 8,
+                    fontSize: 12,
+                    minWidth: 180,
+                }}
+            >
+                {/* label = intervalo de datas */}
+                <div
+                    style={{
+                        fontWeight: 600,
+                        marginBottom: 4,
+                        color: textColor,
+                    }}
+                >
+                    {label}
+                </div>
+
+                {/* total consolidado da barra */}
+                <div
+                    style={{
+                        fontWeight: 700,
+                        fontSize: 12,
+                        color: '#000', // preto, como você pediu
+                        marginBottom: 6,
+                    }}
+                >
+                    Total:{" "}
+                    {total.toLocaleString('pt-BR', {
+                        maximumFractionDigits: 0,
+                    })}{" "}
+                    ha
+                </div>
+
+                <div
+                    style={{
+                        borderTop: `1px solid ${tooltipBorder}`,
+                        margin: '4px 0 6px',
+                    }}
+                />
+
+                {/* lista dos segmentos (estágios) */}
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                    }}
+                >
+                    {payload.map((entry) => {
+                        const { name, value, color } = entry;
+                        if (!name) return null;
+
+                        return (
+                            <div
+                                key={name}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: 8,
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 6,
+                                    }}
+                                >
+                                    <span
+                                        style={{
+                                            width: 10,
+                                            height: 10,
+                                            borderRadius: 2,
+                                            backgroundColor: color || stageColorMap[name],
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            color: textColor,
+                                        }}
+                                    >
+                                        {name}
+                                    </span>
+                                </div>
+                                <span
+                                    style={{
+                                        fontVariantNumeric: 'tabular-nums',
+                                        color: textColor,
+                                    }}
+                                >
+                                    {value?.toLocaleString('pt-BR', {
+                                        maximumFractionDigits: 0,
+                                    })}{" "}
+                                    ha
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
@@ -366,21 +486,8 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             tick={{ fill: axisColor, fontSize: 11 }}
                             stroke={axisColor}
                         />
-                        <Tooltip
-                            contentStyle={{
-                                backgroundColor: tooltipBg,
-                                border: `1px solid ${tooltipBorder}`,
-                                borderRadius: 8,
-                                fontSize: 12,
-                            }}
-                            labelStyle={{ color: textColor }}
-                            formatter={(value, name) => [
-                                value.toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 1,
-                                }),
-                                `${name} (ha)`,
-                            ]}
-                        />
+                        {/* Tooltip agora usa o CustomTooltip */}
+                        <Tooltip content={<CustomTooltip />} />
 
                         {/* Barras empilhadas apenas para estágios visíveis */}
                         {visibleStageKeys.map((stage) => (
@@ -389,7 +496,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                                 dataKey={stage}
                                 name={stage}
                                 stackId="total"
-                                fill={stageColorMap[stage]} // 🎨 usa o mapa fixo
+                                fill={stageColorMap[stage]}
                             />
                         ))}
                     </BarChart>
@@ -481,13 +588,11 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                         >
                             <input
                                 type="checkbox"
-                                checked={hiddenStages.length === 0}   // todos visíveis
+                                checked={hiddenStages.length === 0}
                                 onChange={(e) => {
                                     if (e.target.checked) {
-                                        // marcar TODOS → hiddenStages = []
                                         setHiddenStages([]);
                                     } else {
-                                        // desmarcar TODOS → hiddenStages = stageKeys
                                         setHiddenStages(stageKeys);
                                     }
                                 }}
@@ -531,7 +636,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                                             width: 16,
                                             height: 16,
                                             borderRadius: 4,
-                                            backgroundColor: stageColorMap[stage], // 🎨 mesma cor das barras
+                                            backgroundColor: stageColorMap[stage],
                                             opacity: checked ? 1 : 0.35,
                                             border: `1px solid ${legendBorder}`,
                                         }}
@@ -549,10 +654,10 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     </div>
                 )}
             </div>
-
         </div>
     );
 };
+
 
 
 /* ==========================
