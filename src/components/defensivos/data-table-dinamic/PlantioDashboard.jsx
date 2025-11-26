@@ -199,13 +199,28 @@ function getOperacoesPorSemanaComEstagio(data) {
     const stageStats = new Map(); // guarda info de DAP por estágio
 
     data.forEach((item) => {
+        const stageKey = getStageKey(item.estagio);
+
+        // 1) Atualiza DAP por estágio (independente de ser operação ou não)
+        if (stageKey) {
+            const dapRaw = item.dap ?? item.dapAplicacao;
+            const dap = dapRaw != null ? Number(dapRaw) : null;
+
+            const current = stageStats.get(stageKey) || { minDap: null };
+            if (dap != null && !Number.isNaN(dap)) {
+                if (current.minDap == null || dap < current.minDap) {
+                    current.minDap = dap;
+                }
+            }
+            stageStats.set(stageKey, current);
+        }
+
+        // 2) A partir daqui, só tratamos OPERAÇÕES para o gráfico
         if (!item.dataPrevista) return;
         if (!isOperacao(item)) return;
 
         const { weekKey, start, end } = getWeekRange(item.dataPrevista);
-        const stageKey = getStageKey(item.estagio);
         const area = item.area || 0;
-        const dap = item.dap != null ? Number(item.dap) : null;
 
         let week = weekMap.get(weekKey);
         if (!week) {
@@ -219,17 +234,8 @@ function getOperacoesPorSemanaComEstagio(data) {
         }
 
         week.totalArea += area;
-        week[stageKey] = (week[stageKey] || 0) + area;
-
-        // acumula estatística de DAP por estágio (menor DAP)
-        if (!stageStats.has(stageKey)) {
-            stageStats.set(stageKey, { minDap: dap });
-        } else if (dap != null) {
-            const current = stageStats.get(stageKey);
-            if (current.minDap == null || dap < current.minDap) {
-                current.minDap = dap;
-                stageStats.set(stageKey, current);
-            }
+        if (stageKey) {
+            week[stageKey] = (week[stageKey] || 0) + area;
         }
     });
 
@@ -242,13 +248,17 @@ function getOperacoesPorSemanaComEstagio(data) {
             const dapA = a[1].minDap;
             const dapB = b[1].minDap;
 
-            // primeiro ordena por DAP (nulls por último)
-            if (dapA == null && dapB == null) {
-                return a[0].localeCompare(b[0]); // desempate alfabético
+            // normaliza: sem DAP vai pro fim (Infinity)
+            const normA = dapA == null ? Number.POSITIVE_INFINITY : dapA;
+            const normB = dapB == null ? Number.POSITIVE_INFINITY : dapB;
+
+            if (normA !== normB) {
+                // aqui  -10 < 0 < 5 < 30 < Infinity
+                return normA - normB;
             }
-            if (dapA == null) return 1;
-            if (dapB == null) return -1;
-            return dapA - dapB;
+
+            // se DAP "empatar", ordena alfabeticamente pelo nome do estágio
+            return a[0].localeCompare(b[0]);
         })
         .map(([stageKey]) => stageKey);
 
@@ -257,6 +267,8 @@ function getOperacoesPorSemanaComEstagio(data) {
         stageKeys,
     };
 }
+
+
 
 
 /* ==========================
