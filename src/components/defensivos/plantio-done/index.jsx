@@ -1,9 +1,9 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Fab } from "@mui/material";
 import { tokens } from "../../../theme";
 
 import classes from "./plantio-done-page.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import djangoApi from "../../../utils/axios/axios.utils";
 import PlantioDoneTable from "./data-table-plantio-done";
@@ -37,6 +37,9 @@ import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import CalendarDonePage from "./plantio-done-calendar";
 
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import html2canvas from "html2canvas";
+
 const PlantioDonePage = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -58,6 +61,9 @@ const PlantioDonePage = () => {
 		safra: safraCiclo.safra,
 		ciclo: safraCiclo.ciclo
 	});
+
+	// ref para capturar apenas a área do DailyChartBar
+	const dailyChartRef = useRef(null);
 
 	const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 		height: 10,
@@ -95,30 +101,26 @@ const PlantioDonePage = () => {
 						}
 					})
 					.then((res) => {
-						// console.log("by day ");
 						setDataByDay(res.data.plantio_by_day_extrato);
-						console.log('plantio por dia ', res.data.plantio_by_day)
-						console.log('plantio por dia ', res.data.plantio_by_day_extrato)
+						console.log("plantio por dia ", res.data.plantio_by_day);
+						console.log("plantio por dia ", res.data.plantio_by_day_extrato);
 						const newData = res.data.data.map((data, i) => ({
 							...data,
 							id: i,
 							area_colheita: data.area_colheita
 								? data.area_colheita
-										.toFixed(2)
-										.toString()
-										.replace(".", ",")
+									.toFixed(2)
+									.toString()
+									.replace(".", ",")
 								: "",
 							data_plantio: data.data_plantio
-								? data.data_plantio
-										.split("-")
-										.reverse()
-										.join("/")
+								? data.data_plantio.split("-").reverse().join("/")
 								: "",
 							data_plantio_inicio: data.cronograma_programa
 								? data["cronograma_programa__0"]["Data Plantio"]
-										.split("-")
-										.reverse()
-										.join("/")
+									.split("-")
+									.reverse()
+									.join("/")
 								: ""
 						}));
 						setDataF(newData);
@@ -154,6 +156,24 @@ const PlantioDonePage = () => {
 		})();
 	}, []);
 
+	const handleCaptureDailyChart = async () => {
+		if (!dailyChartRef.current) return;
+
+		try {
+			const canvas = await html2canvas(dailyChartRef.current, {
+				useCORS: true,
+				scale: 2
+			});
+			const dataUrl = canvas.toDataURL("image/png");
+			const link = document.createElement("a");
+			link.href = dataUrl;
+			link.download = `plantio-diario-${params.safra}-${params.ciclo}.png`;
+			link.click();
+		} catch (error) {
+			console.error("Erro ao gerar print do gráfico diário:", error);
+		}
+	};
+
 	return (
 		<>
 			<Box className={classes.container}>
@@ -164,18 +184,12 @@ const PlantioDonePage = () => {
 						<Box
 							sx={{
 								width: "100%",
-								// minHeight: "300px",
-								// backgroundColor: "rgb(208, 209, 213, 0.2)",
-								// backgroundColor: "rgb(249, 244, 244,0.9)",
 								backgroundColor: colors.blueOrigin[700],
 								borderRadius: "12px",
 								display: "flex",
-								// flexDirection: "column",
 								justifyContent: "space-around",
 								flexDirection: "column",
 								alignItems: "center",
-								// overflow: "auto",
-								// overflowY: "hidden",
 								border: "1px solid black"
 							}}
 						>
@@ -207,16 +221,10 @@ const PlantioDonePage = () => {
 													}}
 													sx={{
 														cursor: "pointer",
-														backgroundColor:
-															colors
-																.blueOrigin[900]
+														backgroundColor: colors.blueOrigin[900]
 													}}
-													className={`${
-														classes.varChoices
-													} ${
-														selectCult === data &&
-														classes.varChoiceActive
-													}`}
+													className={`${classes.varChoices} ${selectCult === data && classes.varChoiceActive
+														}`}
 												>
 													{data}
 												</Box>
@@ -229,7 +237,6 @@ const PlantioDonePage = () => {
 									width: "100%",
 									borderRadius: "12px",
 									display: "flex",
-									// flexDirection: "column",
 									justifyContent: "space-between",
 									alignItems: "center",
 									overflow: "auto",
@@ -237,10 +244,7 @@ const PlantioDonePage = () => {
 								}}
 							>
 								<Box sx={{ height: "350px", width: "400px" }}>
-									<MyResponsivePie
-										colors={colors}
-										data={plantioChart}
-									/>
+									<MyResponsivePie colors={colors} data={plantioChart} />
 								</Box>
 								<Box sx={{ height: "350px", width: "400px" }}>
 									<MyResponsiveSunburst
@@ -262,7 +266,6 @@ const PlantioDonePage = () => {
 							sx={{
 								width: "100%",
 								minHeight: "300px",
-								// backgroundColor: "rgb(208, 209, 213, 0.2)",
 								backgroundColor: colors.blueOrigin[700],
 								borderRadius: "12px",
 								display: "flex",
@@ -287,11 +290,6 @@ const PlantioDonePage = () => {
 									filtCult={filtCult}
 								/>
 							</Box>
-							{/* <Divider
-								orientation="vertical"
-								variant="middle"
-								flexItem
-							/> */}
 							<Box
 								sx={{
 									height: "400px",
@@ -309,13 +307,9 @@ const PlantioDonePage = () => {
 									.sort((a, b) => b.area - a.area)
 									.sort((a, b) => {
 										const areaA =
-											plantioBarChartVars["totalPlan"][
-												a.fazenda
-											];
+											plantioBarChartVars["totalPlan"][a.fazenda];
 										const areaB =
-											plantioBarChartVars["totalPlan"][
-												b.fazenda
-											];
+											plantioBarChartVars["totalPlan"][b.fazenda];
 										const finalA = a.area / areaA;
 										const finalB = b.area / areaB;
 
@@ -323,27 +317,19 @@ const PlantioDonePage = () => {
 									})
 									.map((data, i) => {
 										const percent =
-											plantioBarChartVars["totalPlan"][
-												data.fazenda
-											];
-										const final =
-											(data.area / percent) * 100;
+											plantioBarChartVars["totalPlan"][data.fazenda];
+										const final = (data.area / percent) * 100;
 										return (
 											<Box
 												key={i}
 												sx={{
 													display: "flex",
 													flexDirection: "column",
-													justifyContent:
-														"space-between",
+													justifyContent: "space-between",
 													width: "100%",
 													padding: "5px 25px",
-													// backgroundColor:
-													// 	"rgb(208, 209, 213, 0.1)",
-													backgroundColor:
-														colors.blueOrigin[700],
-													color: colors
-														.blueOrigin[200],
+													backgroundColor: colors.blueOrigin[700],
+													color: colors.blueOrigin[200],
 													fontWeight: "bold",
 													borderRadius: "7px"
 												}}
@@ -351,53 +337,34 @@ const PlantioDonePage = () => {
 												<Box
 													sx={{
 														display: "flex",
-														justifyContent:
-															"space-between",
+														justifyContent: "space-between",
 														width: "100%",
-														// padding: "5px 25px",
-														// backgroundColor:
-														// 	"rgb(208, 209, 213, 0.1)",
-														backgroundColor:
-															colors
-																.blueOrigin[700],
-														color: colors
-															.blueOrigin[200],
+														backgroundColor: colors.blueOrigin[700],
+														color: colors.blueOrigin[200],
 														fontWeight: "bold"
 													}}
 												>
 													<span>
-														{data.fazenda.replace(
-															"Projeto",
-															""
-														)}
+														{data.fazenda.replace("Projeto", "")}
 													</span>
 													{data.area === percent ? (
 														<span>
-															{data.area.toLocaleString(
-																"pt-br",
-																{
-																	minimumFractionDigits: 2,
-																	maximumFractionDigits: 2
-																}
-															)}{" "}
+															{data.area.toLocaleString("pt-br", {
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+															})}{" "}
 														</span>
 													) : (
 														<span>
-															{data.area.toLocaleString(
-																"pt-br",
-																{
-																	minimumFractionDigits: 2,
-																	maximumFractionDigits: 2
-																}
-															)}{" "}
+															{data.area.toLocaleString("pt-br", {
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+															})}{" "}
 															/{" "}
-															{percent.toLocaleString(
-																"pt-br",
-																{
-																	minimumFractionDigits: 2,
-																	maximumFractionDigits: 2
-																}
-															)}{" "}
+															{percent.toLocaleString("pt-br", {
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+															})}{" "}
 														</span>
 													)}
 												</Box>
@@ -407,11 +374,9 @@ const PlantioDonePage = () => {
 														alignSelf: "center",
 														display: "flex",
 														flexDirection: "row",
-														justifyContent:
-															"space-between",
+														justifyContent: "space-between",
 														alignItems: "center",
 														marginTop: "10px"
-														// marginBottom: "5px"
 													}}
 												>
 													<Box
@@ -429,19 +394,15 @@ const PlantioDonePage = () => {
 														sx={{
 															width: "15%",
 															height: "10px",
-															color: colors
-																.primary[100],
+															color: colors.primary[100],
 															fontSize: "0.7rem",
 															marginBottom: "5px"
 														}}
 													>
-														{final.toLocaleString(
-															"pt-br",
-															{
-																minimumFractionDigits: 0,
-																maximumFractionDigits: 0
-															}
-														)}{" "}
+														{final.toLocaleString("pt-br", {
+															minimumFractionDigits: 0,
+															maximumFractionDigits: 0
+														})}{" "}
 														%
 													</Box>
 												</Box>
@@ -450,11 +411,64 @@ const PlantioDonePage = () => {
 									})}
 							</Box>
 						</Box>
+
 						{dataByDay && (
-							<DailyChartBar
-								dataByDay={dataByDay}
-								filtCult={selectCult}
-							/>
+							<Box
+								ref={dailyChartRef}
+								sx={{
+									width: "100%",
+									marginTop: "8px",
+									borderRadius: "12px",
+									backgroundColor: colors.blueOrigin[700],
+									border: "1px solid black",
+									padding: "8px 12px",
+									display: "flex",
+									flexDirection: "column",
+									gap: 1
+								}}
+							>
+								<DailyChartBar
+									dataByDay={dataByDay}
+									filtCult={selectCult}
+								/>
+
+								{/* Rodapé da “div” com info + FAB */}
+								<Box
+									sx={{
+										marginTop: "8px",
+										paddingTop: "6px",
+										borderTop: `1px dashed ${colors.blueOrigin[300]}`,
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										gap: 1
+									}}
+								>
+									<Typography
+										variant="caption"
+										sx={{
+											color: colors.blueOrigin[100]
+										}}
+									>
+										Este print será gerado apenas para o gráfico diário
+										acima.
+									</Typography>
+
+									<Fab
+										size="small"
+										color="primary"
+										onClick={handleCaptureDailyChart}
+										sx={{
+											boxShadow: "none",
+											width: 40,
+											height: 40,
+											minHeight: 40
+										}}
+									>
+										<CameraAltIcon fontSize="small" />
+									</Fab>
+								</Box>
+							</Box>
 						)}
 
 						<CalendarDonePage cultFilt={selectCult} />

@@ -354,7 +354,7 @@ const DailyChartBar = (props) => {
 					flexDirection: "column",
 					alignItems: "center",
 					marginTop: "5px",
-					border: "1px solid black",
+					// border: "1px solid black",
 					gap: "5px"
 				}}
 			>
