@@ -382,7 +382,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     style={{
                         fontWeight: 700,
                         fontSize: 12,
-                        color: '#000', // preto, como você pediu
+                        color: '#000', // preto
                         marginBottom: 6,
                     }}
                 >
@@ -802,11 +802,6 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                                             >
                                                 {p.produto}
                                             </div>
-                                            {/* {p.tipo && (
-                                            <div style={{ fontSize: 11, color: subText }}>
-                                                {p.tipo}
-                                            </div>
-                                        )} */}
                                         </div>
                                         <div
                                             style={{
@@ -831,13 +826,6 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                                                     minimumFractionDigits: 2,
                                                 })}{' '}
                                             </div>
-                                            {/* <div style={{ fontSize: 11, color: subText }}>
-                                            área:{' '}
-                                            {p.areaTotal.toLocaleString('pt-BR', {
-                                                maximumFractionDigits: 1,
-                                            })}{' '}
-                                            ha
-                                        </div> */}
                                         </div>
                                     </li>
                                 );
@@ -850,6 +838,219 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
     );
 
 };
+
+/* ==========================
+   Subcomponente: Totais gerais por produto
+   ========================== */
+
+const ProdutosTotaisGerais = ({ data, dark }) => {
+    const cardBg = dark ? '#111827' : '#ffffff';
+    const border = dark ? '#374151' : '#e5e7eb';
+    const textColor = dark ? '#e5e7eb' : '#374151';
+    const subText = dark ? '#9ca3af' : '#6b7280';
+
+    if (!data.length) {
+        return <p>Nenhum dado de produtos para exibir.</p>;
+    }
+
+    // define quantas colunas usar (ajusta conforme o volume)
+    let columnCount = 3;
+
+    if (data.length > 10) columnCount = 4;
+    if (data.length > 20) columnCount = 5;
+
+    // ordena alfabeticamente primeiro
+    const sorted = [...data].sort((a, b) => a.produto.localeCompare(b.produto));
+
+    // calcula quantos itens por coluna (de cima para baixo)
+    const itemsPerColumn = Math.ceil(sorted.length / columnCount);
+
+    // distribui verticalmente (ordem correta: cima → baixo, esquerda → direita)
+    const columns = Array.from({ length: columnCount }, (_, colIndex) =>
+        sorted.slice(
+            colIndex * itemsPerColumn,
+            colIndex * itemsPerColumn + itemsPerColumn
+        )
+    );
+
+    return (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12,
+            }}
+        >
+            {/* Cabeçalho geral */}
+            <div
+                style={{
+                    borderRadius: 12,
+                    padding: 12,
+                    border: `1px solid ${border}`,
+                    backgroundColor: cardBg,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                }}
+            >
+                <div>
+                    <h3
+                        style={{
+                            marginBottom: 0,
+                            marginTop: 0,
+                            fontSize: 14,
+                            color: textColor,
+                        }}
+                    >
+                        Totais gerais de produtos
+                    </h3>
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: subText,
+                        }}
+                    >
+                        Soma de todas as semanas, considerando os filtros atuais.
+                    </div>
+                </div>
+
+                <div
+                    style={{
+                        fontSize: 11,
+                        color: subText,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {data.length} produtos
+                </div>
+            </div>
+
+            {/* Container das colunas */}
+            <div
+                style={{
+                    display: 'grid',
+                    gap: 12,
+                    gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+                }}
+            >
+                {columns.map((colItems, colIdx) => (
+                    <div
+                        key={colIdx}
+                        style={{
+                            borderRadius: 12,
+                            padding: 8,
+                            border: `1px solid ${border}`,
+                            backgroundColor: cardBg,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 4,
+                        }}
+                    >
+                        <ul
+                            style={{
+                                listStyle: 'none',
+                                padding: 0,
+                                margin: 0,
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            {colItems.map((p, idx) => {
+                                const isEven = idx % 2 === 0;
+                                const rowBg = dark
+                                    ? (isEven ? '#020617' : '#0b1120')
+                                    : (isEven ? '#f9fafb' : '#eef2ff');
+
+                                return (
+                                    <li
+                                        key={`${p.produto}-${colIdx}-${idx}`}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'flex-start',
+                                            fontSize: 12,
+                                            fontWeight: 'bold',
+                                            color: textColor,
+                                            padding: '6px 8px',
+                                            backgroundColor: rowBg,
+                                            borderRadius: 6,
+                                            borderBottom: dark
+                                                ? '1px solid rgba(15,23,42,0.7)'
+                                                : '1px solid rgba(209,213,219,0.6)',
+                                            marginBottom: idx === colItems.length - 1 ? 0 : 2,
+                                        }}
+                                    >
+                                        {/* Nome do produto */}
+                                        <div
+                                            style={{
+                                                maxWidth: '60%',
+                                                paddingRight: 8,
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontWeight: 'bold',
+                                                    letterSpacing: 0.2,
+                                                }}
+                                                title={p.produto}
+                                            >
+                                                {p.produto}
+                                            </div>
+                                        </div>
+
+                                        {/* Quantidade + área (como no estilo anterior comentado) */}
+                                        <div
+                                            style={{
+                                                textAlign: 'right',
+                                                maxWidth: '40%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'flex-end',
+                                                gap: 2,
+                                                fontFamily:
+                                                    'system-ui, -apple-system, BlinkMacSystemFont, "SF Mono", monospace',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: 12,
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {p.quantidadeTotal.toLocaleString('pt-BR', {
+                                                    maximumFractionDigits: 2,
+                                                    minimumFractionDigits: 2,
+                                                })}
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: 11,
+                                                    color: subText,
+                                                }}
+                                            >
+                                                área:{' '}
+                                                {p.areaTotal.toLocaleString('pt-BR', {
+                                                    maximumFractionDigits: 1,
+                                                })}{' '}
+                                                ha
+                                            </div>
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+
+
 
 /* ==========================
    Componente principal ÚNICO
@@ -908,8 +1109,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     // controla se o "Detalhamento por produto e semana" está aberto
     const [showProdutosSemana, setShowProdutosSemana] = useState(false);
 
+    // controla se o "Totais gerais por produto" está aberto
+    const [showTotaisGerais, setShowTotaisGerais] = useState(false);
+
     const toggleShowProdutosSemana = () => {
         setShowProdutosSemana((prev) => !prev);
+    };
+
+    const toggleShowTotaisGerais = () => {
+        setShowTotaisGerais((prev) => !prev);
     };
 
     // 1) filtros básicos: fazenda, projeto, situação (pendente ou não)
@@ -950,6 +1158,29 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 return pa.localeCompare(pb);
             });
     }, [dataFiltradaPorEstagio]);
+
+    // dados de TOTAIS GERAIS por produto (soma todas as semanas)
+    const dataProdutosTotaisGerais = useMemo(() => {
+        const map = new Map();
+
+        dataProdutosCalendario.forEach((item) => {
+            const produto = item.produto || 'Sem produto';
+            if (!map.has(produto)) {
+                map.set(produto, {
+                    produto,
+                    quantidadeTotal: 0,
+                    areaTotal: 0,
+                });
+            }
+            const ref = map.get(produto);
+            ref.quantidadeTotal += item.quantidadeCalculada || 0;
+            ref.areaTotal += item.area || 0;
+        });
+
+        return Array.from(map.values()).sort((a, b) =>
+            a.produto.localeCompare(b.produto)
+        );
+    }, [dataProdutosCalendario]);
 
     const bg = dark ? '#020617' : '#f9fafb';
     const text = dark ? '#f9fafb' : '#0f172a';
@@ -1295,6 +1526,57 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     />
                 )}
 
+            </section>
+
+            {/* Totais gerais por produto (NOVO ACCORDION) */}
+            <section
+                style={{
+                    paddingTop: 8,
+                    borderTop: `1px solid ${sectionBorder}`,
+                }}
+            >
+                <div
+                    onClick={toggleShowTotaisGerais}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        gap: 8,
+                    }}
+                >
+                    <h3 style={{ marginBottom: 4, fontSize: 16 }}>
+                        Totais gerais por produto
+                    </h3>
+
+                    <ExpandMoreIcon
+                        sx={{
+                            fontSize: 24,
+                            color: subText,
+                            transform: showTotaisGerais ? "rotate(180deg)" : "rotate(0deg)",
+                            transition: "transform 0.15s ease-out",
+                        }}
+                    />
+                </div>
+
+                <p
+                    style={{
+                        marginTop: 0,
+                        marginBottom: 8,
+                        fontSize: 12,
+                        color: subText,
+                    }}
+                >
+                    Soma de todas as semanas para cada produto (dose × área e área total),
+                    considerando os mesmos filtros de fazenda, projeto, pendências e estágios.
+                </p>
+
+                {showTotaisGerais && (
+                    <ProdutosTotaisGerais
+                        data={dataProdutosTotaisGerais}
+                        dark={dark}
+                    />
+                )}
             </section>
 
         </div>
