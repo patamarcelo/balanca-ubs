@@ -20,6 +20,7 @@ import { Switch, FormControlLabel } from '@mui/material';
    Helpers de normalização
    ========================== */
 
+
 function parsePtNumber(str) {
     if (str == null) return 0;
     return Number(
@@ -66,7 +67,7 @@ function normalizeItem(raw) {
 
         ciclo: raw.ciclo != null ? Number(raw.ciclo) : null,
 
-        // << valor normalizado que TODO o resto do código vai usar
+        // valor normalizado que TODO o resto do código vai usar
         dap,
 
         // opcional: pra debug, se quiser ver o original
@@ -362,12 +363,6 @@ function getOperacoesPorSemanaComEstagio(data) {
     };
 }
 
-
-
-
-
-
-
 /* ==========================
    Cores por estágio
    ========================== */
@@ -419,6 +414,11 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 
     const [accordionOpen, setAccordionOpen] = useState(true);
 
+    const paperShadowLight = dark
+        ? '0px 4px 6px rgba(0,0,0,0.45)'
+        : '0px 2px 4px rgba(0,0,0,0.08)';
+
+
     const stageColorMap = useMemo(() => {
         const map = {};
         stageKeys.forEach((stage, index) => {
@@ -465,6 +465,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     padding: 8,
                     fontSize: 12,
                     minWidth: 180,
+                    boxShadow: paperShadowLight
                 }}
             >
                 <div
@@ -624,6 +625,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                         cursor: 'pointer',
                         fontSize: 13,
                         color: legendText,
+                        boxShadow: paperShadowLight,
                     }}
                 >
                     <span style={{ fontWeight: 600 }}>Estágios</span>
@@ -653,6 +655,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             maxHeight: 400,
                             overflowY: 'auto',
                             scrollbarWidth: 'thin',
+                            boxShadow: paperShadowLight
                         }}
                     >
                         <div
@@ -761,11 +764,16 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
         [produtosSemana]
     );
 
-    const cardBg = dark ? '#111827' : '#ffffff';
-    const border = dark ? '#374151' : '#e5e7eb';
+    const cardBg = dark ? '#0b1120' : '#ffffff';
+    const border = dark ? '#1f2937' : '#e5e7eb';
     const titleColor = dark ? '#f9fafb' : '#111827';
     const textColor = dark ? '#e5e7eb' : '#374151';
     const subText = dark ? '#9ca3af' : '#6b7280';
+
+    const paperShadow = dark
+        ? '0px 8px 10px rgba(0,0,0,0.7)'
+        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+
 
     if (!semanas.length) {
         return <p>Nenhum dado de produtos para exibir.</p>;
@@ -789,9 +797,7 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                             padding: 12,
                             border: `1px solid ${border}`,
                             backgroundColor: cardBg,
-                            boxShadow: dark
-                                ? '0 10px 25px rgba(0,0,0,0.35)'
-                                : '0 4px 12px rgba(15,23,42,0.06)',
+                            boxShadow: paperShadow,
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 8,
@@ -851,7 +857,7 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                             {week.produtos.map((p, idx) => {
                                 const isEven = idx % 2 === 0;
                                 const rowBg = dark
-                                    ? (isEven ? '#020617' : '#0b1120')
+                                    ? (isEven ? '#020617' : '#020617')
                                     : (isEven ? '#f9fafb' : '#eef2ff');
 
                                 return (
@@ -931,10 +937,18 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
    ========================== */
 
 const ProdutosTotaisGerais = ({ data, dark }) => {
-    const cardBg = dark ? '#111827' : '#ffffff';
-    const border = dark ? '#374151' : '#e5e7eb';
+    const cardBg = dark ? '#0b1120' : '#ffffff';
+    const border = dark ? '#1f2937' : '#e5e7eb';
     const textColor = dark ? '#e5e7eb' : '#374151';
     const subText = dark ? '#9ca3af' : '#6b7280';
+
+    const paperShadow = dark
+        ? '0px 8px 10px rgba(0,0,0,0.7)'
+        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+
+    const paperShadowLight = dark
+        ? '0px 4px 6px rgba(0,0,0,0.45)'
+        : '0px 2px 4px rgba(0,0,0,0.08)';
 
     if (!data.length) {
         return <p>Nenhum dado de produtos para exibir.</p>;
@@ -972,6 +986,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'baseline',
+                    boxShadow: paperShadowLight,
                 }}
             >
                 <div>
@@ -1024,6 +1039,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 4,
+                            boxShadow: paperShadowLight,
                         }}
                     >
                         <ul
@@ -1038,7 +1054,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                             {colItems.map((p, idx) => {
                                 const isEven = idx % 2 === 0;
                                 const rowBg = dark
-                                    ? (isEven ? '#020617' : '#0b1120')
+                                    ? (isEven ? '#020617' : '#020617')
                                     : (isEven ? '#f9fafb' : '#eef2ff');
 
                                 return (
@@ -1182,7 +1198,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const [hiddenStages, setHiddenStages] = useState([]);
     const [onlyPendentes, setOnlyPendentes] = useState(false);
 
-    const handleToggleFazenda = (value) => {
+    const handleToggleFazenda = (value, disabled) => {
+        if (disabled) return;
         setSelectedFazendas((prev) =>
             prev.includes(value)
                 ? prev.filter((v) => v !== value)
@@ -1190,7 +1207,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         );
     };
 
-    const handleToggleProjeto = (value) => {
+    const handleToggleProjeto = (value, disabled) => {
+        if (disabled) return;
         setSelectedProjetos((prev) =>
             prev.includes(value)
                 ? prev.filter((v) => v !== value)
@@ -1198,7 +1216,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         );
     };
 
-    const handleToggleCultura = (value) => {
+    const handleToggleCultura = (value, disabled) => {
+        if (disabled) return;
         setSelectedCulturas((prev) =>
             prev.includes(value)
                 ? prev.filter((v) => v !== value)
@@ -1206,7 +1225,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         );
     };
 
-    const handleTogglePrograma = (value) => {
+    const handleTogglePrograma = (value, disabled) => {
+        if (disabled) return;
         setSelectedProgramas((prev) =>
             prev.includes(value)
                 ? prev.filter((v) => v !== value)
@@ -1225,6 +1245,164 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         setShowTotaisGerais((prev) => !prev);
     };
 
+    // === Sets de opções disponíveis dado o estado atual (desabilitar combinações inválidas) ===
+    const availableCulturas = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (onlyPendentes && item.situacaoApp !== false) return;
+
+            if (
+                selectedFazendas.length &&
+                (!item.fazendaGrupo || !selectedFazendas.includes(item.fazendaGrupo))
+            ) {
+                return;
+            }
+
+            if (
+                selectedProjetos.length &&
+                (!item.projeto || !selectedProjetos.includes(item.projeto))
+            ) {
+                return;
+            }
+
+            if (
+                selectedProgramas.length &&
+                (!item.programa || !selectedProgramas.includes(item.programa))
+            ) {
+                return;
+            }
+
+            if (item.cultura) {
+                set.add(item.cultura);
+            }
+        });
+        return set;
+    }, [
+        normalizedData,
+        selectedFazendas,
+        selectedProjetos,
+        selectedProgramas,
+        onlyPendentes,
+    ]);
+
+    const availableProgramas = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (onlyPendentes && item.situacaoApp !== false) return;
+
+            if (
+                selectedFazendas.length &&
+                (!item.fazendaGrupo || !selectedFazendas.includes(item.fazendaGrupo))
+            ) {
+                return;
+            }
+
+            if (
+                selectedProjetos.length &&
+                (!item.projeto || !selectedProjetos.includes(item.projeto))
+            ) {
+                return;
+            }
+
+            if (
+                selectedCulturas.length &&
+                (!item.cultura || !selectedCulturas.includes(item.cultura))
+            ) {
+                return;
+            }
+
+            if (item.programa) {
+                set.add(item.programa);
+            }
+        });
+        return set;
+    }, [
+        normalizedData,
+        selectedFazendas,
+        selectedProjetos,
+        selectedCulturas,
+        onlyPendentes,
+    ]);
+
+    const availableFazendas = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (onlyPendentes && item.situacaoApp !== false) return;
+
+            if (
+                selectedProjetos.length &&
+                (!item.projeto || !selectedProjetos.includes(item.projeto))
+            ) {
+                return;
+            }
+
+            if (
+                selectedCulturas.length &&
+                (!item.cultura || !selectedCulturas.includes(item.cultura))
+            ) {
+                return;
+            }
+
+            if (
+                selectedProgramas.length &&
+                (!item.programa || !selectedProgramas.includes(item.programa))
+            ) {
+                return;
+            }
+
+            if (item.fazendaGrupo) {
+                set.add(item.fazendaGrupo);
+            }
+        });
+        return set;
+    }, [
+        normalizedData,
+        selectedProjetos,
+        selectedCulturas,
+        selectedProgramas,
+        onlyPendentes,
+    ]);
+
+    const availableProjetos = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (onlyPendentes && item.situacaoApp !== false) return;
+
+            if (
+                selectedFazendas.length &&
+                (!item.fazendaGrupo || !selectedFazendas.includes(item.fazendaGrupo))
+            ) {
+                return;
+            }
+
+            if (
+                selectedCulturas.length &&
+                (!item.cultura || !selectedCulturas.includes(item.cultura))
+            ) {
+                return;
+            }
+
+            if (
+                selectedProgramas.length &&
+                (!item.programa || !selectedProgramas.includes(item.programa))
+            ) {
+                return;
+            }
+
+            if (item.projeto) {
+                set.add(item.projeto);
+            }
+        });
+        return set;
+    }, [
+        normalizedData,
+        selectedFazendas,
+        selectedCulturas,
+        selectedProgramas,
+        onlyPendentes,
+    ]);
+
+    // === Data final filtrado (usando seleções) ===
     const filteredData = useMemo(() => {
         return normalizedData.filter((item) => {
             const passFazenda =
@@ -1313,6 +1491,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const chipSelectedBg = dark ? '#1d4ed8' : '#2563eb';
     const chipSelectedText = '#f9fafb';
 
+    const paperShadow = dark
+        ? '0px 8px 10px rgba(0,0,0,0.7)'
+        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+
     const kpis = useMemo(() => {
         let areaTotal = 0;
         let quantidadeTotal = 0;
@@ -1382,6 +1564,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </p>
             </div>
 
+            {/* CARD DE FILTROS */}
             <div
                 style={{
                     borderRadius: 12,
@@ -1391,6 +1574,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 12,
+                    boxShadow: paperShadow,
                 }}
             >
                 <div
@@ -1422,7 +1606,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </div>
 
                 <div style={{ fontSize: 13, color: subText, marginBottom: 4 }}>
-                    Filtros (multiSeleção) — todos os gráficos e cards são afetados.
+                    Filtros (multiSeleção) — opções incompatíveis com os filtros atuais
+                    ficam desabilitadas.
                 </div>
 
                 {culturaOptions.length > 0 && (
@@ -1437,11 +1622,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         >
                             {culturaOptions.map((cult) => {
                                 const selected = selectedCulturas.includes(cult);
+                                const disabled =
+                                    !availableCulturas.has(cult) &&
+                                    !selectedCulturas.includes(cult);
+
                                 return (
                                     <button
                                         key={cult}
                                         type="button"
-                                        onClick={() => handleToggleCultura(cult)}
+                                        onClick={() => handleToggleCultura(cult, disabled)}
                                         style={{
                                             borderRadius: 999,
                                             padding: '4px 10px',
@@ -1450,8 +1639,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             backgroundColor: selected ? chipSelectedBg : chipBg,
                                             color: selected ? chipSelectedText : text,
                                             fontSize: 12,
-                                            cursor: 'pointer',
+                                            cursor: disabled ? 'not-allowed' : 'pointer',
+                                            opacity: disabled ? 0.4 : 1,
                                         }}
+                                        disabled={disabled}
                                     >
                                         {cult}
                                     </button>
@@ -1473,11 +1664,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         >
                             {programaOptions.map((prog) => {
                                 const selected = selectedProgramas.includes(prog);
+                                const disabled =
+                                    !availableProgramas.has(prog) &&
+                                    !selectedProgramas.includes(prog);
+
                                 return (
                                     <button
                                         key={prog}
                                         type="button"
-                                        onClick={() => handleTogglePrograma(prog)}
+                                        onClick={() => handleTogglePrograma(prog, disabled)}
                                         style={{
                                             borderRadius: 999,
                                             padding: '4px 10px',
@@ -1486,8 +1681,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             backgroundColor: selected ? chipSelectedBg : chipBg,
                                             color: selected ? chipSelectedText : text,
                                             fontSize: 12,
-                                            cursor: 'pointer',
+                                            cursor: disabled ? 'not-allowed' : 'pointer',
+                                            opacity: disabled ? 0.4 : 1,
                                         }}
+                                        disabled={disabled}
                                     >
                                         {prog}
                                     </button>
@@ -1511,11 +1708,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         >
                             {fazendaOptions.map((fz) => {
                                 const selected = selectedFazendas.includes(fz);
+                                const disabled =
+                                    !availableFazendas.has(fz) &&
+                                    !selectedFazendas.includes(fz);
+
                                 return (
                                     <button
                                         key={fz}
                                         type="button"
-                                        onClick={() => handleToggleFazenda(fz)}
+                                        onClick={() => handleToggleFazenda(fz, disabled)}
                                         style={{
                                             borderRadius: 999,
                                             padding: '4px 10px',
@@ -1524,8 +1725,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             backgroundColor: selected ? chipSelectedBg : chipBg,
                                             color: selected ? chipSelectedText : text,
                                             fontSize: 12,
-                                            cursor: 'pointer',
+                                            cursor: disabled ? 'not-allowed' : 'pointer',
+                                            opacity: disabled ? 0.4 : 1,
                                         }}
+                                        disabled={disabled}
                                     >
                                         {fz}
                                     </button>
@@ -1547,11 +1750,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         >
                             {projetoOptions.map((proj) => {
                                 const selected = selectedProjetos.includes(proj);
+                                const disabled =
+                                    !availableProjetos.has(proj) &&
+                                    !selectedProjetos.includes(proj);
+
                                 return (
                                     <button
                                         key={proj}
                                         type="button"
-                                        onClick={() => handleToggleProjeto(proj)}
+                                        onClick={() => handleToggleProjeto(proj, disabled)}
                                         style={{
                                             borderRadius: 999,
                                             padding: '4px 10px',
@@ -1560,8 +1767,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             backgroundColor: selected ? chipSelectedBg : chipBg,
                                             color: selected ? chipSelectedText : text,
                                             fontSize: 12,
-                                            cursor: 'pointer',
+                                            cursor: disabled ? 'not-allowed' : 'pointer',
+                                            opacity: disabled ? 0.4 : 1,
                                         }}
+                                        disabled={disabled}
                                     >
                                         {proj}
                                     </button>
@@ -1572,6 +1781,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 )}
             </div>
 
+            {/* KPIs */}
             <div
                 style={{
                     display: 'grid',
@@ -1585,6 +1795,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
                         backgroundColor: dark ? '#020617' : '#ffffff',
+                        boxShadow: paperShadow,
                     }}
                 >
                     <div style={{ fontSize: 12, color: subText }}>
@@ -1604,6 +1815,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
                         backgroundColor: dark ? '#020617' : '#ffffff',
+                        boxShadow: paperShadow,
                     }}
                 >
                     <div style={{ fontSize: 12, color: subText }}>
@@ -1622,6 +1834,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
                         backgroundColor: dark ? '#020617' : '#ffffff',
+                        boxShadow: paperShadow,
                     }}
                 >
                     <div style={{ fontSize: 12, color: subText }}>
@@ -1633,10 +1846,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </div>
             </div>
 
+            {/* SECTION GRÁFICO */}
             <section
                 style={{
-                    paddingTop: 8,
-                    borderTop: `1px solid ${sectionBorder}`,
+                    marginTop: 8,
+                    borderRadius: 12,
+                    padding: 16,
+                    border: `1px solid ${sectionBorder}`,
+                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    boxShadow: paperShadow,
                 }}
             >
                 <h3 style={{ marginBottom: 4, fontSize: 16 }}>
@@ -1662,10 +1880,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 />
             </section>
 
+            {/* SECTION CALENDÁRIO PRODUTOS */}
             <section
                 style={{
-                    paddingTop: 8,
-                    borderTop: `1px solid ${sectionBorder}`,
+                    marginTop: 8,
+                    borderRadius: 12,
+                    padding: 16,
+                    border: `1px solid ${sectionBorder}`,
+                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    boxShadow: paperShadow,
                 }}
             >
                 <div
@@ -1713,10 +1936,15 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 )}
             </section>
 
+            {/* SECTION TOTAIS GERAIS */}
             <section
                 style={{
-                    paddingTop: 8,
-                    borderTop: `1px solid ${sectionBorder}`,
+                    marginTop: 8,
+                    borderRadius: 12,
+                    padding: 16,
+                    border: `1px solid ${sectionBorder}`,
+                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    boxShadow: paperShadow,
                 }}
             >
                 <div
