@@ -42,14 +42,36 @@ function normalizeItem(raw) {
         quantidadeCalculada = quantidadeAplicar;
     }
 
+    // ========================
+    // DAP: usar SEMPRE dapAplicacao do objeto original
+    // ========================
+    const dapAplicacaoRaw =
+        raw.dapAplicacao !== undefined &&
+            raw.dapAplicacao !== null &&
+            raw.dapAplicacao !== ''
+            ? raw.dapAplicacao
+            : null;
+
+    const dap =
+        dapAplicacaoRaw !== null && dapAplicacaoRaw !== ''
+            ? Number(dapAplicacaoRaw)
+            : null;
+
     return {
         ...raw,
         area,
         dose,
         quantidadeAplicar,
         quantidadeCalculada,
+
         ciclo: raw.ciclo != null ? Number(raw.ciclo) : null,
-        dap: raw.dap != null ? Number(raw.dap) : null,
+
+        // << valor normalizado que TODO o resto do código vai usar
+        dap,
+
+        // opcional: pra debug, se quiser ver o original
+        dapAplicacaoOriginal: raw.dapAplicacao ?? null,
+
         capacidadePlantioDia:
             raw.capacidadePlantioDia != null
                 ? Number(raw.capacidadePlantioDia)
@@ -64,6 +86,7 @@ function normalizeItem(raw) {
             : null,
     };
 }
+
 
 /* ==========================
    Helpers de datas / semanas
@@ -118,6 +141,72 @@ function getStageKey(estagio) {
     return String(estagio).split('|')[0].trim() || 'Sem estágio';
 }
 
+// Lê o primeiro número (com sinal) do label para ordenar
+// e, se não tiver número, usa um mapa manual por nome.
+// Retorna um número (pode ser negativo, zero, positivo) ou null.
+function getStageOrderFromLabel(stageKey) {
+    if (!stageKey) return null;
+
+    const text = String(stageKey).trim();
+
+    // normaliza traço unicode "−" pra "-" normal
+    const normalizedNumText = text.replace(/\u2212/g, "-");
+
+    // 1) tenta extrair número com sinal (ex.: "-5", "0", "14", "2")
+    const match = normalizedNumText.match(/[-+]?\d+/);
+    if (match) {
+        const num = Number.parseInt(match[0], 10);
+        if (!Number.isNaN(num)) {
+            return num; // negativos < 0 < positivos
+        }
+    }
+
+    // 2) sem número -> usa mapa de prioridades por NOME
+    // normaliza removendo acentos e deixando maiúsculo
+    const normName = text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase();
+
+    const stageOrderMapByName = {
+        // muito cedo
+        "TRATAMENTO SEMENTE": -50,
+        "ROLO COMPACTADOR": -45,
+
+        // adubações iniciais
+        "ADUBACAO FOSFATADA": -40,
+        "ADUBACAO KCL": -38,
+        "SULFATO": -36,
+        "ADUBACAO BORO": -34,
+
+        // pré emergente antes dos “dias”
+        "PRE EMERGENTE": -30,
+        "PRE-EMERGENTE": -30,
+        "PRE EMERGENCIA": -30,
+
+        // se tiver PLANTIO isolado
+        "PLANTIO": -10,
+
+        // primórdio bem no fim (ajusta se quiser)
+        "APLICACAO PRIMORDIO": 80,
+
+        // dessecação geral / colheita lá no final
+        "DESSECACAO": 900,
+        "DESSECAO": 900,
+        "DESSECACAO COLHEITA": 999,
+        "DESSECAO COLHEITA": 999,
+    };
+
+    if (normName in stageOrderMapByName) {
+        return stageOrderMapByName[normName];
+    }
+
+    // 3) fallback: sem ordem definida -> fica no fim, mas a gente ainda ordena por nome depois
+    return null;
+}
+
+
+
 /* ==========================
    Agregações para PRODUTOS (calendário)
    ========================== */
@@ -148,9 +237,7 @@ function getProdutosPorSemana(data) {
         }
 
         const ref = map.get(key);
-        // quantidade = dose x área (já calculado na normalização)
         ref.quantidadeTotal += item.quantidadeCalculada || 0;
-        // soma de hectares = soma das operações de cada talhão
         ref.areaTotal += item.area || 0;
     });
 
@@ -188,30 +275,36 @@ function isOperacao(item) {
     return item.tipo === 'operacao';
 }
 
-// Soma da área por semana (dataPrevista) apenas para operações,
-// separado por estágio (barra empilhada)
 function getOperacoesPorSemanaComEstagio(data) {
     const weekMap = new Map();
-    const stageStats = new Map(); // guarda info de DAP por estágio
+    const stageStats = new Map(); // guarda DAP por estágio neste DATA FILTRADO
 
     data.forEach((item) => {
         const stageKey = getStageKey(item.estagio);
 
-        // 1) Atualiza DAP por estágio (independente de ser operação ou não)
+        // === 1) Atualiza stats de DAP do estágio (para ESTE data filtrado) ===
         if (stageKey) {
-            const dapRaw = item.dap ?? item.dapAplicacao;
-            const dap = dapRaw != null ? Number(dapRaw) : null;
+            // AGORA usamos só o dap normalizado (que veio de dapAplicacao)
+            const dapNumeric =
+                item.dap != null && !Number.isNaN(item.dap)
+                    ? item.dap
+                    : null;
 
-            const current = stageStats.get(stageKey) || { minDap: null };
-            if (dap != null && !Number.isNaN(dap)) {
-                if (current.minDap == null || dap < current.minDap) {
-                    current.minDap = dap;
+            let stat = stageStats.get(stageKey);
+            if (!stat) {
+                stat = { minDap: null };
+            }
+
+            if (dapNumeric != null) {
+                if (stat.minDap == null || dapNumeric < stat.minDap) {
+                    stat.minDap = dapNumeric;
                 }
             }
-            stageStats.set(stageKey, current);
+
+            stageStats.set(stageKey, stat);
         }
 
-        // 2) A partir daqui, só tratamos OPERAÇÕES para o gráfico
+        // === 2) A partir daqui, só OPERAÇÕES entram no gráfico ===
         if (!item.dataPrevista) return;
         if (!isOperacao(item)) return;
 
@@ -230,6 +323,7 @@ function getOperacoesPorSemanaComEstagio(data) {
         }
 
         week.totalArea += area;
+
         if (stageKey) {
             week[stageKey] = (week[stageKey] || 0) + area;
         }
@@ -239,19 +333,26 @@ function getOperacoesPorSemanaComEstagio(data) {
         a.weekKey.localeCompare(b.weekKey)
     );
 
+    // === 3) stageKeys usando minDap (por DATA FILTRADO) ===
     const stageKeys = Array.from(stageStats.entries())
         .sort((a, b) => {
-            const dapA = a[1].minDap;
-            const dapB = b[1].minDap;
+            const aD = a[1].minDap;
+            const bD = b[1].minDap;
 
-            const normA = dapA == null ? Number.POSITIVE_INFINITY : dapA;
-            const normB = dapB == null ? Number.POSITIVE_INFINITY : dapB;
+            const aHas = aD != null && !Number.isNaN(aD);
+            const bHas = bD != null && !Number.isNaN(bD);
 
-            if (normA !== normB) {
-                return normA - normB;
+            // 3.1) Ambos com DAP diferente → ordena pelo DAP
+            if (aHas && bHas && aD !== bD) {
+                return aD - bD;
             }
 
-            return a[0].localeCompare(b[0]);
+            // 3.2) Um tem DAP e outro não → quem tem DAP vem antes
+            if (aHas && !bHas) return -1;
+            if (!aHas && bHas) return 1;
+
+            // 3.3) Sem DAP ou empate → ordena alfabeticamente pelo nome
+            return a[0].localeCompare(b[0], 'pt-BR');
         })
         .map(([stageKey]) => stageKey);
 
@@ -260,6 +361,11 @@ function getOperacoesPorSemanaComEstagio(data) {
         stageKeys,
     };
 }
+
+
+
+
+
 
 
 /* ==========================
@@ -313,7 +419,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 
     const [accordionOpen, setAccordionOpen] = useState(true);
 
-    // mapa fixo de cores por estágio
     const stageColorMap = useMemo(() => {
         const map = {};
         stageKeys.forEach((stage, index) => {
@@ -343,13 +448,9 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
         (stage) => !hiddenStages.includes(stage)
     );
 
-    // ==========================
-    // Tooltip customizado
-    // ==========================
     const CustomTooltip = ({ active, payload, label }) => {
         if (!active || !payload || !payload.length) return null;
 
-        // soma de todos os segmentos da barra
         const total = payload.reduce((acc, entry) => {
             const v = entry?.value ?? 0;
             return acc + (isNaN(v) ? 0 : v);
@@ -366,7 +467,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     minWidth: 180,
                 }}
             >
-                {/* label = intervalo de datas */}
                 <div
                     style={{
                         fontWeight: 600,
@@ -377,19 +477,18 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     {label}
                 </div>
 
-                {/* total consolidado da barra */}
                 <div
                     style={{
                         fontWeight: 700,
                         fontSize: 12,
-                        color: '#000', // preto
+                        color: '#000',
                         marginBottom: 6,
                     }}
                 >
-                    Total:{" "}
+                    Total:{' '}
                     {total.toLocaleString('pt-BR', {
                         maximumFractionDigits: 0,
-                    })}{" "}
+                    })}{' '}
                     ha
                 </div>
 
@@ -400,7 +499,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     }}
                 />
 
-                {/* lista dos segmentos (estágios) */}
                 <div
                     style={{
                         display: 'flex',
@@ -453,7 +551,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                                 >
                                     {value?.toLocaleString('pt-BR', {
                                         maximumFractionDigits: 0,
-                                    })}{" "}
+                                    })}{' '}
                                     ha
                                 </span>
                             </div>
@@ -466,7 +564,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 
     return (
         <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            {/* Gráfico à esquerda */}
             <div style={{ flex: 1, height: 360 }}>
                 <ResponsiveContainer>
                     <BarChart
@@ -486,10 +583,8 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             tick={{ fill: axisColor, fontSize: 11 }}
                             stroke={axisColor}
                         />
-                        {/* Tooltip agora usa o CustomTooltip */}
                         <Tooltip content={<CustomTooltip />} />
 
-                        {/* Barras empilhadas apenas para estágios visíveis */}
                         {visibleStageKeys.map((stage) => (
                             <Bar
                                 key={stage}
@@ -503,7 +598,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                 </ResponsiveContainer>
             </div>
 
-            {/* Legenda externa à direita - Accordion + Checkboxes */}
             <div
                 style={{
                     width: 220,
@@ -512,10 +606,9 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     alignItems: 'stretch',
                     paddingTop: 4,
                     height: '100%',
-                    marginTop: -64
+                    marginTop: -64,
                 }}
             >
-                {/* Cabeçalho do accordion */}
                 <button
                     type="button"
                     onClick={() => setAccordionOpen((open) => !open)}
@@ -546,7 +639,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     </span>
                 </button>
 
-                {/* Corpo do accordion */}
                 {accordionOpen && (
                     <div
                         style={{
@@ -573,7 +665,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             Marque/desmarque para mostrar/ocultar estágios:
                         </div>
 
-                        {/* CHECKBOX MASTER (select all) */}
                         <label
                             style={{
                                 display: 'flex',
@@ -607,7 +698,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             </span>
                         </label>
 
-                        {/* LISTA DOS ESTÁGIOS */}
                         {stageKeys.map((stage) => {
                             const checked = !hiddenStages.includes(stage);
                             return (
@@ -707,7 +797,6 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                             gap: 8,
                         }}
                     >
-                        {/* Cabeçalho da semana */}
                         <div
                             style={{
                                 display: 'flex',
@@ -739,7 +828,6 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                                 </div>
                             </div>
 
-                            {/* total de itens na semana – opcional */}
                             <div
                                 style={{
                                     fontSize: 11,
@@ -751,7 +839,6 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                             </div>
                         </div>
 
-                        {/* Lista striped */}
                         <ul
                             style={{
                                 listStyle: 'none',
@@ -853,19 +940,14 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
         return <p>Nenhum dado de produtos para exibir.</p>;
     }
 
-    // define quantas colunas usar (ajusta conforme o volume)
     let columnCount = 3;
 
     if (data.length > 10) columnCount = 4;
     if (data.length > 20) columnCount = 5;
 
-    // ordena alfabeticamente primeiro
     const sorted = [...data].sort((a, b) => a.produto.localeCompare(b.produto));
-
-    // calcula quantos itens por coluna (de cima para baixo)
     const itemsPerColumn = Math.ceil(sorted.length / columnCount);
 
-    // distribui verticalmente (ordem correta: cima → baixo, esquerda → direita)
     const columns = Array.from({ length: columnCount }, (_, colIndex) =>
         sorted.slice(
             colIndex * itemsPerColumn,
@@ -881,7 +963,6 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                 gap: 12,
             }}
         >
-            {/* Cabeçalho geral */}
             <div
                 style={{
                     borderRadius: 12,
@@ -925,7 +1006,6 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                 </div>
             </div>
 
-            {/* Container das colunas */}
             <div
                 style={{
                     display: 'grid',
@@ -980,7 +1060,6 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                             marginBottom: idx === colItems.length - 1 ? 0 : 2,
                                         }}
                                     >
-                                        {/* Nome do produto */}
                                         <div
                                             style={{
                                                 maxWidth: '60%',
@@ -1001,7 +1080,6 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                             </div>
                                         </div>
 
-                                        {/* Quantidade + área (como no estilo anterior comentado) */}
                                         <div
                                             style={{
                                                 textAlign: 'right',
@@ -1064,7 +1142,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         [safeData]
     );
 
-    // opções de filtro (multiSelect simples por "chips")
     const fazendaOptions = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
@@ -1081,13 +1158,28 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         return Array.from(set).sort();
     }, [normalizedData]);
 
+    const culturaOptions = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (item.cultura) set.add(item.cultura);
+        });
+        return Array.from(set).sort();
+    }, [normalizedData]);
+
+    const programaOptions = useMemo(() => {
+        const set = new Set();
+        normalizedData.forEach((item) => {
+            if (item.programa) set.add(item.programa);
+        });
+        return Array.from(set).sort();
+    }, [normalizedData]);
+
     const [selectedFazendas, setSelectedFazendas] = useState([]);
     const [selectedProjetos, setSelectedProjetos] = useState([]);
+    const [selectedCulturas, setSelectedCulturas] = useState([]);
+    const [selectedProgramas, setSelectedProgramas] = useState([]);
 
-    // estágios ocultos (compartilhado entre gráfico, KPIs e cards)
     const [hiddenStages, setHiddenStages] = useState([]);
-
-    // switch: considerar apenas aplicações pendentes (situacaoApp === false)
     const [onlyPendentes, setOnlyPendentes] = useState(false);
 
     const handleToggleFazenda = (value) => {
@@ -1106,10 +1198,23 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         );
     };
 
-    // controla se o "Detalhamento por produto e semana" está aberto
-    const [showProdutosSemana, setShowProdutosSemana] = useState(false);
+    const handleToggleCultura = (value) => {
+        setSelectedCulturas((prev) =>
+            prev.includes(value)
+                ? prev.filter((v) => v !== value)
+                : [...prev, value]
+        );
+    };
 
-    // controla se o "Totais gerais por produto" está aberto
+    const handleTogglePrograma = (value) => {
+        setSelectedProgramas((prev) =>
+            prev.includes(value)
+                ? prev.filter((v) => v !== value)
+                : [...prev, value]
+        );
+    };
+
+    const [showProdutosSemana, setShowProdutosSemana] = useState(false);
     const [showTotaisGerais, setShowTotaisGerais] = useState(false);
 
     const toggleShowProdutosSemana = () => {
@@ -1120,7 +1225,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         setShowTotaisGerais((prev) => !prev);
     };
 
-    // 1) filtros básicos: fazenda, projeto, situação (pendente ou não)
     const filteredData = useMemo(() => {
         return normalizedData.filter((item) => {
             const passFazenda =
@@ -1131,14 +1235,34 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 !selectedProjetos.length ||
                 (item.projeto && selectedProjetos.includes(item.projeto));
 
+            const passCultura =
+                !selectedCulturas.length ||
+                (item.cultura && selectedCulturas.includes(item.cultura));
+
+            const passPrograma =
+                !selectedProgramas.length ||
+                (item.programa && selectedProgramas.includes(item.programa));
+
             const passSituacao =
                 !onlyPendentes || item.situacaoApp === false;
 
-            return passFazenda && passProjeto && passSituacao;
+            return (
+                passFazenda &&
+                passProjeto &&
+                passCultura &&
+                passPrograma &&
+                passSituacao
+            );
         });
-    }, [normalizedData, selectedFazendas, selectedProjetos, onlyPendentes]);
+    }, [
+        normalizedData,
+        selectedFazendas,
+        selectedProjetos,
+        selectedCulturas,
+        selectedProgramas,
+        onlyPendentes,
+    ]);
 
-    // 2) aplica também o filtro de estágio (checkboxes) para KPIs + cards
     const dataFiltradaPorEstagio = useMemo(() => {
         if (!hiddenStages.length) return filteredData;
 
@@ -1148,7 +1272,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         });
     }, [filteredData, hiddenStages]);
 
-    // dados para o calendário, baseados em dataFiltradaPorEstagio
     const dataProdutosCalendario = useMemo(() => {
         return dataFiltradaPorEstagio
             .filter((item) => item.tipo !== 'operacao')
@@ -1159,7 +1282,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
             });
     }, [dataFiltradaPorEstagio]);
 
-    // dados de TOTAIS GERAIS por produto (soma todas as semanas)
     const dataProdutosTotaisGerais = useMemo(() => {
         const map = new Map();
 
@@ -1191,7 +1313,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const chipSelectedBg = dark ? '#1d4ed8' : '#2563eb';
     const chipSelectedText = '#f9fafb';
 
-    // KPIs agora baseados em dataFiltradaPorEstagio (inclui filtro de estágio)
     const kpis = useMemo(() => {
         let areaTotal = 0;
         let quantidadeTotal = 0;
@@ -1238,7 +1359,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 borderRadius: 16,
             }}
         >
-            {/* Título */}
             <div>
                 <h2
                     style={{
@@ -1262,7 +1382,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </p>
             </div>
 
-            {/* Filtros */}
             <div
                 style={{
                     borderRadius: 12,
@@ -1274,13 +1393,14 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     gap: 12,
                 }}
             >
-                {/* Switch de aplicações pendentes */}
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         marginBottom: 4,
+                        flexWrap: 'wrap',
+                        gap: 12,
                     }}
                 >
                     <FormControlLabel
@@ -1305,7 +1425,78 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     Filtros (multiSeleção) — todos os gráficos e cards são afetados.
                 </div>
 
-                {/* Filtro por Fazenda */}
+                {culturaOptions.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <span style={{ fontSize: 12, fontWeight: 600 }}>Cultura</span>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 8,
+                            }}
+                        >
+                            {culturaOptions.map((cult) => {
+                                const selected = selectedCulturas.includes(cult);
+                                return (
+                                    <button
+                                        key={cult}
+                                        type="button"
+                                        onClick={() => handleToggleCultura(cult)}
+                                        style={{
+                                            borderRadius: 999,
+                                            padding: '4px 10px',
+                                            border: `1px solid ${selected ? chipSelectedBg : chipBorder
+                                                }`,
+                                            backgroundColor: selected ? chipSelectedBg : chipBg,
+                                            color: selected ? chipSelectedText : text,
+                                            fontSize: 12,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {cult}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {programaOptions.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <span style={{ fontSize: 12, fontWeight: 600 }}>Programa</span>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 8,
+                            }}
+                        >
+                            {programaOptions.map((prog) => {
+                                const selected = selectedProgramas.includes(prog);
+                                return (
+                                    <button
+                                        key={prog}
+                                        type="button"
+                                        onClick={() => handleTogglePrograma(prog)}
+                                        style={{
+                                            borderRadius: 999,
+                                            padding: '4px 10px',
+                                            border: `1px solid ${selected ? chipSelectedBg : chipBorder
+                                                }`,
+                                            backgroundColor: selected ? chipSelectedBg : chipBg,
+                                            color: selected ? chipSelectedText : text,
+                                            fontSize: 12,
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        {prog}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 {fazendaOptions.length > 0 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         <span style={{ fontSize: 12, fontWeight: 600 }}>
@@ -1344,7 +1535,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     </div>
                 )}
 
-                {/* Filtro por Projeto */}
                 {projetoOptions.length > 0 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         <span style={{ fontSize: 12, fontWeight: 600 }}>Projeto</span>
@@ -1382,7 +1572,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 )}
             </div>
 
-            {/* KPIs */}
             <div
                 style={{
                     display: 'grid',
@@ -1444,7 +1633,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </div>
             </div>
 
-            {/* Gráfico semanal (operações empilhadas por estágio) */}
             <section
                 style={{
                     paddingTop: 8,
@@ -1474,14 +1662,12 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 />
             </section>
 
-            {/* Calendário semanal (produtos) */}
             <section
                 style={{
                     paddingTop: 8,
                     borderTop: `1px solid ${sectionBorder}`,
                 }}
             >
-                {/* Header: título + seta */}
                 <div
                     onClick={toggleShowProdutosSemana}
                     style={{
@@ -1500,8 +1686,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         sx={{
                             fontSize: 24,
                             color: subText,
-                            transform: showProdutosSemana ? "rotate(180deg)" : "rotate(0deg)",
-                            transition: "transform 0.15s ease-out",
+                            transform: showProdutosSemana ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.15s ease-out',
                         }}
                     />
                 </div>
@@ -1525,10 +1711,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         dark={dark}
                     />
                 )}
-
             </section>
 
-            {/* Totais gerais por produto (NOVO ACCORDION) */}
             <section
                 style={{
                     paddingTop: 8,
@@ -1553,8 +1737,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         sx={{
                             fontSize: 24,
                             color: subText,
-                            transform: showTotaisGerais ? "rotate(180deg)" : "rotate(0deg)",
-                            transition: "transform 0.15s ease-out",
+                            transform: showTotaisGerais ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.15s ease-out',
                         }}
                     />
                 </div>
@@ -1568,7 +1752,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     }}
                 >
                     Soma de todas as semanas para cada produto (dose × área e área total),
-                    considerando os mesmos filtros de fazenda, projeto, pendências e estágios.
+                    considerando os mesmos filtros de fazenda, projeto, cultura, programa,
+                    pendências e estágios.
                 </p>
 
                 {showTotaisGerais && (
@@ -1578,7 +1763,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     />
                 )}
             </section>
-
         </div>
     );
 };
