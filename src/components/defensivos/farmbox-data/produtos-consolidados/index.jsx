@@ -72,36 +72,38 @@ const ProdutosConsolidados = () => {
         setFilteredData([])
     }
 
-    const handleCapture = async () => {
+    const handleCapture = async (stNumberFromParam) => {
         const element = captureRef.current;
         if (!element) return;
 
+        // Usa o número vindo por parâmetro se existir; se não, cai pro estado
+        const stNumber = stNumberFromParam ?? stOpened;
+
         try {
             const canvas = await html2canvas(element, {
-                useCORS: true, // ajuda quando há imagens com CORS permitido
-                scale: 2,      // aumenta resolução
+                useCORS: true,
+                scale: 2,
             });
 
             const dataUrl = canvas.toDataURL("image/png");
 
             const link = document.createElement("a");
             link.href = dataUrl;
-            link.download = `pre_st_${stOpened?.toString().trim() || 'gerada'}.png`;
+            link.download = `pre_st_${stNumber?.toString().trim() || 'gerada'}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            toast.success(
-                `Captura de tela gerada`,
-                {
-                    position: "top-center",
-                    duration: 5000
-                }
-            )
+
+            toast.success(`Captura de tela gerada`, {
+                position: "top-center",
+                duration: 5000,
+            });
         } catch (err) {
             console.error("Erro ao gerar imagem:", err);
             alert("Não foi possível gerar a imagem.");
         }
     };
+
 
     useEffect(() => {
         if (openApp.length > 0) {
@@ -162,6 +164,7 @@ const ProdutosConsolidados = () => {
                             });
                         } else {
                             console.log('tudo certo', st_number)
+
                             setStOpened(st_number)
                             Swal.fire({
                                 title: "Feito!!",
@@ -173,15 +176,7 @@ const ProdutosConsolidados = () => {
                         // 🚀 espera 2s pra garantir que o número já foi renderizado
                         setTimeout(async () => {
                             try {
-                                await handleCapture();
-                                toast.success(
-                                    `Captura de tela gerada`,
-                                    {
-                                        position: "top-center",
-                                        duration: 5000
-                                    }
-                                )
-
+                                await handleCapture(st_number); // <-- passa o número novo
                             } catch (e) {
                                 console.error("Erro ao capturar a tela após abrir ST:", e);
                             }
@@ -269,7 +264,7 @@ const ProdutosConsolidados = () => {
                         </Box>
                         <Fab
                             color="success"
-                            onClick={handleCapture}
+                            onClick={() => handleCapture()} // usa o stOpened atual
                             aria-label="Capturar imagem"
                             sx={{
                                 position: "fixed",
