@@ -10,6 +10,8 @@ import {
     YAxis,
     Tooltip,
     CartesianGrid,
+    ReferenceArea,   // ⬅️ adiciona aqui
+    LabelList
 } from 'recharts';
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -33,6 +35,23 @@ import { tokens } from '../../../theme';
 /* ==========================
    Helpers de normalização
    ========================== */
+
+function isCurrentWeek(date) {
+    if (!date) return false;
+    const now = new Date();
+
+    // início da semana atual (segunda-feira)
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+    start.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+
+    // fim da semana atual (domingo)
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+
+    return date >= start && date <= end;
+}
+
 
 function parsePtNumber(str) {
     if (str == null) return 0;
@@ -526,8 +545,8 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
     const colors = tokens(theme.palette.mode);
     const isDark = dark ?? theme.palette.mode === "dark";
 
-    const axisColor = isDark ? colors.grey[200] : colors.grey[700];
-    const gridColor = isDark ? colors.grey[700] : colors.grey[300];
+    const axisColor = colors.primary[100]
+    const gridColor = colors.primary[100]
     const textColor = isDark ? colors.textColor[100] : colors.textColor[100];
     const tooltipBg = isDark ? colors.primary[500] : colors.blueOrigin[800];
     const tooltipBorder = isDark ? colors.blueAccent[400] : colors.grey[300];
@@ -555,10 +574,32 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
         return <p>Nenhum dado de operações para exibir o gráfico.</p>;
     }
 
+    // Semana corrente (pela data de hoje)
+    const today = new Date();
+    const { weekKey: currentWeekKey } = getWeekRange(today);
+
+    const currentWeekLabel = (() => {
+        const current = weeks.find((w) => w.weekKey === currentWeekKey);
+        if (!current) return null;
+        return formatWeekLabel(current.weekStart, current.weekEnd);
+    })();
+
+    const visibleStageKeys = stageKeys.filter(
+        (stage) => !hiddenStages.includes(stage)
+    );
+
     const chartData = weeks.map((item) => ({
         ...item,
         weekLabel: formatWeekLabel(item.weekStart, item.weekEnd),
     }));
+
+    const chartDataWithTotal = chartData.map((item) => {
+        const totalStack = visibleStageKeys.reduce(
+            (sum, key) => sum + (item[key] || 0),
+            0
+        );
+        return { ...item, totalStack };
+    });
 
     const handleToggleStage = (stage) => {
         setHiddenStages((prev) =>
@@ -568,9 +609,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
         );
     };
 
-    const visibleStageKeys = stageKeys.filter(
-        (stage) => !hiddenStages.includes(stage)
-    );
+
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (!active || !payload || !payload.length) return null;
@@ -689,10 +728,10 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 
     return (
         <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            <div style={{ flex: 1, height: 360 }}>
+            <div style={{ flex: 1, height: 450 }}>
                 <ResponsiveContainer>
                     <BarChart
-                        data={chartData}
+                        data={chartDataWithTotal}
                         margin={{ top: 20, right: 20, left: 0, bottom: 60 }}
                     >
                         <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
@@ -707,20 +746,59 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                         <YAxis
                             tick={{ fill: axisColor, fontSize: 11 }}
                             stroke={axisColor}
+                            tickFormatter={(value) =>
+                                Number(value).toLocaleString('pt-BR', {
+                                    maximumFractionDigits: 0,
+                                })
+                            }
                         />
                         <Tooltip content={<CustomTooltip />} />
 
-                        {visibleStageKeys.map((stage) => (
+                        {/* 🔹 Fundo destacado para a semana corrente */}
+                        {currentWeekLabel && (
+                            <ReferenceArea
+                                x1={currentWeekLabel}
+                                x2={currentWeekLabel}
+                                ifOverflow="extendDomain"
+                                fill={
+                                    dark
+                                        ? 'rgba(104, 112, 250, 0.40)'   // azul mais claro (modo dark)
+                                        : 'rgba(18, 117, 181, 0.46)'    // azul suave (modo light)
+                                }
+                            />
+                        )}
+
+                        {visibleStageKeys.map((stage, index) => (
                             <Bar
                                 key={stage}
                                 dataKey={stage}
                                 name={stage}
                                 stackId="total"
                                 fill={stageColorMap[stage]}
-                            />
+                            >
+                                {/* Só na ÚLTIMA barra empilhada colocamos o número total em cima */}
+                                {index === visibleStageKeys.length - 1 && (
+                                    <LabelList
+                                        dataKey="totalStack"
+                                        position="top"
+                                        style={{
+                                            fill: colors.primary[100],
+                                            fontSize: 12,
+                                            fontWeight: 700,
+                                        }}
+                                        formatter={(v) =>
+                                            Number(v).toLocaleString('pt-BR', {
+                                                maximumFractionDigits: 0,
+                                            })
+                                        }
+                                    />
+                                )}
+                            </Bar>
                         ))}
+
                     </BarChart>
                 </ResponsiveContainer>
+
             </div>
 
             <div
@@ -731,7 +809,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     alignItems: 'stretch',
                     paddingTop: 4,
                     height: '100%',
-                    marginTop: -64,
+                    marginTop: -24,
                 }}
             >
                 <button
@@ -776,7 +854,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 6,
-                            maxHeight: 400,
+                            maxHeight: 450,
                             overflowY: 'auto',
                             scrollbarWidth: 'thin',
                             boxShadow: paperShadowLight
@@ -1845,7 +1923,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         sx={{
                             '.MuiFormControlLabel-label': {
                                 fontSize: 13,
-                                color: subText,
+                                color: colors.primary[100],
                             },
                         }}
                     />
@@ -1861,7 +1939,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         sx={{
                             '.MuiFormControlLabel-label': {
                                 fontSize: 13,
-                                color: subText,
+                                color: colors.primary[100],
                             },
                         }}
                     />
@@ -2061,7 +2139,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         boxShadow: paperShadow,
                     }}
                 >
-                    <div style={{ fontSize: 12, color: subText }}>
+                    <div style={{ fontSize: 12, color: colors.primary[100] }}>
                         Área total (soma operações)
                     </div>
                     <div style={{ fontSize: 20, fontWeight: 600 }}>
@@ -2081,7 +2159,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         boxShadow: paperShadow,
                     }}
                 >
-                    <div style={{ fontSize: 12, color: subText }}>
+                    <div style={{ fontSize: 12, color: colors.primary[100] }}>
                         Qtd. total de produto (dose × ha)
                     </div>
                     <div style={{ fontSize: 20, fontWeight: 600 }}>
@@ -2100,7 +2178,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         boxShadow: paperShadow,
                     }}
                 >
-                    <div style={{ fontSize: 12, color: subText }}>
+                    <div style={{ fontSize: 12, color: colors.primary[100] }}>
                         Período das aplicações previstas
                     </div>
                     <div style={{ fontSize: 18, fontWeight: 600, paddingTop: 3 }}>
