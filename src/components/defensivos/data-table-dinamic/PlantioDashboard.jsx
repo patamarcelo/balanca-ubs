@@ -1816,7 +1816,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                    backgroundColor: isDark ? colors.blueOrigin[700] : colors.blueOrigin[800],
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 12,
@@ -2057,7 +2057,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                        backgroundColor: isDark ? colors.blueOrigin[700] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2077,7 +2077,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                        backgroundColor: isDark ? colors.blueOrigin[700] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2096,7 +2096,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                        backgroundColor: isDark ? colors.blueOrigin[700] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2116,7 +2116,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                    backgroundColor: isDark ? colors.blueOrigin[700] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2150,7 +2150,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                    backgroundColor: isDark ? showProdutosSemana ? colors.blueOrigin[600] : colors.blueOrigin[700] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2206,7 +2206,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                    backgroundColor: isDark ? showTotaisGerais ? colors.blueOrigin[600] : colors.blueOrigin[700] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2264,7 +2264,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
+                    backgroundColor: isDark ? showVisaoProdutosPeriodo ? colors.blueOrigin[700] : colors.blueOrigin[700] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
