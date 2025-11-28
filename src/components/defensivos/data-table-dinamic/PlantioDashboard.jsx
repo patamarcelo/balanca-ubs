@@ -1327,6 +1327,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
     const [hiddenStages, setHiddenStages] = useState([]);
     const [onlyPendentes, setOnlyPendentes] = useState(false);
+    const [onlyInicializadoPlantio, setOnlyInicializadoPlantio] = useState(false);
+
 
     // Visão de produtos por período (apenas para o novo card)
     const [showVisaoProdutosPeriodo, setShowVisaoProdutosPeriodo] = useState(false);
@@ -1542,7 +1544,10 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
     // === Data final filtrado (usando seleções) ===
     const filteredData = useMemo(() => {
-        return normalizedData.filter((item) => {
+        return normalizedData.filter((item, idx) => {
+            if(idx < 5){
+                console.log('itemHere: ', item)
+            }
             const passFazenda =
                 !selectedFazendas.length ||
                 (item.fazendaGrupo && selectedFazendas.includes(item.fazendaGrupo));
@@ -1562,12 +1567,16 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
             const passSituacao =
                 !onlyPendentes || item.situacaoApp === false;
 
+            const passInicializadoPlantio =
+                !onlyInicializadoPlantio || item.plantioIniciado === true;
+
             return (
                 passFazenda &&
                 passProjeto &&
                 passCultura &&
                 passPrograma &&
-                passSituacao
+                passSituacao &&
+                passInicializadoPlantio
             );
         });
     }, [
@@ -1577,6 +1586,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedCulturas,
         selectedProgramas,
         onlyPendentes,
+        onlyInicializadoPlantio
     ]);
 
     const dataFiltradaPorEstagio = useMemo(() => {
@@ -1836,11 +1846,11 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: 'flex-start',
                         alignItems: 'center',
                         marginBottom: 4,
                         flexWrap: 'wrap',
-                        gap: 12,
+                        gap: 30,
                     }}
                 >
                     <FormControlLabel
@@ -1848,7 +1858,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                             <Switch
                                 checked={onlyPendentes}
                                 onChange={(e) => setOnlyPendentes(e.target.checked)}
-                                color="primary"
+                                color="warning"
                             />
                         }
                         label="Considerar Somente Aplicações Pendentes"
@@ -1859,6 +1869,23 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                             },
                         }}
                     />
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={onlyInicializadoPlantio}
+                                onChange={(e) => setOnlyInicializadoPlantio(e.target.checked)}
+                                color="success"
+                            />
+                        }
+                        label="Considerar Somente o que está Plantado"
+                        sx={{
+                            '.MuiFormControlLabel-label': {
+                                fontSize: 13,
+                                color: subText,
+                            },
+                        }}
+                    />
+
                 </div>
 
                 <div style={{ fontSize: 13, color: subText, marginBottom: 4 }}>

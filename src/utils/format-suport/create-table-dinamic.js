@@ -13,6 +13,7 @@ export const createDinamicTable = (data) => {
 		const fazendaGrupo = dados.fazenda_grupo;
 		const talhaoIdUnico = dados.talhao_id_unico;
 		const plantioFinalizado = dados.plantio_finalizado;
+		const plantioIniciado = dados?.inicializado_plantio;
 		const area = parseFloat(dados.area_colheita)
 			.toFixed(2)
 			.replace(".", ",");
@@ -48,6 +49,7 @@ export const createDinamicTable = (data) => {
 					fazendaGrupo: fazendaGrupo,
 					talhaoIdUnico: talhaoIdUnico,
 					plantioFinalizado: plantioFinalizado,
+					plantioIniciado: plantioIniciado, 
 					area: area,
 					dataPlantio: dataPlantio,
 					dap: dap,
@@ -87,6 +89,7 @@ export const createDataTable = (data) => {
 		const fazendaGrupo = dados.fazenda_grupo;
 		const talhaoIdUnico = dados.talhao_id_unico;
 		const plantioFinalizado = dados.plantio_finalizado;
+		const plantioIniciado = dados?.inicializado_plantio;
 		const area = dados.area_colheita.toFixed(2).replace(".", ",");
 		const dataPlantio = dados.data_plantio;
 		const dap = dados.dap;
@@ -111,6 +114,7 @@ export const createDataTable = (data) => {
 				fazendaGrupo: fazendaGrupo,
 				talhaoIdUnico: talhaoIdUnico,
 				plantioFinalizado: plantioFinalizado,
+				plantioIniciado: plantioIniciado,
 				area: area,
 				dataPlantio: dataPlantio,
 				dap: dap,
