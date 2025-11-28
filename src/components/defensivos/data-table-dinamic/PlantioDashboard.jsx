@@ -30,11 +30,9 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from '../../../theme';
 
 
-
 /* ==========================
    Helpers de normalização
    ========================== */
-
 
 function parsePtNumber(str) {
     if (str == null) return 0;
@@ -69,7 +67,6 @@ function parseDateLocal(value) {
     const parsed = new Date(str);
     return isNaN(parsed.getTime()) ? null : parsed;
 }
-
 
 function normalizeItem(raw) {
     const area = parsePtNumber(raw.area);
@@ -169,7 +166,6 @@ function formatWeekLabel(start, end) {
     if (!start || !end) return 'sem data';
     return `${formatDateBR(start)} - ${formatDateBR(end)}`;
 }
-
 
 // Agrupa produtos por período (semana / quinzena / mês)
 function groupProdutosPorPeriodo(data, view) {
@@ -331,7 +327,6 @@ function getStageOrderFromLabel(stageKey) {
     // 3) fallback: sem ordem definida -> fica no fim, mas a gente ainda ordena por nome depois
     return null;
 }
-
 
 
 /* ==========================
@@ -527,31 +522,34 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
         [data]
     );
 
-    const axisColor = dark ? '#e5e7eb' : '#374151';
-    const gridColor = dark ? '#374151' : '#e5e7eb';
-    const textColor = dark ? '#f9fafb' : '#111827';
-    const tooltipBg = dark ? '#111827' : '#ffffff';
-    const tooltipBorder = dark ? '#4b5563' : '#e5e7eb';
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const isDark = dark ?? theme.palette.mode === "dark";
 
-    const legendText = dark ? '#e5e7eb' : '#1f2937';
-    const legendSub = dark ? '#9ca3af' : '#6b7280';
-    const legendBorder = dark ? '#1f2937' : '#e5e7eb';
-    const legendBg = dark ? '#020617' : '#ffffff';
+    const axisColor = isDark ? colors.grey[200] : colors.grey[700];
+    const gridColor = isDark ? colors.grey[700] : colors.grey[300];
+    const textColor = isDark ? colors.textColor[100] : colors.textColor[100];
+    const tooltipBg = isDark ? colors.primary[500] : colors.blueOrigin[800];
+    const tooltipBorder = isDark ? colors.blueAccent[400] : colors.grey[300];
+
+    const legendText = textColor;
+    const legendSub = isDark ? colors.grey[400] : colors.grey[600];
+    const legendBorder = isDark ? colors.grey[700] : colors.grey[300];
+    const legendBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
 
     const [accordionOpen, setAccordionOpen] = useState(true);
 
-    const paperShadowLight = dark
-        ? '0px 4px 6px rgba(0,0,0,0.45)'
-        : '0px 2px 4px rgba(0,0,0,0.08)';
-
+    const paperShadowLight = isDark
+        ? '0px 4px 10px rgba(0,0,0,0.55)'
+        : '0px 2px 6px rgba(15,23,42,0.16)';
 
     const stageColorMap = useMemo(() => {
         const map = {};
         stageKeys.forEach((stage, index) => {
-            map[stage] = getStageColor(stage, index, dark);
+            map[stage] = getStageColor(stage, index, isDark);
         });
         return map;
-    }, [stageKeys, dark]);
+    }, [stageKeys, isDark]);
 
     if (!weeks.length) {
         return <p>Nenhum dado de operações para exibir o gráfico.</p>;
@@ -608,7 +606,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                     style={{
                         fontWeight: 700,
                         fontSize: 12,
-                        color: '#000',
+                        color: isDark ? colors.yellow[550] : '#000',
                         marginBottom: 6,
                     }}
                 >
@@ -878,7 +876,6 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 };
 
 
-
 /* ==========================
    Subcomponente: "Calendário" semanal (produtos)
    ========================== */
@@ -890,16 +887,19 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
         [produtosSemana]
     );
 
-    const cardBg = dark ? '#0b1120' : '#ffffff';
-    const border = dark ? '#1f2937' : '#e5e7eb';
-    const titleColor = dark ? '#f9fafb' : '#111827';
-    const textColor = dark ? '#e5e7eb' : '#374151';
-    const subText = dark ? '#9ca3af' : '#6b7280';
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const isDark = dark ?? theme.palette.mode === "dark";
 
-    const paperShadow = dark
-        ? '0px 8px 10px rgba(0,0,0,0.7)'
-        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+    const cardBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
+    const border = isDark ? colors.grey[700] : colors.grey[300];
+    const titleColor = isDark ? colors.textColor[100] : colors.textColor[100];
+    const textColor = isDark ? colors.grey[100] : colors.grey[700];
+    const subText = isDark ? colors.grey[400] : colors.grey[600];
 
+    const paperShadow = isDark
+        ? '0px 8px 18px rgba(0,0,0,0.55)'
+        : '0px 6px 12px rgba(15,23,42,0.16)';
 
     if (!semanas.length) {
         return <p>Nenhum dado de produtos para exibir.</p>;
@@ -982,8 +982,8 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                         >
                             {week.produtos.map((p, idx) => {
                                 const isEven = idx % 2 === 0;
-                                const rowBg = dark
-                                    ? (isEven ? '#020617' : '#020617')
+                                const rowBg = isDark
+                                    ? (isEven ? colors.primary[500] : colors.primary[600])
                                     : (isEven ? '#f9fafb' : '#eef2ff');
 
                                 return (
@@ -998,7 +998,7 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
                                             padding: '6px 8px',
                                             backgroundColor: rowBg,
                                             borderRadius: 6,
-                                            borderBottom: dark
+                                            borderBottom: isDark
                                                 ? '1px solid rgba(15,23,42,0.7)'
                                                 : '1px solid rgba(209,213,219,0.6)',
                                             marginBottom: idx === week.produtos.length - 1 ? 0 : 2,
@@ -1063,18 +1063,22 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
    ========================== */
 
 const ProdutosTotaisGerais = ({ data, dark }) => {
-    const cardBg = dark ? '#0b1120' : '#ffffff';
-    const border = dark ? '#1f2937' : '#e5e7eb';
-    const textColor = dark ? '#e5e7eb' : '#374151';
-    const subText = dark ? '#9ca3af' : '#6b7280';
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const isDark = dark ?? theme.palette.mode === "dark";
 
-    const paperShadow = dark
-        ? '0px 8px 10px rgba(0,0,0,0.7)'
-        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+    const cardBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
+    const border = isDark ? colors.grey[700] : colors.grey[300];
+    const textColor = isDark ? colors.grey[100] : colors.grey[700];
+    const subText = isDark ? colors.grey[400] : colors.grey[600];
 
-    const paperShadowLight = dark
-        ? '0px 4px 6px rgba(0,0,0,0.45)'
-        : '0px 2px 4px rgba(0,0,0,0.08)';
+    const paperShadow = isDark
+        ? '0px 8px 18px rgba(0,0,0,0.55)'
+        : '0px 6px 12px rgba(15,23,42,0.16)';
+
+    const paperShadowLight = isDark
+        ? '0px 4px 10px rgba(0,0,0,0.5)'
+        : '0px 2px 6px rgba(15,23,42,0.14)';
 
     if (!data.length) {
         return <p>Nenhum dado de produtos para exibir.</p>;
@@ -1179,8 +1183,8 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                         >
                             {colItems.map((p, idx) => {
                                 const isEven = idx % 2 === 0;
-                                const rowBg = dark
-                                    ? (isEven ? '#020617' : '#020617')
+                                const rowBg = isDark
+                                    ? (isEven ? colors.primary[500] : colors.primary[600])
                                     : (isEven ? '#f9fafb' : '#eef2ff');
 
                                 return (
@@ -1196,7 +1200,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                             padding: '6px 8px',
                                             backgroundColor: rowBg,
                                             borderRadius: 6,
-                                            borderBottom: dark
+                                            borderBottom: isDark
                                                 ? '1px solid rgba(15,23,42,0.7)'
                                                 : '1px solid rgba(209,213,219,0.6)',
                                             marginBottom: idx === colItems.length - 1 ? 0 : 2,
@@ -1270,8 +1274,6 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
 };
 
 
-
-
 /* ==========================
    Componente principal ÚNICO
    ========================== */
@@ -1329,14 +1331,12 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const [onlyPendentes, setOnlyPendentes] = useState(false);
     const [onlyInicializadoPlantio, setOnlyInicializadoPlantio] = useState(false);
 
-
     // Visão de produtos por período (apenas para o novo card)
     const [showVisaoProdutosPeriodo, setShowVisaoProdutosPeriodo] = useState(false);
 
     const [produtoViewMode, setProdutoViewMode] = useState('semana'); // 'semana' | 'quinzena' | 'mes'
     const [filtroTiposVisao, setFiltroTiposVisao] = useState([]);
     const [filtroProdutosVisao, setFiltroProdutosVisao] = useState([]);
-
 
     const handleToggleFazenda = (value, disabled) => {
         if (disabled) return;
@@ -1544,10 +1544,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
     // === Data final filtrado (usando seleções) ===
     const filteredData = useMemo(() => {
-        return normalizedData.filter((item, idx) => {
-            if(idx < 5){
-                console.log('itemHere: ', item)
-            }
+        return normalizedData.filter((item) => {
             const passFazenda =
                 !selectedFazendas.length ||
                 (item.fazendaGrupo && selectedFazendas.includes(item.fazendaGrupo));
@@ -1648,9 +1645,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
         const periodos = groupProdutosPorPeriodo(base, produtoViewMode);
 
-        // =============================
-        // ➕ CRIAR CARD TOTAL GERAL
-        // =============================
+        // TOTAL GERAL
         const totalMap = new Map();
 
         base.forEach((item) => {
@@ -1686,9 +1681,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         produtoViewMode,
     ]);
 
-
-
-
     const tipoOptionsVisao = useMemo(() => {
         const set = new Set();
         dataFiltradaPorEstagio.forEach((item) => {
@@ -1715,48 +1707,36 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         return Array.from(set).sort();
     }, [dataFiltradaPorEstagio, filtroTiposVisao]);
 
+    const bg = isDark ? colors.primary[600] : colors.blueOrigin[800];
+    const text = colors.textColor[100];
+    const subText = isDark ? colors.grey[400] : colors.grey[600];
+    const sectionBorder = isDark ? colors.grey[700] : colors.grey[300];
+    const chipBg = isDark ? colors.primary[500] : colors.blueOrigin[900];
+    const chipBorder = isDark ? colors.grey[600] : colors.grey[400];
+    const chipSelectedBg = isDark ? colors.greenAccent[570] : colors.blueAccent[500];
+    const chipSelectedText = "#ffffff";
 
-    const bg = dark ? '#020617' : '#f9fafb';
-    const text = dark ? '#f9fafb' : '#0f172a';
-    const subText = dark ? '#9ca3af' : '#6b7280';
-    const sectionBorder = dark ? '#1f2937' : '#e5e7eb';
-    const chipBg = dark ? '#111827' : '#e5e7eb';
-    const chipBorder = dark ? '#4b5563' : '#d1d5db';
-    const chipSelectedBg = dark ? '#1d4ed8' : '#2563eb';
-    const chipSelectedText = '#f9fafb';
+    const paperShadow = isDark
+        ? '0px 10px 24px rgba(0,0,0,0.55)'
+        : '0px 6px 12px rgba(15,23,42,0.16)';
 
-    const paperShadow = dark
-        ? '0px 8px 10px rgba(0,0,0,0.7)'
-        : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
-
-
-
-    // Hover normal
     // Estilos base/hover para cards usando a paleta do projeto
-    const getCardBaseVisual = (dark, colors) => ({
-        // fundo default do card
-        backgroundColor: dark ? colors.primary[600] : colors.blueOrigin[800], // dark: #101624 / light: white
-        // borda suave
-        borderColor: dark ? colors.grey[700] : colors.grey[300],
-        // sombra "paper 8" adaptada
-        boxShadow: dark
+    const getCardBaseVisual = (darkMode, palette) => ({
+        backgroundColor: darkMode ? palette.primary[600] : palette.blueOrigin[800],
+        borderColor: darkMode ? palette.grey[700] : palette.grey[300],
+        boxShadow: darkMode
             ? "0px 8px 16px rgba(0,0,0,0.55)"
             : "0px 6px 12px rgba(15,23,42,0.16)",
-        // transições gerais
         transition:
             "background-color 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out",
         cursor: "pointer",
     });
 
-    const getCardHoverVisual = (dark, colors) => ({
-        // leve “zoom”
+    const getCardHoverVisual = (darkMode, palette) => ({
         transform: "scale(1.015)",
-        // fundo de destaque
-        backgroundColor: dark ? colors.primary[400] : colors.blueOrigin[900],
-        // borda com highlight na cor do projeto
-        borderColor: dark ? colors.blueAccent[400] : colors.blueAccent[300],
-        // sombra mais forte no hover
-        boxShadow: dark
+        backgroundColor: darkMode ? palette.primary[400] : palette.blueOrigin[900],
+        borderColor: darkMode ? palette.blueAccent[400] : palette.blueAccent[300],
+        boxShadow: darkMode
             ? "0px 14px 26px rgba(0,0,0,0.75)"
             : "0px 10px 22px rgba(15,23,42,0.22)",
     });
@@ -1836,7 +1816,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 12,
@@ -2077,7 +2057,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: dark ? '#020617' : '#ffffff',
+                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2097,7 +2077,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: dark ? '#020617' : '#ffffff',
+                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2116,7 +2096,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         borderRadius: 12,
                         padding: 16,
                         border: `1px solid ${sectionBorder}`,
-                        backgroundColor: dark ? '#020617' : '#ffffff',
+                        backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                         boxShadow: paperShadow,
                     }}
                 >
@@ -2136,7 +2116,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2157,7 +2137,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 </p>
                 <ProdutosSemanaChart
                     data={filteredData}
-                    dark={dark}
+                    dark={isDark}
                     hiddenStages={hiddenStages}
                     setHiddenStages={setHiddenStages}
                 />
@@ -2170,7 +2150,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2214,7 +2194,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 {showProdutosSemana && (
                     <ProdutosSemanaCalendar
                         data={dataProdutosCalendario}
-                        dark={dark}
+                        dark={isDark}
                     />
                 )}
             </section>
@@ -2226,7 +2206,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2270,7 +2250,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                 {showTotaisGerais && (
                     <ProdutosTotaisGerais
                         data={dataProdutosTotaisGerais}
-                        dark={dark}
+                        dark={isDark}
                     />
                 )}
             </section>
@@ -2284,7 +2264,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     borderRadius: 12,
                     padding: 16,
                     border: `1px solid ${sectionBorder}`,
-                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    backgroundColor: isDark ? colors.primary[600] : colors.blueOrigin[800],
                     boxShadow: paperShadow,
                 }}
             >
@@ -2428,8 +2408,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             borderRadius: 12,
                                             padding: 12,
                                             border: `1px solid ${sectionBorder}`,
-                                            backgroundColor: dark ? '#0b1120' : '#ffffff',
-                                            boxShadow: paperShadow,
+                                            ...getCardBaseVisual(isDark, colors),
                                         }}
                                         onMouseEnter={(e) => {
                                             Object.assign(
@@ -2438,9 +2417,11 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             );
                                         }}
                                         onMouseLeave={(e) => {
-                                            // volta só o que mudamos no hover, sem quebrar layout
                                             Object.assign(e.currentTarget.style, {
                                                 ...getCardBaseVisual(isDark, colors),
+                                                borderRadius: "12px",
+                                                padding: "12px",
+                                                border: `1px solid ${sectionBorder}`,
                                                 transform: "scale(1)",
                                             });
                                         }}
@@ -2469,14 +2450,13 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                         >
                                             {periodo.produtos.map((p, idx) => (
                                                 <li
-                                                    key={`${periodo.periodKey}-${p.produto}`}
+                                                    key={`${periodo.periodKey}-${p.produto}-${idx}`}
                                                     style={{
                                                         display: 'flex',
                                                         justifyContent: 'space-between',
                                                         padding: '6px 4px',
                                                         borderBottom:
-                                                            idx ===
-                                                                periodo.produtos.length - 1
+                                                            idx === periodo.produtos.length - 1
                                                                 ? 'none'
                                                                 : `1px solid ${sectionBorder}`,
                                                     }}
@@ -2533,8 +2513,6 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     </div>
                 )}
             </section>
-
-
         </div>
     );
 };
