@@ -13,7 +13,22 @@ import {
 } from 'recharts';
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Switch, FormControlLabel } from '@mui/material';
+import {
+    Switch,
+    FormControlLabel,
+    Box,
+    Tabs,
+    Tab,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    OutlinedInput,
+} from '@mui/material';
+
+import { useTheme } from "@mui/material/styles";
+import { tokens } from '../../../theme';
+
 
 
 /* ==========================
@@ -29,6 +44,32 @@ function parsePtNumber(str) {
             .replace(',', '.')
     );
 }
+
+function parseDateLocal(value) {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+
+    const str = String(value).trim();
+
+    // Formato ISO simples: 2025-11-01
+    let m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+        const [, y, mo, d] = m;
+        return new Date(Number(y), Number(mo) - 1, Number(d));
+    }
+
+    // Formato brasileiro: 01/11/2025 (dia/mês/ano)
+    m = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (m) {
+        const [, d, mo, y] = m;
+        return new Date(Number(y), Number(mo) - 1, Number(d));
+    }
+
+    // fallback: tenta parser padrão, mas se der NaN, retorna null
+    const parsed = new Date(str);
+    return isNaN(parsed.getTime()) ? null : parsed;
+}
+
 
 function normalizeItem(raw) {
     const area = parsePtNumber(raw.area);
@@ -77,14 +118,10 @@ function normalizeItem(raw) {
             raw.capacidadePlantioDia != null
                 ? Number(raw.capacidadePlantioDia)
                 : 0,
-        dataPlantio: raw.dataPlantio ? new Date(raw.dataPlantio) : null,
-        dataPrevista: raw.dataPrevista ? new Date(raw.dataPrevista) : null,
-        programaStartDate: raw.programaStartDate
-            ? new Date(raw.programaStartDate)
-            : null,
-        programaEndDate: raw.programaEndDate
-            ? new Date(raw.programaEndDate)
-            : null,
+        dataPlantio: parseDateLocal(raw.dataPlantio),
+        dataPrevista: parseDateLocal(raw.dataPrevista),
+        programaStartDate: parseDateLocal(raw.programaStartDate),
+        programaEndDate: parseDateLocal(raw.programaEndDate),
     };
 }
 
@@ -132,6 +169,95 @@ function formatWeekLabel(start, end) {
     if (!start || !end) return 'sem data';
     return `${formatDateBR(start)} - ${formatDateBR(end)}`;
 }
+
+
+// Agrupa produtos por período (semana / quinzena / mês)
+function groupProdutosPorPeriodo(data, view) {
+    const map = new Map();
+
+    data.forEach((item) => {
+        const date = item.dataPrevista;
+        if (!(date instanceof Date) || isNaN(date)) return;
+
+        const year = date.getFullYear();
+        const month = date.getMonth(); // 0-11
+
+        let key;
+        let start;
+        let end;
+        let label;
+
+        if (view === 'semana') {
+            const { weekKey, start: s, end: e } = getWeekRange(date);
+            key = weekKey;
+            start = s;
+            end = e;
+            label = formatWeekLabel(start, end);
+        } else if (view === 'quinzena') {
+            const day = date.getDate();
+            const firstHalf = day <= 15;
+            const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+            start = new Date(year, month, firstHalf ? 1 : 16);
+            end = new Date(year, month, firstHalf ? 15 : lastDayOfMonth);
+
+            const mes = String(month + 1).padStart(2, '0');
+            const faixa = firstHalf ? `01-15` : `16-${String(lastDayOfMonth).padStart(2, '0')}`;
+            key = `${year}-${mes}-${faixa}`;
+            label = `${formatDateBR(start)} - ${formatDateBR(end)}`;
+        } else {
+            // 'mes'
+            const first = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+            const last = new Date(year, month, lastDayOfMonth);
+
+            const mes = String(month + 1).padStart(2, '0');
+            key = `${year}-${mes}`;
+            start = first;
+            end = last;
+            label = `${mes}/${year}`;
+        }
+
+        if (!map.has(key)) {
+            map.set(key, {
+                periodKey: key,
+                periodStart: start,
+                periodEnd: end,
+                periodLabel: label,
+                produtos: new Map(),
+            });
+        }
+
+        const bucket = map.get(key);
+        const prodName = item.produto || 'Sem produto';
+
+        if (!bucket.produtos.has(prodName)) {
+            bucket.produtos.set(prodName, {
+                produto: prodName,
+                tipo: item.tipo || '-',
+                quantidadeTotal: 0,
+                areaTotal: 0,
+            });
+        }
+
+        const ref = bucket.produtos.get(prodName);
+        ref.quantidadeTotal += item.quantidadeCalculada || 0;
+        ref.areaTotal += item.area || 0;
+    });
+
+    return Array.from(map.values())
+        .map((periodo) => ({
+            ...periodo,
+            produtos: Array.from(periodo.produtos.values()).sort((a, b) =>
+                a.produto.localeCompare(b.produto)
+            ),
+        }))
+        .sort((a, b) => {
+            if (!a.periodStart || !b.periodStart) return 0;
+            return a.periodStart - b.periodStart;
+        });
+}
+
 
 /* ==========================
    Helpers de estágio
@@ -1151,6 +1277,10 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
    ========================== */
 
 const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const isDark = dark ?? theme.palette.mode === "dark";
+
     const safeData = Array.isArray(data) ? data : [];
 
     const normalizedData = useMemo(
@@ -1197,6 +1327,14 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
     const [hiddenStages, setHiddenStages] = useState([]);
     const [onlyPendentes, setOnlyPendentes] = useState(false);
+
+    // Visão de produtos por período (apenas para o novo card)
+    const [showVisaoProdutosPeriodo, setShowVisaoProdutosPeriodo] = useState(false);
+
+    const [produtoViewMode, setProdutoViewMode] = useState('semana'); // 'semana' | 'quinzena' | 'mes'
+    const [filtroTiposVisao, setFiltroTiposVisao] = useState([]);
+    const [filtroProdutosVisao, setFiltroProdutosVisao] = useState([]);
+
 
     const handleToggleFazenda = (value, disabled) => {
         if (disabled) return;
@@ -1482,6 +1620,92 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         );
     }, [dataProdutosCalendario]);
 
+    const dataProdutosVisaoPeriodo = useMemo(() => {
+        let base = dataFiltradaPorEstagio.filter(
+            (item) =>
+                item.tipo !== 'operacao' &&
+                item.dataPrevista instanceof Date &&
+                !isNaN(item.dataPrevista)
+        );
+
+        if (filtroTiposVisao.length) {
+            base = base.filter(i => filtroTiposVisao.includes(i.tipo));
+        }
+
+        if (filtroProdutosVisao.length) {
+            base = base.filter(i => filtroProdutosVisao.includes(i.produto));
+        }
+
+        const periodos = groupProdutosPorPeriodo(base, produtoViewMode);
+
+        // =============================
+        // ➕ CRIAR CARD TOTAL GERAL
+        // =============================
+        const totalMap = new Map();
+
+        base.forEach((item) => {
+            const prod = item.produto || "Sem produto";
+
+            if (!totalMap.has(prod)) {
+                totalMap.set(prod, {
+                    produto: prod,
+                    tipo: item.tipo || "-",
+                    quantidadeTotal: 0,
+                    areaTotal: 0,
+                });
+            }
+
+            const ref = totalMap.get(prod);
+            ref.quantidadeTotal += item.quantidadeCalculada || 0;
+            ref.areaTotal += item.area || 0;
+        });
+
+        const totalCard = {
+            periodKey: "TOTAL_GERAL",
+            periodLabel: "TOTAL GERAL",
+            produtos: Array.from(totalMap.values()).sort((a, b) =>
+                a.produto.localeCompare(b.produto)
+            ),
+        };
+
+        return [...periodos, totalCard];
+    }, [
+        dataFiltradaPorEstagio,
+        filtroTiposVisao,
+        filtroProdutosVisao,
+        produtoViewMode,
+    ]);
+
+
+
+
+    const tipoOptionsVisao = useMemo(() => {
+        const set = new Set();
+        dataFiltradaPorEstagio.forEach((item) => {
+            if (item.tipo && item.tipo !== 'operacao') {
+                set.add(item.tipo);
+            }
+        });
+        return Array.from(set).sort();
+    }, [dataFiltradaPorEstagio]);
+
+    const produtoOptionsVisao = useMemo(() => {
+        let base = dataFiltradaPorEstagio.filter(i => i.tipo !== 'operacao');
+
+        // se tipo está selecionado → restringe os produtos disponíveis
+        if (filtroTiposVisao.length) {
+            base = base.filter(i => filtroTiposVisao.includes(i.tipo));
+        }
+
+        const set = new Set();
+        base.forEach((item) => {
+            if (item.produto) set.add(item.produto);
+        });
+
+        return Array.from(set).sort();
+    }, [dataFiltradaPorEstagio, filtroTiposVisao]);
+
+
     const bg = dark ? '#020617' : '#f9fafb';
     const text = dark ? '#f9fafb' : '#0f172a';
     const subText = dark ? '#9ca3af' : '#6b7280';
@@ -1494,6 +1718,38 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const paperShadow = dark
         ? '0px 8px 10px rgba(0,0,0,0.7)'
         : '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)';
+
+
+
+    // Hover normal
+    // Estilos base/hover para cards usando a paleta do projeto
+    const getCardBaseVisual = (dark, colors) => ({
+        // fundo default do card
+        backgroundColor: dark ? colors.primary[600] : colors.blueOrigin[800], // dark: #101624 / light: white
+        // borda suave
+        borderColor: dark ? colors.grey[700] : colors.grey[300],
+        // sombra "paper 8" adaptada
+        boxShadow: dark
+            ? "0px 8px 16px rgba(0,0,0,0.55)"
+            : "0px 6px 12px rgba(15,23,42,0.16)",
+        // transições gerais
+        transition:
+            "background-color 0.15s ease-out, transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out",
+        cursor: "pointer",
+    });
+
+    const getCardHoverVisual = (dark, colors) => ({
+        // leve “zoom”
+        transform: "scale(1.015)",
+        // fundo de destaque
+        backgroundColor: dark ? colors.primary[400] : colors.blueOrigin[900],
+        // borda com highlight na cor do projeto
+        borderColor: dark ? colors.blueAccent[400] : colors.blueAccent[300],
+        // sombra mais forte no hover
+        boxShadow: dark
+            ? "0px 14px 26px rgba(0,0,0,0.75)"
+            : "0px 10px 22px rgba(15,23,42,0.22)",
+    });
 
     const kpis = useMemo(() => {
         let areaTotal = 0;
@@ -1991,6 +2247,267 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     />
                 )}
             </section>
+
+            {/* ============================================================
+                VISÃO CONSOLIDADA POR PERÍODO (PRODUTOS)
+            ============================================================ */}
+            <section
+                style={{
+                    marginTop: 8,
+                    borderRadius: 12,
+                    padding: 16,
+                    border: `1px solid ${sectionBorder}`,
+                    backgroundColor: dark ? '#020617' : '#ffffff',
+                    boxShadow: paperShadow,
+                }}
+            >
+                {/* HEADER EXPAND/COLLAPSE */}
+                <div
+                    onClick={() => setShowVisaoProdutosPeriodo((prev) => !prev)}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        gap: 8,
+                    }}
+                >
+                    <h3 style={{ marginBottom: 4, fontSize: 16 }}>
+                        Visão consolidada de produtos por período
+                    </h3>
+
+                    <ExpandMoreIcon
+                        sx={{
+                            fontSize: 24,
+                            color: subText,
+                            transform: showVisaoProdutosPeriodo
+                                ? 'rotate(180deg)'
+                                : 'rotate(0deg)',
+                            transition: 'transform 0.15s ease-out',
+                        }}
+                    />
+                </div>
+
+                <p
+                    style={{
+                        marginTop: 0,
+                        marginBottom: 12,
+                        fontSize: 12,
+                        color: subText,
+                    }}
+                >
+                    Totais de produto agregados por semana / quinzena / mês.
+                    Obedece todos os filtros globais + filtros locais de tipo e produto.
+                </p>
+
+                {showVisaoProdutosPeriodo && (
+                    <div style={{ marginTop: 12 }}>
+                        {/* Tabs de período */}
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+                            <Tabs
+                                value={produtoViewMode}
+                                onChange={(_, v) => setProdutoViewMode(v)}
+                                textColor="primary"
+                                indicatorColor="primary"
+                            >
+                                <Tab label="Semanal" value="semana" />
+                                <Tab label="Quinzenal" value="quinzena" />
+                                <Tab label="Mensal" value="mes" />
+                            </Tabs>
+                        </Box>
+
+                        {/* FILTROS LOCAIS */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 12,
+                                marginBottom: 12,
+                            }}
+                        >
+                            {/* filtro de tipos */}
+                            <FormControl size="small" sx={{ minWidth: 180 }}>
+                                <InputLabel id="tipo-label">Tipo</InputLabel>
+                                <Select
+                                    labelId="tipo-label"
+                                    multiple
+                                    value={filtroTiposVisao}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setFiltroTiposVisao(val);
+
+                                        // limpar produtos incompatíveis
+                                        setFiltroProdutosVisao((prev) =>
+                                            prev.filter((p) =>
+                                                produtoOptionsVisao.includes(p)
+                                            )
+                                        );
+                                    }}
+                                    input={<OutlinedInput label="Tipo" />}
+                                    renderValue={(selected) =>
+                                        selected.length ? selected.join(', ') : 'Todos'
+                                    }
+                                >
+                                    {tipoOptionsVisao.map((t) => (
+                                        <MenuItem key={t} value={t}>
+                                            {t}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
+                            {/* filtro de produtos */}
+                            <FormControl size="small" sx={{ minWidth: 240, flexGrow: 1 }}>
+                                <InputLabel id="produto-label">Produto</InputLabel>
+                                <Select
+                                    labelId="produto-label"
+                                    multiple
+                                    value={filtroProdutosVisao}
+                                    onChange={(e) =>
+                                        setFiltroProdutosVisao(e.target.value)
+                                    }
+                                    input={<OutlinedInput label="Produto" />}
+                                    renderValue={(selected) =>
+                                        selected.length ? selected.join(', ') : 'Todos'
+                                    }
+                                >
+                                    {produtoOptionsVisao.map((p) => (
+                                        <MenuItem key={p} value={p}>
+                                            {p}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+
+                        {/* GRID DE PERÍODOS */}
+                        {!dataProdutosVisaoPeriodo.length ? (
+                            <p style={{ marginTop: 12, color: subText, fontSize: 12 }}>
+                                Nenhum dado para os filtros atuais.
+                            </p>
+                        ) : (
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gap: 12,
+                                    gridTemplateColumns:
+                                        'repeat(auto-fit, minmax(260px, 1fr))',
+                                }}
+                            >
+                                {dataProdutosVisaoPeriodo.map((periodo) => (
+                                    <div
+                                        key={periodo.periodKey}
+                                        style={{
+                                            borderRadius: 12,
+                                            padding: 12,
+                                            border: `1px solid ${sectionBorder}`,
+                                            backgroundColor: dark ? '#0b1120' : '#ffffff',
+                                            boxShadow: paperShadow,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            Object.assign(
+                                                e.currentTarget.style,
+                                                getCardHoverVisual(isDark, colors)
+                                            );
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            // volta só o que mudamos no hover, sem quebrar layout
+                                            Object.assign(e.currentTarget.style, {
+                                                ...getCardBaseVisual(isDark, colors),
+                                                transform: "scale(1)",
+                                            });
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                paddingBottom: 6,
+                                                borderBottom: `1px dashed ${sectionBorder}`,
+                                            }}
+                                        >
+                                            <strong>{periodo.periodLabel}</strong>
+                                            <span style={{ fontSize: 11, color: subText }}>
+                                                {periodo.produtos.length} prod.
+                                            </span>
+                                        </div>
+
+                                        <ul
+                                            style={{
+                                                listStyle: 'none',
+                                                margin: 0,
+                                                padding: 0,
+                                                marginTop: 8,
+                                            }}
+                                        >
+                                            {periodo.produtos.map((p, idx) => (
+                                                <li
+                                                    key={`${periodo.periodKey}-${p.produto}`}
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        padding: '6px 4px',
+                                                        borderBottom:
+                                                            idx ===
+                                                                periodo.produtos.length - 1
+                                                                ? 'none'
+                                                                : `1px solid ${sectionBorder}`,
+                                                    }}
+                                                >
+                                                    <div>
+                                                        <strong>{p.produto}</strong>
+                                                        <div
+                                                            style={{
+                                                                fontSize: 11,
+                                                                color: subText,
+                                                            }}
+                                                        >
+                                                            {p.tipo}
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        style={{
+                                                            textAlign: 'right',
+                                                            minWidth: 70,
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            {p.quantidadeTotal.toLocaleString(
+                                                                'pt-BR',
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2,
+                                                                }
+                                                            )}
+                                                        </div>
+                                                        <div
+                                                            style={{
+                                                                fontSize: 11,
+                                                                color: subText,
+                                                            }}
+                                                        >
+                                                            {p.areaTotal.toLocaleString(
+                                                                'pt-BR',
+                                                                {
+                                                                    maximumFractionDigits: 1,
+                                                                }
+                                                            )}{' '}
+                                                            ha
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </section>
+
+
         </div>
     );
 };
