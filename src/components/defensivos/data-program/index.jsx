@@ -610,7 +610,7 @@ const DataProgramPage = (props) => {
 
 	useEffect(() => {
 		const listFarm = plantioRedux
-			.filter((data) => data.dados.plantio_finalizado === true)
+			.filter((data) => data.dados.inicializado_plantio === true)
 			.map((data, i) => {
 				return data.fazenda;
 			});
@@ -623,7 +623,7 @@ const DataProgramPage = (props) => {
 		const filtList = plantioRedux.filter(
 			(data) =>
 				data.fazenda === farmName &&
-				(data.dados.plantio_finalizado === true)
+				(data.dados.inicializado_plantio === true)
 		);
 		setFilteredList(filtList);
 		setCulturaSelecionada([])
