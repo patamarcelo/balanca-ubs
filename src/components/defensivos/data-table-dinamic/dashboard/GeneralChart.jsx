@@ -187,15 +187,19 @@ function getOperacoesPorSemanaComEstagio(data) {
 
 /* ==========================
    Agregação: por semana + projeto
+   (respeitando hiddenStages)
    ========================== */
 
-function getOperacoesPorSemanaPorProjeto(data) {
+function getOperacoesPorSemanaPorProjeto(data, hiddenStages = []) {
     const weekMap = new Map();
     const projectSet = new Set();
 
     data.forEach((item) => {
         if (!item.dataPrevista) return;
         if (!isOperacao(item)) return;
+
+        const stageKey = getStageKey(item.estagio);
+        if (hiddenStages.includes(stageKey)) return; // 👈 aplica filtro global de estágio
 
         const { weekKey, start, end } = getWeekRange(item.dataPrevista);
         const area = item.area || 0;
@@ -234,9 +238,10 @@ function getOperacoesPorSemanaPorProjeto(data) {
 
 /* ==========================
    Agregação: por semana + fazenda
+   (respeitando hiddenStages)
    ========================== */
 
-function getOperacoesPorSemanaPorFazenda(data) {
+function getOperacoesPorSemanaPorFazenda(data, hiddenStages = []) {
     const weekMap = new Map();
     const farmSet = new Set();
 
@@ -244,10 +249,12 @@ function getOperacoesPorSemanaPorFazenda(data) {
         if (!item.dataPrevista) return;
         if (!isOperacao(item)) return;
 
+        const stageKey = getStageKey(item.estagio);
+        if (hiddenStages.includes(stageKey)) return; // 👈 aplica filtro global de estágio
+
         const { weekKey, start, end } = getWeekRange(item.dataPrevista);
         const area = item.area || 0;
 
-        // prioridade no grupo de fazenda, depois nome simples
         const fazenda =
             item.fazendaGrupo ||
             item.fazenda ||
@@ -367,6 +374,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                 <ProjectViewChart
                     data={data}
                     dark={dark}
+                    hiddenStages={hiddenStages} // 👈 passa filtro global
                 />
             )}
 
@@ -374,6 +382,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
                 <FarmViewChart
                     data={data}
                     dark={dark}
+                    hiddenStages={hiddenStages} // 👈 passa filtro global
                 />
             )}
         </div>
@@ -381,7 +390,7 @@ const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
 };
 
 /* ==========================
-   VISÃO 1: Estágios (a que você já tinha)
+   VISÃO 1: Estágios
    ========================== */
 
 function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
@@ -423,7 +432,6 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
         return <p>Nenhum dado de operações para exibir o gráfico.</p>;
     }
 
-    // Semana corrente (pela data de hoje)
     const today = new Date();
     const { weekKey: currentWeekKey } = getWeekRange(today);
 
@@ -574,8 +582,16 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            <div style={{ flex: 1, height: 450 }}>
+        <div
+            style={{
+                display: 'flex',
+                width: '100%',
+                gap: 24,
+                alignItems: 'stretch',
+                height: 450, // 👈 altura fixa do container
+            }}
+        >
+            <div style={{ flex: 1, height: '100%' }}>
                 <ResponsiveContainer>
                     <BarChart
                         data={chartDataWithTotal}
@@ -651,7 +667,8 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
                     flexDirection: 'column',
                     alignItems: 'stretch',
                     paddingTop: 4,
-                    height: '100%',
+                    height: '100%',   // 👈 mesma altura do container
+                    overflow: 'hidden',
                     marginTop: -24,
                 }}
             >
@@ -690,6 +707,7 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
                     <div
                         style={{
                             marginTop: 6,
+                            flex: 1, // 👈 ocupa o resto da altura
                             borderRadius: 8,
                             border: `1px solid ${legendBorder}`,
                             backgroundColor: legendBg,
@@ -697,7 +715,6 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 6,
-                            maxHeight: 450,
                             overflowY: 'auto',
                             scrollbarWidth: 'thin',
                             boxShadow: paperShadowLight,
@@ -797,13 +814,13 @@ function StageViewChart({ data, dark, hiddenStages, setHiddenStages }) {
 }
 
 /* ==========================
-   VISÃO 2: Projetos (barras agrupadas)
+   VISÃO 2: Projetos
    ========================== */
 
-function ProjectViewChart({ data, dark }) {
+function ProjectViewChart({ data, dark, hiddenStages }) {
     const { weeks, projectKeys } = useMemo(
-        () => getOperacoesPorSemanaPorProjeto(data),
-        [data]
+        () => getOperacoesPorSemanaPorProjeto(data, hiddenStages),
+        [data, hiddenStages]
     );
 
     const theme = useTheme();
@@ -990,8 +1007,16 @@ function ProjectViewChart({ data, dark }) {
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            <div style={{ flex: 1, height: 450 }}>
+        <div
+            style={{
+                display: 'flex',
+                width: '100%',
+                gap: 24,
+                alignItems: 'stretch',
+                height: 450,
+            }}
+        >
+            <div style={{ flex: 1, height: '100%' }}>
                 <ResponsiveContainer>
                     <BarChart
                         data={chartData}
@@ -1036,7 +1061,6 @@ function ProjectViewChart({ data, dark }) {
                                 dataKey={proj}
                                 name={proj}
                                 fill={projectColorMap[proj]}
-                            // agrupado (sem stackId)
                             />
                         ))}
                     </BarChart>
@@ -1051,6 +1075,7 @@ function ProjectViewChart({ data, dark }) {
                     alignItems: 'stretch',
                     paddingTop: 4,
                     height: '100%',
+                    overflow: 'hidden',
                     marginTop: -24,
                 }}
             >
@@ -1089,6 +1114,7 @@ function ProjectViewChart({ data, dark }) {
                     <div
                         style={{
                             marginTop: 6,
+                            flex: 1,
                             borderRadius: 8,
                             border: `1px solid ${legendBorder}`,
                             backgroundColor: legendBg,
@@ -1096,7 +1122,6 @@ function ProjectViewChart({ data, dark }) {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 6,
-                            maxHeight: 450,
                             overflowY: 'auto',
                             scrollbarWidth: 'thin',
                             boxShadow: paperShadowLight,
@@ -1196,13 +1221,13 @@ function ProjectViewChart({ data, dark }) {
 }
 
 /* ==========================
-   VISÃO 3: Fazendas (barras agrupadas)
+   VISÃO 3: Fazendas
    ========================== */
 
-function FarmViewChart({ data, dark }) {
+function FarmViewChart({ data, dark, hiddenStages }) {
     const { weeks, farmKeys } = useMemo(
-        () => getOperacoesPorSemanaPorFazenda(data),
-        [data]
+        () => getOperacoesPorSemanaPorFazenda(data, hiddenStages),
+        [data, hiddenStages]
     );
 
     const theme = useTheme();
@@ -1375,10 +1400,10 @@ function FarmViewChart({ data, dark }) {
                                         color: textColor,
                                     }}
                                 >
-                                    {value?.toLocaleString('pt-BR', {
-                                        maximumFractionDigits: 0,
-                                    })}{' '}
-                                    ha
+                                        {value?.toLocaleString('pt-BR', {
+                                            maximumFractionDigits: 0,
+                                        })}{' '}
+                                        ha
                                 </span>
                             </div>
                         );
@@ -1389,8 +1414,16 @@ function FarmViewChart({ data, dark }) {
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            <div style={{ flex: 1, height: 450 }}>
+        <div
+            style={{
+                display: 'flex',
+                width: '100%',
+                gap: 24,
+                alignItems: 'stretch',
+                height: 450,
+            }}
+        >
+            <div style={{ flex: 1, height: '100%' }}>
                 <ResponsiveContainer>
                     <BarChart
                         data={chartData}
@@ -1443,13 +1476,14 @@ function FarmViewChart({ data, dark }) {
 
             <div
                 style={{
-                    // width: 220,
+                    width: 220,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'stretch',
-                    // paddingTop: 4,
+                    paddingTop: 4,
                     height: '100%',
-                    marginTop: -64,
+                    overflow: 'hidden',
+                    marginTop: -24,
                 }}
             >
                 <button
@@ -1487,6 +1521,7 @@ function FarmViewChart({ data, dark }) {
                     <div
                         style={{
                             marginTop: 6,
+                            flex: 1,
                             borderRadius: 8,
                             border: `1px solid ${legendBorder}`,
                             backgroundColor: legendBg,
@@ -1494,7 +1529,6 @@ function FarmViewChart({ data, dark }) {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 6,
-                            maxHeight: 450,
                             overflowY: 'auto',
                             scrollbarWidth: 'thin',
                             boxShadow: paperShadowLight,
