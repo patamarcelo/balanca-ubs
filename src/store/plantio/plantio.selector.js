@@ -1,5 +1,6 @@
 import { getNextDays } from "../../utils/format-suport/data-format";
 import { createSelector } from 'reselect';
+import { farmDictProject } from "../../components/defensivos/farmbox-data/produtos-consolidados/helper";
 
 
 export const selectPlantio = (state) => state.plantio.plantio;
@@ -309,7 +310,10 @@ export const createDict = (state) => {
 		const farm_id = data.plantations[0].plantation.farm.id;
 		const operacao = data.inputs[0].input.name;
 		const operacaoTipo = data.inputs[0].input.input_type_name;
-		const cultura = data.plantations[0].plantation.culture_name;
+		const cultura =
+			data?.plantations?.[0]?.plantation?.culture_name ||
+			data?.plantations?.[0]?.plantation?.planned_culture_name ||
+			null;
 		const planned_cult = data.plantations[0].plantation.planned_culture_name;
 		const code = data.code;
 		const areaSolicitada = data.plantations.map((data) => data.sought_area);
@@ -344,8 +348,8 @@ export const createDict = (state) => {
 				id_plantation: data.plantation.id,
 				area: data.sought_area,
 				areaAplicada: data.applied_area,
-				variedade: data.plantation.variety_name,
-				cultura: data.plantation.culture_name ||  data.plantation.planned_culture_name,
+				variedade: data.plantation.variety_name || data.plantation.planned_variety_name,
+				cultura: data.plantation.culture_name || data.plantation.planned_culture_name,
 				aplicado: aplicado,
 				dataPlantio: data.plantation.date
 			};
@@ -379,8 +383,12 @@ export const createDict = (state) => {
 			};
 		});
 
+		const newName = farmDictProject.find((name) => name.projeto === farm)
+		const farmName = newName?.mainFarm || 'Outros'
+
 		return {
-			fazenda: farm,
+			projeto: farm,
+			fazenda: farmName,
 			fazenda_box_id: farm_id,
 			app: code,
 			status: status,
@@ -418,7 +426,11 @@ export const createDictFarmBox = (state) => {
 		const opTioAp = operacaoTipoFil[0]?.input?.input_type_name;
 		const opTioApName = operacaoTipoFil[0]?.input?.name;
 
-		const cultura = data.plantations[0].plantation.culture_name;
+		const cultura =
+			data?.plantations?.[0]?.plantation?.culture_name ||
+			data?.plantations?.[0]?.plantation?.planned_culture_name ||
+			null;
+
 		const code = data.code;
 		const idCode = data.id;
 
@@ -483,8 +495,8 @@ export const createDictFarmBox = (state) => {
 				parcela: dataMap.plantation.name,
 				id_plantation: dataMap.plantation.id,
 				area: dataMap.plantation.area,
-				variedade: dataMap.plantation.variety_name,
-				cultura: dataMap.plantation.culture_name,
+				variedade: dataMap.plantation.variety_name || dataMap.plantation.planned_variety_name,
+				cultura: dataMap.plantation.culture_name || dataMap.plantation.planned_culture_name,
 				aplicado: aplicado,
 				dataPlantio: dataMap.plantation.date,
 				safra: dataMap.plantation.harvest_name,
@@ -526,9 +538,12 @@ export const createDictFarmBox = (state) => {
 		});
 
 		// console.log(progressos);
+		const newName = farmDictProject.find((name) => name.projeto === farm)
+		const farmName = newName?.mainFarm || 'Outros'
 
 		return {
-			fazenda: farm,
+			projeto: farm,
+			fazenda: farmName,
 			app: code,
 			idCode,
 			status: status,
@@ -663,7 +678,7 @@ export const geralAppDetail = (showFutureApps, days, operationFilter) => (state)
 
 				totalSaldoAplicacao =
 					parseFloat(areaTotalSolicitadaOperacao) - parseFloat(areaTotalAplicadaOperacao);
-			//AREA LIQUIDO
+				//AREA LIQUIDO
 			} else if (data.inputs.length === 2) {
 				const areaSolicitadaSolido = data.plantations.map(
 					(data) => data.sought_area
@@ -681,7 +696,7 @@ export const geralAppDetail = (showFutureApps, days, operationFilter) => (state)
 
 				totalSaldoSolidos =
 					parseFloat(areaTotalSolicitadaSolido) - parseFloat(areaTotalAplicadaSolido);
-			//AREA SOLIDO
+				//AREA SOLIDO
 			} else if (data.inputs.length > 2) {
 				const areaSolicitadaLiquido = data.plantations.map(
 					(data) => data.sought_area
