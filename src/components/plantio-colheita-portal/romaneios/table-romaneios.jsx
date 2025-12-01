@@ -29,6 +29,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const RomaneiosTable = (props) => {
 	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected, selectedTicket } = props;
+	console.log('data table: ', data)
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);

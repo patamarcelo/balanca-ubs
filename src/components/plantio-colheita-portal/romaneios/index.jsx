@@ -27,6 +27,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 import { FormControl, InputLabel, MenuItem, Select, Chip } from "@mui/material";
+import JsonFile from '../../../utils/assets/icons/json.png'
+import { transformaDocEmImportRegistro } from "./helper";
+
+
+function transformaListaDocs(listaDocs, options = {}) {
+    if (!Array.isArray(listaDocs)) return [];
+
+    return listaDocs.map(doc =>
+        transformaDocEmImportRegistro(doc, options)
+    );
+}
 
 const RomaneiosPage = () => {
     const theme = useTheme();
@@ -269,6 +280,36 @@ const RomaneiosPage = () => {
         }
     }, [filteredUserData]);
 
+    const exportAsJson = (data) => {
+        const registrosImportacao = transformaListaDocs(data, {
+            empresa: "02",
+            filial: "0209",
+        });
+
+        // converte para JSON formatado
+        const jsonString = JSON.stringify(registrosImportacao, null, 2);
+
+        // cria blob
+        const blob = new Blob([jsonString], { type: "application/json" });
+
+        // cria URL temporária
+        const url = URL.createObjectURL(blob);
+
+        // cria elemento <a> invisível
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "importacao_romaneios.json"; // nome do arquivo
+        document.body.appendChild(a);
+
+        // dispara o download
+        a.click();
+
+        // remove o link e libera a URL da memória
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+
 
     if (isLoadingHome) {
         return (
@@ -288,6 +329,8 @@ const RomaneiosPage = () => {
 
 
     const csvFileName = new Date().toLocaleString().replaceAll('/', '-').split(",")[0]
+
+
 
     return (
         <Box
@@ -356,6 +399,19 @@ const RomaneiosPage = () => {
                         />
                     </CSVLink>
                 </Box>
+                <Box alignSelf="center" sx={{ cursor: 'pointer' }}>
+                    <IconButton onClick={() => exportAsJson(filteredUserData)}>
+                        <img
+                            src={JsonFile}
+                            alt="Export JSON"
+                            style={{
+                                width: "22px", // Set the width of the icon
+                                height: "22px", // Set the height of the icon
+                                filter: theme.palette.mode === 'dark' ? "brightness(0) invert(1)" : "brightness(0)"
+                            }}
+                        />
+                    </IconButton>
+                </Box>
                 <FormControl sx={{ minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
                     <InputLabel>Filtre por Projeto</InputLabel>
                     <Select
@@ -370,7 +426,7 @@ const RomaneiosPage = () => {
                             </Box>
                         )}
                     >
-                        {filteredFarms.sort((a,b) => a.localeCompare(b)).map((option) => (
+                        {filteredFarms.sort((a, b) => a.localeCompare(b)).map((option) => (
                             <MenuItem key={option} value={option}>
                                 {option.replace('Projeto ', '')}
                             </MenuItem>
