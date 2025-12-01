@@ -2,17 +2,6 @@
 // Requer: npm install recharts
 
 import React, { useMemo, useState } from 'react';
-import {
-    ResponsiveContainer,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    CartesianGrid,
-    ReferenceArea,   // ⬅️ adiciona aqui
-    LabelList
-} from 'recharts';
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -30,6 +19,8 @@ import {
 
 import { useTheme } from "@mui/material/styles";
 import { tokens } from '../../../theme';
+
+import ProdutosSemanaChart from './dashboard/GeneralChart';
 
 
 /* ==========================
@@ -408,550 +399,14 @@ function groupByWeek(list) {
     );
 }
 
-/* ==========================
-   Agregação para OPERAÇÕES (gráfico)
-   ========================== */
 
-function isOperacao(item) {
-    return item.tipo === 'operacao';
-}
 
-function getOperacoesPorSemanaComEstagio(data) {
-    const weekMap = new Map();
-    const stageStats = new Map(); // guarda DAP por estágio neste DATA FILTRADO
-
-    data.forEach((item) => {
-        const stageKey = getStageKey(item.estagio);
-
-        // === 1) Atualiza stats de DAP do estágio (para ESTE data filtrado) ===
-        if (stageKey) {
-            // AGORA usamos só o dap normalizado (que veio de dapAplicacao)
-            const dapNumeric =
-                item.dap != null && !Number.isNaN(item.dap)
-                    ? item.dap
-                    : null;
-
-            let stat = stageStats.get(stageKey);
-            if (!stat) {
-                stat = { minDap: null };
-            }
-
-            if (dapNumeric != null) {
-                if (stat.minDap == null || dapNumeric < stat.minDap) {
-                    stat.minDap = dapNumeric;
-                }
-            }
-
-            stageStats.set(stageKey, stat);
-        }
-
-        // === 2) A partir daqui, só OPERAÇÕES entram no gráfico ===
-        if (!item.dataPrevista) return;
-        if (!isOperacao(item)) return;
-
-        const { weekKey, start, end } = getWeekRange(item.dataPrevista);
-        const area = item.area || 0;
-
-        let week = weekMap.get(weekKey);
-        if (!week) {
-            week = {
-                weekKey,
-                weekStart: start,
-                weekEnd: end,
-                totalArea: 0,
-            };
-            weekMap.set(weekKey, week);
-        }
-
-        week.totalArea += area;
-
-        if (stageKey) {
-            week[stageKey] = (week[stageKey] || 0) + area;
-        }
-    });
-
-    const weeks = Array.from(weekMap.values()).sort((a, b) =>
-        a.weekKey.localeCompare(b.weekKey)
-    );
-
-    // === 3) stageKeys usando minDap (por DATA FILTRADO) ===
-    const stageKeys = Array.from(stageStats.entries())
-        .sort((a, b) => {
-            const aD = a[1].minDap;
-            const bD = b[1].minDap;
-
-            const aHas = aD != null && !Number.isNaN(aD);
-            const bHas = bD != null && !Number.isNaN(bD);
-
-            // 3.1) Ambos com DAP diferente → ordena pelo DAP
-            if (aHas && bHas && aD !== bD) {
-                return aD - bD;
-            }
-
-            // 3.2) Um tem DAP e outro não → quem tem DAP vem antes
-            if (aHas && !bHas) return -1;
-            if (!aHas && bHas) return 1;
-
-            // 3.3) Sem DAP ou empate → ordena alfabeticamente pelo nome
-            return a[0].localeCompare(b[0], 'pt-BR');
-        })
-        .map(([stageKey]) => stageKey);
-
-    return {
-        weeks,
-        stageKeys,
-    };
-}
-
-/* ==========================
-   Cores por estágio
-   ========================== */
-
-function getStageColor(stage, index, dark) {
-    const paletteLight = [
-        '#2563eb',
-        '#16a34a',
-        '#f97316',
-        '#7c3aed',
-        '#dc2626',
-        '#059669',
-        '#ea580c',
-    ];
-    const paletteDark = [
-        '#38bdf8',
-        '#4ade80',
-        '#fb923c',
-        '#a855f7',
-        '#f97373',
-        '#22c55e',
-        '#fdba74',
-    ];
-    const palette = dark ? paletteDark : paletteLight;
-
-    return palette[index % palette.length];
-}
 
 /* ==========================
    Subcomponente: Gráfico semanal (operações empilhadas por estágio)
    ========================== */
 
-const ProdutosSemanaChart = ({ data, dark, hiddenStages, setHiddenStages }) => {
-    const { weeks, stageKeys } = useMemo(
-        () => getOperacoesPorSemanaComEstagio(data),
-        [data]
-    );
 
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const isDark = dark ?? theme.palette.mode === "dark";
-
-    const axisColor = colors.primary[100]
-    const gridColor = colors.primary[100]
-    const textColor = isDark ? colors.textColor[100] : colors.textColor[100];
-    const tooltipBg = isDark ? colors.primary[500] : colors.blueOrigin[800];
-    const tooltipBorder = isDark ? colors.blueAccent[400] : colors.grey[300];
-
-    const legendText = textColor;
-    const legendSub = isDark ? colors.grey[400] : colors.grey[600];
-    const legendBorder = isDark ? colors.grey[700] : colors.grey[300];
-    const legendBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
-
-    const [accordionOpen, setAccordionOpen] = useState(true);
-
-    const paperShadowLight = isDark
-        ? '0px 4px 10px rgba(0,0,0,0.55)'
-        : '0px 2px 6px rgba(15,23,42,0.16)';
-
-    const stageColorMap = useMemo(() => {
-        const map = {};
-        stageKeys.forEach((stage, index) => {
-            map[stage] = getStageColor(stage, index, isDark);
-        });
-        return map;
-    }, [stageKeys, isDark]);
-
-    if (!weeks.length) {
-        return <p>Nenhum dado de operações para exibir o gráfico.</p>;
-    }
-
-    // Semana corrente (pela data de hoje)
-    const today = new Date();
-    const { weekKey: currentWeekKey } = getWeekRange(today);
-
-    const currentWeekLabel = (() => {
-        const current = weeks.find((w) => w.weekKey === currentWeekKey);
-        if (!current) return null;
-        return formatWeekLabel(current.weekStart, current.weekEnd);
-    })();
-
-    const visibleStageKeys = stageKeys.filter(
-        (stage) => !hiddenStages.includes(stage)
-    );
-
-    const chartData = weeks.map((item) => ({
-        ...item,
-        weekLabel: formatWeekLabel(item.weekStart, item.weekEnd),
-    }));
-
-    const chartDataWithTotal = chartData.map((item) => {
-        const totalStack = visibleStageKeys.reduce(
-            (sum, key) => sum + (item[key] || 0),
-            0
-        );
-        return { ...item, totalStack };
-    });
-
-    const handleToggleStage = (stage) => {
-        setHiddenStages((prev) =>
-            prev.includes(stage)
-                ? prev.filter((s) => s !== stage)
-                : [...prev, stage]
-        );
-    };
-
-
-
-    const CustomTooltip = ({ active, payload, label }) => {
-        if (!active || !payload || !payload.length) return null;
-
-        const total = payload.reduce((acc, entry) => {
-            const v = entry?.value ?? 0;
-            return acc + (isNaN(v) ? 0 : v);
-        }, 0);
-
-        return (
-            <div
-                style={{
-                    backgroundColor: tooltipBg,
-                    border: `1px solid ${tooltipBorder}`,
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 12,
-                    minWidth: 180,
-                    boxShadow: paperShadowLight
-                }}
-            >
-                <div
-                    style={{
-                        fontWeight: 600,
-                        marginBottom: 4,
-                        color: textColor,
-                    }}
-                >
-                    {label}
-                </div>
-
-                <div
-                    style={{
-                        fontWeight: 700,
-                        fontSize: 12,
-                        color: isDark ? colors.yellow[550] : '#000',
-                        marginBottom: 6,
-                    }}
-                >
-                    Total:{' '}
-                    {total.toLocaleString('pt-BR', {
-                        maximumFractionDigits: 0,
-                    })}{' '}
-                    ha
-                </div>
-
-                <div
-                    style={{
-                        borderTop: `1px solid ${tooltipBorder}`,
-                        margin: '4px 0 6px',
-                    }}
-                />
-
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 2,
-                    }}
-                >
-                    {payload.map((entry) => {
-                        const { name, value, color } = entry;
-                        if (!name) return null;
-
-                        return (
-                            <div
-                                key={name}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 8,
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 6,
-                                    }}
-                                >
-                                    <span
-                                        style={{
-                                            width: 10,
-                                            height: 10,
-                                            borderRadius: 2,
-                                            backgroundColor: color || stageColorMap[name],
-                                        }}
-                                    />
-                                    <span
-                                        style={{
-                                            color: textColor,
-                                        }}
-                                    >
-                                        {name}
-                                    </span>
-                                </div>
-                                <span
-                                    style={{
-                                        fontVariantNumeric: 'tabular-nums',
-                                        color: textColor,
-                                    }}
-                                >
-                                    {value?.toLocaleString('pt-BR', {
-                                        maximumFractionDigits: 0,
-                                    })}{' '}
-                                    ha
-                                </span>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    };
-
-    return (
-        <div style={{ display: 'flex', width: '100%', gap: 24, alignItems: 'stretch' }}>
-            <div style={{ flex: 1, height: 450 }}>
-                <ResponsiveContainer>
-                    <BarChart
-                        data={chartDataWithTotal}
-                        margin={{ top: 20, right: 20, left: 0, bottom: 60 }}
-                    >
-                        <CartesianGrid stroke={gridColor} strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="weekLabel"
-                            angle={-35}
-                            textAnchor="end"
-                            interval={0}
-                            tick={{ fill: axisColor, fontSize: 11 }}
-                            stroke={axisColor}
-                        />
-                        <YAxis
-                            tick={{ fill: axisColor, fontSize: 11 }}
-                            stroke={axisColor}
-                            tickFormatter={(value) =>
-                                Number(value).toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 0,
-                                })
-                            }
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-
-                        {/* 🔹 Fundo destacado para a semana corrente */}
-                        {currentWeekLabel && (
-                            <ReferenceArea
-                                x1={currentWeekLabel}
-                                x2={currentWeekLabel}
-                                ifOverflow="extendDomain"
-                                fill={
-                                    dark
-                                        ? 'rgba(104, 112, 250, 0.40)'   // azul mais claro (modo dark)
-                                        : 'rgba(18, 117, 181, 0.46)'    // azul suave (modo light)
-                                }
-                            />
-                        )}
-
-                        {visibleStageKeys.map((stage, index) => (
-                            <Bar
-                                key={stage}
-                                dataKey={stage}
-                                name={stage}
-                                stackId="total"
-                                fill={stageColorMap[stage]}
-                            >
-                                {/* Só na ÚLTIMA barra empilhada colocamos o número total em cima */}
-                                {index === visibleStageKeys.length - 1 && (
-                                    <LabelList
-                                        dataKey="totalStack"
-                                        position="top"
-                                        style={{
-                                            fill: colors.primary[100],
-                                            fontSize: 12,
-                                            fontWeight: 700,
-                                        }}
-                                        formatter={(v) =>
-                                            Number(v).toLocaleString('pt-BR', {
-                                                maximumFractionDigits: 0,
-                                            })
-                                        }
-                                    />
-                                )}
-                            </Bar>
-                        ))}
-
-                    </BarChart>
-                </ResponsiveContainer>
-
-            </div>
-
-            <div
-                style={{
-                    width: 220,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'stretch',
-                    paddingTop: 4,
-                    height: '100%',
-                    marginTop: -24,
-                }}
-            >
-                <button
-                    type="button"
-                    onClick={() => setAccordionOpen((open) => !open)}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 8,
-                        padding: '6px 10px',
-                        borderRadius: 8,
-                        border: `1px solid ${legendBorder}`,
-                        backgroundColor: legendBg,
-                        cursor: 'pointer',
-                        fontSize: 13,
-                        color: legendText,
-                        boxShadow: paperShadowLight,
-                    }}
-                >
-                    <span style={{ fontWeight: 600 }}>Estágios</span>
-                    <span
-                        style={{
-                            fontSize: 16,
-                            lineHeight: 1,
-                            transform: accordionOpen ? 'rotate(90deg)' : 'rotate(0deg)',
-                            transition: 'transform 0.15s ease-out',
-                        }}
-                    >
-                        ▶
-                    </span>
-                </button>
-
-                {accordionOpen && (
-                    <div
-                        style={{
-                            marginTop: 6,
-                            borderRadius: 8,
-                            border: `1px solid ${legendBorder}`,
-                            backgroundColor: legendBg,
-                            padding: 8,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 6,
-                            maxHeight: 450,
-                            overflowY: 'auto',
-                            scrollbarWidth: 'thin',
-                            boxShadow: paperShadowLight
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: 11,
-                                color: legendSub,
-                                marginBottom: 4,
-                            }}
-                        >
-                            Marque/desmarque para mostrar/ocultar estágios:
-                        </div>
-
-                        <label
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                fontSize: 13,
-                                cursor: 'pointer',
-                                paddingBottom: 6,
-                                borderBottom: `1px solid ${legendBorder}`,
-                                marginBottom: 6,
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={hiddenStages.length === 0}
-                                onChange={(e) => {
-                                    if (e.target.checked) {
-                                        setHiddenStages([]);
-                                    } else {
-                                        setHiddenStages(stageKeys);
-                                    }
-                                }}
-                                style={{
-                                    width: 14,
-                                    height: 14,
-                                    cursor: 'pointer',
-                                }}
-                            />
-                            <span style={{ fontWeight: 600 }}>
-                                Selecionar / Desmarcar todos
-                            </span>
-                        </label>
-
-                        {stageKeys.map((stage) => {
-                            const checked = !hiddenStages.includes(stage);
-                            return (
-                                <label
-                                    key={stage}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 8,
-                                        fontSize: 13,
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={checked}
-                                        onChange={() => handleToggleStage(stage)}
-                                        style={{
-                                            width: 14,
-                                            height: 14,
-                                            cursor: 'pointer',
-                                        }}
-                                    />
-                                    <div
-                                        style={{
-                                            width: 16,
-                                            height: 16,
-                                            borderRadius: 4,
-                                            backgroundColor: stageColorMap[stage],
-                                            opacity: checked ? 1 : 0.35,
-                                            border: `1px solid ${legendBorder}`,
-                                        }}
-                                    />
-                                    <span
-                                        style={{
-                                            opacity: checked ? 1 : 0.5,
-                                        }}
-                                    >
-                                        {stage}
-                                    </span>
-                                </label>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
 
 
 /* ==========================
@@ -1406,8 +861,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const [selectedProgramas, setSelectedProgramas] = useState([]);
 
     const [hiddenStages, setHiddenStages] = useState([]);
-    const [onlyPendentes, setOnlyPendentes] = useState(false);
-    const [onlyInicializadoPlantio, setOnlyInicializadoPlantio] = useState(false);
+    const [onlyPendentes, setOnlyPendentes] = useState(true);
+    const [onlyInicializadoPlantio, setOnlyInicializadoPlantio] = useState(true);
 
     // Visão de produtos por período (apenas para o novo card)
     const [showVisaoProdutosPeriodo, setShowVisaoProdutosPeriodo] = useState(false);
@@ -1467,6 +922,17 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const availableCulturas = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
+
+            // 👉 novos filtros
+            const passSituacao =
+                !onlyPendentes || item.situacaoApp === false;
+
+            const passInicializadoPlantio =
+                !onlyInicializadoPlantio || item.plantioIniciado === true;
+
+            if (!passSituacao || !passInicializadoPlantio) return;
+
+
             if (onlyPendentes && item.situacaoApp !== false) return;
 
             if (
@@ -1501,11 +967,23 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedProjetos,
         selectedProgramas,
         onlyPendentes,
+        onlyInicializadoPlantio
     ]);
 
     const availableProgramas = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
+
+            // 👉 novos filtros
+            const passSituacao =
+                !onlyPendentes || item.situacaoApp === false;
+
+            const passInicializadoPlantio =
+                !onlyInicializadoPlantio || item.plantioIniciado === true;
+
+            if (!passSituacao || !passInicializadoPlantio) return;
+
+
             if (onlyPendentes && item.situacaoApp !== false) return;
 
             if (
@@ -1540,11 +1018,22 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedProjetos,
         selectedCulturas,
         onlyPendentes,
+        onlyInicializadoPlantio
     ]);
 
     const availableFazendas = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
+            // 👉 novos filtros
+            const passSituacao =
+                !onlyPendentes || item.situacaoApp === false;
+
+            const passInicializadoPlantio =
+                !onlyInicializadoPlantio || item.plantioIniciado === true;
+
+            if (!passSituacao || !passInicializadoPlantio) return;
+
+            
             if (onlyPendentes && item.situacaoApp !== false) return;
 
             if (
@@ -1579,11 +1068,22 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedCulturas,
         selectedProgramas,
         onlyPendentes,
+        onlyInicializadoPlantio
     ]);
 
     const availableProjetos = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
+            
+            // 👉 novos filtros
+            const passSituacao =
+                !onlyPendentes || item.situacaoApp === false;
+
+            const passInicializadoPlantio =
+                !onlyInicializadoPlantio || item.plantioIniciado === true;
+
+            if (!passSituacao || !passInicializadoPlantio) return;
+
             if (onlyPendentes && item.situacaoApp !== false) return;
 
             if (
@@ -1618,6 +1118,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedCulturas,
         selectedProgramas,
         onlyPendentes,
+        onlyInicializadoPlantio
     ]);
 
     // === Data final filtrado (usando seleções) ===
