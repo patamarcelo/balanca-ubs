@@ -13,8 +13,8 @@ const FarmBoxDataTable = (props) => {
 	const columnsApp = [
 		{ headerName: "AP", field: "app", flex: 4 },
 		{ headerName: "Operacao", field: "operacao", flex: 7 },
-		{ headerName: "Fazenda", field: "fazenda", flex: 7 },
-		{ headerName: "Projeto", field: "projeto", flex: 1 },
+		{ headerName: "Fazenda", field: "projeto", flex: 1 },
+		{ headerName: "Projeto", field: "fazenda", flex: 7 },
 		{ headerName: "Parcela", field: "parcela", flex: 3 },
 		{ headerName: "Cultura", field: "cultura", flex: 1 },
 		{ headerName: "Variedade", field: "variedade", flex: 6 },
@@ -37,8 +37,8 @@ const FarmBoxDataTable = (props) => {
 	const columnsProdutos = [
 		{ headerName: "AP", field: "app", width: 40 },
 		{ headerName: "Operacao", field: "operacao", flex: 1 },
-		{ headerName: "Fazenda", field: "fazenda", flex: 1 },
-		{ headerName: "Projeto", field: "projeto", flex: 1 },
+		{ headerName: "Fazenda", field: "projeto", flex: 1 },
+		{ headerName: "Projeto", field: "fazenda", flex: 1 },
 		{ headerName: "Parcela", field: "parcela", width: 90 },
 		{ headerName: "Cultura", field: "cultura", flex: 1 },
 		{ headerName: "Variedade", field: "variedade", flex: 1 },
