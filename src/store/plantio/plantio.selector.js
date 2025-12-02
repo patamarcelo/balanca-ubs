@@ -387,8 +387,8 @@ export const createDict = (state) => {
 		const farmName = newName?.mainFarm || 'Outros'
 
 		return {
-			projeto: farm,
-			fazenda: farmName,
+			fazenda: farm,
+			projeto: farmName,
 			fazenda_box_id: farm_id,
 			app: code,
 			status: status,
@@ -542,8 +542,8 @@ export const createDictFarmBox = (state) => {
 		const farmName = newName?.mainFarm || 'Outros'
 
 		return {
-			projeto: farm,
-			fazenda: farmName,
+			fazenda: farm,
+			projeto: farmName,
 			app: code,
 			idCode,
 			status: status,
