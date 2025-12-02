@@ -871,6 +871,25 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const [filtroTiposVisao, setFiltroTiposVisao] = useState([]);
     const [filtroProdutosVisao, setFiltroProdutosVisao] = useState([]);
 
+    // logo depois dos outros useState de filtros
+    const tipoAplicacaoOptions = ["Operacao", "Solido", "Liquido"];
+
+    const [selectedTiposAplicacao, setSelectedTiposAplicacao] = useState([
+        "Operacao",
+        "Solido",
+        "Liquido",
+    ]);
+
+
+    const handleToggleTipoAplicacao = (value) => {
+        setSelectedTiposAplicacao((prev) =>
+            prev.includes(value)
+                ? prev.filter((v) => v !== value)
+                : [...prev, value]
+        );
+    };
+
+
     const handleToggleFazenda = (value, disabled) => {
         if (disabled) return;
         setSelectedFazendas((prev) =>
@@ -1033,7 +1052,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
 
             if (!passSituacao || !passInicializadoPlantio) return;
 
-            
+
             if (onlyPendentes && item.situacaoApp !== false) return;
 
             if (
@@ -1074,7 +1093,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const availableProjetos = useMemo(() => {
         const set = new Set();
         normalizedData.forEach((item) => {
-            
+
             // 👉 novos filtros
             const passSituacao =
                 !onlyPendentes || item.situacaoApp === false;
@@ -1146,13 +1165,18 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
             const passInicializadoPlantio =
                 !onlyInicializadoPlantio || item.plantioIniciado === true;
 
+            const passTipoAplicacao =
+                !selectedTiposAplicacao.length ||
+                (item.tipoAplicacao && selectedTiposAplicacao.includes(item.tipoAplicacao));
+
             return (
                 passFazenda &&
                 passProjeto &&
                 passCultura &&
                 passPrograma &&
                 passSituacao &&
-                passInicializadoPlantio
+                passInicializadoPlantio &&
+                passTipoAplicacao
             );
         });
     }, [
@@ -1162,7 +1186,8 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         selectedCulturas,
         selectedProgramas,
         onlyPendentes,
-        onlyInicializadoPlantio
+        onlyInicializadoPlantio,
+        selectedTiposAplicacao
     ]);
 
     const dataFiltradaPorEstagio = useMemo(() => {
@@ -1621,6 +1646,49 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                         </div>
                     </div>
                 )}
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 600 }}>Tipo de aplicação</span>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 8,
+                        }}
+                    >
+                        {tipoAplicacaoOptions.map((tipo) => {
+                            const selected = selectedTiposAplicacao.includes(tipo);
+
+                            const label =
+                                tipo === "Operacao"
+                                    ? "Operação"
+                                    : tipo === "Solido"
+                                        ? "Sólido"
+                                        : "Líquido";
+
+                            return (
+                                <button
+                                    key={tipo}
+                                    type="button"
+                                    onClick={() => handleToggleTipoAplicacao(tipo)}
+                                    style={{
+                                        borderRadius: 999,
+                                        padding: '4px 10px',
+                                        border: `1px solid ${selected ? chipSelectedBg : chipBorder
+                                            }`,
+                                        backgroundColor: selected ? chipSelectedBg : chipBg,
+                                        color: selected ? chipSelectedText : text,
+                                        fontSize: 12,
+                                        cursor: 'pointer',
+                                        opacity: selected ? 1 : 0.8,
+                                    }}
+                                >
+                                    {label}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
 
             {/* KPIs */}

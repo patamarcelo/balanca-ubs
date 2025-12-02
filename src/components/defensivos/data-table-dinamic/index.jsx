@@ -16,11 +16,12 @@ const DataDefensivoPageDinamic = (props) => {
 	const plantioRedux = useSelector(selectPlantio);
 
 	const [dinamicData, SetDinamicData] = useState([]);
+	
 
 	const theme = useTheme();
 	useEffect(() => {
-		console.log('tehem', theme.palette.mode)
-	}, [theme]);
+		console.log('dinamicData', dinamicData)
+	}, [dinamicData]);
 
 	useEffect(() => {
 		const newTable = createDinamicTable(plantioRedux);
