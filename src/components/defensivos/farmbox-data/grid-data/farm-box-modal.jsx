@@ -123,6 +123,22 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 
 
 
+	// helper rápido para tratar número pt-BR e número normal
+	const toNumber = (value) => {
+		if (value === null || value === undefined || value === "") return 0;
+
+		if (typeof value === "number") {
+			return Number.isNaN(value) ? 0 : value;
+		}
+
+		// string: remove milhares e troca vírgula por ponto
+		let str = String(value).trim();
+		str = str.replace(/\./g, "").replace(",", ".");
+
+		const n = Number(str);
+		return Number.isNaN(n) ? 0 : n;
+	};
+
 	/* ==========================================================================
 	   CONSTRUTOR DO ARRAY – OTIMIZADO COM useCallback
 	   ========================================================================== */
@@ -185,17 +201,22 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 				if (onlyAppNotProducts) {
 					return parcelasDict;
 				}
-
 				return parcelasDict.flatMap((parc) =>
 					insumos.map((ins) => {
-						const quantidadeSolicitada = ins.dose * parc.areaSought;
-						const quantidade = ins.dose * parc.totalSomaUnform;
+						const doseNumber = Number(ins.dose);                // "1.000" -> 1
+						const areaSoughtNumber = toNumber(parc.areaSought);   // "25,22" -> 25.22
+						const totalSomaUnformNumber = toNumber(parc.totalSomaUnform); // 25.22
+
+						const quantidadeSolicitada = doseNumber * areaSoughtNumber;
+						const quantidade = doseNumber * totalSomaUnformNumber;
+						const saldoAplicar = Math.max(0, quantidadeSolicitada - quantidade);
+
 
 						return {
 							...parc,
 							quantidadeSolicitada: quantidadeSolicitada.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 							quantidade: quantidade.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
-							saldoAplicar: Math.max(0, quantidadeSolicitada - quantidade).toLocaleString("pt-br", { minimumFractionDigits: 2 }),
+							saldoAplicar,
 							dose: ins.dose.replace(".", ","),
 							insumo: ins.insumo,
 							insumo_id: ins.insumo_id,

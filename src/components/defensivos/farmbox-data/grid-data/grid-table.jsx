@@ -10,6 +10,7 @@ const FarmBoxDataTable = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	// const defaultFontSize = "13px";
+	
 	const columnsApp = [
 		{ headerName: "AP", field: "app", flex: 4 },
 		{ headerName: "Operacao", field: "operacao", flex: 7 },
