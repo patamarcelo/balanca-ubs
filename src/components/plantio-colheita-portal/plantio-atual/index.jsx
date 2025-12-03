@@ -381,7 +381,7 @@ const PlantioAtual = ({ params }) => {
                     <Box ref={plannerRef}
                         sx={{
                             p: 2, // dá um respiro em volta do Paper
-                            bgcolor: theme.palette.background.default, // mesmo fundo da tela
+                            // bgcolor: theme.palette.background.default, // mesmo fundo da tela
                         }}
                     >
 
@@ -442,7 +442,7 @@ const PlantioAtual = ({ params }) => {
                             sx={{
                                 width: '100%',
                                 p: 2, // dá um respiro em volta do Paper
-                                bgcolor: theme.palette.background.default, // mesmo fundo da tela
+                                // bgcolor: theme.palette.background.default, // mesmo fundo da tela
 
                             }}
                         >
@@ -496,7 +496,7 @@ const PlantioAtual = ({ params }) => {
                         sx={{
                             width: '100%',
                             p: 2, // dá um respiro em volta do Paper
-                            bgcolor: theme.palette.background.default, // mesmo fundo da tela
+                            // bgcolor: theme.palette.background.default, // mesmo fundo da tela
                         }}
                     >
                         <Paper elevation={8}
