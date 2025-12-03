@@ -1,11 +1,14 @@
 import { PLANTIO_ACTIONS_TYPES } from "./plantio.types";
 
+const savedSafra = localStorage.getItem("safraCiclo");
+
+
 const INITIAL_STATE = {
 	plantio: [],
 	plantioMapAll: [],
 	app: [],
 	appFarmBox: [],
-	safraCiclo: { safra: "2025/2026", ciclo: "3" },
+	safraCiclo: savedSafra ? JSON.parse(savedSafra) : { safra: "2025/2026", ciclo: "3" },
 	pluvi: [],
 	plantioCalendarDone: [],
 	plantioColheitaAtual: [],

@@ -15,6 +15,9 @@ export const setAppFarmBox = (appFarmBox) => {
 };
 
 export const setSafraCilco = (safraCiclo) => {
+	// salva no navegador automaticamente
+	localStorage.setItem("safraCiclo", JSON.stringify(safraCiclo));
+
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_SAFRA_CICLO, safraCiclo);
 };
 
