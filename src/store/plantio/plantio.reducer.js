@@ -13,6 +13,7 @@ const INITIAL_STATE = {
 	plantioCalendarDone: [],
 	plantioColheitaAtual: [],
 	colheitaPortaldata: [],
+	useMulti: false
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
@@ -62,6 +63,11 @@ export const plantioReducer = (state = INITIAL_STATE, action = {}) => {
 			return {
 				...state,
 				colheitaPortaldata: payload
+			};
+		case PLANTIO_ACTIONS_TYPES.SET_USE_MULTI:
+			return {
+				...state,
+				useMulti: payload
 			};
 		default:
 			return state;

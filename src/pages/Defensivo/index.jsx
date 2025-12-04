@@ -21,7 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPlantio, setSafraCilco } from "../../store/plantio/plantio.actions";
 
 import { selectSafraCiclo } from "../../store/plantio/plantio.selector";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
+import { selectUseMulti } from "../../store/plantio/plantio.selector";
 
 
 const DefensivoPage = () => {
@@ -29,7 +30,8 @@ const DefensivoPage = () => {
 	const colors = tokens(theme.palette.mode);
 	const dispatch = useDispatch();
 	const safraCiclo = useSelector(selectSafraCiclo);
-	const location = useLocation();               // ← pathname atual
+	// const location = useLocation();               // ← pathname atual
+	const useMulti= useSelector(selectUseMulti)
 
 
 	const [isLoadingHome, setIsLoading] = useState(true);
@@ -56,9 +58,13 @@ const DefensivoPage = () => {
 	}, [safraCiclo]);
 
 	const getTrueApi = async () => {
+		const newPayload = {
+				...safraCiclo,
+				use_multi: useMulti
+			}
 		try {
 			await djangoApi
-				.post("plantio/get_plantio_operacoes_detail/", safraCiclo, {
+				.post("plantio/get_plantio_operacoes_detail/", newPayload, {
 					headers: {
 						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
 					}
@@ -76,12 +82,16 @@ const DefensivoPage = () => {
 	};
 
 	const getFalseApi = async () => {
-		const newObj = { ...safraCiclo, device: 'WEB' }
+		const newPayload = {
+				...safraCiclo,
+				use_multi: useMulti,
+				device: 'WEB'
+			}
 		try {
 			await djangoApi
 				.post(
 					"plantio/get_plantio_operacoes_detail_json_program/",
-					newObj,
+					newPayload,
 					{
 						headers: {
 							Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`

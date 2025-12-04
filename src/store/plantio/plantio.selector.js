@@ -5,6 +5,8 @@ import { farmDictProject } from "../../components/defensivos/farmbox-data/produt
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
+export const selectUseMulti = (state) => state.plantio.useMulti;
+
 export const selectPlantioColheitaAtual = (state) => state.plantio.plantioColheitaAtual;
 
 export const selectColheitaPortalData = (state) => state.plantio.colheitaPortaldata;

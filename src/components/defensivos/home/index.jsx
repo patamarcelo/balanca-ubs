@@ -23,17 +23,21 @@ import DateIntervalPage from "../data-program/date-interval";
 
 import classes from "../data-program/data-program.module.css";
 import classesPlantioDone from "../plantio-done/plantio-done-page.module.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Tooltip from "@mui/material/Tooltip";
+
+import { setUseMulti } from "../../../store/plantio/plantio.actions";
+import { selectUseMulti } from "../../../store/plantio/plantio.selector";
 
 
 
 const HomeDefensivoPage = (props) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
+	const dispatch = useDispatch();
 
 	const { isLoadingHome, handleRefreshData } = props;
 
@@ -54,7 +58,9 @@ const HomeDefensivoPage = (props) => {
 	const [initialDateForm, setInitialDate] = useState(null);
 	const [finalDateForm, setFinalDateForm] = useState(null);
 
-	const [checked, setChecked] = useState(false);
+	
+
+	const useMultiValue = useSelector(selectUseMulti)
 
 
 	const visible = useSelector((state) => state.ui.headerVisible);
@@ -272,7 +278,7 @@ const HomeDefensivoPage = (props) => {
 		},
 		{
 			status: isProdutividadePage,
-			comp: <ProdutividadePage isLoadingHome={isLoadingHome} useMulti={checked} />
+			comp: <ProdutividadePage isLoadingHome={isLoadingHome} useMulti={useMultiValue} />
 		},
 		{
 			status: isOpenFarmbox,
@@ -294,7 +300,7 @@ const HomeDefensivoPage = (props) => {
 
 	const handleChange = (event) => {
 		const value = event.target.checked;
-		setChecked(value);
+		dispatch(setUseMulti(value));
 	};
 
 	return (
@@ -335,17 +341,17 @@ const HomeDefensivoPage = (props) => {
 									gap: 1,
 									".MuiFormControlLabel-label": {
 										fontWeight: 600,
-										color: checked ? "#2e7d32" : "#555",
+										color: useMultiValue ? "#2e7d32" : "#555",
 									},
 								}}
 								control={
 									<Switch
-										checked={checked}
+										checked={useMultiValue}
 										onChange={handleChange}
 										color="success"
 									/>
 								}
-								label={checked ? "Multi" : "Single"}
+								label={useMultiValue ? "Multi" : "Single"}
 							/>
 						</Tooltip>
 					</Box>

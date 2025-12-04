@@ -10,6 +10,10 @@ export const setApp = (app) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_APP, app);
 };
 
+export const setUseMulti = (useMulti) => {
+	return createAction(PLANTIO_ACTIONS_TYPES.SET_USE_MULTI, useMulti);
+};
+
 export const setAppFarmBox = (appFarmBox) => {
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_APP_FARMBOX, appFarmBox);
 };
