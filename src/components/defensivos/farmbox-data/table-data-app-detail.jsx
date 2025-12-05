@@ -195,12 +195,8 @@ const DetailAppData = (props) => {
 										}
 										style={{
 											backgroundColor: colors.blueOrigin[600],
-											// backgroundColor: notFinished ? 'rgba(248,198,0,0.8)' : data.aplicado
-											// 	? "rgba(0,250,0, 0.6)"
-											// 	: "rgba(238,75,43, 0.6)",
-											// border: '1px solid rgba(255,255,255,0.1)',
 											width: "100%",
-											borderRadius: "6px",
+											borderRadius: "8px",
 										}}
 									>
 										<Box

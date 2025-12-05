@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, CircularProgress } from "@mui/material";
 
 import { nodeServerUsers } from "../../utils/axios/axios.utils";
 import { useState, useEffect } from 'react'
@@ -56,7 +56,19 @@ const UsersPage = () => {
     };
 
     if (isLoading) {
-        return <Typography> Loaging..</Typography>
+        return (
+            <Box
+                sx={{
+                    width: "100%",
+                    height: "70vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <CircularProgress color="secondary"/>
+            </Box>
+        );
     }
     return (
         <Box
@@ -65,14 +77,14 @@ const UsersPage = () => {
             }}
         >
             <Box
-            sx={{
-                width: '100%',
-                textAlign: 'end',
-                marginRight: '20px',
-                paddingRight: '10px'
-            }}
+                sx={{
+                    width: '100%',
+                    textAlign: 'end',
+                    marginRight: '20px',
+                    paddingRight: '10px'
+                }}
             >
-            <Button variant="outlined" color="success" onClick={getUsers}>Update</Button>
+                <Button variant="outlined" color="success" onClick={getUsers}>Update</Button>
             </Box>
             {
                 usersArr && usersArr.length > 0 &&
