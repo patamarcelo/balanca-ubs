@@ -21,6 +21,10 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from '../../../theme';
 
 import ProdutosSemanaChart from './dashboard/GeneralChart';
+import IconButton from '@mui/material/IconButton';
+import DownloadIcon from '@mui/icons-material/Download';
+
+import * as XLSX from 'xlsx';
 
 
 /* ==========================
@@ -178,6 +182,7 @@ function formatWeekLabel(start, end) {
 }
 
 // Agrupa produtos por período (semana / quinzena / mês)
+// agora também guarda quebra por fazenda / projeto dentro de cada produto
 function groupProdutosPorPeriodo(data, view) {
     const map = new Map();
 
@@ -230,6 +235,7 @@ function groupProdutosPorPeriodo(data, view) {
                 periodStart: start,
                 periodEnd: end,
                 periodLabel: label,
+                // OBS: aqui continua sendo um Map de produtos
                 produtos: new Map(),
             });
         }
@@ -237,27 +243,72 @@ function groupProdutosPorPeriodo(data, view) {
         const bucket = map.get(key);
         const prodName = item.produto || 'Sem produto';
 
+        // cria o “bucket” do produto dentro do período
         if (!bucket.produtos.has(prodName)) {
             bucket.produtos.set(prodName, {
                 produto: prodName,
                 tipo: item.tipo || '-',
                 quantidadeTotal: 0,
                 areaTotal: 0,
+                // 👉 novo: quebra interna por fazenda / projeto
+                porProjeto: new Map(),
             });
         }
 
         const ref = bucket.produtos.get(prodName);
+
+        // consolidação geral do produto no período (como já era)
         ref.quantidadeTotal += item.quantidadeCalculada || 0;
         ref.areaTotal += item.area || 0;
+
+        // ================================
+        //   QUEBRA POR FAZENDA / PROJETO
+        // ================================
+        const fazenda = item.fazendaGrupo || 'Sem fazenda';
+        const projeto = item.projeto || 'Sem projeto';
+        const projKey = `${fazenda}||${projeto}`;
+
+        if (!ref.porProjeto.has(projKey)) {
+            ref.porProjeto.set(projKey, {
+                fazenda,
+                projeto,
+                quantidadeTotal: 0,
+                areaTotal: 0,
+            });
+        }
+
+        const det = ref.porProjeto.get(projKey);
+        det.quantidadeTotal += item.quantidadeCalculada || 0;
+        det.areaTotal += item.area || 0;
     });
 
+    // converte os Maps para arrays “limpos” para uso na UI/export
     return Array.from(map.values())
-        .map((periodo) => ({
-            ...periodo,
-            produtos: Array.from(periodo.produtos.values()).sort((a, b) =>
-                a.produto.localeCompare(b.produto)
-            ),
-        }))
+        .map((periodo) => {
+            const produtosArr = Array.from(periodo.produtos.values()).map((prod) => ({
+                produto: prod.produto,
+                tipo: prod.tipo,
+                quantidadeTotal: prod.quantidadeTotal,
+                areaTotal: prod.areaTotal,
+                // porProjeto agora é um array [{fazenda, projeto, quantidadeTotal, areaTotal}, ...]
+                porProjeto: Array.from(prod.porProjeto.values()).sort((a, b) => {
+                    if (a.fazenda === b.fazenda) {
+                        return a.projeto.localeCompare(b.projeto);
+                    }
+                    return a.fazenda.localeCompare(b.fazenda);
+                }),
+            }));
+
+            return {
+                periodKey: periodo.periodKey,
+                periodStart: periodo.periodStart,
+                periodEnd: periodo.periodEnd,
+                periodLabel: periodo.periodLabel,
+                produtos: produtosArr.sort((a, b) =>
+                    a.produto.localeCompare(b.produto)
+                ),
+            };
+        })
         .sort((a, b) => {
             if (!a.periodStart || !b.periodStart) return 0;
             return a.periodStart - b.periodStart;
@@ -936,6 +987,77 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
     const toggleShowTotaisGerais = () => {
         setShowTotaisGerais((prev) => !prev);
     };
+
+    // Exporta um período em Excel com 2 abas:
+    // 1) produtos_projeto_fazenda (detalhado)
+    // 2) totais_produtos (somente total por produto)
+    const handleDownloadPeriodo = (periodo) => {
+        if (!periodo || !periodo.produtos?.length) return;
+
+        // Helper: força número com 2 casas decimais
+        const to2 = (v) => Number(parseFloat(v ?? 0).toFixed(2));
+
+        // ============================
+        // 1) Aba DETALHADO (produto × fazenda × projeto)
+        // ============================
+        const detalhadoRows = [];
+
+        periodo.produtos.forEach((p) => {
+            if (p.porProjeto && p.porProjeto.length) {
+                p.porProjeto.forEach((fp) => {
+                    detalhadoRows.push({
+                        Período: periodo.periodLabel,
+                        Fazenda: fp.fazenda || '',
+                        Projeto: fp.projeto || '',
+                        Produto: p.produto,
+                        Tipo: p.tipo,
+                        Quantidade: to2(fp.quantidadeTotal),
+                        "Área (ha)": to2(fp.areaTotal),
+                    });
+                });
+            } else {
+                // Caso TOTAL_GERAL ou ausência de porProjeto
+                detalhadoRows.push({
+                    Período: periodo.periodLabel,
+                    Fazenda: '',
+                    Projeto: '',
+                    Produto: p.produto,
+                    Tipo: p.tipo,
+                    Quantidade: to2(p.quantidadeTotal),
+                    "Área (ha)": to2(p.areaTotal),
+                });
+            }
+        });
+
+        const wsDetalhado = XLSX.utils.json_to_sheet(detalhadoRows);
+
+        // ============================
+        // 2) Aba TOTAIS por produto
+        // ============================
+        const totaisRows = periodo.produtos.map((p) => ({
+            Período: periodo.periodLabel,
+            Produto: p.produto,
+            Tipo: p.tipo,
+            "Quantidade Total": to2(p.quantidadeTotal),
+            "Área Total (ha)": to2(p.areaTotal),
+        }));
+
+        const wsTotais = XLSX.utils.json_to_sheet(totaisRows);
+
+        // ============================
+        // 3) Criar workbook e salvar XLSX
+        // ============================
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, wsDetalhado, "produtos_projeto_fazenda");
+        XLSX.utils.book_append_sheet(wb, wsTotais, "totais_produtos");
+
+        const safeLabel = (periodo.periodLabel || periodo.periodKey || "periodo")
+            .replace(/[^\w\-]+/g, "_");
+
+        XLSX.writeFile(wb, `produtos_${safeLabel}.xlsx`);
+    };
+
+
 
     // === Sets de opções disponíveis dado o estado atual (desabilitar combinações inválidas) ===
     const availableCulturas = useMemo(() => {
@@ -2077,14 +2199,25 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
+                                                alignItems: 'center',
                                                 paddingBottom: 6,
                                                 borderBottom: `1px dashed ${sectionBorder}`,
                                             }}
                                         >
-                                            <strong>{periodo.periodLabel}</strong>
-                                            <span style={{ fontSize: 11, color: subText }}>
-                                                {periodo.produtos.length} prod.
-                                            </span>
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <strong>{periodo.periodLabel}</strong>
+                                                <span style={{ fontSize: 11, color: subText }}>
+                                                    {periodo.produtos.length} prod.
+                                                </span>
+                                            </div>
+
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => handleDownloadPeriodo(periodo)}
+                                                title="Baixar quadro em CSV"
+                                            >
+                                                <DownloadIcon fontSize="small" />
+                                            </IconButton>
                                         </div>
 
                                         <ul
