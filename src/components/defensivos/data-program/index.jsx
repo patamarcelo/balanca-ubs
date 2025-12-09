@@ -114,6 +114,8 @@ const DataProgramPage = (props) => {
 	const [hidenAppsArr, setHidenAppsArr] = useState([]);
 
 	const [appIsLoading, setAppIsLoading] = useState(null);
+	const [appsOpened, setAppsOpened] = useState([]);         // novos apps já abertos
+
 
 	const [loadMaps, setLoadMaps] = useState(false);
 	const [prodsToRemove, setProdsToRemove] = useState([]);
@@ -954,7 +956,7 @@ const DataProgramPage = (props) => {
 				return {
 					data: {
 						...data,
-						dataToFarmBox:{
+						dataToFarmBox: {
 							...data.dataToFarmBox,
 							plantations: data.dataToFarmBox.plantations.filter((dataInside) => onlyFiltersFarmsIds.includes(dataInside.plantation_id))
 						},
@@ -1173,107 +1175,240 @@ const DataProgramPage = (props) => {
 		console.log('isThereAnyProdToAdd', prodsToAdd)
 	}, [prodsToAdd]);
 
+	// const handleOpenAppOld = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
+	// 	console.log('data to send to Farmbox', data)
+	// 	let newData = data
+	// 	const isThereAnyProdToRemove = prodsToRemove.filter((data) => data.appName === hiddenAppName)
+	// 	if (isThereAnyProdToRemove?.length > 0) {
+	// 		console.log('yes, need to remove someProds here:');
+
+	// 		// helper para padronizar a dose com 3 casas
+	// 		const to3 = v => Number(v).toFixed(3);
+
+	// 		// monta array de {id, dose} padronizados
+	// 		const onlyIdToRemove = isThereAnyProdToRemove.map(data => ({
+	// 			id: data.prodToRemove.id_farmbox,
+	// 			dose: to3(data.prodToRemove.dose),
+	// 		}));
+
+
+	// 		// cria Set com chaves "id|dose" para busca eficiente
+	// 		const removeKeys = new Set(
+	// 			onlyIdToRemove.map(item => `${item.id}|${item.dose}`)
+	// 		);
+
+	// 		// filtra mantendo só os que NÃO estão no removeKeys
+	// 		newData = {
+	// 			...newData,
+	// 			inputs: newData.inputs.filter(
+	// 				prods => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
+	// 			),
+	// 		};
+	// 	}
+	// 	const isThereAnyProdToAdd = prodsToAdd.filter((data) => data.appName === hiddenAppName)
+	// 	if (isThereAnyProdToAdd.length > 0) {
+	// 		const onlyObjTOFarm = isThereAnyProdToAdd.map((data) => data.objToSendtoFarm)
+	// 		newData = {
+	// 			...newData,
+	// 			inputs: [...newData.inputs, ...onlyObjTOFarm]
+	// 		}
+	// 	}
+
+	// 	const isThereAnyPlantationToRemove = updateApp.filter((data) => data.appName === hiddenAppName)
+	// 	let parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
+	// 	if (isThereAnyPlantationToRemove.length > 0) {
+	// 		console.log('precisa remover as plantacoes abaixo:')
+	// 		const onlyIdPlantations = isThereAnyPlantationToRemove.map((parcela) => parcela.plantioIdFarmbox)
+	// 		newData = {
+	// 			...newData,
+	// 			plantations: newData.plantations.filter((data) => !onlyIdPlantations.includes(data.plantation_id))
+	// 		}
+	// 		const onlyPlantioId = isThereAnyPlantationToRemove.map((data) => data.id)
+
+	// 		parcelasToUp = parcelasToUp.filter((data) => !onlyPlantioId.includes(data.id))
+	// 	}
+
+	// 	// console.log('newData', newData)
+	// 	// console.log('parcelasToRemove', updateApp)
+	// 	// console.log('cronograma', cronograma)
+	// 	// console.log('parcelasToUp', parcelasToUp)
+
+	// 	const params = JSON.stringify({
+	// 		data: newData
+	// 	});
+	// 	try {
+	// 		setAppIsLoading(programaLoading)
+	// 		await djangoApi
+	// 			.put("plantio/open_app_farmbox/", params, {
+	// 				headers: {
+	// 					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
+	// 				}
+	// 			})
+	// 			.then((res) => {
+	// 				console.log(res);
+	// 				if (res.data.status === 201) {
+	// 					const dataFromServer = JSON.parse(res.data.result)
+	// 					const { code } = dataFromServer;
+	// 					Swal.fire({
+	// 						title: "Feito!!",
+	// 						html: `AP Aberta com Sucesso: <b>${code}</b> `,
+	// 						icon: "success"
+	// 					});
+	// 					parcelasToUp.forEach((parcela) => {
+	// 						handleSetApp(parcela.id, parcela.estagio)
+	// 					})
+	// 				}
+	// 				setAppIsLoading(null)
+	// 			});
+	// 	} catch (err) {
+	// 		console.log("Erro ao alterar as aplicações", err);
+	// 		console.log("Erro ao alterar as aplicações", err.response.data.msg);
+	// 		console.log("Erro ao alterar as aplicações", JSON.parse(err.response.data.result));
+	// 		toast.error(
+	// 			`Erro ao Abrir a Aplicação - ${err.response.data.msg} - ${JSON.parse(err.response.data.result)}`,
+	// 			{
+	// 				position: "top-center",
+	// 				duration: 5000
+	// 			}
+	// 		)
+	// 		setAppIsLoading(null)
+	// 	} finally {
+	// 		console.log('finally alterar')
+	// 	}
+	// }
+
 	const handleOpenApp = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
-		console.log('data to send to Farmbox', data)
-		let newData = data
-		const isThereAnyProdToRemove = prodsToRemove.filter((data) => data.appName === hiddenAppName)
+		// se já tem algo carregando, ou essa app já foi aberta, não faz nada
+		if (appIsLoading || appsOpened.includes(programaLoading)) {
+			return;
+		}
+
+		console.log('data to send to Farmbox', data);
+		let newData = data;
+
+		const isThereAnyProdToRemove = prodsToRemove.filter(
+			(data) => data.appName === hiddenAppName
+		);
+
 		if (isThereAnyProdToRemove?.length > 0) {
 			console.log('yes, need to remove someProds here:');
 
-			// helper para padronizar a dose com 3 casas
-			const to3 = v => Number(v).toFixed(3);
+			const to3 = (v) => Number(v).toFixed(3);
 
-			// monta array de {id, dose} padronizados
-			const onlyIdToRemove = isThereAnyProdToRemove.map(data => ({
+			const onlyIdToRemove = isThereAnyProdToRemove.map((data) => ({
 				id: data.prodToRemove.id_farmbox,
 				dose: to3(data.prodToRemove.dose),
 			}));
 
-
-			// cria Set com chaves "id|dose" para busca eficiente
 			const removeKeys = new Set(
-				onlyIdToRemove.map(item => `${item.id}|${item.dose}`)
+				onlyIdToRemove.map((item) => `${item.id}|${item.dose}`)
 			);
 
-			// filtra mantendo só os que NÃO estão no removeKeys
 			newData = {
 				...newData,
 				inputs: newData.inputs.filter(
-					prods => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
+					(prods) => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
 				),
 			};
 		}
-		const isThereAnyProdToAdd = prodsToAdd.filter((data) => data.appName === hiddenAppName)
+
+		const isThereAnyProdToAdd = prodsToAdd.filter(
+			(data) => data.appName === hiddenAppName
+		);
 		if (isThereAnyProdToAdd.length > 0) {
-			const onlyObjTOFarm = isThereAnyProdToAdd.map((data) => data.objToSendtoFarm)
+			const onlyObjTOFarm = isThereAnyProdToAdd.map(
+				(data) => data.objToSendtoFarm
+			);
 			newData = {
 				...newData,
-				inputs: [...newData.inputs, ...onlyObjTOFarm]
-			}
+				inputs: [...newData.inputs, ...onlyObjTOFarm],
+			};
 		}
 
-		const isThereAnyPlantationToRemove = updateApp.filter((data) => data.appName === hiddenAppName)
-		let parcelasToUp = cronograma.map((crono) => ({ id: crono.plantioId, estagio: estagio }))
+		const isThereAnyPlantationToRemove = updateApp.filter(
+			(data) => data.appName === hiddenAppName
+		);
+		let parcelasToUp = cronograma.map((crono) => ({
+			id: crono.plantioId,
+			estagio: estagio,
+		}));
+
 		if (isThereAnyPlantationToRemove.length > 0) {
-			console.log('precisa remover as plantacoes abaixo:')
-			const onlyIdPlantations = isThereAnyPlantationToRemove.map((parcela) => parcela.plantioIdFarmbox)
+			console.log('precisa remover as plantacoes abaixo:');
+			const onlyIdPlantations = isThereAnyPlantationToRemove.map(
+				(parcela) => parcela.plantioIdFarmbox
+			);
 			newData = {
 				...newData,
-				plantations: newData.plantations.filter((data) => !onlyIdPlantations.includes(data.plantation_id))
-			}
-			const onlyPlantioId = isThereAnyPlantationToRemove.map((data) => data.id)
+				plantations: newData.plantations.filter(
+					(data) => !onlyIdPlantations.includes(data.plantation_id)
+				),
+			};
+			const onlyPlantioId = isThereAnyPlantationToRemove.map(
+				(data) => data.id
+			);
 
-			parcelasToUp = parcelasToUp.filter((data) => !onlyPlantioId.includes(data.id))
+			parcelasToUp = parcelasToUp.filter(
+				(data) => !onlyPlantioId.includes(data.id)
+			);
 		}
-
-		// console.log('newData', newData)
-		// console.log('parcelasToRemove', updateApp)
-		// console.log('cronograma', cronograma)
-		// console.log('parcelasToUp', parcelasToUp)
 
 		const params = JSON.stringify({
-			data: newData
+			data: newData,
 		});
+
 		try {
-			setAppIsLoading(programaLoading)
-			await djangoApi
-				.put("plantio/open_app_farmbox/", params, {
-					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-					}
-				})
-				.then((res) => {
-					console.log(res);
-					if (res.data.status === 201) {
-						const dataFromServer = JSON.parse(res.data.result)
-						const { code } = dataFromServer;
-						Swal.fire({
-							title: "Feito!!",
-							html: `AP Aberta com Sucesso: <b>${code}</b> `,
-							icon: "success"
-						});
-						parcelasToUp.forEach((parcela) => {
-							handleSetApp(parcela.id, parcela.estagio)
-						})
-					}
-					setAppIsLoading(null)
+			setAppIsLoading(programaLoading);
+
+			const res = await djangoApi.put("plantio/open_app_farmbox/", params, {
+				headers: {
+					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+				},
+			});
+
+			console.log(res);
+
+			// aqui você falou "se o status for 200", mas no código tá 201.
+			if (res.data.status === 200 || res.data.status === 201) {
+				const dataFromServer = JSON.parse(res.data.result);
+				const { code } = dataFromServer;
+
+				Swal.fire({
+					title: "Feito!!",
+					html: `AP Aberta com Sucesso: <b>${code}</b> `,
+					icon: "success",
 				});
+
+				parcelasToUp.forEach((parcela) => {
+					handleSetApp(parcela.id, parcela.estagio);
+				});
+
+				// marca essa aplicação como definitivamente aberta
+				setAppsOpened((prev) =>
+					prev.includes(programaLoading) ? prev : [...prev, programaLoading]
+				);
+			}
 		} catch (err) {
 			console.log("Erro ao alterar as aplicações", err);
-			console.log("Erro ao alterar as aplicações", err.response.data.msg);
-			console.log("Erro ao alterar as aplicações", JSON.parse(err.response.data.result));
+			console.log("Erro ao alterar as aplicações", err.response?.data?.msg);
+			console.log(
+				"Erro ao alterar as aplicações",
+				err.response?.data?.result && JSON.parse(err.response.data.result)
+			);
 			toast.error(
-				`Erro ao Abrir a Aplicação - ${err.response.data.msg} - ${JSON.parse(err.response.data.result)}`,
+				`Erro ao Abrir a Aplicação - ${err.response?.data?.msg} - ${err.response?.data?.result && JSON.parse(err.response.data.result)
+				}`,
 				{
 					position: "top-center",
-					duration: 5000
+					duration: 5000,
 				}
-			)
-			setAppIsLoading(null)
+			);
 		} finally {
-			console.log('finally alterar')
+			setAppIsLoading(null);
+			console.log("finally alterar");
 		}
-	}
+	};
+
 
 	return (
 		<Box
@@ -1600,46 +1735,71 @@ const DataProgramPage = (props) => {
 											}}
 										>
 											{!hidenAppsArr.includes(hiddenAppName) ?
-												<VisibilityIcon color="success" fontSize="small"/> :
+												<VisibilityIcon color="success" fontSize="small" /> :
 												<VisibilityOffIcon />
 											}
 											<Typography
 												variant="h6"
 												color={colors.textColor[100]}
-												sx={{marginLeft: '5px'}}
+												sx={{ marginLeft: '5px' }}
 											>
 												{estagio}
 											</Typography>
 										</IconButton>
 										{
-											isAdminUser && !hidenAppsArr?.includes(hiddenAppName) &&
-											(
-												appIsLoading === data.estagio ?
+											isAdminUser && !hidenAppsArr?.includes(hiddenAppName) && (
+												appIsLoading === data.estagio ? (
 													<CircularProgress
 														size={25}
 														sx={{
 															margin: "0px 10px",
 															color: (theme) =>
 																colors.greenAccent[
-																theme.palette.mode === "dark"
-																	? 200
-																	: 800
+																theme.palette.mode === "dark" ? 200 : 800
 																]
 														}}
 													/>
-													:
+												) : (
 													<Button
-														onClick={() => handleOpenApp(openApp, data.cronograma, estagio, data.estagio, hiddenAppName)}
+														onClick={() =>
+															handleOpenApp(
+																openApp,
+																data.cronograma,
+																estagio,
+																data.estagio,
+																hiddenAppName
+															)
+														}
+														disabled={!!appIsLoading || appsOpened.includes(data.estagio)}
 														sx={{
 															cursor: "pointer",
 															width: "50px",
 															height: "50px",
+
+															// estilo quando estiver disabled
+															"&.Mui-disabled": {
+																backgroundColor: "rgba(0,0,0,0.12)",   // cinza claro MUI
+																opacity: 0.6,
+																cursor: "not-allowed",
+
+																// deixa o ícone também mais claro
+																"& img": {
+																	filter: "grayscale(100%)",
+																	opacity: 0.4,
+																}
+															},
 														}}
 													>
-														<img src={FarmIcon} alt="img-icon" style={{ marginTop: '15px' }} />
+														<img
+															src={FarmIcon}
+															alt="img-icon"
+															style={{ marginTop: "15px" }}
+														/>
 													</Button>
+												)
 											)
 										}
+
 									</Box >
 									{
 										appIsLoading === data.estagio &&
