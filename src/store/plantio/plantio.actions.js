@@ -11,6 +11,7 @@ export const setApp = (app) => {
 };
 
 export const setUseMulti = (useMulti) => {
+	localStorage.setItem("useMulti", JSON.stringify(useMulti));
 	return createAction(PLANTIO_ACTIONS_TYPES.SET_USE_MULTI, useMulti);
 };
 
