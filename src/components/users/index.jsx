@@ -191,13 +191,13 @@ const UsersTable = (props) => {
                         alignItems: "center",
                         flex: 1,
                         minWidth: 260,
-                        backgroundColor: colors.primary[700],
+                        backgroundColor: colors.primary[100],
                         borderRadius: "999px",
                         px: 2,
                         py: 0.5,
                     }}
                 >
-                    <SearchIcon sx={{ mr: 1, opacity: 0.7 }} />
+                    <SearchIcon sx={{ mr: 1, opacity: 0.7, color: colors.primary[900] }} />
                     <TextField
                         variant="standard"
                         placeholder="Buscar por nome ou e-mail..."
@@ -206,7 +206,7 @@ const UsersTable = (props) => {
                         onChange={(e) => setSearch(e.target.value)}
                         InputProps={{
                             disableUnderline: true,
-                            style: { color: "#fff" },
+                            style: { color: colors.primary[900]},
                         }}
                     />
                 </Box>
