@@ -1,6 +1,7 @@
 import { PLANTIO_ACTIONS_TYPES } from "./plantio.types";
 
 const savedSafra = localStorage.getItem("safraCiclo");
+const savedUseMulti = localStorage.getItem("useMulti");
 
 
 const INITIAL_STATE = {
@@ -13,7 +14,7 @@ const INITIAL_STATE = {
 	plantioCalendarDone: [],
 	plantioColheitaAtual: [],
 	colheitaPortaldata: [],
-	useMulti: false
+	useMulti: savedUseMulti ? JSON.parse(savedUseMulti) : false
 };
 
 export const plantioReducer = (state = INITIAL_STATE, action = {}) => {

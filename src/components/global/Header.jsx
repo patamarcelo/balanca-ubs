@@ -43,6 +43,13 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { toggleHeader } from "../../store/ui/ui.actions";
 import SafraCicloComp from "../defensivos/home/safra-ciclo";
 
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Tooltip from "@mui/material/Tooltip";
+
+import { setUseMulti } from "../../store/plantio/plantio.actions";
+import { selectUseMulti } from "../../store/plantio/plantio.selector";
+
 
 
 const Header = ({ toggleDrawer, isdrawerOpen }) => {
@@ -62,6 +69,8 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 
 	const visible = useSelector((state) => state.ui.headerVisible);
 
+	const useMultiValue = useSelector(selectUseMulti)
+
 	const handlerNavHome = () => navigate("/");
 	const handlerReportNav = () => navigate("/report");
 	const handlerSentSeed = () => navigate("/sendseed");
@@ -72,6 +81,11 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 		dispatch(logOffUser());
 		signOutUser();
 		handlerNavHome();
+	};
+
+	const handleChange = (event) => {
+		const value = event.target.checked;
+		dispatch(setUseMulti(value));
 	};
 
 	const print = () => window.print();
@@ -153,11 +167,37 @@ const Header = ({ toggleDrawer, isdrawerOpen }) => {
 						sx={{
 							position: 'fixed',
 							top: '0',
+							display: 'flex',
+							alignItems: 'center',
+							gap: '30px',
+							justifyContent: 'center',
 							marginTop: '15px !important',
 							marginLeft: '100px !important',
 						}}
 					>
 						<SafraCicloComp />
+						<Tooltip title="Possibilidade de filtrar mais de 1 ciclo na Produtividade" arrow>
+							<FormControlLabel
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									paddingTop: '15px',
+									gap: 1,
+									".MuiFormControlLabel-label": {
+										fontWeight: 600,
+										color: useMultiValue ? "#2e7d32" : "#555",
+									},
+								}}
+								control={
+									<Switch
+										checked={useMultiValue}
+										onChange={handleChange}
+										color="success"
+									/>
+								}
+								label={useMultiValue ? "Multi" : "Single"}
+							/>
+						</Tooltip>
 					</Box>
 
 					<Box

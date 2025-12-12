@@ -180,7 +180,7 @@ const ProdutosConsolidados = () => {
                             } catch (e) {
                                 console.error("Erro ao capturar a tela após abrir ST:", e);
                             }
-                        }, 2000);
+                        }, 1000);
 
                     } else if (res.status === 208) {
                         const { msg, error } = res.data
