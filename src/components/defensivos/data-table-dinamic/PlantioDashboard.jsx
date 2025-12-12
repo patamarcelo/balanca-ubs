@@ -274,12 +274,29 @@ function groupProdutosPorPeriodo(data, view) {
                 projeto,
                 quantidadeTotal: 0,
                 areaTotal: 0,
+                // 👉 novo: quebra por estágio dentro do projeto
+                porEstagio: new Map(),
             });
         }
 
         const det = ref.porProjeto.get(projKey);
         det.quantidadeTotal += item.quantidadeCalculada || 0;
         det.areaTotal += item.area || 0;
+
+        const stageKey = getStageKey(item.estagio); // já existe no seu arquivo
+
+        // 👉 acumula por estágio
+        if (!det.porEstagio.has(stageKey)) {
+            det.porEstagio.set(stageKey, {
+                estagio: stageKey,
+                quantidadeTotal: 0,
+                areaTotal: 0,
+            });
+        }
+
+        const st = det.porEstagio.get(stageKey);
+        st.quantidadeTotal += item.quantidadeCalculada || 0;
+        st.areaTotal += item.area || 0;
     });
 
     // converte os Maps para arrays “limpos” para uso na UI/export
@@ -291,12 +308,16 @@ function groupProdutosPorPeriodo(data, view) {
                 quantidadeTotal: prod.quantidadeTotal,
                 areaTotal: prod.areaTotal,
                 // porProjeto agora é um array [{fazenda, projeto, quantidadeTotal, areaTotal}, ...]
-                porProjeto: Array.from(prod.porProjeto.values()).sort((a, b) => {
-                    if (a.fazenda === b.fazenda) {
-                        return a.projeto.localeCompare(b.projeto);
-                    }
-                    return a.fazenda.localeCompare(b.fazenda);
-                }),
+                porProjeto: Array.from(prod.porProjeto.values()).map((pp) => ({
+                    fazenda: pp.fazenda,
+                    projeto: pp.projeto,
+                    quantidadeTotal: pp.quantidadeTotal,
+                    areaTotal: pp.areaTotal,
+                    // 👉 novo: array de estágios
+                    porEstagio: Array.from(pp.porEstagio.values()).sort((a, b) =>
+                        String(a.estagio).localeCompare(String(b.estagio))
+                    ),
+                }))
             }));
 
             return {
@@ -1005,15 +1026,33 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
         periodo.produtos.forEach((p) => {
             if (p.porProjeto && p.porProjeto.length) {
                 p.porProjeto.forEach((fp) => {
-                    detalhadoRows.push({
-                        Período: periodo.periodLabel,
-                        Fazenda: fp.fazenda || '',
-                        Projeto: fp.projeto || '',
-                        Produto: p.produto,
-                        Tipo: p.tipo,
-                        Quantidade: to2(fp.quantidadeTotal),
-                        "Área (ha)": to2(fp.areaTotal),
-                    });
+                    // Se tiver estágios, explode em linhas por estágio
+                    if (fp.porEstagio && fp.porEstagio.length) {
+                        fp.porEstagio.forEach((st) => {
+                            detalhadoRows.push({
+                                Período: periodo.periodLabel,
+                                Fazenda: fp.fazenda || '',
+                                Projeto: fp.projeto || '',
+                                Produto: p.produto,
+                                Tipo: p.tipo,
+                                Estágio: st.estagio || 'Sem estágio',
+                                Quantidade: to2(st.quantidadeTotal),
+                                "Área (ha)": to2(st.areaTotal),
+                            });
+                        });
+                    } else {
+                        // fallback: sem estágios, vai no total do projeto
+                        detalhadoRows.push({
+                            Período: periodo.periodLabel,
+                            Fazenda: fp.fazenda || '',
+                            Projeto: fp.projeto || '',
+                            Produto: p.produto,
+                            Tipo: p.tipo,
+                            Estágio: 'Sem estágio',
+                            Quantidade: to2(fp.quantidadeTotal),
+                            "Área (ha)": to2(fp.areaTotal),
+                        });
+                    }
                 });
             } else {
                 // Caso TOTAL_GERAL ou ausência de porProjeto
@@ -1023,6 +1062,7 @@ const PlanejamentoProdutosDashboard = ({ data, dark = false }) => {
                     Projeto: '',
                     Produto: p.produto,
                     Tipo: p.tipo,
+                    Estágio: '—',
                     Quantidade: to2(p.quantidadeTotal),
                     "Área (ha)": to2(p.areaTotal),
                 });
