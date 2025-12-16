@@ -173,7 +173,7 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 						if (status === "finalized" && processo === 0) return "Não Aplicado";
 						if (status === "finalized") return "Aplicado";
 						if (status === "sought") {
-							return processo >= area ? "Aplicado" : "Aberto";
+							return processo >= areaSought ? "Aplicado" : "Aberto";
 						}
 					};
 
