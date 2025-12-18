@@ -1,6 +1,6 @@
-import { Box, Button, Divider, Typography, useTheme, Autocomplete, TextField, } from "@mui/material";
+import { Box, Button, Divider, Typography, useTheme, Autocomplete, TextField, Tooltip, Chip } from "@mui/material";
 import { tokens, ColorModeContext } from "../../../theme";
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useMemo } from "react";
 import classes from "./data-program.module.css";
 
 import { displayDate } from "../../../utils/format-suport/data-format";
@@ -135,6 +135,10 @@ const DataProgramPage = (props) => {
 	const [filterVariedade, setFilterVariedade] = useState([]);
 	const [filterParcela, setFilterParcela] = useState([]);
 
+	const [estagiosSelecionados, setEstagiosSelecionados] = useState([]);
+	const [filterEstagios, setFilterEstagios] = useState([]); // opções do multiselect
+
+
 
 
 
@@ -144,6 +148,129 @@ const DataProgramPage = (props) => {
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Algodão", icon: cotton, alt: "algodao" },
 	];
+
+
+	const parcelasOcc = useMemo(() => {
+		const map = new Map();
+
+		objResumValues.forEach((dat) => {
+			const fullStage = dat?.data?.estagio; // "2º Cobertura|Programa ..."
+			if (!fullStage) return;
+
+			const [estagioLabel, programaLabel] = fullStage.split("|");
+			const hiddenAppName = fullStage + farmSelected;
+
+			// Se o bloco (app) estiver escondido, ignore para não poluir o tooltip
+			if (hidenAppsArr.includes(hiddenAppName)) return;
+
+			const cron = dat?.data?.cronograma || [];
+
+			cron.forEach((p) => {
+				const parcela = p?.parcela;
+				if (!parcela) return;
+
+				// DAP desejado vem daqui
+				const dapAppRaw = p?.dapApp;
+				const dapApp = Number(dapAppRaw);
+				const dapAppVal = Number.isFinite(dapApp) ? dapApp : null;
+
+				if (!map.has(parcela)) {
+					map.set(parcela, { count: 0, stages: new Map() });
+				}
+
+				const entry = map.get(parcela);
+				entry.count += 1;
+
+				// Um stage único por fullStage; se houver mais de um item no mesmo stage,
+				// mantenha o menor dapApp (bom para ordenar)
+				const prev = entry.stages.get(fullStage);
+
+				if (!prev) {
+					entry.stages.set(fullStage, {
+						estagio: (estagioLabel || "").trim(),
+						programa: (programaLabel || "").trim(),
+						dapApp: dapAppVal, // <- agora existe no tooltip
+					});
+				} else {
+					const prevDap = prev.dapApp;
+					const nextMin =
+						prevDap == null ? dapAppVal : dapAppVal == null ? prevDap : Math.min(prevDap, dapAppVal);
+
+					entry.stages.set(fullStage, {
+						...prev,
+						dapApp: nextMin,
+					});
+				}
+			});
+		});
+
+		const out = {};
+		map.forEach((v, parcela) => {
+			// Ordena pelo menor dapApp -> maior dapApp
+			const stagesArr = Array.from(v.stages.values()).sort((a, b) => {
+				const da = a.dapApp ?? 999999;
+				const db = b.dapApp ?? 999999;
+				return da - db;
+			});
+
+			out[parcela] = { count: v.count, stages: stagesArr };
+		});
+
+		return out;
+	}, [objResumValues, farmSelected, hidenAppsArr]);
+
+
+	const getStageName = (fullStage) => (fullStage?.split("|")?.[0] || "").trim();
+	const norm = (s) => (s || "").trim().toLowerCase();
+
+
+	useEffect(() => {
+		if (!objList || objList.length === 0) return;
+
+		const stageMap = new Map();
+
+		objList.forEach((bloco) => {
+			const cronograma = bloco?.cronograma || [];
+
+			cronograma.forEach((item) => {
+				const nomeVar = item.variedade?.trim();
+				const nomeCult = item.cultura?.trim().toLowerCase();
+				const nomeParcela = item.parcela?.trim();
+
+				const atendeCultura =
+					culturaSelecionada.length === 0 || culturaSelecionada.includes(nomeCult);
+
+				const vObj = filterVariedade.find(
+					(v) => v.nome === nomeVar && v.cultura === nomeCult
+				);
+
+				const atendeVariedade =
+					variedadeSelecionada.length === 0 ||
+					(vObj && variedadeSelecionada.includes(vObj.id));
+
+				const atendeParcela =
+					parcelasSelecionada.length === 0 ||
+					parcelasSelecionada.includes(nomeParcela?.toLowerCase().replace(/\s+/g, "_"));
+
+				if (!atendeCultura || !atendeVariedade || !atendeParcela) return;
+
+				const stageLabel = getStageName(item.estagio);
+				const stageId = norm(stageLabel);
+				if (!stageId) return;
+
+				if (!stageMap.has(stageId)) {
+					stageMap.set(stageId, { id: stageId, label: stageLabel, count: 0 });
+				}
+				stageMap.get(stageId).count += 1;
+			});
+		});
+
+		const opts = Array.from(stageMap.values()).sort((a, b) =>
+			a.label.localeCompare(b.label)
+		);
+
+		setFilterEstagios(opts);
+	}, [objList, culturaSelecionada, variedadeSelecionada, parcelasSelecionada, filterVariedade]);
 
 
 	useEffect(() => {
@@ -921,7 +1048,12 @@ const DataProgramPage = (props) => {
 							nomeParcela?.toLowerCase().replace(/\s+/g, "_")
 						);
 
-					return atendeCultura && atendeVariedade && atendeParcela;
+					const stageKey = norm(getStageName(item.estagio));
+
+					const atendeEstagio =
+						estagiosSelecionados.length === 0 || estagiosSelecionados.includes(stageKey);
+
+					return atendeCultura && atendeVariedade && atendeParcela && atendeEstagio;
 				});
 
 				// Se nenhuma parcela passou no filtro, descarta o bloco
@@ -982,7 +1114,7 @@ const DataProgramPage = (props) => {
 			data.data.cronograma.map((p) => p.parcela)
 		);
 		setfilteredAndDucplicatedParcelas(parcelasArr);
-	}, [objList, culturaSelecionada, variedadeSelecionada, filterVariedade, parcelasSelecionada]);
+	}, [objList, culturaSelecionada, variedadeSelecionada, filterVariedade, parcelasSelecionada, estagiosSelecionados]);
 
 
 	useEffect(() => {
@@ -1042,14 +1174,8 @@ const DataProgramPage = (props) => {
 		return saveFile;
 	};
 
-	const hasduplicated = (ele) => {
-		if (filteredAndDucplicatedParcelas.length > 0) {
-			const moreThanOne = filteredAndDucplicatedParcelas.filter((data) => data === ele).length
-			const hasDuplicated = moreThanOne > 1 ? true : false
-			return hasDuplicated
-		}
-		return false
-	}
+	const hasduplicated = (parcela) => (parcelasOcc?.[parcela]?.count || 0) > 1;
+
 
 	const generatePDF = async () => {
 		try {
@@ -1486,6 +1612,10 @@ const DataProgramPage = (props) => {
 				parcelas={filterParcela}
 				parcelaSelecionada={parcelasSelecionada}
 				setParcelaSelecionada={setParcelasSelecionada}
+
+				estagios={filterEstagios}
+				estagioSelecionado={estagiosSelecionados}
+				setEstagioSelecionado={setEstagiosSelecionados}
 			/>
 			<Box
 				className={[
@@ -2216,38 +2346,196 @@ const DataProgramPage = (props) => {
 																			]
 																		}
 																	>
-																		<div
-																			className={
-																				classes[
-																				`${"parcela-icon-div"}`
-																				]
-																			}
-																			onClick={() =>
-																				handleSetApp(
-																					dataId,
-																					setEstagio,
-																					hiddenAppName,
-																					data.plantioIdFarmbox
-																				)
-																			}
-																		>
-																			<img
-																				src={filteredIcon(
-																					data
-																				)}
-																				alt={filteredAlt(
-																					data
-																				)}
-																				style={{
-																					filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
-																				}}
-																			/>
-																		</div>
-																		<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]} style={{ fontWeight: 'bold' }}>
-																			{
-																				data.parcela
-																			}
-																		</span>
+																		{(() => {
+																			const occ = parcelasOcc?.[data.parcela];
+																			const count = occ?.count || 0;
+																			const duplicated = count > 1;
+
+																			const sortedStages =
+																				occ?.stages
+																					?.slice()
+																					?.sort((a, b) => (a.dapApp ?? 0) - (b.dapApp ?? 0)) || [];
+
+
+																			const tooltipTitle = duplicated ? (
+																				<Box sx={{ p: 1, minWidth: 320 }}>
+																					<Box
+																						sx={{
+																							display: "flex",
+																							alignItems: "center",
+																							justifyContent: 'center',
+																							marginBottom: '10px',
+																							gap: 1,
+																						}}
+																					>
+																						<Chip
+																							label={data.parcela}
+																							size="small"
+																							color="warning"
+																							sx={{
+																								fontWeight: 800,
+																								height: 22,
+																								px: 0.5,
+																								boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
+																							}}
+																						/>
+
+																					</Box>
+
+
+																					<Box
+																						sx={{
+																							display: "grid",
+																							gridTemplateColumns: "1.7fr 2fr 0.5fr",
+																							px: 0.75,
+																							mb: 0.25,
+																						}}
+																					>
+																						<Typography variant="caption" sx={{ fontWeight: 700 }}>
+																							Estágio
+																						</Typography>
+																						<Typography variant="caption" sx={{ fontWeight: 700 }}>
+																							Programa
+																						</Typography>
+																						<Typography variant="caption" sx={{ fontWeight: 700, marginLeft: 'auto' }}>
+																							DAP
+																						</Typography>
+																					</Box>
+
+
+																					<Divider sx={{ mb: 0.75 }} />
+
+																					<Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+																						{sortedStages.map((s, idx) => (
+																							<Box
+																								key={`${s.estagio}-${s.programa}-${idx}`}
+																								sx={{
+																									display: "grid",
+																									gridTemplateColumns: "1.7fr 2fr 0.5fr",
+																									alignItems: "center",
+																									px: 0.75,
+																									py: 0.4,
+																									borderRadius: 0.75,
+																									backgroundColor: idx % 2 === 0 ? "rgba(255,255,255,0.06)" : "transparent",
+																								}}
+																							>
+																								{/* Estágio */}
+																								<Typography variant="body2" sx={{ fontWeight: 500 }}>
+																									{s.estagio || "-"}
+																								</Typography>
+
+																								{/* Programa */}
+																								<Typography variant="body2" sx={{ opacity: 0.85 }}>
+																									{s.programa.replace('Aplicação', '') || "-"}
+																								</Typography>
+
+																								{/* DAP */}
+																								<Typography
+																									variant="caption"
+																									sx={{
+																										fontWeight: 700,
+																										ml: 1,
+																										color: "warning.main",
+																										whiteSpace: "nowrap",
+																									}}
+																								>
+																									{s.dapApp != null ? `DAP ${s.dapApp}` : "-"}
+																								</Typography>
+																							</Box>
+																						))}
+																					</Box>
+
+																					<Divider sx={{ mt: 0.75, mb: 0.5 }} />
+																					<Box
+																						sx={{
+																							display: "flex",
+																							alignItems: "center",
+																							gap: 1.5,
+																						}}
+																					>
+																						<Typography variant="caption" sx={{ opacity: 0.9 }}>
+																							Ocorrências no período:
+																						</Typography>
+
+																						<Chip
+																							label={`${count}x`}
+																							size="small"
+																							color="secondary"
+																							sx={{
+																								fontWeight: 700,
+																								height: 20,
+																							}}
+																						/>
+																					</Box>
+																				</Box>
+																			) : (
+																				null
+																			);
+
+																			return (
+																				<Tooltip title={tooltipTitle} arrow placement="left" componentsProps={{
+																					tooltip: {
+																						sx: {
+																							maxWidth: 520, // controla largura máxima
+																							minWidth: 400
+																						},
+																					},
+																				}}>
+																					<div
+																						className={classes[`${"parcela-icon-div"}`]}
+																						style={{ position: "relative" }}
+																						onClick={() =>
+																							handleSetApp(
+																								dataId,
+																								setEstagio,
+																								hiddenAppName,
+																								data.plantioIdFarmbox
+																							)
+																						}
+																					>
+																						{duplicated && count > 2 && (
+																							<span
+																								style={{
+																									position: "absolute",
+																									top: -6,
+																									right: -12,
+																									fontSize: 10,
+																									lineHeight: "14px",
+																									minWidth: 14,
+																									height: 14,
+																									padding: "0 4px",
+																									borderRadius: 999,
+																									background: "rgba(255,204,0,0.7)",
+																									color: "#000",
+																									fontWeight: 800,
+																									boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
+																									display: "flex",
+																									alignItems: "center",
+																									justifyContent: "center",
+																									pointerEvents: "none",
+																								}}
+																							>
+																								{count}
+																							</span>
+																						)}
+
+																						<img
+																							src={filteredIcon(data)}
+																							alt={filteredAlt(data)}
+																							style={{
+																								filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))"
+																							}}
+																						/>
+																						<span className={classes[`${hasduplicated(data.parcela) && "parcela-duplicated-" + theme.palette.mode}`]} style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+																							{
+																								data.parcela
+																							}
+																						</span>
+																					</div>
+
+																				</Tooltip>
+																			);
+																		})()}
 																	</div>
 																	<div
 																		style={{

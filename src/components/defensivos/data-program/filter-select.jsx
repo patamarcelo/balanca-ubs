@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
     Box,
     MenuItem,
@@ -7,9 +7,9 @@ import {
     InputLabel,
     IconButton,
     Slide,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 const SelectCulturaVariedade = ({
     culturaSelecionada,
@@ -20,7 +20,12 @@ const SelectCulturaVariedade = ({
     variedades,
     parcelas,
     parcelaSelecionada,
-    setParcelaSelecionada
+    setParcelaSelecionada,
+
+    // NOVO:
+    estagios = [],
+    estagioSelecionado = [],
+    setEstagioSelecionado = () => { },
 }) => {
     const [showFilters, setShowFilters] = useState(false);
     const containerRef = useRef(null);
@@ -28,35 +33,50 @@ const SelectCulturaVariedade = ({
     const variedadesFiltradas = variedades.filter((v) =>
         culturaSelecionada.includes(v.cultura)
     );
+
     const nomesVariedadesSelecionadas = variedadesFiltradas
         .filter((v) => variedadeSelecionada.includes(v.id))
         .map((v) => v.nome);
 
     const parcelasFiltradas = parcelas.filter(
         (p) =>
-            (culturaSelecionada.length === 0 || culturaSelecionada.includes(p.cultura)) &&
-            (variedadeSelecionada.length === 0 || nomesVariedadesSelecionadas.includes(p.variedade))
+            (culturaSelecionada.length === 0 ||
+                culturaSelecionada.includes(p.cultura)) &&
+            (variedadeSelecionada.length === 0 ||
+                nomesVariedadesSelecionadas.includes(p.variedade))
+    );
+
+    // Estágios: as opções já vêm do pai (deduplicadas por nome).
+    // Aqui só ordenamos para exibição.
+    const estagiosOrdenados = (estagios || []).slice().sort((a, b) =>
+        (a.label || "").localeCompare(b.label || "")
     );
 
     const limparFiltros = () => {
         setCulturaSelecionada([]);
         setVariedadeSelecionada([]);
         setParcelaSelecionada([]);
+        setEstagioSelecionado([]);
     };
 
-    return (
-        <Box ref={containerRef} sx={{ width: '100%', position: 'relative' }}>
+    const hasAnyFilter =
+        culturaSelecionada.length > 0 ||
+        variedadeSelecionada.length > 0 ||
+        parcelaSelecionada.length > 0 ||
+        estagioSelecionado.length > 0;
 
+    return (
+        <Box ref={containerRef} sx={{ width: "100%", position: "relative" }}>
             <Box
                 sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    gap: '10px',
-                    minWidth: '500px',
-                    marginTop: '10px',
-                    paddingLeft: '10px',
-                    minHeight: '37px',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: "10px",
+                    minWidth: "500px",
+                    marginTop: "10px",
+                    paddingLeft: "10px",
+                    minHeight: "37px",
                 }}
             >
                 <IconButton
@@ -64,8 +84,9 @@ const SelectCulturaVariedade = ({
                     onClick={() => setShowFilters((prev) => !prev)}
                     title="Mostrar/Ocultar filtros"
                 >
-                    <FilterAltIcon color={!showFilters ? 'inherit' : 'success'} />
+                    <FilterAltIcon color={!showFilters ? "inherit" : "success"} />
                 </IconButton>
+
                 <Slide
                     direction="right"
                     in={showFilters}
@@ -73,8 +94,9 @@ const SelectCulturaVariedade = ({
                     unmountOnExit
                     container={containerRef.current}
                 >
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <FormControl sx={{ width: '200px' }}>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                        {/* Cultura */}
+                        <FormControl sx={{ width: "200px" }}>
                             <InputLabel id="cultura-label">Cultura</InputLabel>
                             <Select
                                 labelId="cultura-label"
@@ -85,12 +107,14 @@ const SelectCulturaVariedade = ({
                                 onChange={(e) => {
                                     setCulturaSelecionada(e.target.value);
                                     setVariedadeSelecionada([]);
+                                    // opcional: limpar estágios ao trocar cultura
+                                    setEstagioSelecionado([]);
                                 }}
                                 renderValue={(selected) =>
                                     culturas
                                         .filter((c) => selected.includes(c.id))
                                         .map((c) => c.nome)
-                                        .join(', ')
+                                        .join(", ")
                                 }
                             >
                                 {culturas.map((c) => (
@@ -101,8 +125,9 @@ const SelectCulturaVariedade = ({
                             </Select>
                         </FormControl>
 
+                        {/* Variedade */}
                         <FormControl
-                            sx={{ width: '200px' }}
+                            sx={{ width: "200px" }}
                             disabled={culturaSelecionada.length === 0}
                         >
                             <InputLabel id="variedade-label">Variedade</InputLabel>
@@ -112,12 +137,16 @@ const SelectCulturaVariedade = ({
                                 value={variedadeSelecionada}
                                 label="Variedade"
                                 size="small"
-                                onChange={(e) => setVariedadeSelecionada(e.target.value)}
+                                onChange={(e) => {
+                                    setVariedadeSelecionada(e.target.value);
+                                    // opcional: limpar estágios ao trocar variedade
+                                    setEstagioSelecionado([]);
+                                }}
                                 renderValue={(selected) =>
                                     variedades
                                         .filter((v) => selected.includes(v.id))
                                         .map((v) => v.nome)
-                                        .join(', ')
+                                        .join(", ")
                                 }
                             >
                                 {variedadesFiltradas.map((v) => (
@@ -127,11 +156,13 @@ const SelectCulturaVariedade = ({
                                 ))}
                             </Select>
                         </FormControl>
+
+                        {/* Parcela */}
                         <FormControl
                             sx={{
-                                minWidth: '200px',
-                                width: Math.min(100 + parcelaSelecionada.length * 20, 400), // dinâmica
-                                transition: 'width 0.3s ease',
+                                minWidth: "200px",
+                                width: Math.min(100 + parcelaSelecionada.length * 20, 400),
+                                transition: "width 0.3s ease",
                             }}
                         >
                             <InputLabel id="parcela-label">Parcela</InputLabel>
@@ -141,23 +172,26 @@ const SelectCulturaVariedade = ({
                                 value={parcelaSelecionada}
                                 label="Parcela"
                                 size="small"
-                                onChange={(e) => setParcelaSelecionada(e.target.value)}
+                                onChange={(e) => {
+                                    setParcelaSelecionada(e.target.value);
+                                    // opcional: limpar estágios ao trocar parcela
+                                    setEstagioSelecionado([]);
+                                }}
                                 renderValue={(selected) =>
                                     parcelasFiltradas
                                         .filter((p) => selected.includes(p.id))
                                         .sort((a, b) => a.nome.localeCompare(b.nome))
                                         .map((p) => p.nome)
-                                        .join(', ')
+                                        .join(", ")
                                 }
                                 MenuProps={{
                                     PaperProps: {
-                                        style: {
-                                            maxHeight: 500, // altura máxima do dropdown em pixels
-                                        },
+                                        style: { maxHeight: 500 },
                                     },
                                 }}
                             >
                                 {parcelasFiltradas
+                                    .slice()
                                     .sort((a, b) => a.nome.localeCompare(b.nome))
                                     .map((p) => (
                                         <MenuItem key={p.id} value={p.id}>
@@ -167,11 +201,48 @@ const SelectCulturaVariedade = ({
                             </Select>
                         </FormControl>
 
-                        {(culturaSelecionada.length > 0 || variedadeSelecionada.length > 0 || parcelaSelecionada.length > 0) && (
+                        {/* NOVO: Estágio (deduplicado por nome) */}
+                        <FormControl
+                            sx={{ width: "260px" }}
+                            disabled={estagiosOrdenados.length === 0}
+                        >
+                            <InputLabel id="estagio-label">Estágio</InputLabel>
+                            <Select
+                                labelId="estagio-label"
+                                multiple
+                                value={estagioSelecionado}
+                                label="Estágio"
+                                size="small"
+                                onChange={(e) => setEstagioSelecionado(e.target.value)}
+                                renderValue={(selected) =>
+                                    estagiosOrdenados
+                                        .filter((s) => selected.includes(s.id))
+                                        .map((s) =>
+                                            s.count ? `${s.label} (${s.count})` : s.label
+                                        )
+                                        .join(", ")
+                                }
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: { maxHeight: 500 },
+                                    },
+                                }}
+                            >
+                                {estagiosOrdenados.map((s) => (
+                                    <MenuItem key={s.id} value={s.id}>
+                                        {s.label}
+                                        {s.count ? ` (${s.count})` : ""}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Limpar */}
+                        {hasAnyFilter && (
                             <IconButton
                                 size="small"
                                 onClick={limparFiltros}
-                                sx={{ marginLeft: '10px', marginRight: 1 }}
+                                sx={{ marginLeft: "10px", marginRight: 1 }}
                                 title="Limpar filtros"
                             >
                                 <CloseIcon />
@@ -180,7 +251,7 @@ const SelectCulturaVariedade = ({
                     </Box>
                 </Slide>
             </Box>
-        </Box >
+        </Box>
     );
 };
 
