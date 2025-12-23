@@ -39,7 +39,11 @@ const ProgramaTablePage = (props) => {
 		{ field: "estagio", headerName: "Estagio", width: 140 },
 		{ field: "dapAplicacao", headerName: "DAP AP", width: 80 },
 		{ field: "dataPrevista", headerName: "Data Prevista AP", width: 140 },
-		{ field: "aplicado", headerName: "Aplicado ? ", width: 80 }
+		{ field: "aplicado", headerName: "Aplicado ? ", width: 80 },
+		{ field: "plantioIniciado", headerName: "Plantio Iniciado", width: 140 },
+		{ field: "estagioName", headerName: "Estagio Nome", width: 140 },
+		{ field: "tipoAplicacao", headerName: "Tipo Operacao", width: 140 },
+		
 	];
 
 	return (

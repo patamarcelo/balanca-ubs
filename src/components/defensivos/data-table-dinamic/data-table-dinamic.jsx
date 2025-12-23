@@ -52,7 +52,8 @@ const DataDefensivoDaysTableDinamic = (props) => {
 			field: "quantidadeAplicar",
 			headerName: "Quantidade Aplicar",
 			width: 140
-		}
+		},
+		{ field: "plantioIniciado", headerName: "Plantio Iniciado", width: 140 },
 	];
 
 	return (

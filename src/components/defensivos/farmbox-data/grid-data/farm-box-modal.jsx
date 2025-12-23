@@ -142,6 +142,39 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 	/* ==========================================================================
 	   CONSTRUTOR DO ARRAY – OTIMIZADO COM useCallback
 	   ========================================================================== */
+
+	function inferTipoOperacao(insumos = []) {
+		if (!Array.isArray(insumos) || insumos.length === 0) {
+			return "desconhecido";
+		}
+
+		// Caso 1: apenas 1 insumo no total
+		if (insumos.length === 1) {
+			return insumos[0]?.tipo === "Operação" ? "Operação" : "solido";
+		}
+
+		// Caso 2: mais de 1 insumo
+		// Remove "operacao" da análise
+		const insumosSemOperacao = insumos.filter(
+			(i) => i?.tipo !== "Operação"
+		);
+
+		if (insumosSemOperacao.length === 0) {
+			// Só existiam operações
+			return "Operação";
+		}
+
+		if (insumosSemOperacao.length === 1) {
+			// Sobra apenas um produto -> sólido
+			return "solido";
+		}
+
+		// Sobrou mais de um produto -> líquido
+		return "liquida";
+	}
+
+
+
 	const getArray = useCallback(() => {
 
 		if (dictSelectFarm.length === 0) return;
@@ -151,6 +184,9 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 		try {
 			const newarr = dictSelectFarm.flatMap((data) => {
 				const { parcelas, insumos, progressos, areaSolicitada } = data;
+
+				const tipoOperacao = inferTipoOperacao(insumos); // <<<<<< AQUI
+
 
 				const parcelasDict = parcelas.map((parcela) => {
 					let equipmentsArray = [];
@@ -179,6 +215,7 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 
 					return {
 						...data,
+						tipoOperacao,
 						totalSomaUnform: sumTotalApp,
 						totalSoma: sumTotalApp.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 						parcela: parcela.parcela,
@@ -214,6 +251,7 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 
 						return {
 							...parc,
+							tipoOperacao,
 							quantidadeSolicitada: quantidadeSolicitada.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 							quantidade: quantidade.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 							saldoAplicar,

@@ -139,11 +139,38 @@ export const createDataTable = (data) => {
 		const programaEndDate = dados.programa_end_date;
 		const capacidadePlantioDia = dados.capacidade_plantio_dia;
 		cronograma.forEach((data, i) => {
-			const estagio = data.estagio;
+			const estagio = data.estagio
+			let estagioName = data.estagio;
+
+			if (typeof estagioName === "string" && estagioName.includes("|")) {
+				estagioName = estagioName.split("|")[0].trim();
+			}
+
+			const produtos = Array.isArray(data.produtos) ? data.produtos : [];
+
+			let tipoAplicacao = null;
+
+			if (produtos.length === 1) {
+				tipoAplicacao = "operacao";
+			} else {
+				const produtosSemOperacao = produtos.filter(
+					(p) => p.tipo !== "operacao"
+				);
+
+				if (produtosSemOperacao.length === 1) {
+					tipoAplicacao = "solido";
+				} else if (produtosSemOperacao.length > 1) {
+					tipoAplicacao = "liquido";
+				}
+			}
+
 			const dapAplicacao = data.dap;
 			const dataPrevista = data["data prevista"];
 			const aplicado = data.aplicado;
-			// if (plantioFinalizado) {
+
+			// if (!aplicado) {
+			// 	console.log('estagio: ', estagio)
+			// }
 			const newObj = {
 				id: count,
 				projeto: projeto,
@@ -166,7 +193,9 @@ export const createDataTable = (data) => {
 				estagio: estagio,
 				aplicado: aplicado,
 				dapAplicacao: dapAplicacao,
-				dataPrevista: dataPrevista
+				dataPrevista: dataPrevista,
+				estagioName,
+				tipoAplicacao
 			};
 			tableArray.push(newObj);
 			count += 1;
