@@ -44,7 +44,8 @@ import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 const TableDataPage = (props) => {
-	const { dataF, openAll, setTotalCountSelected, totalCountSelected } = props;
+	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao } = props;
+	console.log('dataFFF: ', dataF)
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -340,6 +341,11 @@ const TableDataPage = (props) => {
 						/>
 						<p style={{ ...warningColor(opTipo) }}>{opTipo}</p>
 					</div>
+					{tipoAplicacao && (
+						<Typography variant="caption" sx={{ opacity: 0.9 }}>
+							{tipoAplicacao === "Operacao" ? "Operação" : tipoAplicacao === "Solido" ? "Sólido" : "Líquido"}
+						</Typography>
+					)}
 					<div
 						className={classes.dateDiv}
 						style={{
@@ -374,12 +380,12 @@ const TableDataPage = (props) => {
 					<p style={{ textAlign: "center" }}>
 
 						{
-						Number(dataF.saldoAplicar) === 0 ? " - " :
-						
-						Number(dataF.saldoAplicar).toLocaleString("pt-br", {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-						})}
+							Number(dataF.saldoAplicar) === 0 ? " - " :
+
+								Number(dataF.saldoAplicar).toLocaleString("pt-br", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2
+								})}
 					</p>
 					<div className={classes.progressCircularDiv}>
 						<ProgressCircularPage

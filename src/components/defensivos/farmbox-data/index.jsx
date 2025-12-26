@@ -132,7 +132,92 @@ const FarmBoxPage = () => {
 	);
 
 	const dataGeral = useSelector(selector);
-	console.log('data Geral', dataGeral)
+
+	const TIPOS_APLICACAO = ["Operacao", "Solido", "Liquido"];
+	const [tipoAplicacaoFilter, setTipoAplicacaoFilter] = useState(TIPOS_APLICACAO);
+
+	const toggleTipoAplicacao = (tipo) => {
+		setTipoAplicacaoFilter((prev) =>
+			prev.includes(tipo) ? prev.filter((t) => t !== tipo) : [...prev, tipo]
+		);
+	};
+
+	const toggleAllTiposAplicacao = () => {
+		setTipoAplicacaoFilter((prev) =>
+			prev.length === TIPOS_APLICACAO.length ? [] : TIPOS_APLICACAO
+		);
+	};
+
+
+	const normalizeTxt = (v) =>
+		(v ?? "")
+			.toString()
+			.normalize("NFD")
+			.replace(/\p{Diacritic}/gu, "")
+			.toLowerCase()
+			.trim();
+
+	const isTipoOperacao = (tipo) => normalizeTxt(tipo) === "operacao";
+
+	const getTipoAplicacao = (app) => {
+		const insumos = Array.isArray(app?.insumos) ? app.insumos : [];
+
+		// 1 único insumo => Operacao
+		if (insumos.length === 1) return "Operacao";
+
+		// 2+ insumos:
+		// filtra tipo !== "Operação"
+		const nonOp = insumos.filter((i) => !isTipoOperacao(i?.tipo));
+
+		// se depois de tirar Operação ficar só 1 => Sólido
+		if (nonOp.length === 1) return "Solido";
+
+		// se ficar mais de 1 => Líquido
+		if (nonOp.length > 1) return "Liquido";
+
+		// fallback (caso estranho: todos eram Operação)
+		return "Operacao";
+	};
+
+	const toNumber = (v) => {
+		if (v == null) return 0;
+		if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+		const s = String(v).replace(",", ".").replace(/[^\d.-]/g, "");
+		const n = Number(s);
+		return Number.isFinite(n) ? n : 0;
+	};
+
+	const formatHa = (value) =>
+		toNumber(value).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+	const getSaldoAplicarHa = (app) => {
+		// prioridade: campo direto "saldoAplicar"; fallback: area - areaAplicada
+		const saldo = toNumber(app?.saldoAplicar);
+		if (saldo > 0) return saldo;
+
+		const area = toNumber(app?.area);
+		const aplicada = toNumber(app?.areaAplicada);
+		const calc = area - aplicada;
+		return calc > 0 ? calc : 0;
+	};
+
+	const [openFarmMap, setOpenFarmMap] = useState({}); // { [farmName]: boolean }
+
+	const toggleOpenFarm = (farmName) => {
+		setOpenFarmMap((prev) => ({
+			...prev,
+			[farmName]: !prev[farmName],
+		}));
+	};
+
+	// opcional: abrir/fechar todas as fazendas de uma vez
+	const setAllFarmsOpen = (isOpen) => {
+		setOpenFarmMap(() => {
+			const next = {};
+			(filtFarm || []).forEach((f) => (next[f] = isOpen));
+			return next;
+		});
+	};
 
 
 
@@ -626,119 +711,273 @@ const FarmBoxPage = () => {
 				}
 				{
 					filtFarm.length > 0 &&
-
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
-						{/* MultiSelect de Operações */}
-						<FormControl size="small" sx={{ minWidth: 320 }}>
-							<InputLabel id="op-filter-label">Operações</InputLabel>
-							<Select
-								labelId="op-filter-label"
-								multiple
-								value={operationFilter}
-								onChange={handleChangeOpFilt}
-								input={<OutlinedInput label="Operações" />}
-								renderValue={(selected) => (
-									<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-										{selected.map((value) => (
-											<Chip key={value} label={value} size="small" />
-										))}
-									</Box>
-								)}
-								MenuProps={MenuProps}
+					<>
+						<Box
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								gap: 1.5,
+								flexWrap: "wrap",
+								mb: 2,
+								p: 1.5,
+								borderRadius: 2,
+								backgroundColor: colors.brown[500],
+								border: `1px solid ${colors.grey[300]}`,
+								boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+							}}
+						>
+							{/* Operações */}
+							<FormControl
+								size="small"
+								sx={{
+									minWidth: 320,
+									"& .MuiInputLabel-root": { color: colors.grey[800] },
+									"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
+								}}
 							>
-								{/* Selecionar todos / Limpar */}
-								<MenuItem onClick={handleToggleAll}>
-									<Checkbox checked={isAllSelected} indeterminate={!isAllSelected && operationFilter.length > 0} />
-									<ListItemText primary={isAllSelected ? "Desmarcar todos" : "Selecionar todos"} />
-								</MenuItem>
-								<MenuItem onClick={handleClear}>
-									<Checkbox checked={operationFilter.length === 0} />
-									<ListItemText primary="Limpar seleção" />
-								</MenuItem>
+								<InputLabel id="op-filter-label">Operações</InputLabel>
+								<Select
+									labelId="op-filter-label"
+									multiple
+									value={operationFilter}
+									onChange={handleChangeOpFilt}
+									input={
+										<OutlinedInput
+											label="Operações"
+											sx={{
+												"& .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[400] },
+												"&:hover .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[600] },
+												"&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: colors.blueOrigin?.[600] || colors.grey[700] },
+											}}
+										/>
+									}
+									renderValue={(selected) => (
+										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+											{selected.map((value) => (
+												<Chip
+													key={value}
+													label={value}
+													size="small"
+													sx={{
+														backgroundColor: colors.grey[200],
+														color: colors.grey[900],
+														border: `1px solid ${colors.grey[300]}`,
+													}}
+												/>
+											))}
+										</Box>
+									)}
+									MenuProps={MenuProps}
+									sx={{ backgroundColor: "#fff" }}
+								>
+									<MenuItem onClick={handleToggleAll}>
+										<Checkbox
+											checked={isAllSelected}
+											indeterminate={!isAllSelected && operationFilter.length > 0}
+										/>
+										<ListItemText primary={isAllSelected ? "Desmarcar todos" : "Selecionar todos"} />
+									</MenuItem>
 
-								{/* Opções */}
-								{options.map((name) => {
-									const checked = operationFilter.indexOf(name) > -1;
-									return (
+									<MenuItem onClick={handleClear}>
+										<Checkbox checked={operationFilter.length === 0} />
+										<ListItemText primary="Limpar seleção" />
+									</MenuItem>
+
+									{options.map((name) => (
 										<MenuItem key={name} value={name}>
-											<Checkbox checked={checked} />
+											<Checkbox checked={operationFilter.indexOf(name) > -1} />
 											<ListItemText primary={name} />
 										</MenuItem>
-									);
-								})}
-							</Select>
-						</FormControl>
+									))}
+								</Select>
+							</FormControl>
 
-						<Tooltip title={isAllSelected ? "Desmarcar todos" : "Selecionar todos"}>
-							<IconButton size="small" onClick={handleToggleAll}>
-								{isAllSelected ? <ClearAllIcon /> : <DoneAllIcon />}
-							</IconButton>
-						</Tooltip>
+							<Tooltip title={isAllSelected ? "Desmarcar todos" : "Selecionar todos"}>
+								<IconButton
+									size="small"
+									onClick={handleToggleAll}
+									sx={{
+										backgroundColor: "#fff",
+										border: `1px solid ${colors.grey[300]}`,
+										"&:hover": { backgroundColor: colors.grey[200] },
+									}}
+								>
+									{isAllSelected ? (
+										<ClearAllIcon sx={{ color: colors.grey[800] }} />
+									) : (
+										<DoneAllIcon sx={{ color: colors.grey[800] }} />
+									)}
+								</IconButton>
+							</Tooltip>
 
-						<Tooltip title="Limpar seleção">
-							<IconButton size="small" onClick={handleClear}>
-								<ClearAllIcon />
-							</IconButton>
-						</Tooltip>
+							<Tooltip title="Limpar seleção">
+								<IconButton
+									size="small"
+									onClick={handleClear}
+									sx={{
+										backgroundColor: "#fff",
+										border: `1px solid ${colors.grey[300]}`,
+										"&:hover": { backgroundColor: colors.grey[200] },
+									}}
+								>
+									<ClearAllIcon sx={{ color: colors.grey[800] }} />
+								</IconButton>
+							</Tooltip>
 
-						{/* MultiSelect de Cultura (NOVO) */}
-						{cultureOptions.length > 0 && (
-							<>
-								<FormControl size="small" sx={{ minWidth: 260 }}>
-									<InputLabel id="cultura-filter-label">Cultura</InputLabel>
-									<Select
-										labelId="cultura-filter-label"
-										multiple
-										value={cultureFilter}
-										onChange={handleChangeCultureFilt}
-										input={<OutlinedInput label="Cultura" />}
-										renderValue={(selected) => (
-											<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-												{selected.map((value) => (
-													<Chip key={value} label={value} size="small" />
-												))}
-											</Box>
-										)}
-										MenuProps={MenuProps}
+							{/* Cultura */}
+							{cultureOptions.length > 0 && (
+								<>
+									<FormControl
+										size="small"
+										sx={{
+											minWidth: 260,
+											"& .MuiInputLabel-root": { color: colors.grey[800] },
+											"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
+										}}
 									>
-										<MenuItem onClick={handleToggleAllCultures}>
-											<Checkbox
-												checked={isAllCulturesSelected}
-												indeterminate={!isAllCulturesSelected && cultureFilter.length > 0}
-											/>
-											<ListItemText primary={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"} />
-										</MenuItem>
-										<MenuItem onClick={handleClearCultures}>
-											<Checkbox checked={cultureFilter.length === 0} />
-											<ListItemText primary="Limpar seleção" />
-										</MenuItem>
+										<InputLabel id="cultura-filter-label">Cultura</InputLabel>
+										<Select
+											labelId="cultura-filter-label"
+											multiple
+											value={cultureFilter}
+											onChange={handleChangeCultureFilt}
+											input={
+												<OutlinedInput
+													label="Cultura"
+													sx={{
+														"& .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[400] },
+														"&:hover .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[600] },
+														"&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: colors.blueOrigin?.[600] || colors.grey[700] },
+													}}
+												/>
+											}
+											renderValue={(selected) => (
+												<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+													{selected.map((value) => (
+														<Chip
+															key={value}
+															label={value}
+															size="small"
+															sx={{
+																backgroundColor: colors.grey[200],
+																color: colors.grey[900],
+																border: `1px solid ${colors.grey[300]}`,
+															}}
+														/>
+													))}
+												</Box>
+											)}
+											MenuProps={MenuProps}
+											sx={{ backgroundColor: "#fff" }}
+										>
+											<MenuItem onClick={handleToggleAllCultures}>
+												<Checkbox
+													checked={isAllCulturesSelected}
+													indeterminate={!isAllCulturesSelected && cultureFilter.length > 0}
+												/>
+												<ListItemText
+													primary={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}
+												/>
+											</MenuItem>
 
-										{cultureOptions.map((name) => {
-											const checked = cultureFilter.indexOf(name) > -1;
-											return (
+											<MenuItem onClick={handleClearCultures}>
+												<Checkbox checked={cultureFilter.length === 0} />
+												<ListItemText primary="Limpar seleção" />
+											</MenuItem>
+
+											{cultureOptions.map((name) => (
 												<MenuItem key={name} value={name}>
-													<Checkbox checked={checked} />
+													<Checkbox checked={cultureFilter.indexOf(name) > -1} />
 													<ListItemText primary={name} />
 												</MenuItem>
-											);
-										})}
-									</Select>
-								</FormControl>
+											))}
+										</Select>
+									</FormControl>
 
-								<Tooltip title={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}>
-									<IconButton size="small" onClick={handleToggleAllCultures}>
-										{isAllCulturesSelected ? <ClearAllIcon /> : <DoneAllIcon />}
-									</IconButton>
-								</Tooltip>
+									<Tooltip title={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}>
+										<IconButton
+											size="small"
+											onClick={handleToggleAllCultures}
+											sx={{
+												backgroundColor: "#fff",
+												border: `1px solid ${colors.grey[300]}`,
+												"&:hover": { backgroundColor: colors.grey[200] },
+											}}
+										>
+											{isAllCulturesSelected ? (
+												<ClearAllIcon sx={{ color: colors.grey[800] }} />
+											) : (
+												<DoneAllIcon sx={{ color: colors.grey[800] }} />
+											)}
+										</IconButton>
+									</Tooltip>
 
-								<Tooltip title="Limpar seleção de cultura">
-									<IconButton size="small" onClick={handleClearCultures}>
-										<ClearAllIcon />
-									</IconButton>
-								</Tooltip>
-							</>
-						)}
-					</Box>
+									<Tooltip title="Limpar seleção de cultura">
+										<IconButton
+											size="small"
+											onClick={handleClearCultures}
+											sx={{
+												backgroundColor: "#fff",
+												border: `1px solid ${colors.grey[300]}`,
+												"&:hover": { backgroundColor: colors.grey[200] },
+											}}
+										>
+											<ClearAllIcon sx={{ color: colors.grey[800] }} />
+										</IconButton>
+									</Tooltip>
+								</>
+							)}
+
+							{/* Tipo de Aplicação */}
+							<Box
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									gap: 1.5,
+									flexWrap: "wrap",
+									px: 1,
+									py: 0.5,
+									borderRadius: 2,
+									backgroundColor: "#fff",
+									border: `1px solid ${colors.grey[300]}`,
+								}}
+							>
+								<FormControlLabel
+									sx={{
+										m: 0,
+										"& .MuiFormControlLabel-label": { color: colors.grey[900], fontWeight: 600 },
+									}}
+									control={
+										<Checkbox
+											checked={tipoAplicacaoFilter.length === TIPOS_APLICACAO.length}
+											indeterminate={
+												tipoAplicacaoFilter.length > 0 &&
+												tipoAplicacaoFilter.length < TIPOS_APLICACAO.length
+											}
+											onChange={toggleAllTiposAplicacao}
+										/>
+									}
+									label="Todos"
+								/>
+
+								{TIPOS_APLICACAO.map((tipo) => (
+									<FormControlLabel
+										key={tipo}
+										sx={{ m: 0, "& .MuiFormControlLabel-label": { color: colors.grey[900] } }}
+										control={
+											<Checkbox
+												checked={tipoAplicacaoFilter.includes(tipo)}
+												onChange={() => toggleTipoAplicacao(tipo)}
+											/>
+										}
+										label={tipo === "Operacao" ? "Operação" : tipo === "Solido" ? "Sólido" : "Líquido"}
+									/>
+								))}
+							</Box>
+						</Box>
+
+					</>
+
 				}
 				{
 					JSON.stringify(totalCountSelected) !== "{}" &&
@@ -751,135 +990,223 @@ const FarmBoxPage = () => {
 
 					</Box>
 				}
-				<Box className={classes.dashboardDiv}
+				<Box
+					className={classes.dashboardDiv}
 					sx={{
-						justifyContent: !isNonMobile ? 'flex-start' : 'space-around'
+						justifyContent: !isNonMobile ? "flex-start" : "space-around",
 					}}
 				>
-
 					<div className={classes.dashLeft}>
-						{filtFarm?.map((data, i) => {
-							const hasApp = (obj) => obj.fazenda === data;
-							const totalAberto = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.saldoAplicar, 0)
-							const totalArea = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.area, 0)
-							const totalAplicado = totalCountSelected[data] && totalCountSelected[data].reduce((acc, curr) => acc += curr.areaAplicada, 0)
+						{filtFarm?.map((data) => {
+							const totalAberto =
+								totalCountSelected?.[data]?.reduce(
+									(acc, curr) => acc + Number(curr?.saldoAplicar ?? 0),
+									0
+								) ?? 0;
+
+							const totalArea =
+								totalCountSelected?.[data]?.reduce(
+									(acc, curr) => acc + Number(curr?.area ?? 0),
+									0
+								) ?? 0;
+
+							const totalAplicado =
+								totalCountSelected?.[data]?.reduce(
+									(acc, curr) => acc + Number(curr?.areaAplicada ?? 0),
+									0
+								) ?? 0;
+
+							const appsDaFazenda = filteredApps
+								.filter((app) =>
+									!openAppOnly
+										? app.status === "sought"
+										: app.status === "sought" || app.status === "finalized"
+								)
+								.filter((app) =>
+									filterPreaproSolo
+										? operationFilter.includes((app?.operacao ?? "").trim())
+										: (app?.app ?? "").length > 0
+								)
+								// operação (MultiSelect) - INCLUSÃO
+								.filter((app) => {
+									const op = (app?.operacao ?? "").toString().trim();
+									return operationFilter.length === 0 ? true : operationFilter.includes(op);
+								})
+								// cultura (MultiSelect)
+								.filter((app) => {
+									const cultura = (app?.cultura ?? "").toString().trim();
+									return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+								})
+								.filter((app) =>
+									!showFutureApps
+										? new Date(app.date) < getNextWeekDays()
+										: new Date(app.date) < new Date("2031-10-17")
+								)
+								.filter((app) => app.fazenda === data)
+								.filter((app) => tipoAplicacaoFilter.includes(getTipoAplicacao(app)))
+								.sort((b, a) => a.status.localeCompare(b.status))
+								.sort((a, b) => {
+									const dateA = new Date(a.date);
+									const dateB = new Date(b.date);
+									if (dateA < dateB) return -1;
+									if (dateA > dateB) return 1;
+									const numA = parseInt(String(a.app).replace(/\D/g, ""), 10);
+									const numB = parseInt(String(b.app).replace(/\D/g, ""), 10);
+									return numA - numB;
+								});
+
+							if (!appsDaFazenda.length) return null;
+
+							const grupos = appsDaFazenda.reduce(
+								(acc, app) => {
+									const tipo = getTipoAplicacao(app);
+									acc[tipo].push(app);
+									return acc;
+								},
+								{ Operacao: [], Solido: [], Liquido: [] }
+							);
+
+							const saldoTotalHa = appsDaFazenda.reduce(
+								(sum, app) => sum + getSaldoAplicarHa(app),
+								0
+							);
+
+							const isFarmOpen = openFarmMap?.[data] ?? false;
+
+							const GRID_COLS = {
+								// ajuste fino aqui se precisar bater 100% com seu card
+								gridTemplateColumns: "40px 40px 1.2fr 220px 110px 110px 100px 130px",
+								//                AP   icon  operação   datas/tipo   área   aplicado  saldo  progresso
+							};
+
+
+							const renderGrupo = (tipo, titulo) => {
+								const arr = grupos[tipo];
+								if (!arr || arr.length === 0) return null;
+
+								const saldoGrupo = arr.reduce((sum, app) => sum + getSaldoAplicarHa(app), 0);
+
+								return (
+									<Box sx={{ mt: 2 }}>
+										{/* Título do subgrupo */}
+										<Divider sx={{ mb: 0 }}>
+											<Typography variant="h5" sx={{ fontWeight: 700 }}>
+												{titulo} ({arr.length}) — {formatHa(saldoGrupo)} ha
+											</Typography>
+										</Divider>
+
+										{/* HEADER DAS COLUNAS (alinhado com os cards) */}
+										<Box
+											sx={{
+												...GRID_COLS,
+												display: "grid",
+												alignItems: "center",
+											}}
+										>
+											{/* Espaços “vazios” para bater com as colunas da esquerda do card */}
+											<Box /> {/* AP */}
+											<Box /> {/* icon */}
+											<Box /> {/* operação */}
+											<Box /> {/* datas/tipo */}
+
+											{/* Colunas numéricas */}
+											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+												Área
+											</Typography>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+												Aplicado
+											</Typography>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+												Saldo
+											</Typography>
+
+											<Box /> {/* progresso (círculo) */}
+										</Box>
+
+										{/* Cards */}
+										{arr.map((app) => (
+											<TableDataPage
+												key={`${app.fazenda}-${app.app}`}
+												totalCountSelected={totalCountSelected[data] || []}
+												colors={colors}
+												dataF={app}
+												openAll={isFarmOpen}
+												setTotalCountSelected={setTotalCountSelected}
+												tipoAplicacao={getTipoAplicacao(app)}
+											/>
+										))}
+									</Box>
+								);
+							};
+
+
 							return (
-								<div style={{ position: 'relative' }} >
-									{filteredApps.some(hasApp) && (
-										<>
-											<div
-												key={i}
-												id={data}
-												style={{
-													width: '100%',
-													margin: "29px",
-													cursor: 'pointer',
-													fontSize: '22px',
-													position: 'sticky', // Make it sticky
-													top: '-30px',          // Adjust as needed (e.g., "10px" if you need an offset)
-													zIndex: 1000,
-													// backgroundColor: colors.blueOrigin[900]  
+								<div key={data} style={{ position: "relative", marginBottom: 24 }}>
+									{/* HEADER STICKY DA FAZENDA */}
+									<Box
+										onClick={() => toggleOpenFarm(data)}
+										sx={{
+											position: "sticky",
+											top: -25, // ajuste aqui se tiver AppBar fixa (ex.: top: 64)
+											zIndex: 20,
+											cursor: "pointer",
+											px: 1,
+											py: 1,
+											borderRadius: 1,
+											// importante para "tapar" o conteúdo ao passar por cima:
+											backgroundColor: colors.brown[400],
+											border: '0.5px solid whitesmoke',
+											// leve sombra pra separar visualmente:
+											boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+											mb: 1,
+										}}
+									>
+										<Box
+											sx={{
+												display: "flex",
+												alignItems: "baseline",
+												justifyContent: "space-between",
+												gap: 2,
+												flexWrap: "wrap",
+											}}
+										>
+											<Typography variant="h4" sx={{ fontWeight: 800 }}>
+												{data}
+											</Typography>
 
-												}}
-												className={classes.headerNameFarmTitle}
-												onClick={handleOpenAllDetail}
-											>
-												<Divider>{data.replace('Fazenda', '')}</Divider>
+											<Typography variant="body2" sx={{ opacity: 0.85 }}>
+												Saldo a aplicar: {formatHa(saldoTotalHa)} ha
+												{"  "}
+												— {isFarmOpen ? "Fechar tudo" : "Abrir tudo"}
+											</Typography>
+										</Box>
 
-											</div>
+										{!!totalCountSelected?.[data]?.length && (
+											<Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, mt: 0.5 }}>
+												<Typography variant="body2">
+													Área: {formatNumber(totalArea)}
+												</Typography>
+												<Typography variant="body2">
+													Aplicado: {formatNumber(totalAplicado)}
+												</Typography>
+												<Typography variant="body2">
+													Saldo: {formatNumber(totalAberto)}
+												</Typography>
+											</Box>
+										)}
+									</Box>
 
-											{
-												totalCountSelected[data] &&
-												<Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px', fontSize: '1.2em' }}>
-													<p>Área: {formatNumber(totalArea)}</p>
-													<p>Aplicado: {formatNumber(totalAplicado)}</p>
-													<p>Saldo: {formatNumber(totalAberto)}</p>
-												</Box>
-											}
-
-											{/* <div className={classes.headerAppSticky} style={{ backgroundColor: colors.blueOrigin[900] }}> */}
-											<HeaderApp />
-											{/* </div> */}
-
-										</>
-									)}
-									<div className={classes.mainDivLeft}>
-										{filteredApps
-											.filter((data) =>
-												!openAppOnly
-													? data.status === "sought"
-													: data.status ===
-													"sought" ||
-													"finalized"
-											)
-											.filter((data) =>
-												filterPreaproSolo
-													? operationFilter.includes(
-														data.operacao.trim()
-													)
-													: data.app.length > 0
-											)
-											// operação (MultiSelect)
-											.filter((data) => {
-												const op = (data?.operacao ?? "").toString().trim();
-												return operationFilter.length === 0
-													? true
-													: !operationFilter.includes(op);
-											})
-											// cultura (MultiSelect NOVO)
-											.filter((data) => {
-												const cultura = (data?.cultura ?? "").toString().trim();
-												return cultureFilter.length === 0
-													? true
-													: cultureFilter.includes(cultura);
-											})
-											.filter((data) =>
-												!showFutureApps
-													? new Date(data.date) <
-													getNextWeekDays()
-													: new Date(data.date) <
-													new Date("2031-10-17")
-											)
-											.sort((b, a) =>
-												a.status.localeCompare(b.status)
-											)
-											.sort((a, b) => {
-												const dateA = new Date(a.date);
-												const dateB = new Date(b.date);
-
-												if (dateA < dateB) return -1;
-												if (dateA > dateB) return 1;
-
-												// Datas iguais: compara o número da app
-												const numA = parseInt(a.app.replace(/\D/g, ""), 10);
-												const numB = parseInt(b.app.replace(/\D/g, ""), 10);
-
-												return numA - numB;
-											})
-											.map((app, i) => {
-												if (app.fazenda === data) {
-													return (
-														<TableDataPage
-															totalCountSelected={totalCountSelected[data] || []}
-															colors={colors}
-															key={i}
-															dataF={app}
-															openAll={isOpenedAll}
-															setTotalCountSelected={setTotalCountSelected}
-														/>
-													);
-												}
-												return <></>;
-											})}
-									</div>
+									{/* SUBGRUPOS */}
+									{renderGrupo("Operacao", "Operação")}
+									{renderGrupo("Solido", "Sólido")}
+									{renderGrupo("Liquido", "Líquido")}
 								</div>
 							);
 						})}
 					</div>
-					<div
-						className={classes.dashRight}
-						style={{ display: !isNonMobile && "none" }}
-					>
+
+
+					<div className={classes.dashRight} style={{ display: !isNonMobile && "none" }}>
 						{filteredApps.length > 0 && (
 							<div className={classes.resumoAppPage}>
 								<div className={classes.headerDivApp} onClick={() => handleShowResumoGeral()}>
@@ -887,73 +1214,53 @@ const FarmBoxPage = () => {
 										<h3>Resumo Geral</h3>
 									</Divider>
 								</div>
-								{
-									showResumoGeral &&
+
+								{showResumoGeral && (
 									<div
 										className={classes.bodyDivApp}
 										style={{
 											opacity: showResumoGeral ? 1 : 0,
-											overflow: 'hidden',
+											overflow: "hidden",
 											backgroundColor: colors.blueOrigin[700],
-											transition: 'opacity 0.3s ease, max-height 0.3s ease',
+											transition: "opacity 0.3s ease, max-height 0.3s ease",
 										}}
 									>
 										<ResumoDataPage daysFilter={daysFilter} />
 									</div>
-								}
+								)}
+
 								{filtFarm && (
 									<>
 										<Box sx={{ width: "100%" }} mt={3}>
 											<Divider>
 												<h3>
 													Resumo Fazendas -{" "}
-													{saldoAplicar.toLocaleString(
-														"pt-br",
-														{
-															minimumFractionDigits: 2,
-															maximumFractionDigits: 2
-														}
-													)}
+													{saldoAplicar.toLocaleString("pt-br", {
+														minimumFractionDigits: 2,
+														maximumFractionDigits: 2,
+													})}
 												</h3>
 											</Divider>
 										</Box>
+
 										<div
-											className={
-												classes.resumoFazendasPage
-											}
-											style={{
-												backgroundColor:
-													colors.blueOrigin[700]
-											}}
+											className={classes.resumoFazendasPage}
+											style={{ backgroundColor: colors.blueOrigin[700] }}
 										>
 											{filtFarm
-												?.sort((a, b) =>
-													a.localeCompare(b)
-												)
+												?.sort((a, b) => a.localeCompare(b))
 												.map((farm, i) => {
-													const hasDivider =
-														filtFarm.length - 1 ===
-														i;
+													const hasDivider = filtFarm.length - 1 === i;
 													return (
 														<ResumoFazendasPage
 															colors={colors}
 															fazenda={farm}
 															key={i}
-															operationFilter={
-																operationFilter
-															}
-															filterPreaproSolo={
-																filterPreaproSolo
-															}
-															divider={
-																!hasDivider
-															}
-															showFutureApps={
-																showFutureApps
-															}
-															daysFilter={
-																daysFilter
-															}
+															operationFilter={operationFilter}
+															filterPreaproSolo={filterPreaproSolo}
+															divider={!hasDivider}
+															showFutureApps={showFutureApps}
+															daysFilter={daysFilter}
 															dataGeral={dataGeral}
 														/>
 													);
@@ -965,6 +1272,7 @@ const FarmBoxPage = () => {
 						)}
 					</div>
 				</Box>
+
 				{!loadingData && filteredApps.length === 0 && (
 					<Box className={classes.emptyFarm}>
 						<Typography variant="h4" color={colors.grey[300]}>Selecione uma fazenda</Typography>
