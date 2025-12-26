@@ -1075,7 +1075,7 @@ const FarmBoxPage = () => {
 
 							const GRID_COLS = {
 								// ajuste fino aqui se precisar bater 100% com seu card
-								gridTemplateColumns: "40px 40px 1.2fr 220px 110px 110px 100px 130px",
+								gridTemplateColumns: "120px 40px 1.2fr 220px 110px 115px 90px 130px",
 								//                AP   icon  operação   datas/tipo   área   aplicado  saldo  progresso
 							};
 
@@ -1104,23 +1104,28 @@ const FarmBoxPage = () => {
 											}}
 										>
 											{/* Espaços “vazios” para bater com as colunas da esquerda do card */}
-											<Box /> {/* AP */}
-											<Box /> {/* icon */}
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "left", paddingLeft: 3 }}>
+												Nº
+											</Typography>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
+												Operação
+											</Typography>
 											<Box /> {/* operação */}
 											<Box /> {/* datas/tipo */}
 
 											{/* Colunas numéricas */}
-											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
 												Área
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right"  }}>
 												Aplicado
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 800, textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
 												Saldo
 											</Typography>
-
-											<Box /> {/* progresso (círculo) */}
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "center", paddingLeft: 3 }}>
+												Status
+											</Typography>
 										</Box>
 
 										{/* Cards */}
