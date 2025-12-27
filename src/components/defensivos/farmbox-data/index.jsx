@@ -830,7 +830,7 @@ const FarmBoxPage = () => {
 									<FormControl
 										size="small"
 										sx={{
-											ml:5,
+											ml: 5,
 											minWidth: 260,
 											"& .MuiInputLabel-root": { color: colors.grey[800] },
 											"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
@@ -1125,26 +1125,26 @@ const FarmBoxPage = () => {
 											}}
 										>
 											{/* Espaços “vazios” para bater com as colunas da esquerda do card */}
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "left", paddingLeft: 3 }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "left", paddingLeft: 3 }}>
 												Nº
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "right" }}>
 												Operação
 											</Typography>
 											<Box /> {/* operação */}
 											<Box /> {/* datas/tipo */}
 
 											{/* Colunas numéricas */}
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "right" }}>
 												Área
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "right" }}>
 												Aplicado
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "right" }}>
 												Saldo
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "center", paddingLeft: 3 }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '10px', fontWeight: 'bold', textAlign: "center", paddingLeft: 3 }}>
 												Status
 											</Typography>
 										</Box>
@@ -1173,19 +1173,26 @@ const FarmBoxPage = () => {
 										onClick={() => toggleOpenFarm(data)}
 										sx={{
 											position: "sticky",
-											top: -25, // ajuste aqui se tiver AppBar fixa (ex.: top: 64)
+											top: -25, // ajuste conforme altura do header
 											zIndex: 20,
+
 											cursor: "pointer",
-											px: 1,
-											py: 1,
+
+											// espaçamento
+											padding: "12px 16px",
+
+											// visual
+											background: "linear-gradient(90deg, #0f2a3a, #16384f)",
+											color: "#ffffff",
+											fontWeight: 600,
 											borderRadius: 1,
-											// importante para "tapar" o conteúdo ao passar por cima:
-											backgroundColor: colors.brown[400],
-											border: '0.5px solid whitesmoke',
-											// leve sombra pra separar visualmente:
+											border: "0.5px solid rgba(255,255,255,0.25)",
 											boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-											mb: 1,
+
+											// suavidade ao rolar
+											transition: "all 0.2s ease-in-out",
 										}}
+
 									>
 										<Box
 											sx={{
@@ -1299,17 +1306,19 @@ const FarmBoxPage = () => {
 					</div>
 				</Box>
 
-				{!loadingData && filteredApps.length === 0 && (
-					<Box className={classes.emptyFarm}>
-						<Typography variant="h4" color={colors.grey[300]}>Selecione uma fazenda</Typography>
-						{filtFarm.length === 0 && !isMobile &&
-							<PluviDataComp />
-						}
-					</Box>
-				)}
-			</IndexModalDataFarmbox>
+				{
+					!loadingData && filteredApps.length === 0 && (
+						<Box className={classes.emptyFarm}>
+							<Typography variant="h4" color={colors.grey[300]}>Selecione uma fazenda</Typography>
+							{filtFarm.length === 0 && !isMobile &&
+								<PluviDataComp />
+							}
+						</Box>
+					)
+				}
+			</IndexModalDataFarmbox >
 
-		</Box>
+		</Box >
 	);
 };
 
