@@ -26,8 +26,8 @@ const ResumoDataPage = (props) => {
 							<span style={{color: colors.primary[100], fontWeight: 'bold'}}>{data?.length > 5 ? data?.replace('saldo', '') : data}</span>
 							<div className={classes.valueDivGeral} style={{color: colors.primary[200], fontWeight: 'bold'}}>
 								{dataGeral.geral[data].toLocaleString("pt-br", {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
+									minimumFractionDigits: 0,
+									maximumFractionDigits: 0
 								})}
 							</div>
 						</Box>

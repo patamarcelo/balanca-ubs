@@ -803,9 +803,9 @@ const FarmBoxPage = () => {
 									}}
 								>
 									{isAllSelected ? (
-										<ClearAllIcon sx={{ color: colors.grey[800] }} />
+										<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
 									) : (
-										<DoneAllIcon sx={{ color: colors.grey[800] }} />
+										<DoneAllIcon sx={{ color: colors.greenSuccess[100] }} />
 									)}
 								</IconButton>
 							</Tooltip>
@@ -820,7 +820,7 @@ const FarmBoxPage = () => {
 										"&:hover": { backgroundColor: colors.grey[200] },
 									}}
 								>
-									<ClearAllIcon sx={{ color: colors.grey[800] }} />
+									<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
 								</IconButton>
 							</Tooltip>
 
@@ -830,6 +830,7 @@ const FarmBoxPage = () => {
 									<FormControl
 										size="small"
 										sx={{
+											ml:5,
 											minWidth: 260,
 											"& .MuiInputLabel-root": { color: colors.grey[800] },
 											"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
@@ -905,9 +906,9 @@ const FarmBoxPage = () => {
 											}}
 										>
 											{isAllCulturesSelected ? (
-												<ClearAllIcon sx={{ color: colors.grey[800] }} />
+												<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
 											) : (
-												<DoneAllIcon sx={{ color: colors.grey[800] }} />
+												<DoneAllIcon sx={{ color: colors.greenSuccess[100] }} />
 											)}
 										</IconButton>
 									</Tooltip>
@@ -922,7 +923,7 @@ const FarmBoxPage = () => {
 												"&:hover": { backgroundColor: colors.grey[200] },
 											}}
 										>
-											<ClearAllIcon sx={{ color: colors.grey[800] }} />
+											<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
 										</IconButton>
 									</Tooltip>
 								</>
@@ -937,6 +938,7 @@ const FarmBoxPage = () => {
 									flexWrap: "wrap",
 									px: 1,
 									py: 0.5,
+									ml: 5,
 									borderRadius: 2,
 									backgroundColor: "#fff",
 									border: `1px solid ${colors.grey[300]}`,
@@ -955,6 +957,16 @@ const FarmBoxPage = () => {
 												tipoAplicacaoFilter.length < TIPOS_APLICACAO.length
 											}
 											onChange={toggleAllTiposAplicacao}
+
+											sx={{
+												color: colors.grey[800], // cor quando NÃO marcado (borda)
+												"&.Mui-checked": {
+													color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando marcado
+												},
+												"&.MuiCheckbox-indeterminate": {
+													color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando indeterminado
+												},
+											}}
 										/>
 									}
 									label="Todos"
@@ -968,6 +980,15 @@ const FarmBoxPage = () => {
 											<Checkbox
 												checked={tipoAplicacaoFilter.includes(tipo)}
 												onChange={() => toggleTipoAplicacao(tipo)}
+												sx={{
+													color: colors.grey[800], // cor quando NÃO marcado (borda)
+													"&.Mui-checked": {
+														color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando marcado
+													},
+													"&.MuiCheckbox-indeterminate": {
+														color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando indeterminado
+													},
+												}}
 											/>
 										}
 										label={tipo === "Operacao" ? "Operação" : tipo === "Solido" ? "Sólido" : "Líquido"}
@@ -1117,7 +1138,7 @@ const FarmBoxPage = () => {
 											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
 												Área
 											</Typography>
-											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right"  }}>
+											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
 												Aplicado
 											</Typography>
 											<Typography variant="caption" sx={{ opacity: 0.9, fontSize: '15px', fontWeight: 'bold', textAlign: "right" }}>
@@ -1241,8 +1262,8 @@ const FarmBoxPage = () => {
 												<h3>
 													Resumo Fazendas -{" "}
 													{saldoAplicar.toLocaleString("pt-br", {
-														minimumFractionDigits: 2,
-														maximumFractionDigits: 2,
+														minimumFractionDigits: 0,
+														maximumFractionDigits: 0,
 													})}
 												</h3>
 											</Divider>

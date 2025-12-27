@@ -361,30 +361,30 @@ const TableDataPage = (props) => {
 					</div>
 				</div>
 				<div className={classes.numberDivApp}>
-					<p style={{ cursor: 'pointer' }} onClick={() => handleSelectAreaAp(dataF)}>
+					<p style={{ cursor: 'pointer', textAlign: "right", paddingRight: 26  }} onClick={() => handleSelectAreaAp(dataF)}>
 						{Number(dataF.area).toLocaleString("pt-br", {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
+							minimumFractionDigits: 0,
+							maximumFractionDigits: 0
 						})}
 					</p>
-					<p style={{ textAlign: "center" }}>
+					<p style={{ textAlign: "right", paddingRight: 16 }}>
 
 						{
 							Number(dataF.areaAplicada) === 0 ? " - " :
 								Number(dataF.areaAplicada).toLocaleString("pt-br", {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
+									minimumFractionDigits: 0,
+									maximumFractionDigits: 0
 								})
 						}
 					</p>
-					<p style={{ textAlign: "center" }}>
+					<p style={{ textAlign: "right", paddingRight: 6 }}>
 
 						{
 							Number(dataF.saldoAplicar) === 0 ? " - " :
 
 								Number(dataF.saldoAplicar).toLocaleString("pt-br", {
-									minimumFractionDigits: 2,
-									maximumFractionDigits: 2
+									minimumFractionDigits: 0,
+									maximumFractionDigits: 0
 								})}
 					</p>
 					<div className={classes.progressCircularDiv}>

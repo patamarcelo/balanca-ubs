@@ -12,8 +12,8 @@ const CardDiviOperations = (props) => {
         return data.toLocaleString(
             "pt-br",
             {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }
         )
     }

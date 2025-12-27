@@ -70,8 +70,8 @@ const ResumoFazendasPage = (props) => {
 						? dataGeral.fazendas[fazenda].saldo.toLocaleString(
 							"pt-br",
 							{
-								minimumFractionDigits: 2,
-								maximumFractionDigits: 2
+								minimumFractionDigits: 0,
+								maximumFractionDigits: 0
 							}
 						)
 						: "0,00"}
@@ -103,10 +103,10 @@ const ResumoFazendasPage = (props) => {
 											{fazPlan[data.cultura].toLocaleString(
 												"pt-br",
 												{
-													minimumFractionDigits: 2,
-													maximumFractionDigits: 2
+													minimumFractionDigits:0,
+													maximumFractionDigits: 0
 												}
-											)}
+											)} Há
 										</p>
 									</Box>
 								);
