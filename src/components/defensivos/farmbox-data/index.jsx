@@ -1182,8 +1182,8 @@ const FarmBoxPage = () => {
 											padding: "12px 16px",
 
 											// visual
-											background: "linear-gradient(90deg, #0f2a3a, #16384f)",
-											color: "#ffffff",
+											background: colors.brown[100],
+											color: colors.modal[700],
 											fontWeight: 600,
 											borderRadius: 1,
 											border: "0.5px solid rgba(255,255,255,0.25)",
@@ -1204,10 +1204,10 @@ const FarmBoxPage = () => {
 											}}
 										>
 											<Typography variant="h4" sx={{ fontWeight: 800 }}>
-												{data}
+												{data?.replace('Fazenda ', '')}
 											</Typography>
 
-											<Typography variant="body2" sx={{ opacity: 0.85 }}>
+											<Typography variant="body2" sx={{ opacity: 0.85, fontWeight: 'bold' }}>
 												Saldo a aplicar: {formatHa(saldoTotalHa)} ha
 												{"  "}
 												— {isFarmOpen ? "Fechar tudo" : "Abrir tudo"}
