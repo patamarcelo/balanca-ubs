@@ -449,7 +449,7 @@ const RomaneiosPage = () => {
                     >
                         {filteredTickets.map((option) => (
                             <MenuItem key={option.ticket} value={option.ticket}>
-                                {option.fazenda.replace('Projeto ', '')} - {option.ticket.replace(/^0+/, '') || '0'}
+                                {option?.fazenda?.replace('Projeto ', '')} - {option?.ticket?.replace(/^0+/, '') || '0'}
                             </MenuItem>
                         ))}
                     </Select>
