@@ -277,3 +277,25 @@ thead tr th {
 .summaryTable tr:last-child td {
 	border-bottom: none;
 }
+
+
+
+.marker-label {
+	white-space: pre-line;   /* respeita \n */
+	line-height: 1.15;       /* controla espaçamento entre linhas */
+	font-size: 12px;
+	font-weight: 500;
+	text-align: center;
+	text-shadow: 0 1px 2px rgba(0,0,0,0.6); /* melhora leitura no satélite */
+}
+
+.marker-label {
+	white-space: pre-line;
+	/* line-height: 1.15; */
+	font-size: 10px;
+}
+
+.marker-label span {
+	font-size: 10px;
+	opacity: 0.85;
+}

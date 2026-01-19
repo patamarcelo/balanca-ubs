@@ -48,6 +48,49 @@ const tableStyles = {
 	backdropFilter: "blur(10px)" // Optional: Adds a blur effect to the background
 };
 
+function parseToDate(value) {
+	if (!value) return null;
+
+	if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+
+	// ISO / timestamp parseável pelo Date
+	const d = new Date(value);
+	if (!isNaN(d.getTime())) return d;
+
+	// fallback pt-BR dd/mm/yyyy
+	const m = String(value).match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+	if (m) {
+		const dd = Number(m[1]);
+		const mm = Number(m[2]) - 1;
+		const yyyy = Number(m[3]);
+		const d2 = new Date(yyyy, mm, dd);
+		return isNaN(d2.getTime()) ? null : d2;
+	}
+
+	return null;
+}
+
+function calcDAP(dataPlantio) {
+	const dt = parseToDate(dataPlantio);
+	if (!dt) return null;
+
+	// zera horário para evitar erro de fuso
+	const start = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+	const now = new Date();
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+	const diffDays = Math.floor(
+		(today.getTime() - start.getTime()) / 86400000
+	);
+
+	// -1 para NÃO contar o dia do plantio
+	const dap = diffDays - 1;
+
+	return dap >= 0 ? dap : 0;
+}
+
+
+
 const MapPage = ({
 	mapArray,
 	filtData,
@@ -237,7 +280,7 @@ const MapPage = ({
 								total_area_colheita: 0,
 							};
 						}
-						const areaToGet = !showAsPlanned ? curr.dados.area_colheita : curr.dados.area_planejamento_plantio 
+						const areaToGet = !showAsPlanned ? curr.dados.area_colheita : curr.dados.area_planejamento_plantio
 						acc[key].total_area_colheita += areaToGet;
 						return acc;
 					}, {})
@@ -313,7 +356,7 @@ const MapPage = ({
 			let latArr = [];
 			let lngArr = [];
 			const onlyPaths = mapArray.map((data, i) => {
-				// console.log(data);
+				console.log('data check here', data);
 				let latLong = [];
 				if (data.dados.map_geo_points) {
 					latLong = data.dados.map_geo_points.map((data) => {
@@ -482,13 +525,55 @@ const MapPage = ({
 							}
 						);
 						const { inicializado_plantio, area_planejamento_plantio, finalizado_plantio, area_colheita } = dataF?.data?.data;
-						const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
-						
+						// const variedade = dataF.data.data.variedade ? dataF.data.data.variedade : '';
+
 						// const variedade = dataF.data.data.cultura === 'Soja' ? dataF.data.data.variedade : '';
 						const finalizado =
 							dataF.finalizadoPlantio && !dataF.descontinuado;
-						
-							const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
+
+						// const label = `${dataF.parcela} \n ${showVarOrArea ? area + 'ha' : variedade}`;
+						// console.log('dataFFFF: ', dataF)
+
+						const payload = dataF?.data?.data || {};
+
+						const variedade = payload.variedade || "";
+						const areaNum = showAsPlanned
+							? payload.area_planejamento_plantio
+							: payload.area_colheita;
+
+						const areaTxt = Number(areaNum || 0).toLocaleString("pt-br", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						});
+
+						// data de plantio já validada
+						const dataPlantio =
+							payload.data_plantio ||
+							payload.data_inicio_plantio ||
+							payload.plantio_data ||
+							null;
+
+						const dap = calcDAP(dataPlantio);
+						const dapTxt = dap !== null ? `${dap} DAP` : "";
+
+						// ===== LABEL =====
+						let label = `${dataF.parcela}`;
+
+						if (showVarOrArea) {
+							// Linha 2: área
+							label += `\n${areaTxt} ha`;
+
+							// Linha 3: variedade + DAP
+							if (variedade || dapTxt) {
+								label += `\n${[variedade].filter(Boolean).join(" • ")}`;
+							}
+						} else {
+							// Linha 2: variedade + DAP
+							// label += `\n${[variedade, dapTxt].filter(Boolean).join(" • ")}`;
+							label += `\n${variedade}\n${dapTxt}`;
+						}
+
+
 						// const label = `${dataF.parcela} \n marce`;
 						const newLabel = {
 							text: finalizado ? label : label,
@@ -513,10 +598,11 @@ const MapPage = ({
 						}
 						// console.log('data check: ', dataF)
 						// console.log("dataArray: ", parcelasSelected)
-						
+
 
 						const plantioDoing = inicializado_plantio && !finalizado_plantio
 						const baseColor = colorSelected || getColorStroke(dataF).color;
+						
 
 
 						return (
