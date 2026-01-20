@@ -27,6 +27,11 @@ import Tooltip from '@mui/material/Tooltip';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import html2canvas from "html2canvas";
+import { useRef, useCallback } from "react";
+
+
 const RomaneiosTable = (props) => {
 	const { data, handleUpdateCarga, setFilterDataArr, duplicates, duplicatesPlates, selected, selectedTicket } = props;
 	console.log('data table: ', data)
@@ -43,6 +48,70 @@ const RomaneiosTable = (props) => {
 
 
 	const [sortDirection, setSortDirection] = useState("asc"); // or 'desc'
+
+
+	const tablePrintRef = useRef(null);
+
+	const inlineComputedStyles = (root) => {
+		const all = root.querySelectorAll("*");
+		all.forEach((el) => {
+			const cs = window.getComputedStyle(el);
+			// aplica o cssText com propriedades relevantes
+			el.style.boxSizing = cs.boxSizing;
+			el.style.backgroundColor = cs.backgroundColor;
+			el.style.color = cs.color;
+			el.style.border = cs.border;
+			el.style.borderCollapse = cs.borderCollapse;
+		});
+	};
+
+	const handlePrintRomaneios = async () => {
+		const el = tablePrintRef.current;
+		if (!el) return;
+
+		el.classList.add(styles.printMode);
+		// clona e coloca fora da tela
+		const clone = el.cloneNode(true);
+		clone.style.position = "fixed";
+		clone.style.left = "-99999px";
+		clone.style.top = "0";
+		clone.style.background = "#fff";
+		document.body.appendChild(clone);
+
+		// “congela” estilos
+		inlineComputedStyles(clone);
+
+		const canvas = await html2canvas(clone, {
+			scale: window.devicePixelRatio || 2,
+			useCORS: true,
+			backgroundColor: "#fff",
+		});
+
+		document.body.removeChild(clone);
+
+		const dataUrl = canvas.toDataURL("image/png");
+		const now = new Date();
+		const formatted = now
+			.toLocaleString("pt-BR", {
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit",
+				hour: "2-digit",
+				minute: "2-digit",
+				second: "2-digit",
+			})
+			.replace(/\//g, "-")
+			.replace(/,?\s/g, "-")
+			.replace(/:/g, "-");
+
+		const a = document.createElement("a");
+		a.href = dataUrl;
+		a.download = `romaneios-${formatted}.png`;
+		a.click();
+		el.classList.remove(styles.printMode);
+	};
+
+
 
 
 	// useEffect(() => {
@@ -240,65 +309,122 @@ const RomaneiosTable = (props) => {
 		}
 	}
 
+
+
+
 	return (
-		<Box width={"100%"} height={"100%"}>
-			<Table striped bordered hover style={{ color: colors.textColor[100], marginBottom: '20px' }} size="" className={styles.romaneioTable}>
-				<thead style={{ backgroundColor: colors.blueOrigin[400] }}>
-					<tr>
-						<th>Data</th>
-						<th
-							onClick={() => handleOrder("relatorioColheita")}
-							style={{ cursor: "pointer" }}
-						>
-							Romaneio {sortBy === "relatorioColheita" && (sortDirection !== "asc" ? "🔼" : "🔽")}
-						</th>
-						<th>Ticket</th>
-						<th
-							onClick={() => handleOrder("fazendaOrigem")}
-							style={{ cursor: "pointer" }}
-						>
-							Projeto {sortBy === "fazendaOrigem" && (sortDirection !== "asc" ? "🔼" : "🔽")}
-						</th>
-						<th onClick={() => handleOrder("parcelas")} style={{ cursor: "pointer" }}>
-							Parcelas {sortBy === "parcelas" && (sortDirection !== "asc" ? "🔼" : "🔽")}
-						</th>
-						<th>Cultura</th>
-						<th>Variedade</th>
-						<th>Obs</th>
-						<th>Placa</th>
-						<th>Motorista</th>
-						<th>Destino</th>
-						<th>Bruto</th>
-						<th>Tara</th>
-						<th>Líquido</th>
-						<th>Umidade</th>
-						<th>Impureza</th>
-						<th>Saída</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					{dataFilter &&
-						dataFilter.map((carga, i) => {
-							const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
-							const getTicket = carga?.ticket ? carga.ticket : '-'
-							const getCultura = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.cultura) : undefined
-							const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
-							const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
-							const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
-							// console.log("carga", carga)
-							return (
-								<tr
-									key={i}
-									className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light' && i % 2 !== 0 && styles.oddRowLight}`}
-									style={{ borderTop: carga?.firstOne && `0.5px solid ${colors.textColor[100]}` }}
-								>
-									<td>{newDate}</td>
-									<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
-									{
-										(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ?
-											<td
-											>
+		<Box width={"100%"} height={"100%"}
+
+		>
+			<Box
+				ref={tablePrintRef}
+				width={"100%"}
+			>
+
+				<Table striped bordered hover style={{ color: colors.textColor[100], marginBottom: '20px' }} size="" className={styles.romaneioTable}>
+					<colgroup>
+						<col style={{ width: 160 }} /> {/* Data */}
+						<col style={{ width: 90 }} />  {/* Romaneio */}
+						<col style={{ width: 70 }} />  {/* Ticket */}
+						<col style={{ width: 140 }} /> {/* Projeto */}
+						<col style={{ width: 140 }} /> {/* Parcelas */}
+						<col style={{ width: 60 }} />  {/* Cultura */}
+						<col style={{ width: 140 }} /> {/* Variedade */}
+						<col style={{ width: 60 }} />  {/* Obs */}
+						<col style={{ width: 90 }} />  {/* Placa */}
+						<col style={{ width: 160 }} /> {/* Motorista */}
+						<col style={{ width: 110 }} /> {/* Destino */}
+						<col style={{ width: 90 }} />  {/* Bruto */}
+						<col style={{ width: 80 }} />  {/* Tara */}
+						<col style={{ width: 90 }} />  {/* Líquido */}
+						<col style={{ width: 80 }} />  {/* Umidade */}
+						<col style={{ width: 90 }} />  {/* Impureza */}
+						<col style={{ width: 170 }} /> {/* Saída */}
+						<col style={{ width: 70 }} />  {/* Status */}
+					</colgroup>
+					<thead style={{ backgroundColor: colors.blueOrigin[400] }}>
+						<tr>
+							<th>Data</th>
+							<th
+								onClick={() => handleOrder("relatorioColheita")}
+								style={{ cursor: "pointer" }}
+							>
+								Romaneio {sortBy === "relatorioColheita" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+							</th>
+							<th>Ticket</th>
+							<th
+								onClick={() => handleOrder("fazendaOrigem")}
+								style={{ cursor: "pointer" }}
+							>
+								Projeto {sortBy === "fazendaOrigem" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+							</th>
+							<th onClick={() => handleOrder("parcelas")} style={{ cursor: "pointer" }}>
+								Parcelas {sortBy === "parcelas" && (sortDirection !== "asc" ? "🔼" : "🔽")}
+							</th>
+							<th>Cultura</th>
+							<th>Variedade</th>
+							<th>Obs</th>
+							<th>Placa</th>
+							<th>Motorista</th>
+							<th>Destino</th>
+							<th>Bruto</th>
+							<th>Tara</th>
+							<th>Líquido</th>
+							<th>Umidade</th>
+							<th>Impureza</th>
+							<th>Saída</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{dataFilter &&
+							dataFilter.map((carga, i) => {
+								const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
+								const getTicket = carga?.ticket ? carga.ticket : '-'
+								const getCultura = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.cultura) : undefined
+								const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
+								const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
+								const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
+								// console.log("carga", carga)
+								return (
+									<tr
+										key={i}
+										className={`${i % 2 !== 0 ? styles.oddRow : styles.evenRow} ${theme.palette.mode === 'light' && i % 2 !== 0 && styles.oddRowLight}`}
+										style={{ borderTop: carga?.firstOne && `0.5px solid ${colors.textColor[100]}` }}
+									>
+										<td>{newDate}</td>
+										<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
+										{
+											(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ?
+												<td
+												>
+													<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
+														slotProps={{
+															tooltip: {
+																sx: {
+																	fontSize: '1.25rem', // Tamanho de fonte menor
+																},
+															},
+														}}
+													>
+
+														<IconButton
+															aria-label="delete"
+															size="sm"
+															color={"success"}
+															onClick={(e) => handleRefreshTicket(e, carga)}
+															style={{ padding: "2px", justifyContent: 'center' }}
+															disabled={isLoadingTicket[carga.id] || false}
+														>
+															{isLoadingTicket[carga.id] ? (
+																<CircularProgress size={16} color="inherit" />
+															) : (
+																<PublishedWithChanges fontSize="inherit" />
+															)}
+														</IconButton>
+													</Tooltip>
+												</td>
+												:
 												<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
 													slotProps={{
 														tooltip: {
@@ -308,151 +434,152 @@ const RomaneiosTable = (props) => {
 														},
 													}}
 												>
-
-													<IconButton
-														aria-label="delete"
-														size="sm"
-														color={"success"}
-														onClick={(e) => handleRefreshTicket(e, carga)}
-														style={{ padding: "2px", justifyContent: 'center' }}
-														disabled={isLoadingTicket[carga.id] || false}
-													>
-														{isLoadingTicket[carga.id] ? (
-															<CircularProgress size={16} color="inherit" />
-														) : (
-															<PublishedWithChanges fontSize="inherit" />
-														)}
-													</IconButton>
+													<td style={{
+														color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold', cursor: 'help'
+													}}>{getTicket}</td>
 												</Tooltip>
-											</td>
-											:
-											<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
-												slotProps={{
-													tooltip: {
-														sx: {
-															fontSize: '1.25rem', // Tamanho de fonte menor
-														},
-													},
-												}}
-											>
-												<td style={{
-													color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold', cursor: 'help'
-												}}>{getTicket}</td>
-											</Tooltip>
-									}
-									<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
-									<td>
-										{getParcelas
-											.sort((a, b) => a.localeCompare(b))
-											.join(", ")}
-									</td>
-									<td>
-										{
-											getCultura &&
-											<img
-												src={filteredIcon(
-													getCultura[0]
-												)}
-												alt={filteredAlt(
-													getCultura
-												)}
-												style={{
-													filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
-													width: '20px',
-													height: '20px'
-												}}
-											/>
 										}
-									</td>
-									<td>{filtVariedade}</td>
-									<td>
-										{carga.observacoes ? (
-											<Tooltip title={carga.observacoes} arrow
-												slotProps={{
-													tooltip: {
-														sx: {
-															fontSize: '1.25rem', // Tamanho de fonte menor
+										<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
+										<td>
+											{getParcelas
+												.sort((a, b) => a.localeCompare(b))
+												.join(", ")}
+										</td>
+										<td>
+											{
+												getCultura &&
+												<img
+													src={filteredIcon(
+														getCultura[0]
+													)}
+													alt={filteredAlt(
+														getCultura
+													)}
+													style={{
+														filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4))",
+														width: '20px',
+														height: '20px'
+													}}
+												/>
+											}
+										</td>
+										<td>{filtVariedade}</td>
+										<td>
+											{carga.observacoes ? (
+												<Tooltip title={carga.observacoes} arrow
+													slotProps={{
+														tooltip: {
+															sx: {
+																fontSize: '1.25rem', // Tamanho de fonte menor
+															},
 														},
-													},
-												}}
-											>
+													}}
+												>
+													<Box>
+														<LightbulbOutlinedIcon color={'success'} />
+													</Box>
+												</Tooltip>
+											) : (
 												<Box>
-													<LightbulbOutlinedIcon color={'success'} />
-												</Box>
-											</Tooltip>
-										) : (
-											<Box>
 
-											</Box>
-										)}
-									</td>
-									<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>
-										{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
-									</td>
-									<td>{carga.motorista}</td>
-									<td>{carga.fazendaDestino}</td>
-									<td>
-										{carga.pesoBruto
-											? formatWeight(carga.pesoBruto)
-											: formatWeight(0)}
-									</td>
-									<td>
-										{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}
-									</td>
-									<td>
-										{carga.liquido
-											? formatWeight(carga.liquido)
-											: formatWeight(0)}
-									</td>
-									<td>
-										{carga?.umidade
-											? formatPercent(carga?.umidade)
-											: formatPercent(0)}
-									</td>
-									<td>
-										{carga?.impureza
-											? formatPercent(carga?.impureza)
-											: formatPercent(0)}
-									</td>
-									<td>
-										{carga?.saida
-											? carga?.saida.toDate().toLocaleString("pt-BR")
-											: "-"}
-									</td>
-									<td>
-										{carga.saida ? (
-											<IconButton
-												aria-label="delete"
-												size="sm"
-												color={carga.saida ? "success" : "warning"}
-												onClick={(e) => isAdmin && handleUpdateCarga(e, carga)}
-												style={{ padding: "2px" }}
-											>
-												{
-													isAdmin ?
-														<DoneAll fontSize="inherit" />
-														:
-														<AgricultureIcon fontSize="small" color="warning" />
-												}
-											</IconButton>
-										) : (
-											<IconButton
-												aria-label="delete"
-												size="sm"
-												color={"success"}
-												onClick={(e) => handleRefreshTicket(e, carga)}
-												style={{ padding: "2px", justifyContent: 'center' }}
-												disabled={isLoadingTicket[carga.id] || false}
-											>
-												<AgricultureIcon fontSize="small" color="warning" />
-											</IconButton>
-										)}
-									</td>
-								</tr>
-							);
-						})}
-				</tbody>
-			</Table>
+												</Box>
+											)}
+										</td>
+										<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>
+											{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
+										</td>
+										<td>{carga.motorista}</td>
+										<td>{carga.fazendaDestino}</td>
+										<td>
+											{carga.pesoBruto
+												? formatWeight(carga.pesoBruto)
+												: formatWeight(0)}
+										</td>
+										<td>
+											{carga.tara ? formatWeight(carga.tara) : formatWeight(0)}
+										</td>
+										<td>
+											{carga.liquido
+												? formatWeight(carga.liquido)
+												: formatWeight(0)}
+										</td>
+										<td>
+											{carga?.umidade
+												? formatPercent(carga?.umidade)
+												: formatPercent(0)}
+										</td>
+										<td>
+											{carga?.impureza
+												? formatPercent(carga?.impureza)
+												: formatPercent(0)}
+										</td>
+										<td>
+											{carga?.saida
+												? carga?.saida.toDate().toLocaleString("pt-BR")
+												: "-"}
+										</td>
+										<td>
+											{carga.saida ? (
+												<IconButton
+													aria-label="delete"
+													size="sm"
+													color={carga.saida ? "success" : "warning"}
+													onClick={(e) => isAdmin && handleUpdateCarga(e, carga)}
+													style={{ padding: "2px" }}
+												>
+													{
+														isAdmin ?
+															<DoneAll fontSize="inherit" />
+															:
+															<AgricultureIcon fontSize="small" color="warning" />
+													}
+												</IconButton>
+											) : (
+												<IconButton
+													aria-label="delete"
+													size="sm"
+													color={"success"}
+													onClick={(e) => handleRefreshTicket(e, carga)}
+													style={{ padding: "2px", justifyContent: 'center' }}
+													disabled={isLoadingTicket[carga.id] || false}
+												>
+													<AgricultureIcon fontSize="small" color="warning" />
+												</IconButton>
+											)}
+										</td>
+									</tr>
+								);
+							})}
+					</tbody>
+				</Table>
+			</Box>
+			{dataFilter?.length > 0 && (
+				<Box
+					sx={{
+						width: "100%",
+						display: "flex",
+						justifyContent: "flex-end",
+						mt: 0.5,
+					}}
+				>
+					<Tooltip title="Salvar print (PNG)" arrow>
+						<span>
+							<IconButton
+								onClick={handlePrintRomaneios}
+								color="info"
+								size="large"
+								sx={{
+									borderRadius: "12px",
+									backgroundColor: "rgba(255,255,255,0.06)",
+									":hover": { backgroundColor: "rgba(255,255,255,0.12)" },
+								}}
+							>
+								<PhotoCameraIcon />
+							</IconButton>
+						</span>
+					</Tooltip>
+				</Box>
+			)}
 		</Box>
 	);
 };

@@ -135,6 +135,30 @@ const FarmBoxPage = () => {
 	const [operationFilter, setOperationFilter] = useState([]);
 	const [cultureFilter, setCultureFilter] = useState([]); // << NOVO
 
+	// novo filtro: mostrar somente aplicações com endDate <= hoje
+	const [onlyEndedUntilToday, setOnlyEndedUntilToday] = useState(false);
+
+	const handleOnlyEndedUntilToday = () => {
+		setOnlyEndedUntilToday((prev) => !prev);
+	};
+
+	// helpers de data (dia “zerado”)
+	const toDayStart = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+	const parseYmdToDayStart = (ymd) => {
+		// espera "YYYY-MM-DD"
+		if (!ymd) return null;
+		const s = String(ymd).trim();
+		const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+		if (!m) return null;
+		const y = Number(m[1]);
+		const mo = Number(m[2]) - 1;
+		const da = Number(m[3]);
+		const dt = new Date(y, mo, da);
+		return Number.isNaN(dt.getTime()) ? null : dt;
+	};
+
+
 	const selector = useMemo(
 		() => geralAppDetail(showFutureApps, daysFilter, operationFilter),
 		[showFutureApps, daysFilter, operationFilter]
@@ -760,29 +784,69 @@ const FarmBoxPage = () => {
 									))}
 							</Select>
 						</FormControl>
-						{
-							!isMobile &&
-							<Box display="flex" flexDirection="row">
-								<Switch
-									checked={openAppOnly}
-									onChange={handleCheckOpenApp}
-									inputProps={{ "aria-label": "controlled" }}
-									color="secondary"
-								/>
-								{/* <Switch
-								checked={filterPreaproSolo}
-								onChange={handlePreaproSolo}
-								inputProps={{ "aria-label": "controlled" }}
-								color="warning"
-								/> */}
-								<Switch
-									checked={showFutureApps}
-									onChange={handleFutureAp}
-									inputProps={{ "aria-label": "controlled" }}
-									color="warning"
-								/>
+						{!isMobile && (
+							<Box display="flex" flexDirection="row" alignItems="center" gap={1}>
+								{/* 1) Aberto + Finalizado */}
+								<Tooltip
+									arrow
+									placement="top"
+									title="Quando ligado: mostra aplicações em aberto (sought) e também finalizadas. Quando desligado: mostra somente em aberto (sought)."
+								>
+									<Box sx={{ display: "flex", alignItems: "center" }}>
+										<Switch
+											checked={openAppOnly}
+											onChange={handleCheckOpenApp}
+											inputProps={{ "aria-label": "Mostrar finalizadas" }}
+											color="secondary"
+										/>
+									</Box>
+								</Tooltip>
+
+								{/* 2) Futuras */}
+								<Tooltip
+									arrow
+									placement="top"
+									title="Quando ligado: inclui aplicações com data futura. Quando desligado: limita até a próxima semana."
+								>
+									<Box sx={{ display: "flex", alignItems: "center" }}>
+										<Switch
+											checked={showFutureApps}
+											onChange={handleFutureAp}
+											inputProps={{ "aria-label": "Mostrar futuras" }}
+											color="warning"
+										/>
+									</Box>
+								</Tooltip>
+
+								{/* 3) EndDate <= hoje */}
+								<Tooltip
+									arrow
+									placement="top"
+									title="Quando ligado: mostra somente aplicações cuja data de término (EndDate) é menor ou igual a hoje."
+								>
+									<Box sx={{ display: "flex", alignItems: "center" }}>
+										<Switch
+											checked={onlyEndedUntilToday}
+											onChange={handleOnlyEndedUntilToday}
+											inputProps={{ "aria-label": "EndDate menor ou igual a hoje" }}
+											color="error"
+										/>
+									</Box>
+								</Tooltip>
+
+								<Tooltip
+									arrow
+									placement="top"
+									title="Filtro de término: EndDate menor ou igual a hoje."
+								>
+									<Typography variant="caption" sx={{ color: colors.grey[200], fontWeight: 900, fontSize: '1em' }}>
+										{onlyEndedUntilToday ? "Atrasados" : 'Geral'}
+									</Typography>
+								</Tooltip>
 							</Box>
-						}
+						)}
+
+
 					</Box>
 				)}
 
@@ -1159,6 +1223,16 @@ const FarmBoxPage = () => {
 								)
 								.filter((app) => app.fazenda === data)
 								.filter((app) => tipoAplicacaoFilter.includes(getTipoAplicacao(app)))
+								// NOVO: endDate <= hoje
+								.filter((app) => {
+									if (!onlyEndedUntilToday) return true;
+
+									const end = parseYmdToDayStart(app?.endDate);
+									if (!end) return false; // se não tem endDate válido, não entra no filtro
+
+									const today = toDayStart(new Date());
+									return end.getTime() <= today.getTime();
+								})
 								.sort((b, a) => a.status.localeCompare(b.status))
 								.sort((a, b) => {
 									const dateA = new Date(a.date);
@@ -1280,10 +1354,18 @@ const FarmBoxPage = () => {
 											color: colors.modal[700],
 											fontWeight: 600,
 											borderRadius: 1,
-											border: "0.5px solid rgba(255,255,255,0.25)",
-											boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
 
-											// suavidade ao rolar
+											// 🔴 BORDA CONDICIONAL (somente atrasado)
+											border: onlyEndedUntilToday
+												? `2px solid ${colors.redAccent?.[500] || "#d32f2f"}`
+												: "0.5px solid rgba(255,255,255,0.25)",
+
+											// sombra também pode reforçar o alerta
+											boxShadow: onlyEndedUntilToday
+												? "0 0 0 2px rgba(211,47,47,0.25), 0 6px 18px rgba(0,0,0,0.15)"
+												: "0 6px 18px rgba(0,0,0,0.08)",
+
+											// suavidade
 											transition: "all 0.2s ease-in-out",
 										}}
 
@@ -1297,9 +1379,32 @@ const FarmBoxPage = () => {
 												flexWrap: "wrap",
 											}}
 										>
-											<Typography variant="h4" sx={{ fontWeight: 800 }}>
-												{data?.replace('Fazenda ', '')}
-											</Typography>
+											<Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+												<Typography variant="h4" sx={{ fontWeight: 800 }}>
+													{data?.replace("Fazenda ", "")}
+												</Typography>
+
+												{onlyEndedUntilToday && (
+													<Typography
+														variant="caption"
+														sx={{
+															mt: 1.2,          // 👈 empurra para baixo
+															alignSelf: "flex-end",
+															px: 1,
+															py: 0.25,
+															borderRadius: "6px",
+															fontWeight: 800,
+															backgroundColor: colors.redAccent?.[100],
+															color: colors.redAccent?.[600],
+															border: `1px solid ${colors.redAccent?.[400]}`,
+															textTransform: "uppercase",
+														}}
+													>
+														atrasado
+													</Typography>
+												)}
+											</Box>
+
 
 											<Typography variant="body2" sx={{ opacity: 0.85, fontWeight: 'bold' }}>
 												Saldo a aplicar: {formatHa(saldoTotalHa)} ha
