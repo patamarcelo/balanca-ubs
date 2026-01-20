@@ -73,6 +73,15 @@ import {
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 
+
+import html2canvas from "html2canvas";
+import { useRef, } from "react";
+
+
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+
+
+
 const daysFilter = 12;
 const FarmBoxPage = () => {
 	const theme = useTheme();
@@ -519,6 +528,56 @@ const FarmBoxPage = () => {
 	const handleClearCultures = () => setCultureFilter([]);
 
 
+	const dashboardRef = useRef(null);
+	const [isPrinting, setIsPrinting] = useState(false);
+
+	const handlePrintDashboard = useCallback(async () => {
+		if (!dashboardRef.current) return;
+
+		setIsPrinting(true);
+
+		try {
+			// Se tiver imagens remotas, isso ajuda a não “quebrar” o canvas
+			const canvas = await html2canvas(dashboardRef.current, {
+				backgroundColor: null, // mantém transparente (ou use "#fff" para fundo branco)
+				scale: window.devicePixelRatio > 1 ? 2 : 1, // melhora qualidade sem explodir memória
+				useCORS: true,
+				allowTaint: false,
+				logging: false,
+				// Captura só o conteúdo visível do trecho (não a página inteira)
+				scrollX: 0,
+				scrollY: -window.scrollY,
+			});
+
+			const dataUrl = canvas.toDataURL("image/png", 1.0);
+
+			const now = new Date();
+
+			const formatted = now.toLocaleString("pt-BR", {
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit",
+				hour: "2-digit",
+				minute: "2-digit",
+				second: "2-digit",
+			})
+				.replace(/\//g, "-")
+				.replace(/,?\s/g, "-")
+				.replace(/:/g, "-");
+
+			// Download automático
+			const a = document.createElement("a");
+			a.href = dataUrl;
+			a.download = `dashboard-${formatted}.png`;
+			a.click();
+		} catch (err) {
+			console.error("Erro ao gerar print:", err);
+		} finally {
+			setIsPrinting(false);
+		}
+	}, []);
+
+
 
 	return (
 		<Box
@@ -622,6 +681,39 @@ const FarmBoxPage = () => {
 				open={openFarm}
 				handleCloseFarm={handleCloseFarm}
 			>
+				{
+					filtFarm?.length > 0 &&
+					<Tooltip title="Salvar print do dashboard" placement="left">
+						<IconButton
+							onClick={handlePrintDashboard}
+							disabled={isPrinting}
+							sx={{
+								position: "fixed",
+								bottom: 24,
+								right: 24,
+								zIndex: 1300, // acima de modais comuns
+								width: 56,
+								height: 56,
+								backgroundColor: "info.main",
+								color: "#fff",
+								boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+								"&:hover": {
+									backgroundColor: "info.dark",
+								},
+								"&:disabled": {
+									backgroundColor: "grey.500",
+									color: "#fff",
+								},
+							}}
+						>
+							{isPrinting ? (
+								<CircularProgress size={26} sx={{ color: "#fff" }} />
+							) : (
+								<PhotoCameraIcon />
+							)}
+						</IconButton>
+					</Tooltip>
+				}
 				<Typography variant="h6" sx={{ marginTop: '5px', color: colors.grey[100] }}>
 					{safraCiclo.safra}
 				</Typography>
@@ -1011,11 +1103,13 @@ const FarmBoxPage = () => {
 
 					</Box>
 				}
+
 				<Box
 					className={classes.dashboardDiv}
 					sx={{
 						justifyContent: !isNonMobile ? "flex-start" : "space-around",
 					}}
+					ref={dashboardRef}
 				>
 					<div className={classes.dashLeft}>
 						{filtFarm?.map((data) => {
