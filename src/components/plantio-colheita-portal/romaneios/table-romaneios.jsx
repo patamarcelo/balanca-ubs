@@ -68,49 +68,57 @@ const RomaneiosTable = (props) => {
 	const handlePrintRomaneios = async () => {
 		const el = tablePrintRef.current;
 		if (!el) return;
-
+		
+		el.classList.add(styles.romaneioTablePrintMode);
 		el.classList.add(styles.printMode);
-		// clona e coloca fora da tela
+		// 1. Criar um container temporário para não afetar o layout original
+		const container = document.createElement("div");
+		container.style.position = "absolute";
+		container.style.left = "0";
+		container.style.top = "0";
+		container.style.zIndex = "-1";
+		container.style.width = el.offsetWidth + "px"; // Mantém a largura exata
+
 		const clone = el.cloneNode(true);
-		clone.style.position = "fixed";
-		clone.style.left = "-99999px";
-		clone.style.top = "0";
-		clone.style.background = "#fff";
-		document.body.appendChild(clone);
 
-		// “congela” estilos
-		inlineComputedStyles(clone);
+		// Forçar fundo branco e remover transparências que confundem o canvas
+		clone.style.backgroundColor = "#ffffff";
+		clone.style.color = "#000000";
 
-		const canvas = await html2canvas(clone, {
-			scale: window.devicePixelRatio || 2,
-			useCORS: true,
-			backgroundColor: "#fff",
-		});
+		container.appendChild(clone);
+		document.body.appendChild(container);
 
-		document.body.removeChild(clone);
+		try {
+			const canvas = await html2canvas(clone, {
+				scale: 2,
+				useCORS: true,
+				allowTaint: true,
+				backgroundColor: "#ffffff",
+				// IMPORTANTE: Isso ajuda o html2canvas a focar no elemento certo
+				logging: false,
+				width: el.offsetWidth,
+				height: el.offsetHeight,
+			});
 
-		const dataUrl = canvas.toDataURL("image/png");
-		const now = new Date();
-		const formatted = now
-			.toLocaleString("pt-BR", {
-				year: "numeric",
-				month: "2-digit",
-				day: "2-digit",
-				hour: "2-digit",
-				minute: "2-digit",
-				second: "2-digit",
-			})
-			.replace(/\//g, "-")
-			.replace(/,?\s/g, "-")
-			.replace(/:/g, "-");
+			const dataUrl = canvas.toDataURL("image/png");
 
-		const a = document.createElement("a");
-		a.href = dataUrl;
-		a.download = `romaneios-${formatted}.png`;
-		a.click();
-		el.classList.remove(styles.printMode);
+			// ... (seu código de formatação de data permanece igual)
+			const now = new Date();
+			const formatted = now.toLocaleString("pt-BR", { /* ... */ }).replace(/\//g, "-").replace(/,?\s/g, "-").replace(/:/g, "-");
+
+			const a = document.createElement("a");
+			a.href = dataUrl;
+			a.download = `romaneios-${formatted}.png`;
+			a.click();
+			el.classList.remove(styles.printMode);
+			el.classList.remove(styles.romaneioTablePrintMode);
+		} catch (err) {
+			console.error("Erro ao gerar imagem:", err);
+		} finally {
+			// Limpar o DOM
+			document.body.removeChild(container);
+		}
 	};
-
 
 
 

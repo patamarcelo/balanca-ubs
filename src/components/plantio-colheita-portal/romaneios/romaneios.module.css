@@ -30,3 +30,15 @@ td, th {
 .romaneioTable thead tr th, .romaneioTable tbody tr td {
     font-size: 12px;
 }
+
+
+/* No seu romaneios.module.css */
+.printMode {
+    background-color: white !important;
+}
+
+/* Garanta que a tabela tenha uma largura definida no momento do print */
+.romaneioTablePrintMode {
+    table-layout: fixed; /* Isso força o navegador a respeitar rigorosamente o colgroup */
+    border-spacing: 0;
+}
