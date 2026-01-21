@@ -146,7 +146,7 @@ const HomePage = () => {
 
 	useEffect(() => {
 		const value = UNITS_OP.filter((data) => data.title === selectedUnitOp);
-		setFormatUnidade(value[0].description);
+		setFormatUnidade(value?.[0]?.description ?? "");
 	}, [selectedUnitOp]);
 
 	useEffect(() => {
@@ -437,7 +437,7 @@ const HomePage = () => {
 								{allUnits.map((data, i) => {
 									return (
 										<MenuItem value={data.title} key={i}>
-											{data.description} &nbsp;&nbsp;
+											{data?.description} &nbsp;&nbsp;
 											{filteredTruckOnWork(data.title)}
 										</MenuItem>
 									);
@@ -481,7 +481,7 @@ const HomePage = () => {
 											handleFilteredUnidadeOp(data.title)
 										}
 									>
-										{data.description} &nbsp;&nbsp;
+										{data?.description} &nbsp;&nbsp;
 										{filteredTruckOnWork(data.title)}
 									</Box>
 								)}
