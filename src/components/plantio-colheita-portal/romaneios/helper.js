@@ -30,7 +30,11 @@ function calculaPercentualParcelas(parcelasObjFiltered = [], parcelasNovas = [])
         const parcela = String(p.parcela).trim();
         const caixas = Number(p.caixas || 0);
         if (!parcela || !caixas) return;
-        caixasPorParcela.set(parcela, (caixasPorParcela.get(parcela) || 0) + caixas);
+
+        caixasPorParcela.set(
+            parcela,
+            (caixasPorParcela.get(parcela) || 0) + caixas
+        );
     });
 
     const totalCaixas = Array.from(caixasPorParcela.values())
@@ -38,14 +42,24 @@ function calculaPercentualParcelas(parcelasObjFiltered = [], parcelasNovas = [])
 
     if (!totalCaixas) return "";
 
-    const partes = parcelasNovas.map(parcela => {
+    let somaPercentuais = 0;
+
+    const partes = parcelasNovas.map((parcela, index) => {
         const caixas = caixasPorParcela.get(String(parcela).trim()) || 0;
+
+        // Última parcela fecha em 100%
+        if (index === parcelasNovas.length - 1) {
+            return Math.max(0, 100 - somaPercentuais);
+        }
+
         const pct = Math.round((caixas / totalCaixas) * 100);
+        somaPercentuais += pct;
         return pct;
     });
 
     return partes.join(";") + ";";
 }
+
 
 function montaCampoParcela(parcelasNovas = []) {
     if (!parcelasNovas.length) return "";
