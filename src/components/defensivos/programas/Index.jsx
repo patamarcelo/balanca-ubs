@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens, ColorModeContext } from "../../../theme";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import LoaderHomeSkeleton from "../home/loader";
 
 import djangoApi from "../../../utils/axios/axios.utils";
@@ -42,6 +42,9 @@ import moment from "moment";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
+
+
 const ProgramasSection = () => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -70,6 +73,68 @@ const ProgramasSection = () => {
 
 	const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 	const colorMode = useContext(ColorModeContext);
+
+	const printRef = useRef(null);
+
+	const generateImage = async () => {
+		try {
+			setIsGeneratingPDF(true);
+
+			// Oculta elementos não imprimíveis (mesma técnica do PDF)
+			document.querySelectorAll(".print-safe-wrapper").forEach((el) => {
+				el.style.visibility = "hidden";
+			});
+
+			// garante que o ref existe
+			const el = printRef.current;
+			if (!el) return;
+
+			// pequeno delay para reflow
+			await new Promise((res) => setTimeout(res, 200));
+
+			const canvas = await html2canvas(el, {
+				scale: 2, // qualidade boa p/ PNG
+				useCORS: true,
+				allowTaint: true,
+				backgroundColor: "#FFFFFF",
+				scrollX: 0,
+				scrollY: -window.scrollY,
+				windowWidth: document.documentElement.clientWidth,
+				windowHeight: document.documentElement.clientHeight,
+			});
+
+			const dataUrl = canvas.toDataURL("image/png");
+
+			// nome do arquivo (com data/hora) + versão se tiver
+			const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+			const baseName = programData?.nome_fantasia
+				? `${programData.nome_fantasia}`
+				: "programa";
+
+			const fileName = version
+				? `${baseName}-versao-${version}-${ts}.png`
+				: `${baseName}-${ts}.png`;
+
+			// download automático
+			const a = document.createElement("a");
+			a.href = dataUrl;
+			a.download = fileName;
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		} catch (error) {
+			console.error("Erro ao gerar imagem:", error);
+		} finally {
+			document.querySelectorAll(".print-safe-wrapper").forEach((el) => {
+				el.style.visibility = "visible";
+			});
+			setIsGeneratingPDF(false);
+		}
+	};
+
+
+
+
 
 	// const generatePDF = () => {
 	// 	const pdf = new JsPDF("portrait", "pt", "a4", false);
@@ -370,61 +435,73 @@ const ProgramasSection = () => {
 				<Box className={styles.mainProgramContainer}>
 					{programData ? (
 						<>
-							<Box
-								sx={{ justifyContent: "start", width: "100%" }}
-							>
-								<label style={{ color: "black" }}>
-									Versão
-									<input
-										type="text"
-										value={version}
-										style={{ marginLeft: "5px" }}
-										placeholder="Versão para impressão"
-										onChange={(e) =>
-											setVersion(e.target.value)
-										}
-									/>
-								</label>
-							</Box>
-							<Box sx={{ alignSelf: "end" }}>
-								{isGeneratingPDF ? (
-									<CircularProgress
-										size={24}
-										sx={{
-											color: colors.blueAccent[500],
-											marginRight: "12px",
-										}}
-									/>
-								) : (
-									<IconButton onClick={generatePDF}>
-										<FontAwesomeIcon
-											icon={faPrint}
-											color={colors.blueAccent[500]}
-											size={"sm"}
+
+								<Box
+									sx={{ justifyContent: "start", width: "100%" }}
+								>
+									<label style={{ color: "black" }}>
+										Versão
+										<input
+											type="text"
+											value={version}
+											style={{ marginLeft: "5px" }}
+											placeholder="Versão para impressão"
+											onChange={(e) =>
+												setVersion(e.target.value)
+											}
 										/>
-									</IconButton>
-								)}
-							</Box>
-							<Box
-								id="printDivProgram"
-								sx={{ fontFamily: "Times New Roman !important" }}
+									</label>
+								</Box>
+								<Box ref={printRef}
+								padding={"20px"}
 							>
-								{version && (
-									<div id="printVersionTop">
-										<PrintVersion programData={programData} version={version} />
+								<Box sx={{ alignSelf: "end" }}>
+									{isGeneratingPDF ? (
+										<CircularProgress
+											size={24}
+											sx={{
+												color: colors.blueAccent[500],
+												marginRight: "12px",
+											}}
+										/>
+									) : (
+										<Box
+										justifySelf={"end"}
+										>
+											<IconButton onClick={generatePDF}>
+												<FontAwesomeIcon
+													icon={faPrint}
+													color={colors.blueAccent[500]}
+													size={"sm"}
+												/>
+											</IconButton>
+											<IconButton onClick={generateImage}>
+												<FontAwesomeIcon icon={faCamera} color={colors.blueAccent[700]} size={"sm"} />
+											</IconButton>
+										</Box>
+									)}
+								</Box>
+								<Box
+									id="printDivProgram"
+									sx={{ fontFamily: "Times New Roman !important" }}
+								>
+									{version && (
+										<div id="printVersionTop">
+											<PrintVersion programData={programData} version={version} />
+										</div>
+									)}
+									<div id="headerComp">
+										<HeaderComp data={programData} quantidadeTotal={quantidadeTotal} />
 									</div>
-								)}
-								<div id="headerComp">
-									<HeaderComp data={programData} quantidadeTotal={quantidadeTotal} />
-								</div>
-								<div id="estagiosComp">
-									<EstagiosComp data={filteredEstagios} program={selectedPrograma} />
-								</div>
-								{version && (
-									<div id="printVersionBottom">
-										<PrintVersion programData={programData} version={version} />
+									<div id="estagiosComp">
+										<EstagiosComp data={filteredEstagios} program={selectedPrograma} />
 									</div>
-								)}
+									{version && (
+										<div id="printVersionBottom">
+											<PrintVersion programData={programData} version={version} />
+										</div>
+									)}
+								</Box>
 							</Box>
 							<hr />
 							{filteredOperations && (
