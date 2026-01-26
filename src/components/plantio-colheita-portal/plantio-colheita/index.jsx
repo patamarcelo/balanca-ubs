@@ -3,6 +3,7 @@ import {
 	Grid,
 	Card,
 	CardContent,
+	Fab
 } from "@mui/material";
 // import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -30,6 +31,67 @@ import LinearProgressWithLabel from './progress-bar'
 import { useSelector } from "react-redux";
 import { selectColheitaPortalData } from "../../../store/plantio/plantio.selector";
 import { exportPlantiosToExcel } from "./export-excel-helper";
+
+import { useRef } from "react";
+import { IconButton, Tooltip } from "@mui/material";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+
+import html2canvas from "html2canvas";
+
+export async function printNodeAsPng(node, fileName = "colheita") {
+	if (!node) return;
+
+	try {
+		const padding = 20;
+
+		// CAPTURA O TAMANHO FIEL DA TELA:
+		// offsetWidth pega a largura exata do elemento como ele está renderizado agora
+		const width = node.offsetWidth + (padding * 2);
+		const height = node.offsetHeight + (padding * 2);
+
+		const canvas = await html2canvas(node, {
+			backgroundColor: "#ffffff",
+			scale: 2,
+			useCORS: true,
+			allowTaint: true,
+
+			// Define o tamanho do canvas baseado no que está visível
+			width: width,
+			height: height,
+
+			// Desloca o início da captura para criar o padding interno
+			x: -padding,
+			y: -padding,
+
+			onclone: (clonedDoc) => {
+				// Remove o sticky para evitar sobreposição na foto
+				const items = clonedDoc.querySelectorAll("*");
+				items.forEach(el => {
+					if (window.getComputedStyle(el).position === "sticky") {
+						el.style.position = "static";
+					}
+				});
+
+				// GARANTE QUE O CLONE NÃO TENTE EXPANDIR
+				// Se o original tem scroll, o clone deve manter o tamanho do pai
+				const clonedNode = clonedDoc.querySelector(`[data-html2canvas-ignore]`)?.parentElement || clonedDoc.body.firstChild;
+				if (clonedNode) {
+					clonedNode.style.width = `${node.offsetWidth}px`;
+					clonedNode.style.overflow = "hidden"; // Mantém o "corte" igual ao da tela
+				}
+			}
+		});
+
+		const dataUrl = canvas.toDataURL("image/png");
+		const a = document.createElement("a");
+		a.href = dataUrl;
+		a.download = `${fileName}.png`;
+		a.click();
+
+	} catch (err) {
+		console.error("Erro na captura:", err);
+	}
+}
 
 const ColheitaAtual = (props) => {
 	const {
@@ -67,8 +129,15 @@ const ColheitaAtual = (props) => {
 	const [varieSelect, setVarieSelect] = useState([]);
 
 	const [varSelectedArr, setVarSelectedArr] = useState([]);
-	
+
 	const colheitaPortalData = useSelector(selectColheitaPortalData)
+
+	const tableRef = useRef(null);
+
+	const handlePrintTable = async () => {
+		const node = tableRef.current; // ✅ agora é o container inteiro
+		await printNodeAsPng(node, "colheita");
+	};
 
 	const formatArea = (number) => {
 		return Number(number).toLocaleString("pt-br", {
@@ -146,7 +215,7 @@ const ColheitaAtual = (props) => {
 	const handleChangeAreasCheck = (event) => {
 		setChekedAreasAvaiable(event.target.checked);
 	};
-	
+
 	const handleChangeRomaneiosPendente = (event) => {
 		setRomaneiosPendente(event.target.checked);
 	};
@@ -208,6 +277,20 @@ const ColheitaAtual = (props) => {
 				minWidth: "1200px"
 			}}
 		>
+			<Tooltip title="Salvar imagem da tabela">
+							<Fab
+								color="success"
+								onClick={handlePrintTable}
+								sx={{
+									position: "fixed",
+									right: 24,
+									bottom: 24,
+									zIndex: 2000, // fica acima de cards/tabelas
+								}}
+							>
+								<PhotoCameraIcon />
+							</Fab>
+						</Tooltip>
 			<Box
 				sx={{
 					display: "flex",
@@ -234,300 +317,311 @@ const ColheitaAtual = (props) => {
 						);
 					})}
 			</Box>
-			<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'space-between' }}>
-				<Grid item xs={1.3}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-							// backgroundColor: theme.palette.mode === "light" && colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"} >
-								Área Total
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaTotal} Ha</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.3}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Area Colhida
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaColhida} Ha</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.5}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Área Disponível
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaDisponivel} Ha</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.3}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Parcelas
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{parcelasTotal}</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.5}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Peso Carregado
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{(formatArea(totalPesoCarregado / 60))} Scs</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.3}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Produtividade
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividade)} Scs/Ha</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.8}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{ paddingBottom: "16px !important" }}>
-							<Typography variant="h6" fontWeight={"bold"}>
-								Produtividade Real
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={1.5}>
-					<Card
-						component={Paper}
-						elevation={4}
-						sx={{
-							backgroundColor: colors.primary[900]
-						}}
-					>
-						<CardContent sx={{
-							paddingBottom: "16px !important",
-							backgroundColor: totalRomaneios > 0 ? colors.yellow[700] : colors.greenAccent[700],
-							transition: 'background-color 0.5s ease'
-						}}>
-							<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
-								Romaneios Pendentes
-							</Typography>
-							<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>
-								{totalRomaneios}
-							</Typography>
-						</CardContent>
-					</Card>
-				</Grid>
-			</Grid>
 			<Box
-				display="flex"
-				flexDirection="row-reverse"
-				justifyContent="space-between"
 				width={"100%"}
+				ref={tableRef}
 			>
-				<Typography
-					sx={{
-						alignSelf: "flex-end",
-						color: colors.grey[300],
-						fontStyle: "italic"
-					}}
-				>
-					{newDayNow}
-				</Typography>
 
+				<Grid container spacing={2} sx={{ mb: 3, minWidth: "1200px", justifyContent: 'space-between' }}>
+					<Grid item xs={1.3}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+								// backgroundColor: theme.palette.mode === "light" && colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"} >
+									Área Total
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaTotal} Ha</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.3}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Area Colhida
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaColhida} Ha</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.5}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Área Disponível
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{areaDisponivel} Ha</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.3}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Parcelas
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{parcelasTotal}</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.5}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Peso Carregado
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{(formatArea(totalPesoCarregado / 60))} Scs</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.3}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Produtividade
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividade)} Scs/Ha</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.8}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{ paddingBottom: "16px !important" }}>
+								<Typography variant="h6" fontWeight={"bold"}>
+									Produtividade Real
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>{formatArea(totalProdutividadeReal)} Scs/Ha</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={1.5}>
+						<Card
+							component={Paper}
+							elevation={4}
+							sx={{
+								backgroundColor: colors.primary[900]
+							}}
+						>
+							<CardContent sx={{
+								paddingBottom: "16px !important",
+								backgroundColor: totalRomaneios > 0 ? colors.yellow[700] : colors.greenAccent[700],
+								transition: 'background-color 0.5s ease'
+							}}>
+								<Typography variant="h6" fontWeight={"bold"} sx={{ whiteSpace: 'nowrap' }}>
+									Romaneios Pendentes
+								</Typography>
+								<Typography variant="h6" color={colors.grey[500]} fontWeight={"bold"}>
+									{totalRomaneios}
+								</Typography>
+							</CardContent>
+						</Card>
+					</Grid>
+				</Grid>
+				<Box
+					display="flex"
+					flexDirection="row-reverse"
+					justifyContent="space-between"
+					width={"100%"}
+				>
+					<Typography
+						sx={{
+							alignSelf: "flex-end",
+							color: colors.grey[300],
+							fontStyle: "italic"
+						}}
+					>
+						{newDayNow}
+					</Typography>
+
+					<Box
+						sx={{
+							display: "flex",
+							gap: "30px",
+							alignItems: "center"
+						}}
+					>
+						<FontAwesomeIcon
+							icon={faArrowDownAZ}
+							color={colors.greenAccent[500]}
+							size="sm"
+							style={{
+								margin: "0px 0px",
+								cursor: "pointer"
+							}}
+							onClick={() => handleFilterTable()}
+						/>
+						<FontAwesomeIcon
+							icon={faFileExcel}
+							color={colors.greenAccent[500]}
+							size="lg"
+							style={{
+								margin: "0px 0px",
+								cursor: "pointer"
+							}}
+							onClick={() => handleExportData()}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={checkedColheita}
+									onChange={handleChangeCheck}
+								/>
+							}
+							label="Colheita Andamento"
+							sx={{ color: colors.textColor[100] }}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={chekedAreasAvaiable}
+									onChange={handleChangeAreasCheck}
+								/>
+							}
+							label="Areas Disponíveis"
+							sx={{ color: colors.textColor[100] }}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={romaneiosPendente}
+									onChange={handleChangeRomaneiosPendente}
+								/>
+							}
+							label="Romaneios Pendentes"
+							sx={{ color: colors.textColor[100] }}
+						/>
+						<FormControl sx={{ m: 1, width: 300 }}>
+							<InputLabel id="demo-multiple-name-label">Variedade</InputLabel>
+							<Select
+								labelId="demo-multiple-name-label"
+								id="demo-multiple-name"
+								multiple
+								value={varieSelect}
+								onChange={handleChangeVarSelect}
+								input={<OutlinedInput label="Variedade" />}
+								MenuProps={MenuProps}
+								size="small"
+							>
+								{varSelectedArr.map((name) => (
+									<MenuItem
+										key={name}
+										value={name}
+										style={getStyles(name, varieSelect, theme)}
+									>
+										{name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+						{/* <Tooltip title="Salvar imagem da tabela">
+							<IconButton onClick={handlePrintTable}>
+								<PhotoCameraIcon />
+							</IconButton>
+						</Tooltip> */}
+					</Box>
+				</Box>
 				<Box
 					sx={{
-						display: "flex",
-						gap: "30px",
-						alignItems: "center"
+						justifySelf: "center",
+						width: "100%",
+						mb: 0.5,
+						textAlign: "center",
+						// backgroundColor: "rgba(128,128,128,0.4)",
+						backgroundColor: colors.blueOrigin[400],
+						// backgroundColor:'blue',
+						padding: "10px"
 					}}
 				>
-					<FontAwesomeIcon
-						icon={faArrowDownAZ}
-						color={colors.greenAccent[500]}
-						size="sm"
-						style={{
-							margin: "0px 0px",
-							cursor: "pointer"
-						}}
-						onClick={() => handleFilterTable()}
-					/>
-					<FontAwesomeIcon
-						icon={faFileExcel}
-						color={colors.greenAccent[500]}
-						size="lg"
-						style={{
-							margin: "0px 0px",
-							cursor: "pointer"
-						}}
-						onClick={() => handleExportData()}
-					/>
-					<FormControlLabel
-						control={
-							<Switch
-								color="secondary"
-								checked={checkedColheita}
-								onChange={handleChangeCheck}
-							/>
-						}
-						label="Colheita Andamento"
-						sx={{ color: colors.textColor[100] }}
-					/>
-					<FormControlLabel
-						control={
-							<Switch
-								color="secondary"
-								checked={chekedAreasAvaiable}
-								onChange={handleChangeAreasCheck}
-							/>
-						}
-						label="Areas Disponíveis"
-						sx={{ color: colors.textColor[100] }}
-					/>
-					<FormControlLabel
-						control={
-							<Switch
-								color="secondary"
-								checked={romaneiosPendente}
-								onChange={handleChangeRomaneiosPendente}
-							/>
-						}
-						label="Romaneios Pendentes"
-						sx={{ color: colors.textColor[100] }}
-					/>
-					<FormControl sx={{ m: 1, width: 300 }}>
-						<InputLabel id="demo-multiple-name-label">Variedade</InputLabel>
-						<Select
-							labelId="demo-multiple-name-label"
-							id="demo-multiple-name"
-							multiple
-							value={varieSelect}
-							onChange={handleChangeVarSelect}
-							input={<OutlinedInput label="Variedade" />}
-							MenuProps={MenuProps}
-							size="small"
-						>
-							{varSelectedArr.map((name) => (
-								<MenuItem
-									key={name}
-									value={name}
-									style={getStyles(name, varieSelect, theme)}
-								>
-									{name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Typography
+						variant="h4"
+						// color={colors.textColor[100]}
+						color="whitesmoke"
+						sx={{ fontWeight: "bold" }}
+					>
+						{selectedFarm?.replace("Projeto", "")}
+					</Typography>
 				</Box>
+				<LinearProgressWithLabel progress={areaTotalProgress} />
+				{selectedFilteredData.length > 0 && (
+					<TableColheita
+						theme={theme}
+						colors={colors}
+						idsPending={idsPending}
+						setVarSelectedArr={setVarSelectedArr}
+						setVarieSelect={setVarieSelect}
+						data={selectedFilteredData
+							.filter((data) =>
+								varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
+									data.variedade__nome_fantasia !== null
+							)
+							.filter((data) =>
+								chekedAreasAvaiable
+									? data.area_colheita - data.area_parcial !== 0
+									: data.area_colheita !== null
+							)
+							.filter((data) =>
+								checkedColheita
+									? data.finalizado_colheita === false
+									: data.finalizado_colheita !== null
+							)
+							.filter((data) =>
+								romaneiosPendente
+									? idsPending[data.id] > 0
+									: true
+							)
+							.sort((b, a) =>
+								dateSort
+									? b.talhao__id_talhao.localeCompare(a.talhao__id_talhao)
+									: a.dap - b.dap
+							)}
+					/>
+				)}
 			</Box>
-			<Box
-				sx={{
-					justifySelf: "center",
-					width: "100%",
-					mb: 0.5,
-					textAlign: "center",
-					// backgroundColor: "rgba(128,128,128,0.4)",
-					backgroundColor: colors.blueOrigin[400],
-					// backgroundColor:'blue',
-					padding: "10px"
-				}}
-			>
-				<Typography
-					variant="h4"
-					// color={colors.textColor[100]}
-					color="whitesmoke"
-					sx={{ fontWeight: "bold" }}
-				>
-					{selectedFarm?.replace("Projeto", "")}
-				</Typography>
-			</Box>
-			<LinearProgressWithLabel progress={areaTotalProgress} />
-			{selectedFilteredData.length > 0 && (
-				<TableColheita
-					theme={theme}
-					colors={colors}
-					idsPending={idsPending}
-					setVarSelectedArr={setVarSelectedArr}
-					setVarieSelect={setVarieSelect}
-					data={selectedFilteredData
-						.filter((data) =>
-							varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-								data.variedade__nome_fantasia !== null
-						)
-						.filter((data) =>
-							chekedAreasAvaiable
-								? data.area_colheita - data.area_parcial !== 0
-								: data.area_colheita !== null
-						)
-						.filter((data) =>
-							checkedColheita
-								? data.finalizado_colheita === false
-								: data.finalizado_colheita !== null
-						)
-						.filter((data) =>
-							romaneiosPendente
-								? idsPending[data.id] > 0
-								: true
-						)
-						.sort((b, a) =>
-							dateSort
-								? b.talhao__id_talhao.localeCompare(a.talhao__id_talhao)
-								: a.dap - b.dap
-						)}
-				/>
-			)}
 		</Box>
 	);
 };

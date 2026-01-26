@@ -71,7 +71,9 @@ const DetailAppData = (props) => {
 		bombArr,
 		setParcelaSelected,
 		parcelaSelected,
-		openAll
+		openAll,
+		tipoAplicacao,
+		dapApDestaque = 50
 	} = props;
 
 	const theme = useTheme();
@@ -131,7 +133,7 @@ const DetailAppData = (props) => {
 		return diffDays;
 	}
 
-	console.log('data::::', data)
+	const isSolidAp = tipoAplicacao === "Solido";
 
 	return (
 		<>
@@ -152,6 +154,13 @@ const DetailAppData = (props) => {
 						const notFinished = (data.area - getArea) > 0 ? true : false
 						const getPercent = ((data.areaAplicada / data.area) * 100)
 						const tooltipTile = getPercent.toFixed(0) + "%  - " + formatNumber(data.areaAplicada, 2) + " Ha"
+
+						const dap = data?.dataPlantio ? daysBetween(data.dataPlantio) : null;
+						const isDapCritical = typeof dap === "number" && dap >= dapApDestaque;
+						const isRedEligible = isSolidAp && isDapCritical;
+
+
+
 						return (
 							<Box
 								m={1}
@@ -190,9 +199,11 @@ const DetailAppData = (props) => {
 									TransitionComponent={Zoom}
 								>
 									<Box
-										className={
-											checkIsInArr(data) && classes.isInArr
-										}
+										className={[
+											checkIsInArr(data) ? classes.isInArr : "",
+											!checkIsInArr(data) && !data.aplicado && isRedEligible ? classes.isInArrRed : "",
+										].filter(Boolean).join(" ")}
+
 										style={{
 											backgroundColor: colors.blueOrigin[600],
 											width: "100%",
@@ -210,7 +221,7 @@ const DetailAppData = (props) => {
 												whiteSpace: "nowrap",
 												backgroundColor: notFinished ? 'rgba(248,198,0,0.6)' : data.aplicado
 													? "rgba(0,250,0, 0.6)"
-													: "rgba(238,75,43, 0.6)",
+													: "rgba(238,75,43, 0.5)",
 											}}
 										>
 											{data.parcela} -{" "}

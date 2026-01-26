@@ -44,7 +44,7 @@ import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 const TableDataPage = (props) => {
-	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao } = props;
+	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao, dapApDestaque } = props;
 	console.log('dataFFF: ', dataF)
 
 	const theme = useTheme();
@@ -418,6 +418,8 @@ const TableDataPage = (props) => {
 							parcelaSelected={parcelaSelected}
 							setParcelaSelected={setParcelaSelected}
 							openAll={openAll}
+							tipoAplicacao={tipoAplicacao}
+							dapApDestaque={dapApDestaque}
 						/>
 					</Box>
 					<Box

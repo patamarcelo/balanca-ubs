@@ -138,6 +138,8 @@ const FarmBoxPage = () => {
 	// novo filtro: mostrar somente aplicações com endDate <= hoje
 	const [onlyEndedUntilToday, setOnlyEndedUntilToday] = useState(false);
 
+	const [dapApDestaque, setDapApDestaque] = useState(50);
+
 	const handleOnlyEndedUntilToday = () => {
 		setOnlyEndedUntilToday((prev) => !prev);
 	};
@@ -1151,6 +1153,28 @@ const FarmBoxPage = () => {
 									/>
 								))}
 							</Box>
+							<FormControl size="small">
+								<InputLabel id="dap-destaque-label">DAP Destaque</InputLabel>
+								<OutlinedInput
+									labelId="dap-destaque-label"
+									label="DAP Destaque"
+									type="number"
+									value={dapApDestaque}
+									onChange={(e) => {
+										const value = Number(e.target.value);
+										setDapApDestaque(Number.isNaN(value) ? 0 : value);
+									}}
+									// inputProps={{
+									// 	min: 0,
+									// 	step: 1,
+									// }}
+									sx={{
+										width: 120,
+										fontWeight: "bold",
+									}}
+								/>
+							</FormControl>
+
 						</Box>
 
 					</>
@@ -1327,6 +1351,7 @@ const FarmBoxPage = () => {
 												openAll={isFarmOpen}
 												setTotalCountSelected={setTotalCountSelected}
 												tipoAplicacao={getTipoAplicacao(app)}
+												dapApDestaque={dapApDestaque}
 											/>
 										))}
 									</Box>
