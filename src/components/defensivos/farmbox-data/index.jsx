@@ -79,6 +79,8 @@ import { useRef, } from "react";
 
 
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import AplicacoesDailyPage from "./aplicacoes-daily/AplicacoesDailyPage";
+
 
 
 
@@ -137,6 +139,12 @@ const FarmBoxPage = () => {
 
 	// novo filtro: mostrar somente aplicações com endDate <= hoje
 	const [onlyEndedUntilToday, setOnlyEndedUntilToday] = useState(false);
+
+	const [openAplicacoesDaily, setOpenAplicacoesDaily] = useState(false);
+
+	const handleOpenAplicacoesDaily = () => setOpenAplicacoesDaily(true);
+	const handleCloseAplicacoesDaily = () => setOpenAplicacoesDaily(false);
+
 
 	const [dapApDestaque, setDapApDestaque] = useState(50);
 
@@ -354,6 +362,7 @@ const FarmBoxPage = () => {
 					}
 				})
 				.then((res) => {
+					console.log('res app data', res.data)
 					dispatch(setApp(res.data));
 					toast.success(
 						`Tudo Certo, Aplicações Atualizadas com sucesso!!`,
@@ -634,6 +643,9 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleOpenFarm()} color="success" disabled={dictSelect.length === 0 || IsloadingDbFarm || loadingData} >
 						Farm Reunião
 					</Button>
+					<Button onClick={handleOpenAplicacoesDaily} color="success" disabled={dictSelect.length === 0 || IsloadingDbFarm || loadingData} >
+						Aplicações
+					</Button>
 					<Button onClick={() => handleOpenColheitaPage()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Colheita de Grãos
 					</Button>
@@ -661,6 +673,17 @@ const FarmBoxPage = () => {
 					closePage={setOpenPreStPage}
 				/>
 			}
+			{openAplicacoesDaily && (
+				<AplicacoesDailyPage
+					open={openAplicacoesDaily}
+					onClose={handleCloseAplicacoesDaily}
+					applications={openApp}
+					onlyFarms={onlyFarms}
+					colors={colors}
+					theme={theme}
+					initialFarms={filtFarm}
+				/>
+			)}
 			{
 				dictSelect.length > 0 &&
 				<>
