@@ -44,6 +44,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import dayjs from "dayjs";
+
+
 // ---------- export helpers ----------
 const downloadBlob = (blob, filename) => {
     const url = URL.createObjectURL(blob);
@@ -482,17 +485,44 @@ export default function AplicacoesDailyPage({
     const filtered = useMemo(() => deriveViewsFromParcelas(filteredParcelas), [filteredParcelas]);
 
     const kpis = useMemo(() => {
-        const total = filtered.parcelas.reduce((acc, p) => acc + (Number(p.areaHa) || 0), 0);
-        const days = filtered.seriesDaily.length || 0;
+        const parcelas = filtered.parcelas || [];
+        const series = filtered.seriesDaily || [];
+
+        const total = parcelas.reduce((acc, p) => acc + (Number(p.areaHa) || 0), 0);
+        const days = series.length || 0;
         const avg = days > 0 ? total / days : 0;
+
+        let minDay = null;
+        let maxDay = null;
+
+        if (series.length > 0) {
+            minDay = series.reduce((min, cur) =>
+                cur.area < min.area ? cur : min
+            );
+
+            maxDay = series.reduce((max, cur) =>
+                cur.area > max.area ? cur : max
+            );
+        }
+
         return {
             total,
             days,
             avg,
             appsCount: filtered.apps.length || 0,
-            parcelasCount: filtered.parcelas.length || 0,
+            parcelasCount: parcelas.length || 0,
+
+            // 👇 novos KPIs
+            minApplication: minDay
+                ? { day: minDay.day, area: minDay.area }
+                : null,
+
+            maxApplication: maxDay
+                ? { day: maxDay.day, area: maxDay.area }
+                : null,
         };
     }, [filtered]);
+
 
     const operationOptions = useMemo(() => filtered.ops.slice(0, 120), [filtered.ops]);
     const exportRows = useMemo(() => buildExportRows(filtered.parcelas), [filtered.parcelas]);
@@ -792,10 +822,30 @@ export default function AplicacoesDailyPage({
                 {/* BODY */}
                 <Box sx={{ p: 2 }}>
                     {/* KPIs */}
-                    <Stack direction="row" spacing={2} flexWrap="wrap" mb={2}>
+                    <Stack direction="row" spacing={2} flexWrap="wrap" mb={2} justifyContent={"space-between"}>
                         <KpiCard title="Área total aplicada (filtros)" value={`${fmtHa(kpis.total)} ha`} colors={colors} />
                         <KpiCard title="Dias com aplicação" value={`${kpis.days}`} colors={colors} />
                         <KpiCard title="Média por dia" value={`${fmtHa(kpis.avg)} ha/dia`} colors={colors} />
+                        <KpiCard
+                            title="Menor aplicação"
+                            value={
+                                kpis.minApplication
+                                    ? `${fmtHa(kpis.minApplication.area)} ha • ${dayjs(kpis.minApplication.day).format("DD/MM")}`
+                                    : "—"
+                            }
+                            colors={colors}
+                        />
+
+                        <KpiCard
+                            title="Maior aplicação"
+                            value={
+                                kpis.maxApplication
+                                    ? `${fmtHa(kpis.maxApplication.area)} ha • ${dayjs(kpis.maxApplication.day).format("DD/MM")}`
+                                    : "—"
+                            }
+                            colors={colors}
+                        />
+
                     </Stack>
 
                     {/* GRÁFICO */}
@@ -997,7 +1047,17 @@ export default function AplicacoesDailyPage({
                                                             <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: "auto" }}>
                                                                 <Typography variant="body2" sx={{ opacity: 0.85, textAlign: "right" }}>
                                                                     {a.equipmentName ? `Equip: ${a.equipmentName}` : ""}
-                                                                    {a.status ? ` • Status: ${a.status}` : ""}
+                                                                    <Chip
+                                                                        size="small"
+                                                                        label={a.status === 'finalized' ? 'Finalizada' : 'Andamento'}
+                                                                        sx={{
+                                                                            backgroundColor: a.status === 'finalized' ? colors.greenAccent[500] : colors.yellow[550],
+                                                                            color: 'black',
+                                                                            border: `1px solid ${colors.grey[700]}`,
+                                                                            fontWeight: 800,
+                                                                            marginLeft: '30px'
+                                                                        }}
+                                                                    />
                                                                 </Typography>
 
                                                                 {/* seta: só ela “parece” accordion */}
