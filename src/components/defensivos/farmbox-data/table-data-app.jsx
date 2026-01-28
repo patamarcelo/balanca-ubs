@@ -135,7 +135,7 @@ const TableDataPage = (props) => {
 	}
 
 	const handlerSelectAllParcelasNotFinished = () => {
-		const filterParcelasNotFinished = dataF.parcelas.filter((data) => data.area - data.areaAplicada !== 0)
+		const filterParcelasNotFinished = dataF.parcelas.filter((data) => data.area - data.areaAplicada > 0)
 		setParcelaSelected(filterParcelasNotFinished)
 	}
 
@@ -514,6 +514,7 @@ const TableDataPage = (props) => {
 										}
 										variant="standard"
 										value={bombaValue}
+										type="number"
 										InputProps={{
 											endAdornment: (
 												<InputAdornment
