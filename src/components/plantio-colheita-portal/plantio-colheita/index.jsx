@@ -132,6 +132,10 @@ const ColheitaAtual = (props) => {
 
 	const colheitaPortalData = useSelector(selectColheitaPortalData)
 
+	const [fAreaParcialGt0SemRomaneios, setFAreaParcialGt0SemRomaneios] = useState(false);
+	const [fAreaParcialEq0ComRomaneios, setFAreaParcialEq0ComRomaneios] = useState(false);
+
+
 	const tableRef = useRef(null);
 
 	const handlePrintTable = async () => {
@@ -263,6 +267,23 @@ const ColheitaAtual = (props) => {
 	}, [selectedFarm]);
 
 
+	const getPendingCount = (id) => Number(idsPending?.[id] || 0);
+	const getComputedCount = (carga) => Number(carga?.romaneios || 0);
+
+	const handleChangeFAreaParcialGt0SemRomaneios = (event) => {
+		const checked = event.target.checked;
+		setFAreaParcialGt0SemRomaneios(checked);
+		if (checked) setFAreaParcialEq0ComRomaneios(false);
+	};
+
+	const handleChangeFAreaParcialEq0ComRomaneios = (event) => {
+		const checked = event.target.checked;
+		setFAreaParcialEq0ComRomaneios(checked);
+		if (checked) setFAreaParcialGt0SemRomaneios(false);
+	};
+
+
+
 	return (
 		<Box
 			width={"100%"}
@@ -278,19 +299,19 @@ const ColheitaAtual = (props) => {
 			}}
 		>
 			<Tooltip title="Salvar imagem da tabela">
-							<Fab
-								color="success"
-								onClick={handlePrintTable}
-								sx={{
-									position: "fixed",
-									right: 24,
-									bottom: 24,
-									zIndex: 2000, // fica acima de cards/tabelas
-								}}
-							>
-								<PhotoCameraIcon />
-							</Fab>
-						</Tooltip>
+				<Fab
+					color="success"
+					onClick={handlePrintTable}
+					sx={{
+						position: "fixed",
+						right: 24,
+						bottom: 24,
+						zIndex: 2000, // fica acima de cards/tabelas
+					}}
+				>
+					<PhotoCameraIcon />
+				</Fab>
+			</Tooltip>
 			<Box
 				sx={{
 					display: "flex",
@@ -535,6 +556,30 @@ const ColheitaAtual = (props) => {
 							label="Romaneios Pendentes"
 							sx={{ color: colors.textColor[100] }}
 						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={fAreaParcialGt0SemRomaneios}
+									onChange={handleChangeFAreaParcialGt0SemRomaneios}
+								/>
+							}
+							label="Área > 0 & sem romaneios"
+							sx={{ color: colors.textColor[100] }}
+						/>
+
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={fAreaParcialEq0ComRomaneios}
+									onChange={handleChangeFAreaParcialEq0ComRomaneios}
+								/>
+							}
+							label="Área = 0 & com romaneios"
+							sx={{ color: colors.textColor[100] }}
+						/>
+
 						<FormControl sx={{ m: 1, width: 300 }}>
 							<InputLabel id="demo-multiple-name-label">Variedade</InputLabel>
 							<Select
@@ -614,6 +659,24 @@ const ColheitaAtual = (props) => {
 									? idsPending[data.id] > 0
 									: true
 							)
+							.filter((data) => {
+								if (!fAreaParcialGt0SemRomaneios) return true;
+
+								const areaParcial = Number(data.area_parcial || 0);
+								const computed = getComputedCount(data);
+								const pending = getPendingCount(data.id);
+
+								return areaParcial > 0 && computed === 0 && pending === 0;
+							})
+							.filter((data) => {
+								if (!fAreaParcialEq0ComRomaneios) return true;
+
+								const areaParcial = Number(data.area_parcial || 0);
+								const computed = getComputedCount(data);
+								const pending = getPendingCount(data.id);
+
+								return areaParcial === 0 && (computed > 0 || pending > 0);
+							})
 							.sort((b, a) =>
 								dateSort
 									? b.talhao__id_talhao.localeCompare(a.talhao__id_talhao)
