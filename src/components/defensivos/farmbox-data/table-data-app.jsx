@@ -45,7 +45,6 @@ import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
 const TableDataPage = (props) => {
 	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao, dapApDestaque } = props;
-	console.log('dataFFF: ', dataF)
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -133,6 +132,11 @@ const TableDataPage = (props) => {
 
 	const handlerSelectAllParcelas = () => {
 		setParcelaSelected(dataF.parcelas)
+	}
+
+	const handlerSelectAllParcelasNotFinished = () => {
+		const filterParcelasNotFinished = dataF.parcelas.filter((data) => data.area - data.areaAplicada !== 0)
+		setParcelaSelected(filterParcelasNotFinished)
 	}
 
 	const handlerClearArea = () => {
@@ -361,7 +365,7 @@ const TableDataPage = (props) => {
 					</div>
 				</div>
 				<div className={classes.numberDivApp}>
-					<p style={{ cursor: 'pointer', textAlign: "right", paddingRight: 26  }} onClick={() => handleSelectAreaAp(dataF)}>
+					<p style={{ cursor: 'pointer', textAlign: "right", paddingRight: 26 }} onClick={() => handleSelectAreaAp(dataF)}>
 						{Number(dataF.area).toLocaleString("pt-br", {
 							minimumFractionDigits: 0,
 							maximumFractionDigits: 0
@@ -540,18 +544,37 @@ const TableDataPage = (props) => {
 							</Box>
 						</Box>
 					) :
-						<Box className={classes.areaTotalSumDiv}>
-							<span
-								onClick={handlerSelectAllParcelas}
-								style={{ cursor: "pointer" }}
-							>
-								<FontAwesomeIcon
-									icon={faCheckCircle}
-									color={colors.greenAccent[300]}
-									style={{ marginRight: "10px" }}
-								/>
-							</span></Box>
+						<Box
+							sx={{
+								display: 'flex',
+								gap: '10px'
+							}}
+						>
+							<Box className={classes.areaTotalSumDiv}>
+								<span
+									onClick={handlerSelectAllParcelas}
+									style={{ cursor: "pointer" }}
+								>
+									<FontAwesomeIcon
+										icon={faCheckCircle}
+										color={colors.greenAccent[300]}
+										style={{ marginRight: "10px" }}
+									/>
+								</span></Box>
+							<Box className={classes.areaTotalSumDiv}>
+								<span
+									onClick={handlerSelectAllParcelasNotFinished}
+									style={{ cursor: "pointer" }}
+								>
+									<FontAwesomeIcon
+										icon={faCheckCircle}
+										color={colors.redAccent[300]}
+										style={{ marginRight: "10px" }}
+									/>
+								</span></Box>
+						</Box>
 					}
+
 					{loadingMap && (
 						<Box
 							display="flex"
