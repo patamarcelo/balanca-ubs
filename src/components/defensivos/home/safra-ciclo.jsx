@@ -20,7 +20,8 @@ const SafraCicloComp = () => {
 		first: "2022/2023",
 		second: "2023/2024",
 		third: '2024/2025',
-		fourth: '2025/2026'
+		fourth: '2025/2026',
+		fifth: '2026/2027'
 	};
 
 	const cicloDict = {
@@ -86,6 +87,7 @@ const SafraCicloComp = () => {
 						<MenuItem value={safraDict.second}>2023/2024</MenuItem>
 						<MenuItem value={safraDict.third}>2024/2025</MenuItem>
 						<MenuItem value={safraDict.fourth}>2025/2026</MenuItem>
+						<MenuItem value={safraDict.fifth}>2026/2027</MenuItem>
 					</Select>
 				</FormControl>
 				<FormControl
