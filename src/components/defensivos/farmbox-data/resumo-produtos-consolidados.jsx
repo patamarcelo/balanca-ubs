@@ -43,6 +43,30 @@ const normTxt = (v) =>
         .toLowerCase()
         .trim();
 
+const resolveUnidade = (ins) => {
+    // tenta campos explícitos primeiro
+    // fallback heurístico baseado no tipo
+
+    const raw =
+        ins?.insumo_unit ||
+        ins?.unidade_medida ||
+        ins?.unidadeMedida ||
+        ins?.um ||
+        "";
+
+    if (raw) {
+        return String(raw).replace("/ha", "").replace('l', 'L').trim();
+    }
+
+    const tipo = String(ins?.insumo_unit ?? "").toLowerCase();
+
+    if (tipo.includes("liquid") || tipo.includes("óleo") || tipo.trim() === 'l') return "L";
+    if (tipo.includes("solido") || tipo.includes("fert")) return "kg";
+
+    return ""; // desconhecida → não mostra
+};
+
+
 export default function ResumoProdutosConsolidados({
     rows = [], // aplicações filtradas
     title = "Produtos consolidados (filtro atual)",
@@ -80,7 +104,13 @@ export default function ResumoProdutosConsolidados({
                 const key = `${tipo}__${nome}`;
 
                 if (!acc.has(key)) {
-                    acc.set(key, { key, nome, tipo, total: 0 });
+                    acc.set(key, {
+                        key,
+                        nome,
+                        tipo,
+                        total: 0,
+                        unidade: resolveUnidade(ins),
+                    });
                 }
 
                 acc.get(key).total += qtdPendente;
@@ -200,11 +230,10 @@ export default function ResumoProdutosConsolidados({
                                     whiteSpace: "nowrap",
                                 }}
                             >
-                                {p.total.toLocaleString("pt-BR", {
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 0,
-                                })}
+                                {p.total.toLocaleString("pt-BR")}
+                                {p.unidade ? ` ${p.unidade}` : ""}
                             </Typography>
+
                         </Box>
                     ))
                 )}

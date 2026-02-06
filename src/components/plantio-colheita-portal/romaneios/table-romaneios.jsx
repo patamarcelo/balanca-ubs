@@ -68,7 +68,7 @@ const RomaneiosTable = (props) => {
 	const handlePrintRomaneios = async () => {
 		const el = tablePrintRef.current;
 		if (!el) return;
-		
+
 		el.classList.add(styles.romaneioTablePrintMode);
 		el.classList.add(styles.printMode);
 		// 1. Criar um container temporário para não afetar o layout original
@@ -389,11 +389,25 @@ const RomaneiosTable = (props) => {
 							dataFilter.map((carga, i) => {
 								const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
 								const getTicket = carga?.ticket ? carga.ticket : '-'
-								const getCultura = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.cultura) : undefined
 								const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
 								const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
 								const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
 								// console.log("carga", carga)
+
+								// 1. Tenta extrair as culturas das parcelas, removendo valores nulos/undefined
+								const culturasDasParcelas = carga?.parcelasObjFiltered
+									? carga.parcelasObjFiltered.map(p => p.cultura).filter(c => c)
+									: [];
+
+								// 2. Define getCultura: 
+								// Se houver culturas na lista de parcelas, usa elas. 
+								// Caso contrário, usa a cultura da raiz do objeto.
+								const getCulturaHere = culturasDasParcelas.length > 0
+									? culturasDasParcelas
+									: (carga?.cultura || '-');
+
+								// 3. O resultado final (para exibição simples)
+								const getCultura = Array.isArray(getCulturaHere) ? getCulturaHere[0] : getCulturaHere;
 								return (
 									<tr
 										key={i}
@@ -458,7 +472,7 @@ const RomaneiosTable = (props) => {
 												getCultura &&
 												<img
 													src={filteredIcon(
-														getCultura[0]
+														getCultura
 													)}
 													alt={filteredAlt(
 														getCultura

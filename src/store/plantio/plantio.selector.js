@@ -367,7 +367,8 @@ export const createDict = (state) => {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2
 					}),
-				dose: data.sought_dosage_value.toFixed(3)
+				dose: data.sought_dosage_value.toFixed(3),
+				insumo_unit: data.applied_unit || data.sought_quantity_unit || "-"
 			};
 		});
 

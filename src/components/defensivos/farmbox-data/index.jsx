@@ -223,6 +223,7 @@ const FarmBoxPage = () => {
 		return "Operacao";
 	};
 
+	console.log('filteredApps, ', filteredApps)
 	const aplicacoesFiltradas = useMemo(() => {
 		return (filteredApps || [])
 			// status
