@@ -77,6 +77,7 @@ const ResumoFazendasPage = (props) => {
 						: "0,00"}
 				</div>
 			</div>
+
 			{fazenda in dataGeral.fazendas ? (
 				<>
 

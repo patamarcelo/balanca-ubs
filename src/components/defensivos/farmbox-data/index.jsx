@@ -80,6 +80,7 @@ import { useRef, } from "react";
 
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import AplicacoesDailyPage from "./aplicacoes-daily/AplicacoesDailyPage";
+import ResumoProdutosConsolidados from "./resumo-produtos-consolidados";
 
 
 
@@ -221,6 +222,67 @@ const FarmBoxPage = () => {
 		// fallback (caso estranho: todos eram Operação)
 		return "Operacao";
 	};
+
+	const aplicacoesFiltradas = useMemo(() => {
+		return (filteredApps || [])
+			// status
+			.filter((app) =>
+				!openAppOnly
+					? app.status === "sought"
+					: app.status === "sought" || app.status === "finalized"
+			)
+
+			// seu "preapro solo" (manteve sua lógica original)
+			.filter((app) =>
+				filterPreaproSolo
+					? operationFilter.includes((app?.operacao ?? "").trim())
+					: (app?.app ?? "").length > 0
+			)
+
+			// operação (MultiSelect)
+			.filter((app) => {
+				const op = (app?.operacao ?? "").toString().trim();
+				return operationFilter.length === 0 ? true : operationFilter.includes(op);
+			})
+
+			// cultura (MultiSelect)
+			.filter((app) => {
+				const cultura = (app?.cultura ?? "").toString().trim();
+				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+			})
+
+			// futuro / janela
+			.filter((app) =>
+				!showFutureApps
+					? new Date(app.date) < getNextWeekDays()
+					: new Date(app.date) < new Date("2031-10-17")
+			)
+
+			// tipo aplicação (Operacao / Solido / Liquido)
+			.filter((app) => tipoAplicacaoFilter.includes(getTipoAplicacao(app)))
+
+			// NOVO: endDate <= hoje
+			.filter((app) => {
+				if (!onlyEndedUntilToday) return true;
+
+				const end = parseYmdToDayStart(app?.endDate);
+				if (!end) return false;
+
+				const today = toDayStart(new Date());
+				return end.getTime() <= today.getTime();
+			});
+	}, [
+		filteredApps,
+		openAppOnly,
+		filterPreaproSolo,
+		operationFilter,
+		cultureFilter,
+		showFutureApps,
+		tipoAplicacaoFilter,
+		onlyEndedUntilToday,
+		getTipoAplicacao
+	]);
+
 
 	const toNumber = (v) => {
 		if (v == null) return 0;
@@ -1545,6 +1607,24 @@ const FarmBoxPage = () => {
 														/>
 													);
 												})}
+											{
+												filtFarm && (
+													<ResumoProdutosConsolidados
+														rows={aplicacoesFiltradas}
+														title="Produtos pendentes (saldo a aplicar)"
+														colors={colors}
+														getSaldoHa={(app) => {
+															const saldo = Number(app?.saldoAplicar ?? 0);
+															if (saldo > 0) return saldo;
+															const area = Number(app?.area ?? 0);
+															const aplicado = Number(app?.areaAplicada ?? 0);
+															return Math.max(0, area - aplicado);
+														}}
+													/>
+
+
+												)
+											}
 										</div>
 									</>
 								)}
