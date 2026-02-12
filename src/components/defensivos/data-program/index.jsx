@@ -69,6 +69,39 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import SelectCulturaVariedade from "./filter-select";
 
 
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+
+import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
+import PlaylistRemoveRoundedIcon from "@mui/icons-material/PlaylistRemoveRounded";
+import ContentPasteGoRoundedIcon from "@mui/icons-material/ContentPasteGoRounded";
+
+
+const to3 = (v) => Number(v || 0).toFixed(3);
+
+const normalizeDose = (s) => {
+	const val = String(s ?? "").replace(",", ".").trim();
+	const n = Number(val);
+	if (!Number.isFinite(n) || n < 0) return null;
+	return Number(to3(n));
+};
+
+const buildFarmboxInputFromProd = (prod, doseNum) => {
+	console.log('prod', prod)
+	console.log('doseNum: ', doseNum)
+	// seus produtos do endpoint têm pelo menos: id_farmbox, formulacao, name
+	// e o farmbox espera: { input_id, dosage_unity, dosage_value }
+	return {
+		input_id: prod?.input_id,
+		dosage_unity: prod?.dosage_unity,
+		dosage_value: Number(to3(doseNum)),
+		produto: prod?.name || "Insumo",
+	};
+};
+
+
 
 const DataProgramPage = (props) => {
 	const theme = useTheme();
@@ -140,6 +173,78 @@ const DataProgramPage = (props) => {
 
 
 
+	const [caldaAvulsa, setCaldaAvulsa] = useState([]); // sessão
+	const [useCaldaAvulsaByApp, setUseCaldaAvulsaByApp] = useState({});
+
+	// modal
+	const [openCaldaModal, setOpenCaldaModal] = useState(false);
+
+	// campos do modal
+	const [caldaProd, setCaldaProd] = useState(null);
+	const [caldaDose, setCaldaDose] = useState("");
+
+
+
+	const openMontarCalda = () => setOpenCaldaModal(true);
+	const closeMontarCalda = () => {
+		setOpenCaldaModal(false);
+		setCaldaProd(null);
+		setCaldaDose("");
+	};
+
+	const handleAddToCaldaAvulsa = () => {
+		const doseNum = normalizeDose(caldaDose);
+		if (!caldaProd) {
+			toast.error("Selecione um insumo.");
+			return;
+		}
+		if (doseNum == null) {
+			toast.error("Dose inválida (use até 3 casas e >= 0).");
+			return;
+		}
+
+		const input = buildFarmboxInputFromProd(caldaProd, doseNum);
+		console.log('input: ', input)
+
+		if (!input.input_id) {
+			toast.error("Produto sem id_farmbox (input_id).");
+			return;
+		}
+
+		setCaldaAvulsa((prev) => {
+			// se já existe, atualiza dose (em vez de duplicar)
+			const exists = prev.some((x) => x.input_id === input.input_id);
+			if (!exists) return [...prev, input];
+			return prev.map((x) => (x.input_id === input.input_id ? { ...x, ...input } : x));
+		});
+
+		setCaldaProd(null);
+		setCaldaDose("");
+		toast.success("Insumo adicionado/atualizado na Calda Avulsa.");
+	};
+
+	console.log('caldaAvulsa: ',)
+
+	const handleRemoveFromCaldaAvulsa = (input_id) => {
+		setCaldaAvulsa((prev) => prev.filter((x) => x.input_id !== input_id));
+	};
+
+	const handleClearCaldaAvulsa = () => {
+		setCaldaAvulsa([]);
+		setUseCaldaAvulsaByApp({}); // opcional: desmarca tudo
+		toast.success("Calda Avulsa limpa.");
+	};
+
+	const toggleUseCaldaAvulsa = (hiddenAppName) => {
+		setUseCaldaAvulsaByApp((prev) => {
+			const next = { ...prev, [hiddenAppName]: !prev[hiddenAppName] };
+			return next;
+		});
+
+		// importante: quando liga a calda avulsa, limpa ações manuais daquele card
+		setProdsToRemove((prev) => prev.filter((x) => x.appName !== hiddenAppName));
+		setprodsToAdd((prev) => prev.filter((x) => x.appName !== hiddenAppName));
+	};
 
 
 	const iconDict = [
@@ -1402,99 +1507,114 @@ const DataProgramPage = (props) => {
 	// 		console.log('finally alterar')
 	// 	}
 	// }
-
 	const handleOpenApp = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
-		// se já tem algo carregando, ou essa app já foi aberta, não faz nada
-		if (appIsLoading || appsOpened.includes(programaLoading)) {
-			return;
-		}
+		// chave única por FAZENDA + APP
+		const openedKey = hiddenAppName; // = dat.data.estagio + farmSelected (já inclui a fazenda)
 
-		console.log('data to send to Farmbox', data);
+		// se já tem algo carregando, ou essa app já foi aberta (nessa fazenda), não faz nada
+		if (appIsLoading || appsOpened.includes(openedKey)) return;
+
+		console.log("data to send to Farmbox", data);
 		let newData = data;
 
-		const isThereAnyProdToRemove = prodsToRemove.filter(
-			(data) => data.appName === hiddenAppName
-		);
+		const to3 = (v) => Number(v ?? 0).toFixed(3);
 
-		if (isThereAnyProdToRemove?.length > 0) {
-			console.log('yes, need to remove someProds here:');
+		const shouldUseAvulsa = !!useCaldaAvulsaByApp?.[hiddenAppName];
 
-			const to3 = (v) => Number(v).toFixed(3);
+		if (shouldUseAvulsa) {
+			if (!caldaAvulsa || caldaAvulsa.length === 0) {
+				Swal.fire({
+					title: "Calda Avulsa vazia",
+					text: "Monte a Calda Avulsa antes de usar.",
+					icon: "warning",
+				});
+				return;
+			}
 
-			const onlyIdToRemove = isThereAnyProdToRemove.map((data) => ({
-				id: data.prodToRemove.id_farmbox,
-				dose: to3(data.prodToRemove.dose),
+			// ✅ mantém SOMENTE os insumos de operação da calda original
+			const originalInputs = Array.isArray(newData.inputs) ? newData.inputs : [];
+
+			// regra: operação = un_ha
+			const operacaoInputs = originalInputs.filter(
+				(x) => String(x?.dosage_unity || "").toLowerCase() === "un_ha"
+			);
+
+			// calda avulsa (normalizada)
+			const avulsaInputs = caldaAvulsa.map(({ input_id, dosage_unity, dosage_value }) => ({
+				input_id,
+				dosage_unity,
+				dosage_value: Number(to3(dosage_value)),
 			}));
 
-			const removeKeys = new Set(
-				onlyIdToRemove.map((item) => `${item.id}|${item.dose}`)
-			);
+			// ✅ dedupe: se algum input_id já existe na operação, não duplica
+			const operacaoIds = new Set(operacaoInputs.map((x) => x.input_id));
+			const avulsaSemDuplicarOperacao = avulsaInputs.filter((x) => !operacaoIds.has(x.input_id));
 
 			newData = {
 				...newData,
-				inputs: newData.inputs.filter(
-					(prods) => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
-				),
+				inputs: [...operacaoInputs, ...avulsaSemDuplicarOperacao],
 			};
+
+
+		} else {
+			const isThereAnyProdToRemove = prodsToRemove.filter((x) => x.appName === hiddenAppName);
+
+			if (isThereAnyProdToRemove?.length > 0) {
+				const onlyIdToRemove = isThereAnyProdToRemove.map((x) => ({
+					id: x.prodToRemove.id_farmbox,
+					dose: to3(x.prodToRemove.dose),
+				}));
+
+				const removeKeys = new Set(onlyIdToRemove.map((item) => `${item.id}|${item.dose}`));
+
+				newData = {
+					...newData,
+					inputs: (newData.inputs || []).filter(
+						(prods) => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
+					),
+				};
+			}
+
+			const isThereAnyProdToAdd = prodsToAdd.filter((x) => x.appName === hiddenAppName);
+			if (isThereAnyProdToAdd.length > 0) {
+				const onlyObjTOFarm = isThereAnyProdToAdd.map((x) => x.objToSendtoFarm);
+				newData = {
+					...newData,
+					inputs: [...(newData.inputs || []), ...onlyObjTOFarm],
+				};
+			}
 		}
 
-		const isThereAnyProdToAdd = prodsToAdd.filter(
-			(data) => data.appName === hiddenAppName
-		);
-		if (isThereAnyProdToAdd.length > 0) {
-			const onlyObjTOFarm = isThereAnyProdToAdd.map(
-				(data) => data.objToSendtoFarm
-			);
-			newData = {
-				...newData,
-				inputs: [...newData.inputs, ...onlyObjTOFarm],
-			};
-		}
+		const isThereAnyPlantationToRemove = updateApp.filter((x) => x.appName === hiddenAppName);
 
-		const isThereAnyPlantationToRemove = updateApp.filter(
-			(data) => data.appName === hiddenAppName
-		);
-		let parcelasToUp = cronograma.map((crono) => ({
+		let parcelasToUp = (cronograma || []).map((crono) => ({
 			id: crono.plantioId,
 			estagio: estagio,
 		}));
 
 		if (isThereAnyPlantationToRemove.length > 0) {
-			console.log('precisa remover as plantacoes abaixo:');
-			const onlyIdPlantations = isThereAnyPlantationToRemove.map(
-				(parcela) => parcela.plantioIdFarmbox
-			);
+			const onlyIdPlantations = isThereAnyPlantationToRemove.map((p) => p.plantioIdFarmbox);
+
 			newData = {
 				...newData,
-				plantations: newData.plantations.filter(
-					(data) => !onlyIdPlantations.includes(data.plantation_id)
+				plantations: (newData.plantations || []).filter(
+					(p) => !onlyIdPlantations.includes(p.plantation_id)
 				),
 			};
-			const onlyPlantioId = isThereAnyPlantationToRemove.map(
-				(data) => data.id
-			);
 
-			parcelasToUp = parcelasToUp.filter(
-				(data) => !onlyPlantioId.includes(data.id)
-			);
+			const onlyPlantioId = isThereAnyPlantationToRemove.map((p) => p.id);
+			parcelasToUp = parcelasToUp.filter((p) => !onlyPlantioId.includes(p.id));
 		}
 
-		const params = JSON.stringify({
-			data: newData,
-		});
+		const params = JSON.stringify({ data: newData });
 
 		try {
 			setAppIsLoading(programaLoading);
 
 			const res = await djangoApi.put("plantio/open_app_farmbox/", params, {
-				headers: {
-					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-				},
+				headers: { Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}` },
 			});
 
-			console.log(res);
-
-			// aqui você falou "se o status for 200", mas no código tá 201.
 			if (res.data.status === 200 || res.data.status === 201) {
 				const dataFromServer = JSON.parse(res.data.result);
 				const { code } = dataFromServer;
@@ -1505,33 +1625,19 @@ const DataProgramPage = (props) => {
 					icon: "success",
 				});
 
-				parcelasToUp.forEach((parcela) => {
-					handleSetApp(parcela.id, parcela.estagio);
-				});
+				parcelasToUp.forEach((p) => handleSetApp(p.id, p.estagio));
 
-				// marca essa aplicação como definitivamente aberta
-				setAppsOpened((prev) =>
-					prev.includes(programaLoading) ? prev : [...prev, programaLoading]
-				);
+				// ✅ marca como aberta só nessa fazenda/app
+				setAppsOpened((prev) => (prev.includes(openedKey) ? prev : [...prev, openedKey]));
 			}
 		} catch (err) {
-			console.log("Erro ao alterar as aplicações", err);
-			console.log("Erro ao alterar as aplicações", err.response?.data?.msg);
-			console.log(
-				"Erro ao alterar as aplicações",
-				err.response?.data?.result && JSON.parse(err.response.data.result)
-			);
 			toast.error(
 				`Erro ao Abrir a Aplicação - ${err.response?.data?.msg} - ${err.response?.data?.result && JSON.parse(err.response.data.result)
 				}`,
-				{
-					position: "top-center",
-					duration: 5000,
-				}
+				{ position: "top-center", duration: 5000 }
 			);
 		} finally {
 			setAppIsLoading(null);
-			console.log("finally alterar");
 		}
 	};
 
@@ -1617,6 +1723,35 @@ const DataProgramPage = (props) => {
 				estagioSelecionado={estagiosSelecionados}
 				setEstagioSelecionado={setEstagiosSelecionados}
 			/>
+			<div className="print-safe-wrapper" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+				<Button
+					variant="contained"
+					color="secondary"
+					size="small"
+					onClick={openMontarCalda}
+					startIcon={<PlaylistAddRoundedIcon />}
+					sx={{ textTransform: "none", fontWeight: 800 }}
+				>
+					Montar Calda Avulsa
+				</Button>
+
+				<Chip
+					size="small"
+					color={caldaAvulsa.length ? "success" : "default"}
+					label={`Itens: ${caldaAvulsa.length}`}
+					sx={{ fontWeight: 800 }}
+				/>
+
+				<IconButton
+					size="small"
+					onClick={handleClearCaldaAvulsa}
+					disabled={!caldaAvulsa.length}
+					title="Limpar Calda Avulsa"
+				>
+					<PlaylistRemoveRoundedIcon fontSize="small" />
+				</IconButton>
+			</div>
+
 			<Box
 				className={[
 					classes["box-program"],
@@ -1824,6 +1959,10 @@ const DataProgramPage = (props) => {
 								.sort((a, b) => a.tipo.localeCompare(b.tipo))
 								.filter((t) => t.tipo !== "operacao");
 
+							const totaisOrdenados = dat.totais.sort((a, b) => a.tipo.localeCompare(b.tipo));
+							const totaisOperacao = totaisOrdenados.filter((t) => t.tipo === "operacao");
+							const totaisNaoOperacao = totaisOrdenados.filter((t) => t.tipo !== "operacao");
+
 							const extrasRender = prodsToAdd
 								.filter((ex) => ex.appName === hiddenAppName)
 								.map((ex) => {
@@ -1833,11 +1972,34 @@ const DataProgramPage = (props) => {
 										canRemove: true
 									}
 								});
+							const usandoAvulsa = !!useCaldaAvulsaByApp?.[hiddenAppName];
 
-							const linhasParaMostrar = [...totaisFiltrados, ...extrasRender];
+							const linhasParaMostrar = (() => {
+								if (!usandoAvulsa) return [...totaisNaoOperacao, ...extrasRender];
+
+								// ✅ em modo avulsa: mantém operação da calda antiga + mostra calda avulsa
+								const avulsaRender = caldaAvulsa.map((x) => ({
+									produto: x.produto,
+									dose: Number(x.dosage_value),
+									qty: totalToMult * Number(x.dosage_value),
+									tipo: "avulsa",
+									canRemove: false, // remove no modal
+								}));
+
+								// operação vem do dat.totais (já tem qty/dose prontos)
+								const operacaoRender = totaisOperacao.map((t) => ({
+									...t,
+									canRemove: false, // não mexe aqui
+								}));
+
+								return [...operacaoRender, ...avulsaRender];
+							})();
+
 							// console.log('linhas para mostrar: ', linhasParaMostrar)
 							// console.log('openApp: ', openApp)
 							// console.log('openApp Cronograma: ', data.cronograma)
+
+
 
 							return (
 								<>
@@ -1900,7 +2062,7 @@ const DataProgramPage = (props) => {
 																hiddenAppName
 															)
 														}
-														disabled={!!appIsLoading || appsOpened.includes(data.estagio)}
+														disabled={!!appIsLoading || appsOpened.includes(hiddenAppName)}
 														sx={{
 															cursor: "pointer",
 															width: "50px",
@@ -1937,6 +2099,30 @@ const DataProgramPage = (props) => {
 											<LinearProgress color="success" />
 										</Box>
 									}
+									<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+										<Tooltip title={usandoAvulsa ? "Desativar Calda Avulsa" : "Usar Calda Avulsa neste card"}>
+											<IconButton
+												size="small"
+												onClick={() => toggleUseCaldaAvulsa(hiddenAppName)}
+												disabled={!caldaAvulsa.length}
+												sx={{
+													borderRadius: 2,
+													backgroundColor: usandoAvulsa ? "rgba(76,175,80,0.15)" : "transparent",
+												}}
+											>
+												<ContentPasteGoRoundedIcon
+													fontSize="small"
+													color={usandoAvulsa ? "success" : "inherit"}
+												/>
+											</IconButton>
+										</Tooltip>
+
+										<Tooltip title="Editar Calda Avulsa">
+											<IconButton size="small" onClick={openMontarCalda}>
+												<PlaylistAddRoundedIcon fontSize="small" />
+											</IconButton>
+										</Tooltip>
+									</Box>
 									<div
 										key={i}
 										data-appname={hiddenAppName}  // <- adiciona isso aqui
@@ -1959,6 +2145,7 @@ const DataProgramPage = (props) => {
 										}}
 										className={`${classes["mainProgramAllDiv"]} mainProgramAllDiv`}
 									>
+
 										<div
 											key={i}
 											style={{
@@ -2146,29 +2333,32 @@ const DataProgramPage = (props) => {
 																					"div-produtos-aplicar-produto"
 																					]
 																				}
-																			><IconButton
-																				onClick={() =>
-																					!dataP.canRemove ?
-																						handleDeleteProd(dataP, dat?.data?.produtos, hiddenAppName)
-																						:
-																						handleDeleteProdManual(dataP, hiddenAppName)
-																				}
-																				size="small"
-																				aria-label="delete"
-																				color={!wasRemoved.length > 0 ? "success" : 'error'}
-																				sx={{
-																					alignSelf: "start",
-																					borderRadius: "12px"
-																				}}
 																			>
-																					{
-																						!dataP.canRemove ?
-																							<DeleteIcon />
-																							:
-																							<DeleteForeverIcon color="warning" />
+																					<IconButton
+																						onClick={() =>
+																							!dataP.canRemove ?
+																								handleDeleteProd(dataP, dat?.data?.produtos, hiddenAppName)
+																								:
+																								handleDeleteProdManual(dataP, hiddenAppName)
+																						}
+																						size="small"
+																						aria-label="delete"
+																						color={!wasRemoved.length > 0 ? "success" : 'error'}
+																						sx={{
+																							alignSelf: "start",
+																							borderRadius: "12px"
+																						}}
+																						disabled={usandoAvulsa}
+																					>
+																						{
+																							!dataP.canRemove ?
+																								<DeleteIcon />
+																								:
+																								<DeleteForeverIcon color="warning" />
 
-																					}
-																				</IconButton>
+																						}
+																					</IconButton>
+																				
 																				{`${dataP.dose.toLocaleString(
 																					"pt-br",
 																					{
@@ -2221,7 +2411,7 @@ const DataProgramPage = (props) => {
 																color="success"
 																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
 																aria-label="adicionar"
-																disabled={prodsToUse.length === 0}
+																disabled={prodsToUse.length === 0 || usandoAvulsa}
 																sx={{ marginBottom: '10px' }}
 															>
 																<AddCircleRoundedIcon fontSize="small" />
@@ -2653,6 +2843,102 @@ const DataProgramPage = (props) => {
 					)}
 				</Box>
 			</Box>
+			<Dialog open={openCaldaModal} onClose={closeMontarCalda} maxWidth="sm" fullWidth>
+				<DialogTitle sx={{ fontWeight: 900 }}>
+					Montar Calda Avulsa (sessão)
+				</DialogTitle>
+
+				<DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+					<Typography variant="body2" sx={{ opacity: 0.8 }}>
+						Essa calda fica disponível enquanto você estiver nessa tela (não salva no banco).
+					</Typography>
+
+					<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+						<Autocomplete
+							size="small"
+							options={prodsToUse}
+							filterOptions={filterOptions}
+							getOptionLabel={(opt) => opt.name}
+							value={caldaProd}
+							onChange={(_, v) => setCaldaProd(v)}
+							renderInput={(params) => <TextField {...params} label="Insumo" />}
+							sx={{ flex: 1 }}
+						/>
+
+						<TextField
+							size="small"
+							label="Dose"
+							value={caldaDose}
+							onChange={(e) => setCaldaDose(e.target.value)}
+							placeholder="0.000"
+							type="number"
+							inputProps={{ step: 0.001, min: 0 }}
+							sx={{ width: 140 }}
+						/>
+
+						<Button
+							variant="contained"
+							color="success"
+							onClick={handleAddToCaldaAvulsa}
+							disabled={!prodsToUse?.length}
+							sx={{ fontWeight: 900, height: 40 }}
+						>
+							Adicionar
+						</Button>
+					</Box>
+
+					<Divider />
+
+					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+						{caldaAvulsa.length === 0 ? (
+							<Typography variant="body2" sx={{ opacity: 0.7 }}>
+								Nenhum insumo na calda avulsa ainda.
+							</Typography>
+						) : (
+							caldaAvulsa.map((x) => (
+								<Box
+									key={x.input_id}
+									sx={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										p: 1,
+										borderRadius: 2,
+										backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
+									}}
+								>
+									<Box sx={{ display: "flex", flexDirection: "column" }}>
+										<Typography sx={{ fontWeight: 800 }}>
+											{Number(x.dosage_value).toLocaleString("pt-BR", {
+												minimumFractionDigits: 3,
+												maximumFractionDigits: 3,
+											})}{" "}
+											— {x.produto}
+										</Typography>
+										<Typography variant="caption" sx={{ opacity: 0.75 }}>
+											{x.dosage_unity ? `Unidade: ${x.dosage_unity}` : "Unidade: -"}
+										</Typography>
+									</Box>
+
+									<IconButton onClick={() => handleRemoveFromCaldaAvulsa(x.input_id)} color="error">
+										<DeleteForeverIcon />
+									</IconButton>
+								</Box>
+							))
+						)}
+					</Box>
+				</DialogContent>
+
+				<DialogActions sx={{ p: 2 }}>
+					<Button onClick={handleClearCaldaAvulsa} disabled={!caldaAvulsa.length} color="warning">
+						Limpar
+					</Button>
+					<Button onClick={closeMontarCalda} variant="contained">
+						Fechar
+					</Button>
+				</DialogActions>
+			</Dialog>
+
 		</Box >
 	);
 };
