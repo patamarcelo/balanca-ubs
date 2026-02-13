@@ -1722,8 +1722,12 @@ const DataProgramPage = (props) => {
 				estagios={filterEstagios}
 				estagioSelecionado={estagiosSelecionados}
 				setEstagioSelecionado={setEstagiosSelecionados}
+				
+				openMontarCalda={openMontarCalda}
+				caldaAvulsa={caldaAvulsa}
+				handleClearCaldaAvulsa={handleClearCaldaAvulsa}
 			/>
-			<div className="print-safe-wrapper" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+			{/* <div className="print-safe-wrapper" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
 				<Button
 					variant="contained"
 					color="secondary"
@@ -1750,7 +1754,7 @@ const DataProgramPage = (props) => {
 				>
 					<PlaylistRemoveRoundedIcon fontSize="small" />
 				</IconButton>
-			</div>
+			</div> */}
 
 			<Box
 				className={[

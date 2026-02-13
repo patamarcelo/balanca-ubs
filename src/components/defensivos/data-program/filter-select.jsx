@@ -7,9 +7,13 @@ import {
     InputLabel,
     IconButton,
     Slide,
+    Button,
+    Chip
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
+import PlaylistRemoveRoundedIcon from "@mui/icons-material/PlaylistRemoveRounded";
 
 const SelectCulturaVariedade = ({
     culturaSelecionada,
@@ -21,7 +25,9 @@ const SelectCulturaVariedade = ({
     parcelas,
     parcelaSelecionada,
     setParcelaSelecionada,
-
+    openMontarCalda,
+    caldaAvulsa,
+    handleClearCaldaAvulsa,
     // NOVO:
     estagios = [],
     estagioSelecionado = [],
@@ -248,6 +254,34 @@ const SelectCulturaVariedade = ({
                                 <CloseIcon />
                             </IconButton>
                         )}
+                        <div className="print-safe-wrapper" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                size="small"
+                                onClick={openMontarCalda}
+                                startIcon={<PlaylistAddRoundedIcon />}
+                                sx={{ textTransform: "none", fontWeight: 800 }}
+                            >
+                                Montar Calda Avulsa
+                            </Button>
+
+                            <Chip
+                                size="small"
+                                color={caldaAvulsa.length ? "success" : "default"}
+                                label={`Itens: ${caldaAvulsa.length}`}
+                                sx={{ fontWeight: 800 }}
+                            />
+
+                            <IconButton
+                                size="small"
+                                onClick={handleClearCaldaAvulsa}
+                                disabled={!caldaAvulsa.length}
+                                title="Limpar Calda Avulsa"
+                            >
+                                <PlaylistRemoveRoundedIcon fontSize="small" />
+                            </IconButton>
+                        </div>
                     </Box>
                 </Slide>
             </Box>
