@@ -184,6 +184,54 @@ const DataProgramPage = (props) => {
 	const [caldaDose, setCaldaDose] = useState("");
 
 
+	// =========================
+	// Storage — Calda Avulsa (por fazenda)
+	// =========================
+	const CALDA_STORAGE_PREFIX = "farmbox:caldaAvulsa:v1";
+
+	const getCaldaStorageKey = (farmName) => {
+		const f = (farmName || "").trim() || "__no_farm__";
+		return `${CALDA_STORAGE_PREFIX}:${f}`;
+	};
+
+	const safeParseJSON = (raw, fallback) => {
+		try {
+			if (!raw) return fallback;
+			return JSON.parse(raw);
+		} catch {
+			return fallback;
+		}
+	};
+
+	const sanitizeCaldaItem = (x) => {
+		if (!x || typeof x !== "object") return null;
+
+		const input_id = x.input_id ?? x.id_farmbox ?? null;
+		if (!input_id) return null;
+
+		const dosage_value = Number(String(x.dosage_value ?? x.dose ?? 0).replace(",", "."));
+		if (!Number.isFinite(dosage_value) || dosage_value < 0) return null;
+
+		const dosage_unity = (x.dosage_unity || x.formulacao || "").toString().trim() || null;
+		const produto = (x.produto || x.name || "Insumo").toString();
+
+		return {
+			input_id,
+			dosage_unity,
+			dosage_value: Number(Number(dosage_value).toFixed(3)),
+			produto,
+		};
+	};
+
+	const normalizeUseByApp = (obj) => {
+		if (!obj || typeof obj !== "object") return {};
+		const out = {};
+		for (const [k, v] of Object.entries(obj)) out[k] = !!v;
+		return out;
+	};
+
+
+
 
 	const openMontarCalda = () => setOpenCaldaModal(true);
 	const closeMontarCalda = () => {
@@ -229,22 +277,59 @@ const DataProgramPage = (props) => {
 		setCaldaAvulsa((prev) => prev.filter((x) => x.input_id !== input_id));
 	};
 
-	const handleClearCaldaAvulsa = () => {
+	const handleClearCaldaAvulsa = async () => {
+		if (!caldaAvulsa.length) return;
+
+		const result = await Swal.fire({
+			title: "Limpar Calda Avulsa?",
+			html: "Isso vai remover todos os insumos da calda e desmarcar o uso nos cards desta fazenda.",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonText: "Sim, limpar",
+			cancelButtonText: "Cancelar",
+			reverseButtons: true,
+			focusCancel: true,
+
+			// 👇 ESSENCIAL
+			customClass: {
+				container: "swal-high-zindex"
+			},
+
+			didOpen: () => {
+				const container = document.querySelector(".swal-high-zindex");
+				if (container) {
+					container.style.zIndex = "2000";
+				}
+			}
+		});
+
+		if (!result.isConfirmed) return;
+
 		setCaldaAvulsa([]);
-		setUseCaldaAvulsaByApp({}); // opcional: desmarca tudo
+		setUseCaldaAvulsaByApp({});
+
 		toast.success("Calda Avulsa limpa.");
+
+		if (farmSelected) {
+			localStorage.removeItem(getCaldaStorageKey(farmSelected));
+		}
 	};
 
+
+
 	const toggleUseCaldaAvulsa = (hiddenAppName) => {
+		if (!caldaAvulsa.length) return;
+
 		setUseCaldaAvulsaByApp((prev) => {
 			const next = { ...prev, [hiddenAppName]: !prev[hiddenAppName] };
 			return next;
 		});
 
-		// importante: quando liga a calda avulsa, limpa ações manuais daquele card
+		// quando liga a calda avulsa, limpa ações manuais daquele card
 		setProdsToRemove((prev) => prev.filter((x) => x.appName !== hiddenAppName));
 		setprodsToAdd((prev) => prev.filter((x) => x.appName !== hiddenAppName));
 	};
+
 
 
 	const iconDict = [
@@ -1403,6 +1488,45 @@ const DataProgramPage = (props) => {
 	}, [farmSelected]);
 
 	useEffect(() => {
+		// evita carregar “lixo” quando ainda não tem fazenda
+		if (!farmSelected) return;
+
+		const key = getCaldaStorageKey(farmSelected);
+		const saved = safeParseJSON(localStorage.getItem(key), null);
+
+		if (!saved) {
+			setCaldaAvulsa([]);
+			setUseCaldaAvulsaByApp({});
+			return;
+		}
+
+		const items = Array.isArray(saved.caldaAvulsa) ? saved.caldaAvulsa : [];
+		const nextCalda = items.map(sanitizeCaldaItem).filter(Boolean);
+
+		setCaldaAvulsa(nextCalda);
+		setUseCaldaAvulsaByApp(normalizeUseByApp(saved.useCaldaAvulsaByApp));
+	}, [farmSelected]);
+
+	useEffect(() => {
+		if (!farmSelected) return;
+
+		const key = getCaldaStorageKey(farmSelected);
+
+		const payload = {
+			caldaAvulsa,
+			useCaldaAvulsaByApp,
+			updatedAt: new Date().toISOString(),
+		};
+
+		try {
+			localStorage.setItem(key, JSON.stringify(payload));
+		} catch (e) {
+			console.warn("Falha ao salvar Calda Avulsa no localStorage:", e);
+		}
+	}, [farmSelected, caldaAvulsa, useCaldaAvulsaByApp]);
+
+
+	useEffect(() => {
 		console.log('isThereAnyProdToAdd', prodsToAdd)
 	}, [prodsToAdd]);
 
@@ -1722,7 +1846,7 @@ const DataProgramPage = (props) => {
 				estagios={filterEstagios}
 				estagioSelecionado={estagiosSelecionados}
 				setEstagioSelecionado={setEstagiosSelecionados}
-				
+
 				openMontarCalda={openMontarCalda}
 				caldaAvulsa={caldaAvulsa}
 				handleClearCaldaAvulsa={handleClearCaldaAvulsa}
@@ -2338,31 +2462,31 @@ const DataProgramPage = (props) => {
 																					]
 																				}
 																			>
-																					<IconButton
-																						onClick={() =>
-																							!dataP.canRemove ?
-																								handleDeleteProd(dataP, dat?.data?.produtos, hiddenAppName)
-																								:
-																								handleDeleteProdManual(dataP, hiddenAppName)
-																						}
-																						size="small"
-																						aria-label="delete"
-																						color={!wasRemoved.length > 0 ? "success" : 'error'}
-																						sx={{
-																							alignSelf: "start",
-																							borderRadius: "12px"
-																						}}
-																						disabled={usandoAvulsa}
-																					>
-																						{
-																							!dataP.canRemove ?
-																								<DeleteIcon />
-																								:
-																								<DeleteForeverIcon color="warning" />
+																				<IconButton
+																					onClick={() =>
+																						!dataP.canRemove ?
+																							handleDeleteProd(dataP, dat?.data?.produtos, hiddenAppName)
+																							:
+																							handleDeleteProdManual(dataP, hiddenAppName)
+																					}
+																					size="small"
+																					aria-label="delete"
+																					color={!wasRemoved.length > 0 ? "success" : 'error'}
+																					sx={{
+																						alignSelf: "start",
+																						borderRadius: "12px"
+																					}}
+																					disabled={usandoAvulsa}
+																				>
+																					{
+																						!dataP.canRemove ?
+																							<DeleteIcon />
+																							:
+																							<DeleteForeverIcon color="warning" />
 
-																						}
-																					</IconButton>
-																				
+																					}
+																				</IconButton>
+
 																				{`${dataP.dose.toLocaleString(
 																					"pt-br",
 																					{
