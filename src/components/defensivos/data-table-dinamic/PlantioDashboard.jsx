@@ -498,8 +498,8 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
 
     const cardBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
     const border = isDark ? colors.grey[700] : colors.grey[300];
-    const titleColor = isDark ? colors.textColor[100] : colors.textColor[100];
-    const textColor = isDark ? colors.grey[100] : colors.grey[700];
+    const titleColor = isDark ? colors.textColor[100] : colors.textColor[900];
+    const textColor = isDark ? colors.grey[900] : colors.grey[900];
     const subText = isDark ? colors.grey[400] : colors.grey[600];
 
     const paperShadow = isDark
@@ -674,8 +674,9 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
 
     const cardBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
     const border = isDark ? colors.grey[700] : colors.grey[300];
-    const textColor = isDark ? colors.grey[100] : colors.grey[700];
-    const subText = isDark ? colors.grey[400] : colors.grey[600];
+    const textColor = isDark ? colors.grey[100] : colors.grey[100];
+    const subText = isDark ? colors.grey[400] : colors.grey[100];
+    const subTextArea = isDark ? colors.grey[400] : colors.grey[600];
 
     const paperShadow = isDark
         ? '0px 8px 18px rgba(0,0,0,0.55)'
@@ -787,6 +788,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                             }}
                         >
                             {colItems.map((p, idx) => {
+                                // console.log("p", p)
                                 const isEven = idx % 2 === 0;
                                 const rowBg = isDark
                                     ? (isEven ? colors.primary[500] : colors.primary[600])
@@ -850,19 +852,19 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                                 }}
                                             >
                                                 {p.quantidadeTotal.toLocaleString('pt-BR', {
-                                                    maximumFractionDigits: 2,
-                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 0,
+                                                    minimumFractionDigits: 0,
                                                 })}
                                             </div>
                                             <div
                                                 style={{
                                                     fontSize: 11,
-                                                    color: subText,
+                                                    color: subTextArea,
                                                 }}
                                             >
                                                 área:{' '}
                                                 {p.areaTotal.toLocaleString('pt-BR', {
-                                                    maximumFractionDigits: 1,
+                                                    maximumFractionDigits: 0,
                                                 })}{' '}
                                                 ha
                                             </div>

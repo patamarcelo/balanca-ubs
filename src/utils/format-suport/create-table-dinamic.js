@@ -29,6 +29,7 @@ export const createDinamicTable = (data) => {
 		const capacidadePlantioDia = dados.capacidade_plantio_dia;
 
 		cronograma.forEach((etapa) => {
+			console.log('etapaaa', etapa)
 			const estagio = etapa.estagio;
 			const estagioId = etapa?.estagio_id;
 			const dapAplicacao = etapa.dap;
@@ -60,6 +61,7 @@ export const createDinamicTable = (data) => {
 			// 3) Para cada produto da etapa, criamos a linha da tabela
 			produtos.forEach((prod) => {
 				const produto = prod.produto;
+				console.log('prod here:::', prod)
 				const tipo = prod.tipo;
 				const dose = parseFloat(prod.dose)
 					.toFixed(3)
