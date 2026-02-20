@@ -78,6 +78,8 @@ import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import PlaylistRemoveRoundedIcon from "@mui/icons-material/PlaylistRemoveRounded";
 import ContentPasteGoRoundedIcon from "@mui/icons-material/ContentPasteGoRounded";
 
+import { fetchCaldaAvulsa, saveCaldaAvulsa, clearCaldaAvulsa as clearCaldaAvulsaFS } from "../../../utils/firebase/firebase.datatable.ordems"; // ajuste o path
+
 
 const to3 = (v) => Number(v || 0).toFixed(3);
 
@@ -187,21 +189,14 @@ const DataProgramPage = (props) => {
 	// =========================
 	// Storage — Calda Avulsa (por fazenda)
 	// =========================
-	const CALDA_STORAGE_PREFIX = "farmbox:caldaAvulsa:v1";
+	const [caldaSyncing, setCaldaSyncing] = useState(false);
+	const [caldaLoaded, setCaldaLoaded] = useState(false);
 
-	const getCaldaStorageKey = (farmName) => {
-		const f = (farmName || "").trim() || "__no_farm__";
-		return `${CALDA_STORAGE_PREFIX}:${f}`;
-	};
+	// evita salvar enquanto está carregando pela primeira vez
+	const skipFirstSaveRef = useRef(true);
+	const caldaInputRef = useRef(null);
 
-	const safeParseJSON = (raw, fallback) => {
-		try {
-			if (!raw) return fallback;
-			return JSON.parse(raw);
-		} catch {
-			return fallback;
-		}
-	};
+
 
 	const sanitizeCaldaItem = (x) => {
 		if (!x || typeof x !== "object") return null;
@@ -269,6 +264,13 @@ const DataProgramPage = (props) => {
 		setCaldaProd(null);
 		setCaldaDose("");
 		toast.success("Insumo adicionado/atualizado na Calda Avulsa.");
+		// 🔥 foco de volta no input
+		// 🔥 foco de volta no input (robusto p/ MUI)
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				caldaInputRef.current?.focus();
+			});
+		});
 	};
 
 	console.log('caldaAvulsa: ',)
@@ -305,13 +307,20 @@ const DataProgramPage = (props) => {
 
 		if (!result.isConfirmed) return;
 
+		if (!result.isConfirmed) return;
+
 		setCaldaAvulsa([]);
 		setUseCaldaAvulsaByApp({});
 
-		toast.success("Calda Avulsa limpa.");
-
-		if (farmSelected) {
-			localStorage.removeItem(getCaldaStorageKey(farmSelected));
+		try {
+			setCaldaSyncing(true);
+			await clearCaldaAvulsaFS(); // ✅ apaga o doc global
+			toast.success("Calda Avulsa limpa (global).");
+		} catch (e) {
+			console.warn(e);
+			toast.error("Falha ao limpar no Firebase.");
+		} finally {
+			setCaldaSyncing(false);
 		}
 	};
 
@@ -496,129 +505,147 @@ const DataProgramPage = (props) => {
 			)
 			.slice(0, 100050);
 
-
 	const handleAddProd = async (hiddenAppName, existProds) => {
+		// refs locais (não dependem do state do componente)
+		const prodRef = { current: null };
+		const doseRef = { current: "" };
 
-		await MySwal.fire({
-			title: `Adicionar insumo`,
-			html: `<div id="swal-react-root">/div>`,
+		const result = await MySwal.fire({
+			title: "Adicionar insumo",
+			html: `<div id="swal-react-root"></div>`,
 			showCancelButton: true,
 			confirmButtonText: "Adicionar",
 			cancelButtonText: "Cancelar",
 			focusConfirm: false,
 			customClass: { popup: "swal2-compact" },
-			/** Monta o React dentro do Swal */
+
 			didOpen: () => {
 				const container = document.getElementById("swal-react-root");
 				const root = createRoot(container);
 
-				root.render(
+				const Form = () => (
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-						{/* AUTOCOMPLETE COMPACTO */}
-						{hiddenAppName.replace('|', " - ").replace('Projeto', ' - ')}
-						<Box sx={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+						<Typography variant="body2" sx={{ fontWeight: 800 }}>
+							{hiddenAppName.replace("|", " - ").replace("Projeto", " - ")}
+						</Typography>
+
+						<Box sx={{ display: "flex", gap: 1 }}>
 							<Autocomplete
-								id="swal-prod"
 								size="small"
-								options={prodsToUse}
+								options={prodsToUse || []}
 								filterOptions={filterOptions}
-								getOptionLabel={(opt) => opt.name}
-								onChange={(_, value) => (selectedProd.current = value)}
+								getOptionLabel={(opt) => opt?.name || ""}
+								isOptionEqualToValue={(a, b) => a?.id === b?.id}
+								onChange={(_, v) => {
+									prodRef.current = v || null; // ✅ garante capture
+								}}
 								renderInput={(params) => (
-									<TextField {...params} label="Insumo" autoFocus />
+									<TextField
+										{...params}
+										label="Insumo"
+										autoFocus
+									/>
 								)}
-								sx={{ width: 280 }}
+								sx={{ flex: 1 }}
 							/>
 
-							{/* DOSE – 3 CASAS DECIMAIS */}
 							<TextField
-								id="swal-dose"
+								size="small"
 								label="Dose"
 								placeholder="0.000"
-								size="small"
-								type="number"
-								inputProps={{ step: 0.001, min: 0 }}
+								defaultValue=""
+								onChange={(e) => (doseRef.current = e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										e.preventDefault();
+										MySwal.clickConfirm();
+									}
+								}}
+								sx={{ width: 140 }}
 							/>
 						</Box>
 					</Box>
 				);
-				// Espera o React montar e aplica foco no input do Autocomplete
-				setTimeout(() => {
-					const input = document.querySelector('#swal-prod input');
-					if (input) input.focus();
-				}, 100);
 
+				root.render(<Form />);
 
-				/** desmonta o React quando o Swal fechar */
-				MySwal.getPopup().addEventListener("swalClose", () => root.unmount());
+				// ✅ o evento certo pra desmontar é willClose
+				MySwal.update({
+					willClose: () => {
+						try {
+							root.unmount();
+						} catch { }
+					},
+				});
 			},
-			/** Valida e devolve resultado */
-			preConfirm: () => {
-				const doseStr = document.getElementById("swal-dose").value.trim();
 
-				if (!selectedProd.current) {
+			preConfirm: () => {
+				const prod = prodRef.current;
+				const doseStrRaw = String(doseRef.current || "").trim();
+
+				if (!prod) {
 					MySwal.showValidationMessage("Selecione um produto.");
 					return false;
 				}
-				if (!/^\d+(\.\d{1,3})?$/.test(doseStr)) {
+
+				const normalized = doseStrRaw.replace(",", ".");
+				if (!/^\d+(\.\d{1,3})?$/.test(normalized)) {
 					MySwal.showValidationMessage("Dose deve ter até 3 casas decimais.");
 					return false;
 				}
 
 				return {
-					prod: selectedProd.current, // objeto inteiro {id, name…}
-					dose: parseFloat(doseStr).toFixed(3),
+					prod,
+					dose: Number(normalized).toFixed(3),
 				};
 			},
-		}).then(({ isConfirmed, value }) => {
-			// if (isConfirmed) onSave?.(value); // { prod, dose }
-			if (isConfirmed) {
-				const prodName = value.prod.name;
-
-				// 1) Já existe na calda?
-				const alreadyInCalda = existProds.some(p => p.produto === prodName);
-
-				// 2) Está na lista de remoção (para este app)?
-				const scheduledToRemove = prodsToRemove
-					.filter(item => item.appName === hiddenAppName)   // isola o app
-					.some(item => item.prodToRemove?.produto === prodName); // ajuste o campo se necessário
-
-				if (alreadyInCalda && !scheduledToRemove) {
-					Swal.fire({
-						title: "Atenção!!",
-						html: `<b>Produto já consta na Calda</b> `,
-						icon: "warning"
-					});
-					return;
-				}
-				const { prod, dose } = value
-				const { name, ...prodClean } = prod;
-				const newProd = {
-					...prodClean,
-					dosage_value: Number(dose)
-				}
-				const prodToAdd = {
-					objToSendtoFarm: newProd,
-					objToRender: {
-						dose: Number(dose),
-						produto: name,
-					},
-					appName: hiddenAppName
-				}
-				setprodsToAdd((prev) => {
-					return [...prev, prodToAdd]
-				})
-
-				toast.success(
-					'Produto Adicionado com sucesso!!',
-					{
-						position: "bottom-right",
-						duration: 2000
-					}
-				)
-			}
 		});
-	}
+
+		if (!result.isConfirmed || !result.value) return;
+
+		const { prod, dose } = result.value;
+		const prodName = prod?.name;
+
+		// 1) Já existe na calda?
+		const alreadyInCalda = (existProds || []).some((p) => p?.produto === prodName);
+
+		// 2) Está na lista de remoção (para este app)?
+		const scheduledToRemove = prodsToRemove
+			.filter((item) => item.appName === hiddenAppName)
+			.some((item) => item.prodToRemove?.produto === prodName);
+
+		if (alreadyInCalda && !scheduledToRemove) {
+			await Swal.fire({
+				title: "Atenção!!",
+				html: "<b>Produto já consta na Calda</b>",
+				icon: "warning",
+			});
+			return;
+		}
+
+		const { name, ...prodClean } = prod;
+
+		const newProd = {
+			...prodClean,
+			dosage_value: Number(dose),
+		};
+
+		const prodToAdd = {
+			objToSendtoFarm: newProd,
+			objToRender: {
+				dose: Number(dose),
+				produto: name,
+			},
+			appName: hiddenAppName,
+		};
+
+		setprodsToAdd((prev) => [...prev, prodToAdd]);
+
+		toast.success("Produto Adicionado com sucesso!!", {
+			position: "bottom-right",
+			duration: 2000,
+		});
+	};
 
 
 	const handleDeleteProdManual = (prod, hiddenAppName) => {
@@ -1488,42 +1515,72 @@ const DataProgramPage = (props) => {
 	}, [farmSelected]);
 
 	useEffect(() => {
-		// evita carregar “lixo” quando ainda não tem fazenda
-		if (!farmSelected) return;
+		let alive = true;
 
-		const key = getCaldaStorageKey(farmSelected);
-		const saved = safeParseJSON(localStorage.getItem(key), null);
+		(async () => {
+			try {
+				const saved = await fetchCaldaAvulsa();
 
-		if (!saved) {
-			setCaldaAvulsa([]);
-			setUseCaldaAvulsaByApp({});
-			return;
-		}
+				if (!alive) return;
 
-		const items = Array.isArray(saved.caldaAvulsa) ? saved.caldaAvulsa : [];
-		const nextCalda = items.map(sanitizeCaldaItem).filter(Boolean);
+				if (!saved) {
+					setCaldaAvulsa([]);
+					setUseCaldaAvulsaByApp({});
+				} else {
+					const items = Array.isArray(saved.caldaAvulsa) ? saved.caldaAvulsa : [];
+					const nextCalda = items.map(sanitizeCaldaItem).filter(Boolean);
 
-		setCaldaAvulsa(nextCalda);
-		setUseCaldaAvulsaByApp(normalizeUseByApp(saved.useCaldaAvulsaByApp));
-	}, [farmSelected]);
+					setCaldaAvulsa(nextCalda);
+
+					// 🔥 IMPORTANTE:
+					// você pediu que a calda sirva para todas as fazendas.
+					// O "use por app" depende de hiddenAppName que inclui fazenda.
+					// Então NÃO faz sentido persistir isso globalmente.
+					// Mantém apenas em memória:
+					setUseCaldaAvulsaByApp({});
+				}
+			} catch (e) {
+				console.warn("Falha ao carregar Calda Avulsa do Firestore:", e);
+				// fallback seguro
+				setCaldaAvulsa([]);
+				setUseCaldaAvulsaByApp({});
+			} finally {
+				if (!alive) return;
+				setCaldaLoaded(true);
+				skipFirstSaveRef.current = false;
+			}
+		})();
+
+		return () => {
+			alive = false;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
-		if (!farmSelected) return;
+		if (!caldaLoaded) return;
+		if (skipFirstSaveRef.current) return;
 
-		const key = getCaldaStorageKey(farmSelected);
+		// Se a calda estiver vazia, você pode optar por não salvar nada.
+		// Eu recomendo: se vazia -> apaga o doc (limpa "collection").
+		const t = setTimeout(async () => {
+			try {
+				setCaldaSyncing(true);
 
-		const payload = {
-			caldaAvulsa,
-			useCaldaAvulsaByApp,
-			updatedAt: new Date().toISOString(),
-		};
+				if (!caldaAvulsa.length) {
+					await clearCaldaAvulsaFS();
+				} else {
+					await saveCaldaAvulsa({ caldaAvulsa });
+				}
+			} catch (e) {
+				console.warn("Falha ao salvar Calda Avulsa no Firestore:", e);
+			} finally {
+				setCaldaSyncing(false);
+			}
+		}, 350);
 
-		try {
-			localStorage.setItem(key, JSON.stringify(payload));
-		} catch (e) {
-			console.warn("Falha ao salvar Calda Avulsa no localStorage:", e);
-		}
-	}, [farmSelected, caldaAvulsa, useCaldaAvulsaByApp]);
+		return () => clearTimeout(t);
+	}, [caldaAvulsa, caldaLoaded]);
 
 
 	useEffect(() => {
@@ -2972,15 +3029,18 @@ const DataProgramPage = (props) => {
 				</Box>
 			</Box>
 			<Dialog open={openCaldaModal} onClose={closeMontarCalda} maxWidth="sm" fullWidth>
-				<DialogTitle sx={{ fontWeight: 900 }}>
-					Montar Calda Avulsa (sessão)
+				<DialogTitle sx={{ fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+					Montar Calda Avulsa
+					<Chip
+						size="small"
+						label={caldaSyncing ? "Salvando..." : "Sincronizada"}
+						color={caldaSyncing ? "warning" : "success"}
+						sx={{ fontWeight: 800 }}
+					/>
 				</DialogTitle>
 
-				<DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-					<Typography variant="body2" sx={{ opacity: 0.8 }}>
-						Essa calda fica disponível enquanto você estiver nessa tela (não salva no banco).
-					</Typography>
-
+				<DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1, mb: 2 }}>
+				
 					<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 						<Autocomplete
 							size="small"

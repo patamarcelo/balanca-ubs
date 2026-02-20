@@ -1,7 +1,7 @@
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { TABLES_FIREBASE } from "./firebase.typestables";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 import toast from "react-hot-toast";
 
@@ -92,3 +92,31 @@ export const addOrdemCarrega = async (
 	console.log(newTransaction);
 	return newTransaction;
 };
+
+
+export const CALDA_DOC_ID = "singleton";
+
+export const caldaDocRef = () => doc(db, TABLES_FIREBASE.caldaAvulsa, CALDA_DOC_ID);
+
+export async function fetchCaldaAvulsa() {
+	const snap = await getDoc(caldaDocRef());
+	if (!snap.exists()) return null;
+	return snap.data();
+}
+
+export async function saveCaldaAvulsa(payload) {
+	// payload esperado: { caldaAvulsa: [...], updatedAt? }
+	await setDoc(
+		caldaDocRef(),
+		{
+			...payload,
+			updatedAt: serverTimestamp(),
+		},
+		{ merge: true }
+	);
+}
+
+export async function clearCaldaAvulsa() {
+	// "limpar a collection" na prática: apagar o doc singleton
+	await deleteDoc(caldaDocRef());
+}

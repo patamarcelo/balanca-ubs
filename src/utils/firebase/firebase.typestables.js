@@ -3,5 +3,6 @@ export const TABLES_FIREBASE = {
 	customer: "customer",
 	contract: "contract",
 	truckmove: "truckmove",
-	ordemCarrega: "ordemCarrega"
+	ordemCarrega: "ordemCarrega",
+	caldaAvulsa: "calda_avulsa"
 };
