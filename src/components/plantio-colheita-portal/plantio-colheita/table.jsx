@@ -10,6 +10,10 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 import cotton from "../../../utils/assets/icons/cotton.png";
 import question from "../../../utils/assets/icons/question.png";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import { Tooltip } from "@mui/material";
+import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
+
 
 const TableColheita = forwardRef(({ data, idsPending }, ref) => {
 	const theme = useTheme();
@@ -86,14 +90,22 @@ const TableColheita = forwardRef(({ data, idsPending }, ref) => {
 					const mediaPrev =
 						carga.peso && carga.area_parcial ? Number(carga.peso / 60) / carga.area_parcial : 0;
 
+					const showWarning =
+						carga.peso > 0 && (!carga.area_parcial || carga.area_parcial === 0);
+
+					const showError =
+						(!carga.peso || carga.peso === 0) &&
+						carga.area_parcial &&
+						carga.area_parcial > 0;
+
 					const romaneiosPending = idsPending[carga.id] ? idsPending[carga.id] : " - ";
 
 					return (
 						<tr
 							key={i}
 							className={`${i % 2 === 0 ? styles.oddRow : styles.evenRow} ${carga.romaneios > 0 || areaParcial > 0 || romaneiosPending > 0
-									? styles.colheitaRow
-									: styles.notColheitaRow
+								? styles.colheitaRow
+								: styles.notColheitaRow
 								} ${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 === 0 && styles.closedParcelaOdd}
               ${areaParcial === carga.area_colheita && romaneiosPending === " - " && i % 2 !== 0 && styles.closedParcelaEven}
               ${romaneiosPending > 0 && styles.romaneioIsPendindStyle}
@@ -135,7 +147,47 @@ const TableColheita = forwardRef(({ data, idsPending }, ref) => {
 								{romaneiosPending}
 							</td>
 
-							<td>{mediaPrev > 0 ? formatArea(mediaPrev) : "-"}</td>
+							<td
+								style={{
+									color: showWarning
+										? "rgb(200,120,0)"
+										: showError
+											? "rgb(180,40,40)"
+											: undefined,
+									fontWeight: showWarning || showError ? 600 : undefined,
+									display: "flex",
+									alignItems: "center",
+									textAlign: "center",
+									gap: "6px",
+									justifyContent: "center",
+								}}
+							>
+								{showWarning ? (
+									<Tooltip title="Existe peso carregado, mas não há área colhida informada.">
+										<WarningAmberRoundedIcon
+											sx={{
+												fontSize: 18,
+												marginTop: '3px',
+												color: "rgb(200,120,0)",
+											}}
+										/>
+									</Tooltip>
+								) : showError ? (
+									<Tooltip title="Existe área colhida informada, mas não há peso carregado.">
+										<ErrorOutlineRoundedIcon
+											sx={{
+												fontSize: 18,
+												marginTop: '3px',
+												color: "rgb(180,40,40)",
+											}}
+										/>
+									</Tooltip>
+								) : mediaPrev > 0 ? (
+									formatArea(mediaPrev)
+								) : (
+									"-"
+								)}
+							</td>
 						</tr>
 					);
 				})}
