@@ -2,6 +2,30 @@ import { getNextDays } from "../../utils/format-suport/data-format";
 import { createSelector } from 'reselect';
 import { farmDictProject } from "../../components/defensivos/farmbox-data/produtos-consolidados/helper";
 
+export function buildMovByInputId(input_movimentations = []) {
+	const byId = new Map();
+
+	for (const m of input_movimentations || []) {
+		const id = Number(m.input_id);
+		if (!id) continue;
+
+		const sign = m.kind === "returned" ? -1 : 1; // removed = +, returned = -
+		const v = (Number(m.value) || 0) * sign;
+
+		const prev = byId.get(id) || { removed: 0, returned: 0, net: 0, unit: m.unit };
+		if (m.kind === "removed") prev.removed += Number(m.value) || 0;
+		if (m.kind === "returned") prev.returned += Number(m.value) || 0;
+		prev.net += v;
+
+		// mantém a última unit vista (ou valida se mudar)
+		prev.unit = prev.unit || m.unit;
+
+		byId.set(id, prev);
+	}
+
+	return byId;
+}
+
 
 export const selectPlantio = (state) => state.plantio.plantio;
 
@@ -357,8 +381,16 @@ export const createDict = (state) => {
 			};
 		});
 
+		const movById = buildMovByInputId(data.input_movimentations);
+
 		const insumosSolicitados = data.inputs.map((data) => {
+
+			const inputId = data?.input?.id ?? data?.input_id ?? null;
+			const mov = inputId ? movById.get(Number(inputId)) : null;
+
+
 			return {
+				id: inputId,
 				insumo: data.input.name,
 				tipo: data.input.input_type_name,
 				quantidade: data.sought_quantity
@@ -368,7 +400,12 @@ export const createDict = (state) => {
 						maximumFractionDigits: 2
 					}),
 				dose: data.sought_dosage_value.toFixed(3),
-				insumo_unit: data.applied_unit || data.sought_quantity_unit || "-"
+				insumo_unit: data.applied_unit || data.sought_quantity_unit || "-",
+				// ✅ campos pro cálculo / UI
+				retirado: mov ? mov.removed : 0,
+				devolvido: mov ? mov.returned : 0,
+				retiradoLiquido: mov ? mov.net : 0, // removed - returned
+				mov_unit: mov?.unit || (data.applied_unit || data.sought_quantity_unit || "-"),
 			};
 		});
 

@@ -12,7 +12,7 @@ import Zoom from '@mui/material/Zoom';
 
 import { formatNumber } from "../../../utils/format-suport/data-format";
 
-
+const rgbToRgba = (rgb, a = 1) => rgb.replace("rgb(", "rgba(").replace(")", `, ${a})`);
 const colorDict = [
 	{
 		tipo: "Inseticida",
@@ -294,6 +294,14 @@ const DetailAppData = (props) => {
 								? bombCalc * Number(dataInsum.dose)
 								: dataInsum.quantidade;
 
+						const needed = Number(dataInsum.quantidade || 0);
+						const taken = Number(dataInsum.retiradoLiquido || 0);
+						const pct = needed > 0 ? Math.min(100, Math.max(0, (taken / needed) * 100)) : 0;
+						const chipColor = getColorChip(tipo);
+
+						const fill = rgbToRgba(chipColor, 0.45);
+						const base = "rgba(255,255,255,0.10)";
+
 						return (
 							<>
 								<Box
@@ -316,25 +324,124 @@ const DetailAppData = (props) => {
 											}
 										)}
 									</b>{" "}
-									<Chip
-										label={dataInsum.insumo}
-										// label={
-										// 	tipo.includes("Óleo Mineral")
-										// 		? "Óleo"
-										// 		: tipo + " - " + dataInsum.insumo
-										// }
-										sx={{
-											backgroundColor: getColorChip(tipo),
-											minWidth: "90px",
-											textAlign: "center",
-											height: "auto",
-											margin: "0px 8px 0px 4px",
-											fontWeight: "bold",
-											border: "0.1em solid black",
-											borderRadius: '6px'
-										}}
-										size="small"
-									/>
+
+									<Tooltip
+										arrow
+										TransitionComponent={Zoom}
+										title={
+											<Box sx={{ minWidth: 220, p: 0.5 }}>
+												{/* Saiu */}
+												<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+													<Typography variant="caption" sx={{ opacity: 0.7 }}>
+														Saiu
+													</Typography>
+													<Typography variant="body2" fontWeight={600}>
+														{dataInsum.retirado?.toLocaleString("pt-br")} {dataInsum.mov_unit}
+													</Typography>
+												</Box>
+
+												{/* Voltou */}
+												<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+													<Typography variant="caption" sx={{ opacity: 0.7 }}>
+														Voltou
+													</Typography>
+													<Typography variant="body2" fontWeight={600}>
+														{dataInsum.devolvido?.toLocaleString("pt-br")} {dataInsum.mov_unit}
+													</Typography>
+												</Box>
+
+												<Divider sx={{ my: 0.8 }} />
+
+												{/* Saldo (Destaque maior) */}
+												<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+													<Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+														Utilizado
+													</Typography>
+													<Typography
+														variant="h6"
+														sx={{
+															fontWeight: 800,
+															// color: chipColor,
+															lineHeight: 1.1,
+														}}
+													>
+														{taken.toLocaleString("pt-br")} {dataInsum.mov_unit}
+													</Typography>
+												</Box>
+
+												{/* Percentual */}
+												<Box sx={{ mt: 1 }}>
+													<Box
+														sx={{
+															height: 6,
+															borderRadius: 4,
+															backgroundColor: "rgba(255,255,255,0.15)",
+															overflow: "hidden",
+														}}
+													>
+														<Box
+															sx={{
+																width: `${pct}%`,
+																height: "100%",
+																backgroundColor: chipColor,
+															}}
+														/>
+													</Box>
+													<Typography
+														variant="caption"
+														sx={{ display: "block", textAlign: "right", mt: 0.5 }}
+													>
+														{pct.toFixed(0)}% do necessário
+													</Typography>
+												</Box>
+											</Box>
+										}
+									>
+
+
+										<Chip
+											label={dataInsum.insumo}
+											size="small"
+											sx={{
+												minWidth: "90px",
+												textAlign: "center",
+												height: "auto",
+												margin: "0px 8px 0px 4px",
+												fontWeight: "bold",
+												border: `1.5px solid ${rgbToRgba(chipColor, 0.95)}`,
+												boxShadow: `0 0 0 2px ${rgbToRgba(chipColor, 0.12)} inset`,
+												borderRadius: "6px",
+												overflow: "hidden",
+												position: "relative",
+
+												// ✅ FUNDO BASE (neutro), NÃO a cor do chip
+												background: `linear-gradient(90deg, ${fill} 0%, ${fill} ${pct}%, ${base} ${pct}%, ${base} 100%)`,
+
+												// ✅ barra colorida com width percentual
+												// "&::before": {
+												// 	content: '""',
+												// 	position: "absolute",
+												// 	left: 0,
+												// 	top: 0,
+												// 	bottom: 0,
+												// 	width: `${pct}%`,          // ✅ agora respeita o percentual
+												// 	backgroundColor: chipColor,
+												// 	opacity: 0.45,
+												// 	zIndex: 0,
+												// 	pointerEvents: "none",
+												// },
+
+												// ✅ texto por cima
+												"& .MuiChip-label": {
+													position: "relative",
+													zIndex: 1,
+													px: 1,
+													py: 0.35,
+													whiteSpace: "nowrap",
+												},
+											}}
+										/>
+									</Tooltip>
 									<Box
 										textAlign={"right"}
 										paddingRight={"8px"}
