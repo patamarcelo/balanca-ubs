@@ -91,15 +91,14 @@ const normalizeDose = (s) => {
 };
 
 const buildFarmboxInputFromProd = (prod, doseNum) => {
-	console.log('prod', prod)
-	console.log('doseNum: ', doseNum)
-	// seus produtos do endpoint têm pelo menos: id_farmbox, formulacao, name
-	// e o farmbox espera: { input_id, dosage_unity, dosage_value }
+	const input_id = prod?.input_id ?? prod?.id_farmbox ?? prod?.id ?? null;
+	const dosage_unity = prod?.dosage_unity ?? prod?.formulacao ?? prod?.dosageUnity ?? null;
+
 	return {
-		input_id: prod?.input_id,
-		dosage_unity: prod?.dosage_unity,
+		input_id,
+		dosage_unity,
 		dosage_value: Number(to3(doseNum)),
-		produto: prod?.name || "Insumo",
+		produto: prod?.name || prod?.produto || "Insumo",
 	};
 };
 
@@ -506,24 +505,45 @@ const DataProgramPage = (props) => {
 			.slice(0, 100050);
 
 	const handleAddProd = async (hiddenAppName, existProds) => {
-		// refs locais (não dependem do state do componente)
 		const prodRef = { current: null };
 		const doseRef = { current: "" };
+
+		let root = null;
 
 		const result = await MySwal.fire({
 			title: "Adicionar insumo",
 			html: `<div id="swal-react-root"></div>`,
-			showCancelButton: true,
-			confirmButtonText: "Adicionar",
-			cancelButtonText: "Cancelar",
-			focusConfirm: false,
-			customClass: { popup: "swal2-compact" },
 
-			didOpen: () => {
-				const container = document.getElementById("swal-react-root");
-				const root = createRoot(container);
+			showConfirmButton: false,
+			showCancelButton: false,
+			showCloseButton: true,
+			allowEscapeKey: true,
+			allowOutsideClick: false,
 
-				const Form = () => (
+			background:
+				theme.palette.mode === "dark"
+					? colors.blueOrigin[800]
+					: "#ffffff",
+
+			color:
+				theme.palette.mode === "dark"
+					? colors.primary[100]
+					: "#000",
+
+			customClass: {
+				popup: "swal2-compact",
+			},
+
+			didOpen: (popup) => {
+				popup.style.overflow = "visible";
+
+				const container = popup.querySelector("#swal-react-root");
+				if (!container) return;
+
+				root = createRoot(container);
+
+				// ✅ COMPONENTE DEFINIDO AQUI (corrige erro Form is not defined)
+				const FormComponent = () => (
 					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
 						<Typography variant="body2" sx={{ fontWeight: 800 }}>
 							{hiddenAppName.replace("|", " - ").replace("Projeto", " - ")}
@@ -534,16 +554,72 @@ const DataProgramPage = (props) => {
 								size="small"
 								options={prodsToUse || []}
 								filterOptions={filterOptions}
-								getOptionLabel={(opt) => opt?.name || ""}
-								isOptionEqualToValue={(a, b) => a?.id === b?.id}
+								getOptionLabel={(opt) => opt?.name || opt?.produto || ""}
+								isOptionEqualToValue={(a, b) =>
+									(a?.id_farmbox ?? a?.input_id ?? a?.id) ===
+									(b?.id_farmbox ?? b?.input_id ?? b?.id)
+								}
+								disablePortal
+								componentsProps={{
+									popper: {
+										sx: {
+											zIndex: 4000,
+										},
+									},
+									paper: {
+										sx: {
+											backgroundColor:
+												theme.palette.mode === "dark"
+													? colors.blueOrigin[900]
+													: "#ffffff",
+											color:
+												theme.palette.mode === "dark"
+													? colors.primary[100]
+													: "#000",
+											borderRadius: 2,
+											boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+										},
+									},
+								}}
 								onChange={(_, v) => {
-									prodRef.current = v || null; // ✅ garante capture
+									prodRef.current = v || null;
+									requestAnimationFrame(() => {
+										const doseInput =
+											popup.querySelector('input[name="swal-dose-input"]');
+										doseInput?.focus();
+										doseInput?.select?.();
+									});
 								}}
 								renderInput={(params) => (
 									<TextField
 										{...params}
 										label="Insumo"
 										autoFocus
+										variant="outlined"
+										sx={{
+											"& .MuiInputBase-root": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? colors.blueOrigin[700]
+														: "#f5f5f5",
+												color:
+													theme.palette.mode === "dark"
+														? "#fff"
+														: "#000",
+											},
+											"& .MuiInputLabel-root": {
+												color:
+													theme.palette.mode === "dark"
+														? "#fff"
+														: "#000",
+											},
+											"& .MuiOutlinedInput-notchedOutline": {
+												borderColor:
+													theme.palette.mode === "dark"
+														? colors.blueOrigin[600]
+														: "#ccc",
+											},
+										}}
 									/>
 								)}
 								sx={{ flex: 1 }}
@@ -552,67 +628,104 @@ const DataProgramPage = (props) => {
 							<TextField
 								size="small"
 								label="Dose"
+								name="swal-dose-input"
 								placeholder="0.000"
-								defaultValue=""
-								onChange={(e) => (doseRef.current = e.target.value)}
+								inputMode="decimal"
+								variant="outlined"
+								onChange={(e) => {
+									doseRef.current = e.target.value;
+								}}
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
 										e.preventDefault();
-										MySwal.clickConfirm();
+										// mesma validação que você já tem
+										const prod = prodRef.current;
+										const doseStrRaw = String(doseRef.current || "").trim();
+
+										if (!prod) {
+											MySwal.showValidationMessage("Selecione um produto.");
+											return;
+										}
+
+										const normalized = doseStrRaw.replace(",", ".");
+										if (!/^\d+(\.\d{1,3})?$/.test(normalized)) {
+											MySwal.showValidationMessage("Dose deve ter até 3 casas decimais.");
+											return;
+										}
+
+										MySwal.close({
+											isConfirmed: true,
+											value: {
+												prod,
+												dose: Number(normalized).toFixed(3),
+											},
+										});
 									}
 								}}
-								sx={{ width: 140 }}
+								sx={{
+									width: 140,
+									"& .MuiInputBase-root": {
+										backgroundColor:
+											theme.palette.mode === "dark"
+												? colors.blueOrigin[700]
+												: "#f5f5f5",
+										color:
+											theme.palette.mode === "dark"
+												? "#fff"
+												: "#000",
+									},
+									"& .MuiInputLabel-root": {
+										color:
+											theme.palette.mode === "dark"
+												? "#fff"
+												: "#000",
+									},
+									"& .MuiOutlinedInput-notchedOutline": {
+										borderColor:
+											theme.palette.mode === "dark"
+												? colors.blueOrigin[600]
+												: "#ccc",
+									},
+								}}
 							/>
 						</Box>
+
+						<Typography variant="caption" sx={{ opacity: 0.7 }}>
+							Escolha o insumo, informe a dose e pressione ENTER.
+						</Typography>
 					</Box>
 				);
 
-				root.render(<Form />);
-
-				// ✅ o evento certo pra desmontar é willClose
-				MySwal.update({
-					willClose: () => {
-						try {
-							root.unmount();
-						} catch { }
-					},
-				});
+				root.render(<FormComponent />);
 			},
 
-			preConfirm: () => {
-				const prod = prodRef.current;
-				const doseStrRaw = String(doseRef.current || "").trim();
-
-				if (!prod) {
-					MySwal.showValidationMessage("Selecione um produto.");
-					return false;
-				}
-
-				const normalized = doseStrRaw.replace(",", ".");
-				if (!/^\d+(\.\d{1,3})?$/.test(normalized)) {
-					MySwal.showValidationMessage("Dose deve ter até 3 casas decimais.");
-					return false;
-				}
-
-				return {
-					prod,
-					dose: Number(normalized).toFixed(3),
-				};
+			willClose: () => {
+				try {
+					root?.unmount();
+				} catch { }
+				root = null;
 			},
 		});
 
-		if (!result.isConfirmed || !result.value) return;
+		const value = result?.value;
+		const confirmed =
+			result?.isConfirmed ||
+			(value && value.prod && typeof value.dose !== "undefined");
 
-		const { prod, dose } = result.value;
-		const prodName = prod?.name;
+		if (!confirmed || !value) return;
 
-		// 1) Já existe na calda?
-		const alreadyInCalda = (existProds || []).some((p) => p?.produto === prodName);
+		const { prod, dose } = value;
+		const prodName = prod?.name || prod?.produto;
 
-		// 2) Está na lista de remoção (para este app)?
+		const alreadyInCalda = (existProds || []).some(
+			(p) => p?.produto === prodName
+		);
+
 		const scheduledToRemove = prodsToRemove
 			.filter((item) => item.appName === hiddenAppName)
-			.some((item) => item.prodToRemove?.produto === prodName);
+			.some(
+				(item) => item.prodToRemove?.produto === prodName
+			);
 
 		if (alreadyInCalda && !scheduledToRemove) {
 			await Swal.fire({
@@ -623,10 +736,9 @@ const DataProgramPage = (props) => {
 			return;
 		}
 
-		const { name, ...prodClean } = prod;
-
 		const newProd = {
-			...prodClean,
+			input_id: prod?.input_id ?? prod?.id_farmbox ?? prod?.id,
+			dosage_unity: prod?.dosage_unity ?? prod?.formulacao ?? null,
 			dosage_value: Number(dose),
 		};
 
@@ -634,7 +746,7 @@ const DataProgramPage = (props) => {
 			objToSendtoFarm: newProd,
 			objToRender: {
 				dose: Number(dose),
-				produto: name,
+				produto: prodName,
 			},
 			appName: hiddenAppName,
 		};
@@ -3040,7 +3152,7 @@ const DataProgramPage = (props) => {
 				</DialogTitle>
 
 				<DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1, mb: 2 }}>
-				
+
 					<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 						<Autocomplete
 							size="small"
