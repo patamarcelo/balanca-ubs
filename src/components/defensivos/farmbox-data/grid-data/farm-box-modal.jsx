@@ -254,7 +254,7 @@ const ModalDataFarmbox = ({ handleClose, open }) => {
 							tipoOperacao,
 							quantidadeSolicitada: quantidadeSolicitada.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 							quantidade: quantidade.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
-							saldoAplicar,
+							saldoAplicar: saldoAplicar.toLocaleString("pt-br", { minimumFractionDigits: 2 }),
 							dose: ins.dose.replace(".", ","),
 							insumo: ins.insumo,
 							insumo_id: ins.insumo_id,

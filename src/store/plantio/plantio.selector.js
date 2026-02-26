@@ -488,17 +488,17 @@ export const createDictFarmBox = (state) => {
 			data?.last_movimentation_date?.split("T")[0];
 		const areaTotalSolicitada = areaSolicitada
 			.reduce((a, b) => a + b, 0)
-			.toFixed(2);
+			
 
 		const areaTotalAplicada = areaAplicada
 			.reduce((a, b) => a + b, 0)
-			.toFixed(2);
+			
 
 		const percentApp =
-			(parseFloat(areaTotalAplicada) / parseFloat(areaTotalSolicitada)) *
+			(areaTotalAplicada / areaTotalSolicitada) *
 			100;
 		const saldoAplicar =
-			parseFloat(areaTotalSolicitada) - parseFloat(areaTotalAplicada);
+			areaTotalSolicitada - areaTotalAplicada;
 
 		const parcelasSolicitadas = data.plantations.map((dataMap) => {
 			const aplicado = dataMap.applied_area === 0 ? false : true;
@@ -577,6 +577,23 @@ export const createDictFarmBox = (state) => {
 			};
 		});
 
+		// Lógica para pegar a data de início e de fim formatada em yyyy-mm-dd
+        let initialAppDateAplicadaParc = '---';
+        let finalAppDateAplicadaParc = '---';
+
+        if (data.progresses && data.progresses.length > 0) {
+            // Filtra progressos que tenham a propriedade "date" e os ordena da menor para a maior
+            const progressosOrdenados = [...data.progresses]
+                .filter(p => p.date)
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+            if (progressosOrdenados.length > 0) {
+                // Pega a primeira e a última data e corta no "T" para manter apenas yyyy-mm-dd
+                initialAppDateAplicadaParc = progressosOrdenados[0].date.split('T')[0];
+                finalAppDateAplicadaParc = progressosOrdenados[progressosOrdenados.length - 1].date.split('T')[0];
+            }
+        }
+
 		// console.log(progressos);
 		const newName = farmDictProject.find((name) => name.projeto === farm)
 		const farmName = newName?.mainFarm || 'Outros'
@@ -601,10 +618,12 @@ export const createDictFarmBox = (state) => {
 			insumos: insumosSolicitados,
 			area: areaTotalSolicitada,
 			areaAplicada: areaTotalAplicada,
-			saldoAplicar: saldoAplicar.toFixed(2),
+			saldoAplicar: saldoAplicar,
 			progressos,
 			date: data.date,
 			endDate: data.end_date,
+			initialAppDateAplicadaParc: initialAppDateAplicadaParc,
+			finalAppDateAplicadaParc: finalAppDateAplicadaParc,
 			closedDate,
 			initialAppDateAplicada,
 			finalAppDateAplicada
