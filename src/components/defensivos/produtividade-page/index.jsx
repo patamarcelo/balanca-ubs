@@ -49,6 +49,13 @@ import jsPDF from "jspdf";
 
 import MultiSelectFilter from "./filter-parcelas";
 
+import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
+import Fab from "@mui/material/Fab";
+
+import { useRef } from "react";
+import html2canvas from "html2canvas";
+
+
 
 
 const ProdutividadePage = ({ useMulti }) => {
@@ -858,6 +865,111 @@ const ProdutividadePage = ({ useMulti }) => {
 
 
 
+	const printableRef = useRef(null);
+
+
+
+	const handleScreenshotPrintable = async () => {
+		const el = printableRef.current;
+		if (!el) return;
+
+		// garante layout estável antes do clone
+		await new Promise((r) => requestAnimationFrame(r));
+		await new Promise((r) => setTimeout(r, 60));
+
+		const rect = el.getBoundingClientRect();
+
+		try {
+			const canvas = await html2canvas(el, {
+				backgroundColor: "#ffffff",
+				scale: 2, // bom custo/benefício
+				useCORS: true,
+				allowTaint: true,
+				logging: false,
+
+				// MUITO importante pra evitar “cortes” e offsets
+				width: Math.ceil(rect.width),
+				height: Math.ceil(rect.height),
+
+				scrollX: 0,
+				scrollY: -window.scrollY,
+
+				onclone: (clonedDoc) => {
+					// 1) pega o nó clonado pelo id (mantenha id no seu container)
+					const clonedRoot = clonedDoc.getElementById("printableMapPage");
+					if (!clonedRoot) return;
+
+					// 2) estabiliza layout no clone (evita flex/overflow mudarem)
+					clonedRoot.style.maxHeight = "none";
+					clonedRoot.style.minHeight = "auto";
+					clonedRoot.style.height = `${Math.ceil(rect.height)}px`;
+					clonedRoot.style.width = `${Math.ceil(rect.width)}px`;
+					clonedRoot.style.overflow = "visible";
+					clonedRoot.style.borderRadius = "0px"; // evita recorte estranho
+
+					// 3) remove blur/backdropFilter APENAS no clone (tabela do mapa)
+					// como seu MapResume está num Box absolute, pegamos pelo estilo/posição:
+					const overlays = clonedRoot.querySelectorAll("*");
+					overlays.forEach((node) => {
+						const style = clonedDoc.defaultView.getComputedStyle(node);
+
+						// remove backdropFilter/blur que o html2canvas não renderiza bem
+						if (style.backdropFilter && style.backdropFilter !== "none") {
+							node.style.backdropFilter = "none";
+							node.style.webkitBackdropFilter = "none";
+						}
+
+						// se for aquele card da tabela semi-transparente, força fundo sólido
+						// (ajusta conforme sua classe real, se tiver)
+						if (
+							style.position === "absolute" &&
+							(style.left === "15px" || style.top === "15px") &&
+							style.zIndex === "1000"
+						) {
+							node.style.backgroundColor = "rgba(255,255,255,0.92)";
+						}
+					});
+
+					// 4) força o container do GoogleMap a não ter transform/filters
+					// às vezes MUI/Google injeta transform que quebra o canvas
+					const mapDiv = clonedRoot.querySelector('div[aria-roledescription="map"]')
+						|| clonedRoot.querySelector(".gm-style")
+						|| null;
+
+					if (mapDiv) {
+						mapDiv.style.transform = "none";
+						mapDiv.style.filter = "none";
+					}
+
+					// 5) melhora texto/labels (menos “tremido”)
+					clonedRoot.style.webkitFontSmoothing = "antialiased";
+					clonedRoot.style.mozOsxFontSmoothing = "grayscale";
+				},
+			});
+
+			canvas.toBlob((blob) => {
+				if (!blob) return;
+
+				const url = URL.createObjectURL(blob);
+
+				// preview (opcional)
+				// window.open(url, "_blank", "noopener,noreferrer");
+
+				// download
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = `map_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.png`;
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+
+				setTimeout(() => URL.revokeObjectURL(url), 60_000);
+			}, "image/png");
+		} catch (err) {
+			console.error("[screenshot] failed:", err);
+			alert("Não consegui gerar a imagem desse bloco (o mapa do Google às vezes bloqueia).");
+		}
+	};
 
 
 
@@ -1189,9 +1301,25 @@ const ProdutividadePage = ({ useMulti }) => {
 							selectedColor={selectedColor}
 							setSelectedColor={setSelectedColor}
 						/>
+						<Fab
+							color="success"
+							onClick={handleScreenshotPrintable}
+							aria-label="Imprimir"
+							sx={{
+								position: "absolute",
+								right: 16,
+								bottom: 16,
+								zIndex: 2000,
+								boxShadow: "0 6px 18px rgba(0,0,0,0.35)",
+								"@media print": { display: "none" }, // não aparece no papel
+							}}
+						>
+							<PrintRoundedIcon color="action"/>
+						</Fab>
 						<Box
 							className={styles.mapListDiv}
 							id="printableMapPage"
+							ref={printableRef}
 							sx={{
 								// --- ESTILOS DO CONTAINER PAI ---
 								display: 'flex',          // 1. Ativa o Flexbox
@@ -1201,6 +1329,7 @@ const ProdutividadePage = ({ useMulti }) => {
 								minHeight: !printPageList ? '90vh' : ''
 							}}
 						>
+
 							<Box
 								width={"100%"}
 								display="flex"

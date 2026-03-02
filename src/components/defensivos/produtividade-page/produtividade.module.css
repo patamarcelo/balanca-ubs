@@ -299,3 +299,35 @@ thead tr th {
 	font-size: 10px;
 	opacity: 0.85;
 }
+
+/* .marker-label {
+  -webkit-text-stroke: 0.7px whitesmoke;
+} */
+
+
+ @media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #printableMapPage,
+  #printableMapPage * {
+    visibility: visible !important;
+  }
+
+  #printableMapPage {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-height: none !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* evita cortar sombras/bordas */
+  #printableMapPage * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

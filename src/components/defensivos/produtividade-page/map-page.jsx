@@ -577,7 +577,7 @@ const MapPage = ({
 						// const label = `${dataF.parcela} \n marce`;
 						const newLabel = {
 							text: finalizado ? label : label,
-							color: finalizado ? "white" : "black",
+							color: finalizado ? "white" : "rgba(208,211,212,0.8)",
 							className: styles["marker-label"]
 						};
 
