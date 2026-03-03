@@ -69,3 +69,15 @@ body,
   text-align: center;
   text-decoration: underline;
 }
+
+
+/* ativa só durante a captura */
+.capture-fix,
+.capture-fix * {
+  font-kerning: none !important;
+  font-variant-ligatures: none !important;
+  letter-spacing: 0 !important;
+  text-rendering: geometricPrecision !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+

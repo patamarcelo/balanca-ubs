@@ -5,10 +5,18 @@ import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import PageDataClassFlex from "./page-data-class-flex";
 
-const PageData = ({ data }) => {
+// Recebendo a prop 'via' para identificar de quem é a cópia
+const PageData = ({ data, via }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const user = useSelector(selectCurrentUser);
+
+	const capitalizeWords = (str) => {
+		if (!str || str === " - ") return str;
+		return String(str)
+			.toLowerCase()
+			.replace(/\b\w/g, (s) => s.toUpperCase());
+	};
 
 	const pad2 = (n) => String(n).padStart(2, "0");
 
@@ -18,56 +26,38 @@ const PageData = ({ data }) => {
 		typeof v.nanoseconds === "number";
 
 	const parseBrDateTimeStr = (s) => {
-		// aceita "03/11/2025 - 14:11" ou "03/11/2025 14:11"
 		const m = String(s).trim().match(
 			/^(\d{2})\/(\d{2})\/(\d{4})\s*(?:-|–)?\s*(\d{2}):(\d{2})$/
 		);
 		if (!m) return null;
 		const [, dd, MM, yyyy, HH, mm] = m.map(Number);
-		// mês no JS é 0-11
 		return new Date(yyyy, MM - 1, dd, HH, mm, 0, 0);
 	};
 
 	const toDate = (v) => {
 		if (!v && v !== 0) return null;
-
-		// Date
 		if (v instanceof Date && !isNaN(v.getTime())) return v;
-
-		// Firestore Timestamp
 		if (isFirestoreTimestamp(v)) {
 			return new Date(v.seconds * 1000 + Math.floor(v.nanoseconds / 1e6));
 		}
-
-		// Número ou string numérica (epoch)
 		if (typeof v === "number" || (typeof v === "string" && /^\d+$/.test(v.trim()))) {
 			const num = typeof v === "number" ? v : Number(v.trim());
-			// heurística: <= 1e12 ≈ segundos, > 1e12 ≈ milissegundos
 			const ms = num < 1e12 ? num * 1000 : num;
 			const d = new Date(ms);
 			return isNaN(d.getTime()) ? null : d;
 		}
-
-		// string vazia/placeholder
 		if (typeof v === "string") {
 			const s = v.trim();
 			if (!s || s === "-") return null;
-
-			// BR "dd/MM/yyyy - HH:mm" ou "dd/MM/yyyy HH:mm"
 			const br = parseBrDateTimeStr(s);
 			if (br) return br;
-
-			// tenta ISO/parse nativo
 			const d = new Date(s);
 			return isNaN(d.getTime()) ? null : d;
 		}
-
-		// fallback
 		return null;
 	};
 
 	const formatDateTime = (v) => {
-		// console.log('formattt: ', v); // mantenha se quiser debugar
 		const d = toDate(v);
 		if (!d) return " - ";
 		const dia = pad2(d.getDate());
@@ -75,13 +65,12 @@ const PageData = ({ data }) => {
 		const ano = d.getFullYear();
 		const hh = pad2(d.getHours());
 		const mm = pad2(d.getMinutes());
-		// usa " - " como no seu layout
 		return `${dia}/${mes}/${ano} - ${hh}:${mm}`;
 	};
+
 	const fmtText = (v) => (v === null || v === undefined || v === "" ? " - " : String(v));
 
 	const fmtKg = (v) => {
-		console.log('v here::: ', v, typeof v)
 		const n = Number(v);
 		if (!isFinite(n)) return " - ";
 		return n.toLocaleString("pt-BR") + " Kg";
@@ -96,16 +85,14 @@ const PageData = ({ data }) => {
 	};
 
 	const handleExistData = (data) => {
-		if (data) {
-			return data;
-		}
+		if (data) return data;
 		return " - ";
 	};
 
 	const dictData = [
 		{ label: "Placa", value: formatPlate(data?.placa) },
 		{ label: "Motorista", value: fmtText(data?.motorista) },
-		{ label: "Cultura", value: fmtText(data?.cultura) },
+		{ label: "Cultura", value: capitalizeWords(fmtText(data?.cultura)) },
 	];
 
 	const dictDataR = [
@@ -119,13 +106,15 @@ const PageData = ({ data }) => {
 		{ label: "Saída", value: formatDateTime(data?.saida) },
 	];
 
-
 	return (
 		<Box
 			height="100%"
 			sx={{
 				padding: "20px 50px",
-				width: "100% !important"
+				width: "100% !important",
+				alignItems: 'center',
+				border: "1px solid #e0e0e0",
+				borderRadius: '8px'
 			}}
 		>
 			<Box
@@ -149,9 +138,8 @@ const PageData = ({ data }) => {
 				<Box>
 					{[
 						"TICKET DE REQUISIÇÃO",
-						`LAGOA DA CONFUSÃO-TO / ${data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""
-						}`
-					].map((data, i) => {
+						`LAGOA DA CONFUSÃO-TO / ${data?.unidadeOp ? data.unidadeOp.toUpperCase() : ""}`
+					].map((item, i) => {
 						return (
 							<Box key={i}>
 								<Typography
@@ -163,35 +151,26 @@ const PageData = ({ data }) => {
 										marginBottom: i === 1 ? "15px" : ""
 									}}
 								>
-									{data}
+									{item}
 								</Typography>
 							</Box>
 						);
 					})}
 				</Box>
-				{/* <Typography
-					color={colors.redAccent[900]}
-					sx={{ fontSize: "10px", alignSelf: "end" }}
-				>
-					{data.id}
-				</Typography> */}
 				<Box
 					display="flex"
 					flexDirection="column"
 					justifyContent="center"
 					alignItems="center"
 				>
-					{DataDict.map((data, i) => {
+					{DataDict.map((item, i) => {
 						return (
 							<Box key={i} display="flex">
 								<Typography
 									color={colors.primary[700]}
 									fontWeight="bold"
 									sx={{
-										padding:
-											i === 1
-												? "0px 0px 0px 0px"
-												: "7px 0px 0px 0px",
+										padding: i === 1 ? "0px 0px 0px 0px" : "7px 0px 0px 0px",
 										fontSize: "12px",
 										marginBottom: i === 1 ? "15px" : "",
 										width: "60px",
@@ -199,21 +178,18 @@ const PageData = ({ data }) => {
 										marginRight: "5px"
 									}}
 								>
-									{data.label}:
+									{item.label}:
 								</Typography>
 								<Typography
 									color={colors.primary[700]}
 									sx={{
-										padding:
-											i === 1
-												? "0px 0px 0px 0px"
-												: "7px 0px 0px 0px",
+										padding: i === 1 ? "0px 0px 0px 0px" : "7px 0px 0px 0px",
 										fontSize: "12px",
 										marginBottom: i === 1 ? "15px" : "",
 										marginLeft: "5px"
 									}}
 								>
-									{data.value}
+									{item.value}
 								</Typography>
 							</Box>
 						);
@@ -228,19 +204,17 @@ const PageData = ({ data }) => {
 				sx={{
 					border: "1px solid black",
 					padding: "4px"
-					// backgroundColor: "red"
 				}}
 			>
 				<Box width="50%">
-					{dictData.map((data, i) => {
+					{dictData.map((item, i) => {
 						return (
 							<Box
 								display="flex"
 								width="100%"
 								key={i}
 								sx={{
-									borderBottom:
-										i === 2 ? "" : "1px dotted black"
+									borderBottom: i === 2 ? "" : "1px dotted black"
 								}}
 							>
 								<Box width="30%">
@@ -249,31 +223,21 @@ const PageData = ({ data }) => {
 										color={colors.primary[700]}
 										fontWeight="bold"
 									>
-										{data.label}:
+										{item.label}:
 									</Typography>
 								</Box>
 								<Box
 									width="50%"
 									display="flex"
 									justifyContent="center"
-									sx={{
-										// backgroundColor: "red",
-										marginRight: "30%"
-									}}
+									sx={{ marginRight: "30%" }}
 								>
 									<Typography
 										variant="h6"
 										color={colors.primary[700]}
-										// fontWeight="bold"
-										style={{
-											textTransform:
-												data.label === "Cultura"
-													? "capitalize"
-													: "",
-											whiteSpace: "nowrap"
-										}}
+										style={{ whiteSpace: "nowrap" }}
 									>
-										{data.value}
+										{item.value}
 									</Typography>
 								</Box>
 							</Box>
@@ -281,15 +245,14 @@ const PageData = ({ data }) => {
 					})}
 				</Box>
 				<Box width="50%">
-					{dictDataR.map((data, i) => {
+					{dictDataR.map((item, i) => {
 						return (
 							<Box
 								display="flex"
 								width="100%"
 								key={i}
 								sx={{
-									borderBottom:
-										i === 2 ? "" : "1px dotted black"
+									borderBottom: i === 2 ? "" : "1px dotted black"
 								}}
 							>
 								<Box
@@ -303,25 +266,21 @@ const PageData = ({ data }) => {
 										ml="10px"
 										style={{ whiteSpace: "nowrap" }}
 									>
-										{data.label}:
+										{item.label}:
 									</Typography>
 								</Box>
 								<Box
 									width="50%"
 									display="flex"
 									justifyContent="end"
-									sx={{
-										// backgroundColor: "red",
-										marginRight: "30%"
-									}}
+									sx={{ marginRight: "30%" }}
 								>
 									<Typography
 										variant="h6"
 										color={colors.primary[700]}
-										// fontWeight="bold"
 										style={{ textAlign: "right" }}
 									>
-										{data.value}
+										{item.value}
 									</Typography>
 								</Box>
 							</Box>
@@ -334,26 +293,18 @@ const PageData = ({ data }) => {
 				display="flex"
 				justifyContent="space-between"
 				alignItems="center"
-				sx={{
-					width: "100%"
-				}}
+				sx={{ width: "100%" }}
 			>
 				<Box
 					display="flex"
 					justifyContent="center"
 					flexDirection="column"
-					sx={{
-						width: "40%",
-						alignItems: "center"
-					}}
+					sx={{ width: "40%", alignItems: "center" }}
 				>
 					<Box
 						display="flex"
 						justifyContent="center"
-						sx={{
-							width: "100%",
-							borderTop: "1px solid black"
-						}}
+						sx={{ width: "100%", borderTop: "1px solid black" }}
 					>
 						<Typography
 							variant="h6"
@@ -368,30 +319,23 @@ const PageData = ({ data }) => {
 					display="flex"
 					justifyContent="center"
 					flexDirection="column"
-					sx={{
-						width: "40%",
-						alignItems: "center"
-					}}
+					sx={{ width: "40%", alignItems: "center" }}
 				>
 					<Box
 						display="flex"
 						justifyContent="center"
-						sx={{
-							width: "100%",
-							borderTop: "1px solid black"
-						}}
+						sx={{ width: "100%", borderTop: "1px solid black" }}
 					>
 						<Typography
 							variant="h6"
 							color={colors.grey[800]}
 							fontWeight="bold"
-							sx={{
-								textTransform: "capitalize"
-							}}
 						>
-							{handleExistData(data?.motorista) !== " - "
-								? data.motorista
-								: "Motorista"}
+							{capitalizeWords(
+								handleExistData(data?.motorista) !== " - "
+									? data.motorista
+									: "Motorista"
+							)}
 						</Typography>
 					</Box>
 				</Box>
@@ -401,10 +345,7 @@ const PageData = ({ data }) => {
 					variant="h6"
 					color={colors.grey[800]}
 					fontWeight="bold"
-					style={{
-						textDecoration: "underline",
-						marginBottom: "10px"
-					}}
+					style={{ textDecoration: "underline", marginBottom: "10px" }}
 				>
 					Observações:
 				</Typography>
@@ -433,9 +374,7 @@ const PageData = ({ data }) => {
 						gap="1px"
 					>
 						<div>
-							{data?.relatorioColheita && (
-								<b>Relatório Colheita: </b>
-							)}
+							{data?.relatorioColheita && <b>Relatório Colheita: </b>}
 							{data?.relatorioColheita && data?.relatorioColheita}
 							{data?.relatorioColheita && <br />}
 						</div>
@@ -445,18 +384,9 @@ const PageData = ({ data }) => {
 							{data?.parcela && <br />}
 						</div>
 						<div>
-							{data?.parcelasNovas &&
-								data.parcelasNovas.length > 1 && (
-									<b>Parcelas: </b>
-								)}
-							{data?.parcelasNovas &&
-								data.parcelasNovas.length === 1 && (
-									<b>Parcela: </b>
-								)}
-							{data?.parcelasNovas &&
-								data?.parcelasNovas
-									.toString()
-									.replaceAll(",", " , ")}
+							{data?.parcelasNovas && data.parcelasNovas.length > 1 && <b>Parcelas: </b>}
+							{data?.parcelasNovas && data.parcelasNovas.length === 1 && <b>Parcela: </b>}
+							{data?.parcelasNovas && data?.parcelasNovas.toString().replaceAll(",", " , ")}
 							{data?.parcelasNovas && <br />}
 						</div>
 						<div>
@@ -466,10 +396,7 @@ const PageData = ({ data }) => {
 								parseFloat(data.valorFrete)
 									.toFixed(2)
 									.replace(".", ",")
-									.toLocaleString("pt-BR", {
-										style: "currency",
-										currency: "BRL"
-									})}
+									.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
 							{data?.valorFrete && <br />}
 						</div>
 						<div>
@@ -478,12 +405,22 @@ const PageData = ({ data }) => {
 						</div>
 					</Typography>
 				</Box>
-				<Typography
-					color={colors.grey[500]}
-					sx={{ fontSize: "0.7rem", alignSelf: "flex-end" }}
-				>
-					{data.id}
-				</Typography>
+
+				{/* Rodapé com a indicação da via e ID */}
+				<Box display="flex" justifyContent="space-between" width="100%">
+					<Typography
+						color={colors.grey[600]}
+						sx={{ fontSize: "0.75rem", fontWeight: "bold" }}
+					>
+						{via && via}
+					</Typography>
+					<Typography
+						color={colors.grey[500]}
+						sx={{ fontSize: "0.7rem" }}
+					>
+						{data.id}
+					</Typography>
+				</Box>
 			</Box>
 		</Box>
 	);

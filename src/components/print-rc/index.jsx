@@ -62,7 +62,6 @@ const PrintRCLayout = ({ data }) => {
 						width: isNonMobile ? "90%" : "100%",
 						maxWidth: "925px",
 						backgroundColor: "white",
-						boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px"
 					}}
 				>
 					{isLoading ? (

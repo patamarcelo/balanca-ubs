@@ -1078,6 +1078,7 @@ const DataProgramPage = (props) => {
 
 	const handleFilterList = (farmName) => {
 		setFarmSelected(farmName);
+		localStorage.setItem("farmSelected_darmboxData", farmName);
 		const filtList = plantioRedux.filter(
 			(data) =>
 				data.fazenda === farmName &&
@@ -1087,6 +1088,22 @@ const DataProgramPage = (props) => {
 		setCulturaSelecionada([])
 		setVariedadeSelecionada([])
 	};
+
+	useEffect(() => {
+		const savedFarm = localStorage.getItem("farmSelected_darmboxData");
+
+		if (savedFarm) {
+			setFarmSelected(savedFarm);
+
+			const filtList = plantioRedux.filter(
+				(data) =>
+					data.fazenda === savedFarm &&
+					data.dados.inicializado_plantio === true
+			);
+
+			setFilteredList(filtList);
+		}
+	}, [plantioRedux]);
 
 	const handleFilterTable = () => {
 		setFiltData(!filtData);

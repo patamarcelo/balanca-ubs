@@ -87,8 +87,10 @@ const PageRcData = ({ printValue }) => {
 				borderColor: colors.blueOrigin[700],
 				borderRadius: "8px",
 				margin: "30px",
-				zoom: !isNonMobileLand ? '70%' : '80%'
-
+				boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+				// Usa transform em vez de zoom
+				transform: !isNonMobileLand ? 'scale(0.7)' : 'scale(0.8)',
+				transformOrigin: 'top center', // Mantém o elemento alinhado no topo
 			}}
 		>
 			<Box
