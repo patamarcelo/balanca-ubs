@@ -154,6 +154,7 @@ export default function PreviewPdfModal({
                             onClick={handleDownloadPdfFromScreen}
                             startIcon={<PictureAsPdfIcon />}
                             variant="contained"
+                            color="info"
                             disabled={busy}
                         >
                             {busy ? "Gerando..." : "Baixar PDF"}
@@ -171,7 +172,7 @@ export default function PreviewPdfModal({
                         sx={{
                             width: "100%",
                             overflow: "auto", // O scroll fica APENAS aqui
-                            p: 2,
+                            // p: 2,
                         }}
                     >
                         {/* CONTÊINER INTERNO: Alvo do html2canvas */}

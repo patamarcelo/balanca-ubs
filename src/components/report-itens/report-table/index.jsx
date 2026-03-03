@@ -822,7 +822,7 @@ const ReportTable = (props) => {
 			<Dialog
 				open={openModal}
 				onClose={handleClose}
-				fullScreen // <- deixa fullscreen
+				fullScreen // <- deixa fullscreen perfeitamente
 				PaperProps={{
 					sx: {
 						width: "100%",
@@ -830,37 +830,22 @@ const ReportTable = (props) => {
 						margin: 0,
 						maxWidth: "100%",
 						maxHeight: "100%",
+						backgroundColor: "#f5f5f5", // Já deixa o fundo do Dialog na cor certa do nosso relatório
+						overflow: "hidden" // Previne qualquer scroll duplo indesejado
 					},
 				}}
 			>
 
-				{/* Espaçador para não ficar por baixo da AppBar */}
-				<Toolbar />
+				
 				{modalData && (
-					<Box
-						sx={{
-							width: "100%",
-							height: "100%",
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						<PrintRCLayout data={modalData} />
-					</Box>
+					
+						<PrintRCLayout data={modalData} onClose={handleClose} />
+					
 				)}
 				{modalDataRc && (
-					<Box
-						sx={{
-							width: "100%",
-							height: "100%",
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						<PrintPage data={modalDataRc} />
-					</Box>
+				
+						<PrintPage data={modalDataRc} onClose={handleClose} />
+				
 				)}
 			</Dialog>
 
