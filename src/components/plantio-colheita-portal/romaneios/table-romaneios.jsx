@@ -510,14 +510,12 @@ const RomaneiosTable = (props) => {
 										<td style={{ color: duplicatesPlates?.includes(carga.placa) && 'red', fontWeight: duplicatesPlates?.includes(carga.placa) && 'bold' }}>
 											{carga.placa.slice(0, 3)}-{carga.placa.slice(3, 12)}
 										</td>
-										<td style={{ cursor: 'default' }}>
-											<Tooltip title={carga.motorista} arrow>
-												<span>
-													{carga.motorista.length > 13
-														? `${carga.motorista.substring(0, 13)}...`
-														: carga.motorista}
-												</span>
-											</Tooltip>
+										<td style={{
+											whiteSpace: 'nowrap',   // Força o nome a ficar em uma única linha
+											overflow: 'visible',    // Garante que o texto todo apareça
+											padding: '8px 16px'     // Espaçamento opcional para respiro
+										}}>
+											{carga.motorista}
 										</td>
 										<td>{carga.fazendaDestino}</td>
 										<td>
