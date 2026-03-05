@@ -38,6 +38,11 @@ const DataDefensivoDaysTableDinamic = (props) => {
 		{ field: "programaStartDate", headerName: "Start Janela", width: 140 },
 		{ field: "programaEndDate", headerName: "Fim Janela", width: 140 },
 		{ field: "estagio", headerName: "Estagio", width: 140 },
+		{ field: "equipamento", headerName: "Equipamento", width: 140 },
+
+		{ field: "valorFinalProd", headerName: "Preço Produto", width: 140 },
+		{ field: "valorAplicacao", headerName: "Valor Aplicação", width: 140 },
+
 		{ field: "situacaoApp", headerName: "Situação", width: 80 },
 		{ field: "dapAplicacao", headerName: "DAP AP", width: 140 },
 		{ field: "dataPrevista", headerName: "Data Prevista AP", width: 140 },

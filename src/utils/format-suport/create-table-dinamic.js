@@ -2,7 +2,11 @@ export const createDinamicTable = (data) => {
 	const tableArray = [];
 	let count = 0;
 
-	data.forEach((item) => {
+	data.forEach((item, index) => {
+
+		if ( index < 2){
+			console.log('data item hereeeeee', item)
+		}
 		const cronograma = item.dados.cronograma;
 		const projeto = item.fazenda;
 		const parcela = item.parcela;
@@ -29,13 +33,13 @@ export const createDinamicTable = (data) => {
 		const capacidadePlantioDia = dados.capacidade_plantio_dia;
 
 		cronograma.forEach((etapa) => {
-			console.log('etapaaa', etapa)
 			const estagio = etapa.estagio;
 			const estagioId = etapa?.estagio_id;
 			const dapAplicacao = etapa.dap;
 			const dataPrevista = etapa["data prevista"];
 			const situacaoApp = etapa.aplicado;
 			const produtos = etapa.produtos || [];
+			const equipamento = etapa.equipamento || ' - '
 
 			// 🔍 1) Conta quantos são "operacao" e quantos são "calda"
 			const operacaoCount = produtos.filter(
@@ -61,7 +65,6 @@ export const createDinamicTable = (data) => {
 			// 3) Para cada produto da etapa, criamos a linha da tabela
 			produtos.forEach((prod) => {
 				const produto = prod.produto;
-				console.log('prod here:::', prod)
 				const tipo = prod.tipo;
 				const dose = parseFloat(prod.dose)
 					.toFixed(3)
@@ -72,6 +75,13 @@ export const createDinamicTable = (data) => {
 
 				const quantidadeAplicar = quantiMult
 					.toFixed(3)
+					.replace(".", ",");
+				
+				const precoProd = prod?.preco?.toFixed(2)
+					.replace(".", ",");;
+				const valorAplicacao = prod?.valor_aplicacao?.toFixed(2)
+					.replace(".", ",");;
+				const valorFinalProd = prod?.valor_final?.toFixed(2)
 					.replace(".", ",");
 
 				const newObj = {
@@ -101,8 +111,11 @@ export const createDinamicTable = (data) => {
 					produto: produto,
 					tipo: tipo,
 					dose: dose,
+					precoProd,
+					valorAplicacao,
+					valorFinalProd,
 					quantidadeAplicar: quantidadeAplicar,
-
+					equipamento,
 					// 🆕 nova propriedade para filtros futuros
 					tipoAplicacao: tipoAplicacao,
 				};
