@@ -21,8 +21,19 @@ const normTxt = (v) =>
 		.toLowerCase()
 		.trim();
 
+const toNumber = (v) => {
+	if (v == null) return 0;
+	if (typeof v === "number") return Number.isFinite(v) ? v : 0;
+	const s = String(v).replace(",", ".").replace(/[^\d.-]/g, "");
+	const n = Number(s);
+	return Number.isFinite(n) ? n : 0;
+};
+
 const fmtInt = (n) =>
-	Number(n || 0).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+	Number(n || 0).toLocaleString("pt-BR", {
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	});
 
 const MiniMetric = ({ label, value, themeRgb }) => {
 	const border = rgbaFromRgb(themeRgb, 0.28);
@@ -44,14 +55,46 @@ const MiniMetric = ({ label, value, themeRgb }) => {
 				gap: 1,
 			}}
 		>
-			<Typography variant="caption" sx={{ opacity: 0.9, fontWeight: 900, color: "rgba(245,245,245,0.85)" }}>
+			<Typography
+				variant="caption"
+				sx={{ opacity: 0.9, fontWeight: 900, color: "rgba(245,245,245,0.85)" }}
+			>
 				{label}
 			</Typography>
-			<Typography variant="body2" sx={{ fontWeight: 950, color: "whitesmoke", whiteSpace: "nowrap" }}>
+			<Typography
+				variant="body2"
+				sx={{ fontWeight: 950, color: "whitesmoke", whiteSpace: "nowrap" }}
+			>
 				{fmtInt(value)}
 			</Typography>
 		</Box>
 	);
+};
+
+const getSaldoAplicarHa = (app) => {
+	const saldo = toNumber(app?.saldoAplicar);
+	if (saldo > 0) return saldo;
+
+	const area = toNumber(app?.area);
+	const aplicada = toNumber(app?.areaAplicada);
+	const calc = area - aplicada;
+
+	return calc > 0 ? calc : 0;
+};
+
+const getTipoAplicacao = (app) => {
+	const insumos = Array.isArray(app?.insumos) ? app.insumos : [];
+
+	const isTipoOperacao = (tipo) => normTxt(tipo) === "operacao";
+
+	if (insumos.length === 1) return "Operacao";
+
+	const nonOp = insumos.filter((i) => !isTipoOperacao(i?.tipo));
+
+	if (nonOp.length === 1) return "Solido";
+	if (nonOp.length > 1) return "Liquido";
+
+	return "Operacao";
 };
 
 const ResumoFazendasPage = (props) => {
@@ -59,15 +102,8 @@ const ResumoFazendasPage = (props) => {
 		fazenda,
 		colors,
 		divider,
-		dataGeral,
-		// mantidos por compatibilidade
-		filterPreaproSolo,
-		operationFilter,
-		showFutureApps,
-		daysFilter,
+		rows = [],
 	} = props;
-
-	const fazPlan = dataGeral?.fazendas?.[fazenda];
 
 	const iconDict = useMemo(
 		() => [
@@ -87,21 +123,56 @@ const ResumoFazendasPage = (props) => {
 	}, [fazenda]);
 
 	const culturas = useMemo(() => {
-		if (!fazPlan) return [];
-		return iconDict
-			.filter((c) => fazPlan?.[c.cultura] !== undefined)
-			.map((c) => ({
-				...c,
-				ha: fazPlan?.[c.cultura] ?? 0,
-			}))
+		const dict = {};
+
+		rows.forEach((row) => {
+			const culturaBruta = String(row?.cultura || "").trim();
+			const cultura = culturaBruta || "SemCultura";
+			const saldo = getSaldoAplicarHa(row);
+
+			dict[cultura] = (dict[cultura] || 0) + saldo;
+		});
+
+		return Object.entries(dict)
+			.map(([cultura, ha]) => {
+				const found = iconDict.find((item) => normTxt(item.cultura) === normTxt(cultura));
+
+				return {
+					cultura,
+					ha,
+					icon: found?.icon || question,
+					alt: found?.alt || "?",
+					color: found?.color || "rgb(166,166,166)",
+				};
+			})
 			.sort((a, b) => normTxt(a.cultura).localeCompare(normTxt(b.cultura), "pt-BR"));
-	}, [fazPlan, iconDict]);
+	}, [rows, iconDict]);
 
 	const themeRgb = culturas[0]?.color || "rgb(166,166,166)";
 	const borderColor = rgbaFromRgb(themeRgb, 0.55);
 	const shadowColor = rgbaFromRgb(themeRgb, 0.06);
 
-	const saldoTotal = fazPlan?.saldo ?? 0;
+	const saldoTotal = useMemo(() => {
+		return rows.reduce((acc, row) => acc + getSaldoAplicarHa(row), 0);
+	}, [rows]);
+
+	const saldoSolido = useMemo(() => {
+		return rows.reduce((acc, row) => {
+			return getTipoAplicacao(row) === "Solido" ? acc + getSaldoAplicarHa(row) : acc;
+		}, 0);
+	}, [rows]);
+
+	const saldoLiquido = useMemo(() => {
+		return rows.reduce((acc, row) => {
+			return getTipoAplicacao(row) === "Liquido" ? acc + getSaldoAplicarHa(row) : acc;
+		}, 0);
+	}, [rows]);
+
+	const saldoOperacao = useMemo(() => {
+		return rows.reduce((acc, row) => {
+			return getTipoAplicacao(row) === "Operacao" ? acc + getSaldoAplicarHa(row) : acc;
+		}, 0);
+	}, [rows]);
 
 	return (
 		<Box sx={{ width: "100%" }}>
@@ -114,7 +185,6 @@ const ResumoFazendasPage = (props) => {
 					boxShadow: `0 0 0 1px ${shadowColor}`,
 				}}
 			>
-				{/* HEADER CONSOLIDADO */}
 				<Box
 					sx={{
 						px: 1.2,
@@ -149,23 +219,31 @@ const ResumoFazendasPage = (props) => {
 								{fazendaLabel}
 							</a>
 						</Typography>
-						<Typography variant="caption" sx={{ opacity: 0.85, fontWeight: 900, color: "rgba(245,245,245,0.78)" }}>
-							Resumo por cultura
+						<Typography
+							variant="caption"
+							sx={{ opacity: 0.85, fontWeight: 900, color: "rgba(245,245,245,0.78)" }}
+						>
+							Resumo filtrado
 						</Typography>
 					</Box>
 
 					<Box sx={{ textAlign: "right", whiteSpace: "nowrap" }}>
-						<Typography variant="caption" sx={{ opacity: 0.85, fontWeight: 900, color: "rgba(245,245,245,0.78)" }}>
+						<Typography
+							variant="caption"
+							sx={{ opacity: 0.85, fontWeight: 900, color: "rgba(245,245,245,0.78)" }}
+						>
 							Saldo
 						</Typography>
-						<Typography variant="body2" sx={{ fontWeight: 950, color: "whitesmoke", fontSize: "0.95rem" }}>
+						<Typography
+							variant="body2"
+							sx={{ fontWeight: 950, color: "whitesmoke", fontSize: "0.95rem" }}
+						>
 							{fmtInt(saldoTotal)} ha
 						</Typography>
 					</Box>
 				</Box>
 
-				{/* CORPO CONSOLIDADO */}
-				{!fazPlan ? (
+				{rows.length === 0 ? (
 					<Box sx={{ px: 1.2, py: 1.1 }}>
 						<Typography variant="body2" sx={{ opacity: 0.85, color: "whitesmoke" }}>
 							Sem dados para esta fazenda nos filtros atuais.
@@ -173,7 +251,6 @@ const ResumoFazendasPage = (props) => {
 					</Box>
 				) : (
 					<Box sx={{ px: 1.1, py: 1.0, display: "flex", flexDirection: "column", gap: 0.9 }}>
-						{/* LINHA DE CULTURAS: CHIPS COM ÍCONE + HA */}
 						<Box
 							sx={{
 								display: "flex",
@@ -209,7 +286,9 @@ const ResumoFazendasPage = (props) => {
 													}}
 												/>
 												<span style={{ fontWeight: 950 }}>{c.cultura}</span>
-												<span style={{ opacity: 0.95, fontWeight: 950 }}>{fmtInt(c.ha)} ha</span>
+												<span style={{ opacity: 0.95, fontWeight: 950 }}>
+													{fmtInt(c.ha)} ha
+												</span>
 											</span>
 										}
 										size="small"
@@ -228,11 +307,10 @@ const ResumoFazendasPage = (props) => {
 							)}
 						</Box>
 
-						{/* LINHA DE MÉTRICAS: COMPACTA */}
 						<Box sx={{ display: "flex", gap: 0.8, flexWrap: "wrap" }}>
-							<MiniMetric label="Sólido" value={fazPlan?.saldoSolido} themeRgb={themeRgb} />
-							<MiniMetric label="Líquido" value={fazPlan?.saldoLiquido} themeRgb={themeRgb} />
-							<MiniMetric label="Operações" value={fazPlan?.saldoOperacao} themeRgb={themeRgb} />
+							<MiniMetric label="Sólido" value={saldoSolido} themeRgb={themeRgb} />
+							<MiniMetric label="Líquido" value={saldoLiquido} themeRgb={themeRgb} />
+							<MiniMetric label="Operações" value={saldoOperacao} themeRgb={themeRgb} />
 						</Box>
 					</Box>
 				)}

@@ -102,7 +102,6 @@ const FarmBoxPage = () => {
 	const onlyFarms = useSelector(onlyFarmSelector);
 	const [filtFarm, setFiltFarm] = useState([]);
 	const [filteredApps, setFilteredApps] = useState([]);
-	const [saldoAplicar, setSaldoAplicar] = useState(0);
 	const [allFarmsSet, setAllFarmsSet] = useState(false);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
@@ -146,6 +145,8 @@ const FarmBoxPage = () => {
 	const handleOpenAplicacoesDaily = () => setOpenAplicacoesDaily(true);
 	const handleCloseAplicacoesDaily = () => setOpenAplicacoesDaily(false);
 
+	const [apCodeFilter, setApCodeFilter] = useState([]);
+
 
 	const [dapApDestaque, setDapApDestaque] = useState(50);
 
@@ -169,6 +170,14 @@ const FarmBoxPage = () => {
 		return Number.isNaN(dt.getTime()) ? null : dt;
 	};
 
+
+	const makeApOptionKey = (fazenda, appCode) =>
+		`${(fazenda ?? "").toString().trim()}___${(appCode ?? "").toString().trim()}`;
+
+	const parseApOptionKey = (key) => {
+		const [fazenda = "", app = ""] = String(key).split("___");
+		return { fazenda, app };
+	};
 
 	const selector = useMemo(
 		() => geralAppDetail(showFutureApps, daysFilter, operationFilter),
@@ -252,6 +261,12 @@ const FarmBoxPage = () => {
 				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
 			})
 
+			// apCode (MultiSelect)
+			.filter((app) => {
+				const key = makeApOptionKey(app?.fazenda, app?.app);
+				return apCodeFilter.length === 0 ? true : apCodeFilter.includes(key);
+			})
+
 			// futuro / janela
 			.filter((app) =>
 				!showFutureApps
@@ -281,7 +296,8 @@ const FarmBoxPage = () => {
 		showFutureApps,
 		tipoAplicacaoFilter,
 		onlyEndedUntilToday,
-		getTipoAplicacao
+		getTipoAplicacao,
+		apCodeFilter
 	]);
 
 
@@ -485,15 +501,11 @@ const FarmBoxPage = () => {
 		setOpenPreStPage(true)
 	}
 
-	useEffect(() => {
-		let saldoAplicar = 0;
-		filtFarm.forEach((data, index) => {
-			if (data in dataGeral.fazendas) {
-				saldoAplicar += dataGeral?.fazendas[data]?.saldo;
-			}
-		});
-		setSaldoAplicar(saldoAplicar);
-	}, [filtFarm, showFutureApps, dataGeral]);
+	const saldoAplicar = useMemo(() => {
+		return (aplicacoesFiltradas || [])
+			.filter((app) => filtFarm.includes(app.fazenda))
+			.reduce((acc, app) => acc + getSaldoAplicarHa(app), 0);
+	}, [aplicacoesFiltradas, filtFarm]);
 
 	// handle data grom nodeServer ----- pluviometria
 
@@ -596,6 +608,76 @@ const FarmBoxPage = () => {
 		[dictSelect]
 	);
 
+	const apCodeOptions = useMemo(() => {
+		const hasManyFarmsSelected = filtFarm.length > 1;
+
+		const rows = (filteredApps ?? [])
+			.filter((app) => {
+				const op = (app?.operacao ?? "").toString().trim();
+				return operationFilter.length === 0 ? true : operationFilter.includes(op);
+			})
+			.filter((app) => {
+				const cultura = (app?.cultura ?? "").toString().trim();
+				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+			})
+			.map((app) => {
+				const fazenda = (app?.fazenda ?? "").toString().trim();
+				const code = (app?.app ?? "").toString().trim();
+
+				if (!fazenda || !code) return null;
+
+				return {
+					key: makeApOptionKey(fazenda, code),
+					fazenda,
+					code,
+					label: hasManyFarmsSelected
+						? `${fazenda.replace("Fazenda ", "")} - ${code}`
+						: code,
+				};
+			})
+			.filter(Boolean);
+
+		const uniqueRows = rows.filter(
+			(item, index, self) => index === self.findIndex((x) => x.key === item.key)
+		);
+
+		return uniqueRows.sort((a, b) => {
+			const farmCompare = a.fazenda.localeCompare(b.fazenda, "pt-BR");
+			if (farmCompare !== 0) return farmCompare;
+
+			const numA = parseInt(String(a.code).replace(/\D/g, ""), 10);
+			const numB = parseInt(String(b.code).replace(/\D/g, ""), 10);
+
+			if (!Number.isNaN(numA) && !Number.isNaN(numB) && numA !== numB) {
+				return numA - numB;
+			}
+
+			return a.code.localeCompare(b.code, "pt-BR");
+		});
+	}, [filteredApps, operationFilter, cultureFilter, filtFarm]);
+
+
+	const isAllApCodesSelected =
+		apCodeOptions.length > 0 && apCodeFilter.length === apCodeOptions.length;
+
+	const handleChangeApCodeFilt = (event) => {
+		const value = event.target.value;
+		setApCodeFilter(typeof value === "string" ? value.split(",") : value);
+	};
+
+	const handleToggleAllApCodes = () => {
+		setApCodeFilter(
+			isAllApCodesSelected ? [] : apCodeOptions.map((item) => item.key)
+		);
+	};
+
+	const handleClearApCodes = () => setApCodeFilter([]);
+
+	useEffect(() => {
+		const validKeys = apCodeOptions.map((item) => item.key);
+		setApCodeFilter((prev) => prev.filter((key) => validKeys.includes(key)));
+	}, [apCodeOptions]);
+
 	const isAllSelected =
 		options.length > 0 && operationFilter.length === options.length;
 
@@ -675,6 +757,81 @@ const FarmBoxPage = () => {
 		}
 	}, []);
 
+
+	const compactFilterSx = {
+		minWidth: 180,
+		flex: "0 1 auto",
+		"& .MuiInputLabel-root": {
+			color: `${colors.grey[900]} !important`,
+			fontWeight: 700,
+		},
+		"& .MuiInputLabel-root.Mui-focused": {
+			color: `${colors.blueOrigin?.[600] || colors.grey[900]} !important`,
+		},
+		"& .MuiOutlinedInput-root": {
+			height: 40,
+			backgroundColor: "#fff",
+			borderRadius: "10px",
+			color: `${colors.grey[900]} !important`,
+			fontWeight: 600,
+		},
+		"& .MuiSelect-select": {
+			color: `${colors.grey[900]} !important`,
+			WebkitTextFillColor: `${colors.grey[900]} !important`,
+			display: "flex",
+			alignItems: "center",
+		},
+		"& .MuiOutlinedInput-input": {
+			color: `${colors.grey[900]} !important`,
+			WebkitTextFillColor: `${colors.grey[900]} !important`,
+		},
+		"& .MuiSvgIcon-root": {
+			color: `${colors.grey[800]} !important`,
+		},
+		"& .MuiOutlinedInput-notchedOutline": {
+			borderColor: colors.grey[300],
+		},
+		"& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+			borderColor: colors.grey[500],
+		},
+		"& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+			borderColor: colors.blueOrigin?.[600] || colors.grey[700],
+		},
+	};
+
+	const compactCheckboxSx = {
+		py: 0,
+		px: 0.5,
+		color: colors.grey[800],
+		"&.Mui-checked": {
+			color: colors.greenSuccess?.[100] || colors.grey[900],
+		},
+		"&.MuiCheckbox-indeterminate": {
+			color: colors.greenSuccess?.[100] || colors.grey[900],
+		},
+	};
+
+	const getCompactSelectLabel = (selected, allOptions, getLabel) => {
+		if (!selected?.length) return "Todos";
+
+		if (selected.length === 1) {
+			const found = allOptions.find((item) => item.key === selected[0] || item === selected[0]);
+			if (!found) return "1 selecionado";
+			return getLabel ? getLabel(found) : found.label || found;
+		}
+
+		if (selected.length === allOptions.length) return "Todos";
+
+		return `${selected.length} selecionados`;
+	};
+
+	const handleClearAllFilters = () => {
+		setApCodeFilter([]);
+		setOperationFilter([]);
+		setCultureFilter([]);
+		setTipoAplicacaoFilter(TIPOS_APLICACAO);
+		setDapApDestaque(50);
+	};
 
 
 	return (
@@ -953,66 +1110,89 @@ const FarmBoxPage = () => {
 					</Box>
 
 				}
+
 				{
-					filtFarm.length > 0 &&
-					<>
+					filtFarm.length > 0 && (
 						<Box
 							sx={{
 								display: "flex",
 								alignItems: "center",
-								gap: 1.5,
-								flexWrap: "wrap",
+								// justifyContent: 'space-evenly',
+								gap: 3,
 								mb: 2,
-								p: 1.5,
-								borderRadius: 2,
-								backgroundColor: colors.brown[500],
-								border: `1px solid ${colors.grey[300]}`,
-								boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+								px: 1.25,
+								py: 1,
+								borderRadius: "12px",
+								backgroundColor: isDark ? colors.blueOrigin[700] : colors.grey[100],
+								border: `1px solid ${isDark ? colors.grey[700] : colors.grey[300]}`,
+								boxShadow: !isDark
+									? "0 6px 18px rgba(0,0,0,0.10)"
+									: "0 6px 18px rgba(0,0,0,0.28)",
+								flexWrap: "nowrap",
+								overflowX: "auto",
+								overflowY: "hidden",
+								whiteSpace: "nowrap",
+								scrollbarWidth: "thin",
+								"&::-webkit-scrollbar": {
+									height: 8,
+								},
+								"&::-webkit-scrollbar-thumb": {
+									backgroundColor: isDark ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.18)",
+									borderRadius: 999,
+								},
 							}}
 						>
-							{/* Operações */}
-							<FormControl
-								size="small"
-								sx={{
-									minWidth: 320,
-									"& .MuiInputLabel-root": { color: colors.grey[800] },
-									"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
-								}}
-							>
+							{apCodeOptions.length > 0 && (
+								<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 230 }}>
+									<InputLabel id="apcode-filter-label">APs</InputLabel>
+									<Select
+										labelId="apcode-filter-label"
+										multiple
+										value={apCodeFilter}
+										onChange={handleChangeApCodeFilt}
+										input={<OutlinedInput label="APs" />}
+										MenuProps={MenuProps}
+										renderValue={(selected) =>
+											getCompactSelectLabel(selected, apCodeOptions, (item) => item.label)
+										}
+									>
+										<MenuItem onClick={handleToggleAllApCodes}>
+											<Checkbox
+												checked={isAllApCodesSelected}
+												indeterminate={!isAllApCodesSelected && apCodeFilter.length > 0}
+											/>
+											<ListItemText
+												primary={isAllApCodesSelected ? "Desmarcar todas" : "Selecionar todas"}
+											/>
+										</MenuItem>
+
+										<MenuItem onClick={handleClearApCodes}>
+											<Checkbox checked={apCodeFilter.length === 0} />
+											<ListItemText primary="Limpar seleção" />
+										</MenuItem>
+
+										<Divider />
+
+										{apCodeOptions.map((item) => (
+											<MenuItem key={item.key} value={item.key}>
+												<Checkbox checked={apCodeFilter.includes(item.key)} />
+												<ListItemText primary={item.label} />
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							)}
+
+							<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 220 }}>
 								<InputLabel id="op-filter-label">Operações</InputLabel>
 								<Select
 									labelId="op-filter-label"
 									multiple
 									value={operationFilter}
 									onChange={handleChangeOpFilt}
-									input={
-										<OutlinedInput
-											label="Operações"
-											sx={{
-												"& .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[400] },
-												"&:hover .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[600] },
-												"&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: colors.blueOrigin?.[600] || colors.grey[700] },
-											}}
-										/>
-									}
-									renderValue={(selected) => (
-										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{selected.map((value) => (
-												<Chip
-													key={value}
-													label={value}
-													size="small"
-													sx={{
-														backgroundColor: colors.grey[200],
-														color: colors.grey[900],
-														border: `1px solid ${colors.grey[300]}`,
-													}}
-												/>
-											))}
-										</Box>
-									)}
+									input={<OutlinedInput label="Operações" />}
 									MenuProps={MenuProps}
-									sx={{ backgroundColor: "#fff" }}
+									renderValue={(selected) => getCompactSelectLabel(selected, options)}
 								>
 									<MenuItem onClick={handleToggleAll}>
 										<Checkbox
@@ -1027,190 +1207,99 @@ const FarmBoxPage = () => {
 										<ListItemText primary="Limpar seleção" />
 									</MenuItem>
 
+									<Divider />
+
 									{options.map((name) => (
 										<MenuItem key={name} value={name}>
-											<Checkbox checked={operationFilter.indexOf(name) > -1} />
+											<Checkbox checked={operationFilter.includes(name)} />
 											<ListItemText primary={name} />
 										</MenuItem>
 									))}
 								</Select>
 							</FormControl>
 
-							<Tooltip title={isAllSelected ? "Desmarcar todos" : "Selecionar todos"}>
-								<IconButton
-									size="small"
-									onClick={handleToggleAll}
-									sx={{
-										backgroundColor: "#fff",
-										border: `1px solid ${colors.grey[300]}`,
-										"&:hover": { backgroundColor: colors.grey[200] },
-									}}
-								>
-									{isAllSelected ? (
-										<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
-									) : (
-										<DoneAllIcon sx={{ color: colors.greenSuccess[100] }} />
-									)}
-								</IconButton>
-							</Tooltip>
-
-							<Tooltip title="Limpar seleção">
-								<IconButton
-									size="small"
-									onClick={handleClear}
-									sx={{
-										backgroundColor: "#fff",
-										border: `1px solid ${colors.grey[300]}`,
-										"&:hover": { backgroundColor: colors.grey[200] },
-									}}
-								>
-									<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
-								</IconButton>
-							</Tooltip>
-
-							{/* Cultura */}
 							{cultureOptions.length > 0 && (
-								<>
-									<FormControl
-										size="small"
-										sx={{
-											ml: 5,
-											minWidth: 260,
-											"& .MuiInputLabel-root": { color: colors.grey[800] },
-											"& .MuiOutlinedInput-root": { backgroundColor: "#fff" },
-										}}
+								<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 200 }}>
+									<InputLabel id="cultura-filter-label">Cultura</InputLabel>
+									<Select
+										labelId="cultura-filter-label"
+										multiple
+										value={cultureFilter}
+										onChange={handleChangeCultureFilt}
+										input={<OutlinedInput label="Cultura" />}
+										MenuProps={MenuProps}
+										renderValue={(selected) => getCompactSelectLabel(selected, cultureOptions)}
 									>
-										<InputLabel id="cultura-filter-label">Cultura</InputLabel>
-										<Select
-											labelId="cultura-filter-label"
-											multiple
-											value={cultureFilter}
-											onChange={handleChangeCultureFilt}
-											input={
-												<OutlinedInput
-													label="Cultura"
-													sx={{
-														"& .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[400] },
-														"&:hover .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[600] },
-														"&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: colors.blueOrigin?.[600] || colors.grey[700] },
-													}}
-												/>
-											}
-											renderValue={(selected) => (
-												<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-													{selected.map((value) => (
-														<Chip
-															key={value}
-															label={value}
-															size="small"
-															sx={{
-																backgroundColor: colors.grey[200],
-																color: colors.grey[900],
-																border: `1px solid ${colors.grey[300]}`,
-															}}
-														/>
-													))}
-												</Box>
-											)}
-											MenuProps={MenuProps}
-											sx={{ backgroundColor: "#fff" }}
-										>
-											<MenuItem onClick={handleToggleAllCultures}>
-												<Checkbox
-													checked={isAllCulturesSelected}
-													indeterminate={!isAllCulturesSelected && cultureFilter.length > 0}
-												/>
-												<ListItemText
-													primary={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}
-												/>
+										<MenuItem onClick={handleToggleAllCultures}>
+											<Checkbox
+												checked={isAllCulturesSelected}
+												indeterminate={!isAllCulturesSelected && cultureFilter.length > 0}
+											/>
+											<ListItemText
+												primary={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}
+											/>
+										</MenuItem>
+
+										<MenuItem onClick={handleClearCultures}>
+											<Checkbox checked={cultureFilter.length === 0} />
+											<ListItemText primary="Limpar seleção" />
+										</MenuItem>
+
+										<Divider />
+
+										{cultureOptions.map((name) => (
+											<MenuItem key={name} value={name}>
+												<Checkbox checked={cultureFilter.includes(name)} />
+												<ListItemText primary={name} />
 											</MenuItem>
-
-											<MenuItem onClick={handleClearCultures}>
-												<Checkbox checked={cultureFilter.length === 0} />
-												<ListItemText primary="Limpar seleção" />
-											</MenuItem>
-
-											{cultureOptions.map((name) => (
-												<MenuItem key={name} value={name}>
-													<Checkbox checked={cultureFilter.indexOf(name) > -1} />
-													<ListItemText primary={name} />
-												</MenuItem>
-											))}
-										</Select>
-									</FormControl>
-
-									<Tooltip title={isAllCulturesSelected ? "Desmarcar todas" : "Selecionar todas"}>
-										<IconButton
-											size="small"
-											onClick={handleToggleAllCultures}
-											sx={{
-												backgroundColor: "#fff",
-												border: `1px solid ${colors.grey[300]}`,
-												"&:hover": { backgroundColor: colors.grey[200] },
-											}}
-										>
-											{isAllCulturesSelected ? (
-												<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
-											) : (
-												<DoneAllIcon sx={{ color: colors.greenSuccess[100] }} />
-											)}
-										</IconButton>
-									</Tooltip>
-
-									<Tooltip title="Limpar seleção de cultura">
-										<IconButton
-											size="small"
-											onClick={handleClearCultures}
-											sx={{
-												backgroundColor: "#fff",
-												border: `1px solid ${colors.grey[300]}`,
-												"&:hover": { backgroundColor: colors.grey[200] },
-											}}
-										>
-											<ClearAllIcon sx={{ color: colors.redAccent[500] }} />
-										</IconButton>
-									</Tooltip>
-								</>
+										))}
+									</Select>
+								</FormControl>
 							)}
 
-							{/* Tipo de Aplicação */}
 							<Box
 								sx={{
+									height: 40,
 									display: "flex",
 									alignItems: "center",
-									gap: 1.5,
-									flexWrap: "wrap",
-									px: 1,
-									py: 0.5,
-									ml: 5,
-									borderRadius: 2,
+									gap: 1,
+									px: 1.25,
+									borderRadius: "10px",
 									backgroundColor: "#fff",
 									border: `1px solid ${colors.grey[300]}`,
+									flex: "0 0 auto",
 								}}
 							>
+								<Typography
+									sx={{
+										fontSize: "0.82rem",
+										fontWeight: 700,
+										color: colors.grey[900],
+										mr: 0.25,
+									}}
+								>
+									Tipo
+								</Typography>
+
 								<FormControlLabel
 									sx={{
 										m: 0,
-										"& .MuiFormControlLabel-label": { color: colors.grey[900], fontWeight: 600 },
+										"& .MuiFormControlLabel-label": {
+											fontSize: "0.8rem",
+											color: colors.grey[900],
+											fontWeight: 600,
+										},
 									}}
 									control={
 										<Checkbox
+											size="small"
 											checked={tipoAplicacaoFilter.length === TIPOS_APLICACAO.length}
 											indeterminate={
 												tipoAplicacaoFilter.length > 0 &&
 												tipoAplicacaoFilter.length < TIPOS_APLICACAO.length
 											}
 											onChange={toggleAllTiposAplicacao}
-
-											sx={{
-												color: colors.grey[800], // cor quando NÃO marcado (borda)
-												"&.Mui-checked": {
-													color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando marcado
-												},
-												"&.MuiCheckbox-indeterminate": {
-													color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando indeterminado
-												},
-											}}
+											sx={compactCheckboxSx}
 										/>
 									}
 									label="Todos"
@@ -1219,52 +1308,74 @@ const FarmBoxPage = () => {
 								{TIPOS_APLICACAO.map((tipo) => (
 									<FormControlLabel
 										key={tipo}
-										sx={{ m: 0, "& .MuiFormControlLabel-label": { color: colors.grey[900] } }}
+										sx={{
+											m: 0,
+											"& .MuiFormControlLabel-label": {
+												fontSize: "0.8rem",
+												color: colors.grey[900],
+											},
+										}}
 										control={
 											<Checkbox
+												size="small"
 												checked={tipoAplicacaoFilter.includes(tipo)}
 												onChange={() => toggleTipoAplicacao(tipo)}
-												sx={{
-													color: colors.grey[800], // cor quando NÃO marcado (borda)
-													"&.Mui-checked": {
-														color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando marcado
-													},
-													"&.MuiCheckbox-indeterminate": {
-														color: colors.greenSuccess?.[100] || colors.grey[900], // cor quando indeterminado
-													},
-												}}
+												sx={compactCheckboxSx}
 											/>
 										}
-										label={tipo === "Operacao" ? "Operação" : tipo === "Solido" ? "Sólido" : "Líquido"}
+										label={
+											tipo === "Operacao"
+												? "Operação"
+												: tipo === "Solido"
+													? "Sólido"
+													: "Líquido"
+										}
 									/>
 								))}
 							</Box>
-							<FormControl size="small">
-								<InputLabel id="dap-destaque-label">DAP Destaque</InputLabel>
+
+							<FormControl
+								size="small"
+								sx={{
+									...compactFilterSx,
+									minWidth: 110,
+									maxWidth: 110,
+								}}
+							>
+								<InputLabel id="dap-destaque-label">DAP</InputLabel>
 								<OutlinedInput
-									labelId="dap-destaque-label"
-									label="DAP Destaque"
+									label="DAP"
 									type="number"
 									value={dapApDestaque}
 									onChange={(e) => {
 										const value = Number(e.target.value);
 										setDapApDestaque(Number.isNaN(value) ? 0 : value);
 									}}
-									// inputProps={{
-									// 	min: 0,
-									// 	step: 1,
-									// }}
 									sx={{
-										width: 120,
-										fontWeight: "bold",
+										height: 40,
+										fontWeight: 700,
 									}}
 								/>
 							</FormControl>
 
+							<Button
+								variant="contained"
+								color="error"
+								onClick={handleClearAllFilters}
+								sx={{
+									height: 40,
+									minWidth: 120,
+									borderRadius: "10px",
+									fontWeight: 700,
+									textTransform: "none",
+									boxShadow: "none",
+									flex: "0 0 auto",
+								}}
+							>
+								Limpar filtros
+							</Button>
 						</Box>
-
-					</>
-
+					)
 				}
 				{
 					JSON.stringify(totalCountSelected) !== "{}" &&
@@ -1332,6 +1443,11 @@ const FarmBoxPage = () => {
 										: new Date(app.date) < new Date("2031-10-17")
 								)
 								.filter((app) => app.fazenda === data)
+								// apCode (MultiSelect)
+								.filter((app) => {
+									const key = makeApOptionKey(app?.fazenda, app?.app);
+									return apCodeFilter.length === 0 ? true : apCodeFilter.includes(key);
+								})
 								.filter((app) => tipoAplicacaoFilter.includes(getTipoAplicacao(app)))
 								// NOVO: endDate <= hoje
 								.filter((app) => {
@@ -1594,17 +1710,16 @@ const FarmBoxPage = () => {
 												?.sort((a, b) => a.localeCompare(b))
 												.map((farm, i) => {
 													const hasDivider = filtFarm.length - 1 === i;
+													const rowsFarm = aplicacoesFiltradas.filter((app) => app.fazenda === farm);
 													return (
 														<ResumoFazendasPage
 															colors={colors}
 															fazenda={farm}
 															key={i}
-															operationFilter={operationFilter}
-															filterPreaproSolo={filterPreaproSolo}
+
 															divider={!hasDivider}
-															showFutureApps={showFutureApps}
-															daysFilter={daysFilter}
-															dataGeral={dataGeral}
+
+															rows={rowsFarm}
 														/>
 													);
 												})}
