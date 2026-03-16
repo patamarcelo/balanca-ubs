@@ -104,7 +104,6 @@ const DetailAppData = (props) => {
 	// 	}
 	// }, [openAll]);
 
-
 	useEffect(() => {
 		console.log(parcelaSelected);
 		const totalArea = parcelaSelected.reduce(
@@ -124,14 +123,13 @@ const DetailAppData = (props) => {
 		return false;
 	};
 
-
 	const daysBetween = (date1) => {
 		const d1 = new Date(date1);
 		const d2 = new Date();
 		const diffTime = Math.abs(d2 - d1); // Difference in milliseconds
 		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
 		return diffDays;
-	}
+	};
 
 	const isSolidAp = tipoAplicacao === "Solido";
 
@@ -147,19 +145,36 @@ const DetailAppData = (props) => {
 				gridRowGap="0px"
 				width="50%"
 			>
+				<Box
+					sx={{
+						gridColumn: "1 / -1",
+						px: 1,
+						mb: 0.5,
+					}}
+					borderBottom={"1px solid grey"}
+				>
+					<Typography
+						sx={{
+							fontSize: "0.75rem",
+							fontWeight: 800,
+							opacity: 0.9,
+						}}
+					>
+						Parcelas
+					</Typography>
+				</Box>
+
 				{data.parcelas
 					.sort((a, b) => b.aplicado - a.aplicado)
 					.map((data, i) => {
-						const getArea = data.areaAplicada > 0 ? data.areaAplicada : data.area
-						const notFinished = (data.area - getArea) > 0 ? true : false
-						const getPercent = ((data.areaAplicada / data.area) * 100)
-						const tooltipTile = getPercent.toFixed(0) + "%  - " + formatNumber(data.areaAplicada, 2) + " Ha"
+						const getArea = data.areaAplicada > 0 ? data.areaAplicada : data.area;
+						const notFinished = (data.area - getArea) > 0 ? true : false;
+						const getPercent = ((data.areaAplicada / data.area) * 100);
+						const tooltipTile = getPercent.toFixed(0) + "%  - " + formatNumber(data.areaAplicada, 2) + " Ha";
 
 						const dap = data?.dataPlantio ? daysBetween(data.dataPlantio) : null;
 						const isDapCritical = typeof dap === "number" && dap >= dapApDestaque;
 						const isRedEligible = isSolidAp && isDapCritical;
-
-
 
 						return (
 							<Box
@@ -191,7 +206,6 @@ const DetailAppData = (props) => {
 													<Divider />
 													<h2> {tooltipTile}</h2>
 												</>
-
 											}
 										</Box>
 									}
@@ -229,8 +243,6 @@ const DetailAppData = (props) => {
 												.toFixed(2)
 												.toString()
 												.replace(".", ",")}
-
-
 										</Box>
 									</Box>
 								</Tooltip>
@@ -239,7 +251,37 @@ const DetailAppData = (props) => {
 						);
 					})}
 			</Box>
+
 			<div>
+				<Box
+					display={"grid"}
+					gridAutoFlow={"column"}
+					gridAutoColumns={"1fr 180px 1fr 1fr"}
+					gridRowGap="5px"
+					gap={"2px"}
+					margin={"3px"}
+					alignItems={"baseline"}
+					borderBottom={"1px solid grey"}
+				>
+					<Box>
+						<Typography sx={{ fontSize: "0.75rem", fontWeight: 800, opacity: 0.9 }}>
+							Dose
+						</Typography>
+					</Box>
+
+					<Box textAlign={"center"}>
+						<Typography sx={{ fontSize: "0.75rem", fontWeight: 800, opacity: 0.9 }}>
+							Insumo
+						</Typography>
+					</Box>
+
+					<Box textAlign={"right"} paddingRight={"8px"}>
+						<Typography sx={{ fontSize: "0.75rem", fontWeight: 800, opacity: 0.9 }}>
+							Qty
+						</Typography>
+					</Box>
+				</Box>
+
 				{bombArr[0].bombx > 0 && (
 					<Box
 						// style={{ margin: "0px", padding: "0px" }}
@@ -416,20 +458,6 @@ const DetailAppData = (props) => {
 
 												// ✅ FUNDO BASE (neutro), NÃO a cor do chip
 												background: `linear-gradient(90deg, ${fill} 0%, ${fill} ${pct}%, ${base} ${pct}%, ${base} 100%)`,
-
-												// ✅ barra colorida com width percentual
-												// "&::before": {
-												// 	content: '""',
-												// 	position: "absolute",
-												// 	left: 0,
-												// 	top: 0,
-												// 	bottom: 0,
-												// 	width: `${pct}%`,          // ✅ agora respeita o percentual
-												// 	backgroundColor: chipColor,
-												// 	opacity: 0.45,
-												// 	zIndex: 0,
-												// 	pointerEvents: "none",
-												// },
 
 												// ✅ texto por cima
 												"& .MuiChip-label": {

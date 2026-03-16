@@ -2,14 +2,13 @@ import classes from "./farmbox.module.css";
 
 import {
 	useTheme,
-	Slide,
 	Divider,
 	Box,
 	TextField,
 	InputAdornment,
-	Button,
 	IconButton,
-	Typography
+	Typography,
+	Tooltip
 } from "@mui/material";
 import Grow from "@mui/material/Grow";
 
@@ -20,8 +19,6 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 import question from "../../../utils/assets/icons/question.png";
 
-import ProgressBarPage from "./progress-bar";
-
 import ProgressCircularPage from "./progress-circular";
 import DetailAppData from "./table-data-app-detail";
 import { useState, useEffect } from "react";
@@ -29,12 +26,10 @@ import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faPrint,
 	faCircleXmark,
 	faMap,
 	faPlane,
 	faCheckCircle,
-	faArrowRotateRight
 } from "@fortawesome/free-solid-svg-icons";
 
 import djangoApi from "../../../utils/axios/axios.utils";
@@ -43,8 +38,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useSelector } from "react-redux";
 import { selectSafraCiclo } from "../../../store/plantio/plantio.selector";
 
+
+
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+
+
 const TableDataPage = (props) => {
-	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao, dapApDestaque } = props;
+	const { dataF, openAll, setTotalCountSelected, totalCountSelected, tipoAplicacao, dapApDestaque, onPrintCard } = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -67,6 +67,8 @@ const TableDataPage = (props) => {
 
 	const safraCiclo = useSelector(selectSafraCiclo);
 
+	const [isPrintingCard, setIsPrintingCard] = useState(false);
+
 	useEffect(() => {
 		if (openAll) {
 			setShowDetail(true)
@@ -82,6 +84,28 @@ const TableDataPage = (props) => {
 
 
 
+	const handlePrintThisCard = async (e) => {
+		e.stopPropagation?.();
+
+		if (!containerRef.current || !onPrintCard) return;
+
+		try {
+			setIsPrintingCard(true);
+
+			const safeFarm = (dataF?.fazenda ?? "fazenda")
+				.toString()
+				.replace("Fazenda ", "")
+				.replace(/[^\w\-]+/g, "_");
+
+			const safeApp = (dataF?.app ?? "ap")
+				.toString()
+				.replace(/[^\w\-]+/g, "_");
+
+			await onPrintCard(containerRef.current, `ap-${safeFarm}-${safeApp}`);
+		} finally {
+			setIsPrintingCard(false);
+		}
+	};
 
 
 	const iconDict = [
@@ -472,6 +496,29 @@ const TableDataPage = (props) => {
 							}
 
 						</IconButton>
+						<Tooltip title="Salvar print desta aplicação">
+							<IconButton
+								onClick={handlePrintThisCard}
+								disabled={isPrintingCard}
+								size="small"
+								sx={{
+									width: 32,
+									height: 32,
+									backgroundColor: "rgba(255,255,255,0.10)",
+									color: colors.grey[100],
+									border: "1px solid rgba(255,255,255,0.18)",
+									"&:hover": {
+										backgroundColor: "rgba(255,255,255,0.18)",
+									},
+								}}
+							>
+								{isPrintingCard ? (
+									<CircularProgress size={16} sx={{ color: colors.grey[100] }} />
+								) : (
+									<PhotoCameraIcon sx={{ fontSize: 18 }} />
+								)}
+							</IconButton>
+						</Tooltip>
 					</Box>
 					{sumArea > 0 ? (
 						<Box

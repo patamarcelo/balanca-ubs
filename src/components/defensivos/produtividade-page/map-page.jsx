@@ -554,7 +554,11 @@ const MapPage = ({
 							null;
 
 						const dap = calcDAP(dataPlantio);
-						const dapTxt = dap !== null ? `${dap} DAP` : "";
+
+						const naoPlantado = payload.inicializado_plantio !== true;
+						// quando plantado: mostra DAP
+						// quando não plantado: mostra ícone vermelho
+						const statusTxt = naoPlantado ? "💢" : dap !== null ? `${dap} DAP` : "";
 
 						// ===== LABEL =====
 						let label = `${dataF.parcela}`;
@@ -563,14 +567,17 @@ const MapPage = ({
 							// Linha 2: área
 							label += `\n${areaTxt} ha`;
 
-							// Linha 3: variedade + DAP
-							if (variedade || dapTxt) {
-								label += `\n${[variedade].filter(Boolean).join(" • ")}`;
+							// Linha 3: variedade ou ícone/status
+							if (variedade || statusTxt) {
+								label += `\n${[variedade, statusTxt].filter(Boolean).join(" • ")}`;
 							}
 						} else {
-							// Linha 2: variedade + DAP
-							// label += `\n${[variedade, dapTxt].filter(Boolean).join(" • ")}`;
-							label += `\n${variedade}\n${dapTxt}`;
+							// Linha 2 e 3
+							if (naoPlantado) {
+								label += `\n${variedade}\n💢`;
+							} else {
+								label += `\n${variedade}\n${statusTxt}`;
+							}
 						}
 
 
@@ -602,7 +609,7 @@ const MapPage = ({
 
 						const plantioDoing = inicializado_plantio && !finalizado_plantio
 						const baseColor = colorSelected || getColorStroke(dataF).color;
-						
+
 
 
 						return (

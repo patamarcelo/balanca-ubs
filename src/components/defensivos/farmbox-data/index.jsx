@@ -150,6 +150,8 @@ const FarmBoxPage = () => {
 
 	const [dapApDestaque, setDapApDestaque] = useState(50);
 
+	const [insumoFilter, setInsumoFilter] = useState([]);
+
 	const handleOnlyEndedUntilToday = () => {
 		setOnlyEndedUntilToday((prev) => !prev);
 	};
@@ -232,7 +234,31 @@ const FarmBoxPage = () => {
 		return "Operacao";
 	};
 
-	console.log('filteredApps, ', filteredApps)
+
+	const getInsumoLabel = (insumo) => {
+		if (!insumo) return "";
+
+		const candidate =
+			insumo?.produto ||
+			insumo?.insumo ||
+			insumo?.nome ||
+			insumo?.name ||
+			insumo?.produto_nome ||
+			insumo?.insumo_nome ||
+			"";
+
+		return String(candidate).trim();
+	};
+
+	const getAppInsumosLabels = (app) => {
+		const insumos = Array.isArray(app?.insumos) ? app.insumos : [];
+
+		return insumos
+			.map((item) => getInsumoLabel(item))
+			.filter(Boolean);
+	};
+
+
 	const aplicacoesFiltradas = useMemo(() => {
 		return (filteredApps || [])
 			// status
@@ -277,6 +303,14 @@ const FarmBoxPage = () => {
 			// tipo aplicação (Operacao / Solido / Liquido)
 			.filter((app) => tipoAplicacaoFilter.includes(getTipoAplicacao(app)))
 
+			// insumos (MultiSelect)
+			.filter((app) => {
+				if (insumoFilter.length === 0) return true;
+
+				const appInsumos = getAppInsumosLabels(app);
+				return insumoFilter.some((insumo) => appInsumos.includes(insumo));
+			})
+
 			// NOVO: endDate <= hoje
 			.filter((app) => {
 				if (!onlyEndedUntilToday) return true;
@@ -297,7 +331,9 @@ const FarmBoxPage = () => {
 		tipoAplicacaoFilter,
 		onlyEndedUntilToday,
 		getTipoAplicacao,
-		apCodeFilter
+		apCodeFilter,
+		insumoFilter,
+		getAppInsumosLabels
 	]);
 
 
@@ -657,6 +693,26 @@ const FarmBoxPage = () => {
 	}, [filteredApps, operationFilter, cultureFilter, filtFarm]);
 
 
+	const insumoOptions = useMemo(() => {
+		const rows = (filteredApps ?? [])
+			.filter((app) => {
+				const op = (app?.operacao ?? "").toString().trim();
+				return operationFilter.length === 0 ? true : operationFilter.includes(op);
+			})
+			.filter((app) => {
+				const cultura = (app?.cultura ?? "").toString().trim();
+				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+			})
+			.filter((app) => {
+				const key = makeApOptionKey(app?.fazenda, app?.app);
+				return apCodeFilter.length === 0 ? true : apCodeFilter.includes(key);
+			})
+			.flatMap((app) => getAppInsumosLabels(app));
+
+		return [...new Set(rows)].sort((a, b) => a.localeCompare(b, "pt-BR"));
+	}, [filteredApps, operationFilter, cultureFilter, apCodeFilter, getAppInsumosLabels]);
+
+
 	const isAllApCodesSelected =
 		apCodeOptions.length > 0 && apCodeFilter.length === apCodeOptions.length;
 
@@ -711,6 +767,23 @@ const FarmBoxPage = () => {
 	const dashboardRef = useRef(null);
 	const [isPrinting, setIsPrinting] = useState(false);
 
+
+	const isAllInsumosSelected =
+		insumoOptions.length > 0 && insumoFilter.length === insumoOptions.length;
+
+	const handleChangeInsumoFilt = (event) => {
+		const value = event.target.value;
+		setInsumoFilter(typeof value === "string" ? value.split(",") : value);
+	};
+
+	const handleToggleAllInsumos = () => {
+		setInsumoFilter(isAllInsumosSelected ? [] : insumoOptions);
+	};
+
+	const handleClearInsumos = () => setInsumoFilter([]);
+
+
+
 	const handlePrintDashboard = useCallback(async () => {
 		if (!dashboardRef.current) return;
 
@@ -754,6 +827,46 @@ const FarmBoxPage = () => {
 			console.error("Erro ao gerar print:", err);
 		} finally {
 			setIsPrinting(false);
+		}
+	}, []);
+
+	const handlePrintElement = useCallback(async (element, fileName = "card") => {
+		if (!element) return;
+
+		try {
+			const canvas = await html2canvas(element, {
+				backgroundColor: null,
+				scale: window.devicePixelRatio > 1 ? 2 : 1,
+				useCORS: true,
+				allowTaint: false,
+				logging: false,
+				scrollX: 0,
+				scrollY: -window.scrollY,
+			});
+
+			const dataUrl = canvas.toDataURL("image/png", 1.0);
+
+			const now = new Date();
+			const formatted = now
+				.toLocaleString("pt-BR", {
+					year: "numeric",
+					month: "2-digit",
+					day: "2-digit",
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+				})
+				.replace(/\//g, "-")
+				.replace(/,?\s/g, "-")
+				.replace(/:/g, "-");
+
+			const a = document.createElement("a");
+			a.href = dataUrl;
+			a.download = `${fileName}-${formatted}.png`;
+			a.click();
+		} catch (err) {
+			console.error("Erro ao gerar print do elemento:", err);
+			toast.error("Não foi possível gerar o print.");
 		}
 	}, []);
 
@@ -831,7 +944,12 @@ const FarmBoxPage = () => {
 		setCultureFilter([]);
 		setTipoAplicacaoFilter(TIPOS_APLICACAO);
 		setDapApDestaque(50);
+		setInsumoFilter([]);
 	};
+
+	useEffect(() => {
+		setInsumoFilter((prev) => prev.filter((item) => insumoOptions.includes(item)));
+	}, [insumoOptions]);
 
 
 	return (
@@ -1256,6 +1374,44 @@ const FarmBoxPage = () => {
 									</Select>
 								</FormControl>
 							)}
+							{insumoOptions.length > 0 && (
+								<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 240 }}>
+									<InputLabel id="insumo-filter-label">Insumos</InputLabel>
+									<Select
+										labelId="insumo-filter-label"
+										multiple
+										value={insumoFilter}
+										onChange={handleChangeInsumoFilt}
+										input={<OutlinedInput label="Insumos" />}
+										MenuProps={MenuProps}
+										renderValue={(selected) => getCompactSelectLabel(selected, insumoOptions)}
+									>
+										<MenuItem onClick={handleToggleAllInsumos}>
+											<Checkbox
+												checked={isAllInsumosSelected}
+												indeterminate={!isAllInsumosSelected && insumoFilter.length > 0}
+											/>
+											<ListItemText
+												primary={isAllInsumosSelected ? "Desmarcar todos" : "Selecionar todos"}
+											/>
+										</MenuItem>
+
+										<MenuItem onClick={handleClearInsumos}>
+											<Checkbox checked={insumoFilter.length === 0} />
+											<ListItemText primary="Limpar seleção" />
+										</MenuItem>
+
+										<Divider />
+
+										{insumoOptions.map((name) => (
+											<MenuItem key={name} value={name}>
+												<Checkbox checked={insumoFilter.includes(name)} />
+												<ListItemText primary={name} />
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							)}
 
 							<Box
 								sx={{
@@ -1459,6 +1615,12 @@ const FarmBoxPage = () => {
 									const today = toDayStart(new Date());
 									return end.getTime() <= today.getTime();
 								})
+								.filter((app) => {
+									if (insumoFilter.length === 0) return true;
+
+									const appInsumos = getAppInsumosLabels(app);
+									return insumoFilter.some((insumo) => appInsumos.includes(insumo));
+								})
 								.sort((b, a) => a.status.localeCompare(b.status))
 								.sort((a, b) => {
 									const dateA = new Date(a.date);
@@ -1554,6 +1716,7 @@ const FarmBoxPage = () => {
 												setTotalCountSelected={setTotalCountSelected}
 												tipoAplicacao={getTipoAplicacao(app)}
 												dapApDestaque={dapApDestaque}
+												onPrintCard={handlePrintElement}
 											/>
 										))}
 									</Box>
