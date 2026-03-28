@@ -75,6 +75,9 @@ const SRDPage = () => {
 
     const [hasRomaneio, setHasRomaneio] = useState(false);
 
+    const [onlyWithoutRomaneio, setOnlyWithoutRomaneio] = useState(false);
+    const [onlyWithRomaneio, setOnlyWithRomaneio] = useState(false);
+
     const handleToggleClassZero = (event) => {
         if (onlyNotZero) {
             setOnlyNotZero(false)
@@ -89,9 +92,7 @@ const SRDPage = () => {
         setOnlyNotZero(event.target.checked);
     };
 
-    const handleToggleWithoutRomaneio = (event) => {
-        setHasRomaneio(event.target.checked);
-    };
+
 
 
     const handleStatusChange = (newSelection) => {
@@ -114,12 +115,29 @@ const SRDPage = () => {
         setSelectedVariedade(newSelection);
     };
     const handleClearFilters = () => {
-        setSelectedStatus([])
-        setSelectedPriority([])
-        setSelectedVariedade([])
-        setSelectedCultura([])
+        setSelectedStatus([]);
+        setSelectedPriority([]);
+        setSelectedVariedade([]);
+        setSelectedCultura([]);
+        setOnlyZero(false);
+        setOnlyNotZero(false);
+        setOnlyWithoutRomaneio(false);
+        setOnlyWithRomaneio(false);
+    };
 
-    }
+    const handleToggleWithoutRomaneio = (event) => {
+        if (onlyWithRomaneio) {
+            setOnlyWithRomaneio(false);
+        }
+        setOnlyWithoutRomaneio(event.target.checked);
+    };
+
+    const handleToggleWithRomaneio = (event) => {
+        if (onlyWithoutRomaneio) {
+            setOnlyWithoutRomaneio(false);
+        }
+        setOnlyWithRomaneio(event.target.checked);
+    };
 
     useEffect(() => {
         if (dataArray?.length > 0) {
@@ -276,12 +294,16 @@ const SRDPage = () => {
                 parseFloat(data.IMPUREZA_ENTRADA) !== 0 || parseFloat(data.UMIDADE_ENTRADA) !== 0
                 : true;
 
-            const noRomaneio = hasRomaneio ?
-                data.ROMANEIO === ''
+            const withoutRomaneioOk = onlyWithoutRomaneio
+                ? data.ROMANEIO === '' || data.ROMANEIO === null
+                : true;
+
+            const withRomaneioOk = onlyWithRomaneio
+                ? data.ROMANEIO !== '' && data.ROMANEIO !== null
                 : true;
 
             // Retorna apenas se passar em todos os filtros
-            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk && zeroOk && zeroDiff && noRomaneio;
+            return impurezaOk && ticketOk && projetoOk && variedadeOk && culturaOk && zeroOk && zeroDiff && withoutRomaneioOk && withRomaneioOk;
         });
 
         // Atualiza o estado
@@ -296,7 +318,7 @@ const SRDPage = () => {
         }
 
 
-    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade, onlyZero, onlyNotZero, hasRomaneio]);
+    }, [filterImp, setFilterDataArray, dataArray, selectedStatus, selectedPriority, selectedCultura, selectedVariedade, onlyZero, onlyNotZero, onlyWithoutRomaneio, onlyWithRomaneio]);
 
 
 
@@ -482,12 +504,38 @@ const SRDPage = () => {
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        checked={hasRomaneio}
+                                        checked={onlyWithoutRomaneio}
                                         onChange={handleToggleWithoutRomaneio}
                                         color="warning"
                                     />
                                 }
                                 // label="Classificação"
+                                sx={{ color: "black" }}
+                            />
+                        </Tooltip>
+                        <Tooltip
+                            title="Filtra somente Cargas COM Romaneio Informado"
+                            slotProps={{
+                                tooltip: {
+                                    sx: {
+                                        fontSize: "16px",
+                                        bgcolor: "black",
+                                        color: "white",
+                                        borderRadius: 2,
+                                        px: 2,
+                                        py: 1,
+                                    },
+                                },
+                            }}
+                        >
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={onlyWithRomaneio}
+                                        onChange={handleToggleWithRomaneio}
+                                        color="success"
+                                    />
+                                }
                                 sx={{ color: "black" }}
                             />
                         </Tooltip>
