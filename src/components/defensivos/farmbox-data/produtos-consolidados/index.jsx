@@ -129,7 +129,47 @@ const ProdutosConsolidados = () => {
     }, [openApp]);
 
     const handlerStProtheus = async () => {
-        console.log('Enviar dados para o protheus')
+        const projetoSelecionado = selectedData?.Projeto?.[0];
+        const dataSelecionada = selectedData?.Data?.[0];
+        const apSelecionada = selectedData?.Ap?.[0];
+        const tipoSelecionado = selectedData?.Tipo?.[0];
+        const insumoSelecionado = selectedData?.Insumo?.[0];
+
+        const openAppsFiltradas = (openApp || []).filter((app) => {
+            const farmName = app?.plantations?.[0]?.plantation?.farm_name || "";
+            const appDate = app?.date || "";
+            const appCode = app?.code || "";
+
+            const appLabel = `${farmName?.replace('Fazenda ', '')} - ${appCode} | ${appDate}`;
+
+            const matchProjeto = !projetoSelecionado || farmName === projetoSelecionado;
+            const matchData = !dataSelecionada || appDate === dataSelecionada;
+            const matchAp = !apSelecionada || appLabel === apSelecionada;
+
+            const matchTipo =
+                !tipoSelecionado ||
+                (app?.inputs || []).some(
+                    (input) => input?.input?.input_type_name === tipoSelecionado
+                );
+
+            const matchInsumo =
+                !insumoSelecionado ||
+                (app?.inputs || []).some(
+                    (input) => input?.input?.name === insumoSelecionado
+                );
+
+            return matchProjeto && matchData && matchAp && matchTipo && matchInsumo;
+        });
+
+        const harvestIdsFiltradas = [
+            ...new Set(
+                openAppsFiltradas
+                    .flatMap((app) => app?.plantations || [])
+                    .map((item) => item?.plantation?.harvest?.id)
+                    .filter(Boolean)
+            )
+        ];
+
         const getCode = farmDictCOde.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const getArmazenCode = armazemDictCode.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const dataToSend = {
@@ -138,9 +178,10 @@ const ProdutosConsolidados = () => {
             fazendaDestino: getCode,
             armazemDestino: getArmazenCode,
             observacao: observations,
-            produtosGeral: filteredData
+            produtosGeral: filteredData,
+            safrasId: harvestIdsFiltradas
         }
-        console.log('dados Selecionados: ', dataToSend)
+        console.log('dados Selecionados: ', dataToSend,)
         const params = JSON.stringify(dataToSend)
         try {
             setIsLoadingBtn(true)
