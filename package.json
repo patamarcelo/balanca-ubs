@@ -38,6 +38,7 @@
     "color": "^5.0.2",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "file-saver": "^2.0.5",
     "firebase": "^9.15.0",
     "formik": "^2.2.9",
     "google-map-react": "^2.2.1",
