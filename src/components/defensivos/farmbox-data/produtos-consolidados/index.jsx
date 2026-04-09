@@ -136,6 +136,7 @@ const ProdutosConsolidados = () => {
         const insumoSelecionado = selectedData?.Insumo?.[0];
 
         const openAppsFiltradas = (openApp || []).filter((app) => {
+            // console.log('aaapppppsss here', app)
             const farmName = app?.plantations?.[0]?.plantation?.farm_name || "";
             const appDate = app?.date || "";
             const appCode = app?.code || "";
@@ -170,6 +171,30 @@ const ProdutosConsolidados = () => {
             )
         ];
 
+        const culturasFiltradas = [
+            ...new Set(
+                openAppsFiltradas
+                    .flatMap((app) => app?.plantations || [])
+                    .flatMap((item) => [
+                        item?.plantation?.culture_name,
+                        item?.plantation?.planned_culture_name,
+                    ])
+                    .filter(Boolean)
+            )
+        ];
+
+        const observacaoCulturas = culturasFiltradas.length
+            ? `Culturas: ${culturasFiltradas.join(", ")}`
+            : "";
+
+        const observacaoFinal = [
+            observations?.trim(),
+            observacaoCulturas,
+        ].filter(Boolean).join("\n");
+
+        setObservations(observacaoFinal);
+
+
         const getCode = farmDictCOde.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const getArmazenCode = armazemDictCode.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const dataToSend = {
@@ -177,12 +202,13 @@ const ProdutosConsolidados = () => {
             produtos: prodcutsToProtheus?.filter((prod) => prod.inputType !== "Operação"),
             fazendaDestino: getCode,
             armazemDestino: getArmazenCode,
-            observacao: observations,
+            observacao: observacaoFinal,
             produtosGeral: filteredData,
             safrasId: harvestIdsFiltradas
         }
-        console.log('dados Selecionados: ', dataToSend,)
+        // console.log('dados Selecionados: ', dataToSend,)
         const params = JSON.stringify(dataToSend)
+
         try {
             setIsLoadingBtn(true)
             await djangoApi
