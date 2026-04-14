@@ -578,6 +578,37 @@ const DataProgramPage = (props) => {
 													: "#000",
 											borderRadius: 2,
 											boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+											"& .MuiAutocomplete-listbox": {
+												padding: "6px",
+											},
+
+											"& .MuiAutocomplete-option": {
+												borderRadius: "10px",
+												marginBottom: "4px",
+												transition: "all 0.15s ease",
+											},
+
+											"& .MuiAutocomplete-option:hover": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.14)"
+														: "rgba(25,118,210,0.12)",
+											},
+
+											"& .MuiAutocomplete-option[aria-selected='true']": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.18)"
+														: "rgba(25,118,210,0.18)",
+												fontWeight: 700,
+											},
+
+											"& .MuiAutocomplete-option.Mui-focused": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.16)"
+														: "rgba(25,118,210,0.14)",
+											},
 										},
 									},
 								}}
