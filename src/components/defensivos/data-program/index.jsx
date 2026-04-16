@@ -504,9 +504,50 @@ const DataProgramPage = (props) => {
 			)
 			.slice(0, 100050);
 
-	const handleAddProd = async (hiddenAppName, existProds) => {
+	const handleAddProd = async (hiddenAppName, existProds, areaTotal) => {
 		const prodRef = { current: null };
 		const doseRef = { current: "" };
+		const totalRef = { current: "" };
+
+		const areaNum = Number(String(areaTotal ?? 0).replace(",", "."));
+
+		const parseDecimalBR = (value) => {
+			const raw = String(value ?? "").trim();
+			if (!raw) return null;
+
+			const normalized = raw.replace(/\./g, "").replace(",", ".");
+			const num = Number(normalized);
+
+			return Number.isFinite(num) ? num : null;
+		};
+
+		const formatBR3 = (value) => {
+			const num = Number(value);
+			if (!Number.isFinite(num)) return "";
+			return num.toLocaleString("pt-BR", {
+				minimumFractionDigits: 3,
+				maximumFractionDigits: 3,
+			});
+		};
+
+		const normalizeToApiDose = (value) => {
+			const num = parseDecimalBR(value);
+			if (!Number.isFinite(num)) return null;
+			return num.toFixed(3);
+		};
+
+		const calcTotalFromDose = (doseValue) => {
+			const doseNum = parseDecimalBR(doseValue);
+			if (doseNum == null || !Number.isFinite(areaNum) || areaNum <= 0) return "";
+			return formatBR3(doseNum * areaNum);
+		};
+
+		const calcDoseFromTotal = (totalValue) => {
+			const totalNum = parseDecimalBR(totalValue);
+			if (totalNum == null || !Number.isFinite(areaNum) || areaNum <= 0) return "";
+			return formatBR3(totalNum / areaNum);
+		};
+
 
 		let root = null;
 
@@ -531,11 +572,17 @@ const DataProgramPage = (props) => {
 					: "#000",
 
 			customClass: {
-				popup: "swal2-compact",
+				popup: "swal2-compact swal2-insumo-popup",
 			},
+			width: 980,
 
 			didOpen: (popup) => {
 				popup.style.overflow = "visible";
+				popup.style.padding = "14px";
+				popup.style.border = theme.palette.mode === "dark"
+					? `1px solid ${colors.blueOrigin[600]}`
+					: "1px solid #d7dbe2";
+				popup.style.borderRadius = "16px";
 
 				const container = popup.querySelector("#swal-react-root");
 				if (!container) return;
@@ -543,189 +590,292 @@ const DataProgramPage = (props) => {
 				root = createRoot(container);
 
 				// ✅ COMPONENTE DEFINIDO AQUI (corrige erro Form is not defined)
-				const FormComponent = () => (
-					<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-						<Typography variant="body2" sx={{ fontWeight: 800 }}>
-							{hiddenAppName.replace("|", " - ").replace("Projeto", " - ")}
-						</Typography>
+				const FormComponent = () => {
+					const [doseValue, setDoseValue] = useState("");
+					const [totalValue, setTotalValue] = useState("");
 
-						<Box sx={{ display: "flex", gap: 1 }}>
-							<Autocomplete
-								size="small"
-								options={prodsToUse || []}
-								filterOptions={filterOptions}
-								getOptionLabel={(opt) => opt?.name || opt?.produto || ""}
-								isOptionEqualToValue={(a, b) =>
-									(a?.id_farmbox ?? a?.input_id ?? a?.id) ===
-									(b?.id_farmbox ?? b?.input_id ?? b?.id)
-								}
-								disablePortal
-								componentsProps={{
-									popper: {
-										sx: {
-											zIndex: 4000,
+					const confirmAdd = () => {
+						const prod = prodRef.current;
+						const apiDose = normalizeToApiDose(doseRef.current);
+
+						if (!prod) {
+							MySwal.showValidationMessage("Selecione um produto.");
+							return;
+						}
+
+						if (!doseRef.current || apiDose == null) {
+							MySwal.showValidationMessage("Informe a dose ou o total.");
+							return;
+						}
+
+						MySwal.close({
+							isConfirmed: true,
+							value: {
+								prod,
+								dose: apiDose,
+							},
+						});
+					};
+
+					return (
+						<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+							<Typography variant="body2" sx={{ fontWeight: 700, fontSize: "0.88rem" }}>
+								{hiddenAppName.replace("|", " - ").replace("Projeto", " - ")}
+							</Typography>
+
+							<Typography variant="caption" sx={{ opacity: 0.72, fontSize: "0.72rem" }}>
+								Área considerada: {Number(areaNum || 0).toLocaleString("pt-BR", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2,
+								})}
+							</Typography>
+
+							<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+								<Autocomplete
+									sx={{
+										flexGrow: 1,
+										minWidth: 380,
+									}}
+									options={prodsToUse || []}
+									filterOptions={filterOptions}
+									getOptionLabel={(opt) => opt?.name || opt?.produto || ""}
+									isOptionEqualToValue={(a, b) =>
+										(a?.id_farmbox ?? a?.input_id ?? a?.id) ===
+										(b?.id_farmbox ?? b?.input_id ?? b?.id)
+									}
+									disablePortal
+									componentsProps={{
+										popper: {
+											sx: {
+												zIndex: 4000,
+											},
 										},
-									},
-									paper: {
-										sx: {
+										paper: {
+											sx: {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? colors.blueOrigin[900]
+														: "#ffffff",
+												color:
+													theme.palette.mode === "dark"
+														? colors.primary[100]
+														: "#000",
+												borderRadius: 2,
+												boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+												fontSize: "0.86rem",
+												"& .MuiAutocomplete-listbox": {
+													padding: "4px",
+												},
+												"& .MuiAutocomplete-option": {
+													borderRadius: "8px",
+													marginBottom: "2px",
+													minHeight: "34px",
+													transition: "all 0.15s ease",
+												},
+												"& .MuiAutocomplete-option:hover": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.14)"
+															: "rgba(25,118,210,0.12)",
+												},
+												"& .MuiAutocomplete-option[aria-selected='true']": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.16)"
+															: "#dde2e7",
+													fontWeight: 700,
+												},
+												"& .MuiAutocomplete-option.Mui-focused": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.12)"
+															: "#e3e7eb",
+												},
+											},
+										},
+									}}
+									onChange={(_, v) => {
+										prodRef.current = v || null;
+										requestAnimationFrame(() => {
+											const doseInput =
+												popup.querySelector('input[name="swal-dose-input"]');
+											doseInput?.focus();
+											doseInput?.select?.();
+										});
+									}}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											label="Insumo"
+											autoFocus
+											variant="outlined"
+											size="small"
+											sx={{
+												"& .MuiInputBase-root": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? colors.blueOrigin[700]
+															: "#f5f5f5",
+													color:
+														theme.palette.mode === "dark"
+															? "#fff"
+															: "#000",
+													fontSize: "0.86rem",
+													minHeight: "38px",
+												},
+												"& .MuiInputLabel-root": {
+													color:
+														theme.palette.mode === "dark"
+															? "#fff"
+															: "#000",
+													fontSize: "0.84rem",
+												},
+												"& .MuiOutlinedInput-notchedOutline": {
+													borderColor:
+														theme.palette.mode === "dark"
+															? colors.blueOrigin[600]
+															: "#ccc",
+												},
+											}}
+										/>
+									)}
+								/>
+
+								<TextField
+									size="small"
+									label="Dose"
+									name="swal-dose-input"
+									placeholder="0,000"
+									inputMode="decimal"
+									variant="outlined"
+									value={doseValue}
+									onChange={(e) => {
+										const raw = e.target.value;
+										doseRef.current = raw;
+										setDoseValue(raw);
+
+										const totalCalc = calcTotalFromDose(raw);
+										totalRef.current = totalCalc;
+										setTotalValue(totalCalc);
+									}}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+											confirmAdd();
+										}
+									}}
+									sx={{
+										width: 160,
+										"& .MuiInputBase-root": {
 											backgroundColor:
 												theme.palette.mode === "dark"
-													? colors.blueOrigin[900]
-													: "#ffffff",
+													? colors.blueOrigin[700]
+													: "#f5f5f5",
 											color:
 												theme.palette.mode === "dark"
-													? colors.primary[100]
+													? "#fff"
 													: "#000",
-											borderRadius: 2,
-											boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-											"& .MuiAutocomplete-listbox": {
-												padding: "6px",
-											},
-
-											"& .MuiAutocomplete-option": {
-												borderRadius: "10px",
-												marginBottom: "4px",
-												transition: "all 0.15s ease",
-											},
-
-											"& .MuiAutocomplete-option:hover": {
-												backgroundColor:
-													theme.palette.mode === "dark"
-														? "rgba(255,255,255,0.14)"
-														: "rgba(25,118,210,0.12)",
-											},
-
-											"& .MuiAutocomplete-option[aria-selected='true']": {
-												backgroundColor:
-													theme.palette.mode === "dark"
-														? "rgba(255,255,255,0.18)"
-														: "rgba(25,118,210,0.18)",
-												fontWeight: 700,
-											},
-
-											"& .MuiAutocomplete-option.Mui-focused": {
-												backgroundColor:
-													theme.palette.mode === "dark"
-														? "rgba(255,255,255,0.16)"
-														: "rgba(25,118,210,0.14)",
-											},
+											fontSize: "0.84rem",
+											minHeight: "38px",
 										},
-									},
-								}}
-								onChange={(_, v) => {
-									prodRef.current = v || null;
-									requestAnimationFrame(() => {
-										const doseInput =
-											popup.querySelector('input[name="swal-dose-input"]');
-										doseInput?.focus();
-										doseInput?.select?.();
-									});
-								}}
-								renderInput={(params) => (
-									<TextField
-										{...params}
-										label="Insumo"
-										autoFocus
-										variant="outlined"
-										sx={{
-											"& .MuiInputBase-root": {
-												backgroundColor:
-													theme.palette.mode === "dark"
-														? colors.blueOrigin[700]
-														: "#f5f5f5",
-												color:
-													theme.palette.mode === "dark"
-														? "#fff"
-														: "#000",
-											},
-											"& .MuiInputLabel-root": {
-												color:
-													theme.palette.mode === "dark"
-														? "#fff"
-														: "#000",
-											},
-											"& .MuiOutlinedInput-notchedOutline": {
-												borderColor:
-													theme.palette.mode === "dark"
-														? colors.blueOrigin[600]
-														: "#ccc",
-											},
-										}}
-									/>
-								)}
-								sx={{ flex: 1 }}
-							/>
+										"& .MuiInputLabel-root": {
+											color:
+												theme.palette.mode === "dark"
+													? "#fff"
+													: "#000",
+											fontSize: "0.82rem",
+										},
+										"& .MuiOutlinedInput-notchedOutline": {
+											borderColor:
+												theme.palette.mode === "dark"
+													? colors.blueOrigin[600]
+													: "#ccc",
+										},
+									}}
+								/>
 
-							<TextField
-								size="small"
-								label="Dose"
-								name="swal-dose-input"
-								placeholder="0.000"
-								inputMode="decimal"
-								variant="outlined"
-								onChange={(e) => {
-									doseRef.current = e.target.value;
-								}}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										e.preventDefault();
-										// mesma validação que você já tem
-										const prod = prodRef.current;
-										const doseStrRaw = String(doseRef.current || "").trim();
+								<TextField
+									size="small"
+									label="Total"
+									name="swal-total-input"
+									placeholder="0,000"
+									inputMode="decimal"
+									variant="outlined"
+									value={totalValue}
+									onChange={(e) => {
+										const raw = e.target.value;
+										totalRef.current = raw;
+										setTotalValue(raw);
 
-										if (!prod) {
-											MySwal.showValidationMessage("Selecione um produto.");
-											return;
+										const doseCalc = calcDoseFromTotal(raw);
+										doseRef.current = doseCalc;
+										setDoseValue(doseCalc);
+									}}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+											confirmAdd();
 										}
+									}}
+									sx={{
+										width: 160,
+										"& .MuiInputBase-root": {
+											backgroundColor:
+												theme.palette.mode === "dark"
+													? colors.blueOrigin[700]
+													: "#f5f5f5",
+											color:
+												theme.palette.mode === "dark"
+													? "#fff"
+													: "#000",
+											fontSize: "0.84rem",
+											minHeight: "38px",
+										},
+										"& .MuiInputLabel-root": {
+											color:
+												theme.palette.mode === "dark"
+													? "#fff"
+													: "#000",
+											fontSize: "0.82rem",
+										},
+										"& .MuiOutlinedInput-notchedOutline": {
+											borderColor:
+												theme.palette.mode === "dark"
+													? colors.blueOrigin[600]
+													: "#ccc",
+										},
+									}}
+								/>
 
-										const normalized = doseStrRaw.replace(",", ".");
-										if (!/^\d+(\.\d{1,3})?$/.test(normalized)) {
-											MySwal.showValidationMessage("Dose deve ter até 3 casas decimais.");
-											return;
-										}
-
-										MySwal.close({
-											isConfirmed: true,
-											value: {
-												prod,
-												dose: Number(normalized).toFixed(3),
-											},
-										});
-									}
-								}}
-								sx={{
-									width: 140,
-									"& .MuiInputBase-root": {
+								<Button
+									variant="contained"
+									size="small"
+									onClick={confirmAdd}
+									sx={{
+										height: "38px",
+										minWidth: 100,
+										borderRadius: "10px",
+										textTransform: "none",
+										fontWeight: 700,
+										fontSize: "0.78rem",
+										px: 1.6,
+										whiteSpace: "nowrap",
 										backgroundColor:
 											theme.palette.mode === "dark"
-												? colors.blueOrigin[700]
-												: "#f5f5f5",
-										color:
-											theme.palette.mode === "dark"
-												? "#fff"
-												: "#000",
-									},
-									"& .MuiInputLabel-root": {
-										color:
-											theme.palette.mode === "dark"
-												? "#fff"
-												: "#000",
-									},
-									"& .MuiOutlinedInput-notchedOutline": {
-										borderColor:
-											theme.palette.mode === "dark"
-												? colors.blueOrigin[600]
-												: "#ccc",
-									},
-								}}
-							/>
-						</Box>
+												? colors.blueAccent[500]
+												: colors.blueAccent[600],
+									}}
+								>
+									Adicionar
+								</Button>
+							</Box>
 
-						<Typography variant="caption" sx={{ opacity: 0.7 }}>
-							Escolha o insumo, informe a dose e pressione ENTER.
-						</Typography>
-					</Box>
-				);
+							<Typography variant="caption" sx={{ opacity: 0.68, fontSize: "0.72rem" }}>
+								Altere dose ou total. O outro campo será recalculado automaticamente.
+							</Typography>
+						</Box>
+					);
+				};
 
 				root.render(<FormComponent />);
 			},
@@ -2754,7 +2904,7 @@ const DataProgramPage = (props) => {
 															<IconButton
 																size="small"
 																color="success"
-																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar)}
+																onClick={() => handleAddProd(hiddenAppName, linhasParaMostrar, Number(dat?.data?.total?.replace(".", "").replace(",", ".")))}
 																aria-label="adicionar"
 																disabled={prodsToUse.length === 0 || usandoAvulsa}
 																sx={{ marginBottom: '10px' }}
