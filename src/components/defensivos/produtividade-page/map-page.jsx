@@ -416,6 +416,7 @@ const MapPage = ({
 	}, [mapArray, filtData, parcelasApp, paths]);
 
 	const getColorStroke = (data) => {
+		// console.log('data here:::', data)
 		// console.log('data inside', data.variedade)
 		const getColor = (variedadeInside, colorInside) => {
 			if (variedadeInside === 'Mungo Preto') {
@@ -463,8 +464,9 @@ const MapPage = ({
 			}
 		}
 		if (
-			data.finalizadoColheita === true &&
-			data.finalizadoPlantio === true
+			(data.finalizadoColheita === true &&
+			data.finalizadoPlantio === true) || 
+			data.data.data.area_planejamento_plantio - data.data.data.area_parcial === 0
 		) {
 			return {
 				color: data.color,
@@ -607,7 +609,7 @@ const MapPage = ({
 						// console.log("dataArray: ", parcelasSelected)
 
 
-						const plantioDoing = inicializado_plantio && !finalizado_plantio
+						const plantioDoing = inicializado_plantio && !finalizado_plantio 
 						const baseColor = colorSelected || getColorStroke(dataF).color;
 
 
