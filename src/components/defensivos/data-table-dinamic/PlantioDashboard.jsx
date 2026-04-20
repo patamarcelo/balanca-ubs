@@ -498,9 +498,9 @@ const ProdutosSemanaCalendar = ({ data, dark }) => {
 
     const cardBg = isDark ? colors.primary[600] : colors.blueOrigin[800];
     const border = isDark ? colors.grey[700] : colors.grey[300];
-    const titleColor = isDark ? colors.textColor[100] : colors.textColor[900];
-    const textColor = isDark ? colors.grey[900] : colors.grey[900];
-    const subText = isDark ? colors.grey[400] : colors.grey[600];
+    const titleColor = isDark ? colors.textColor[100] : colors.grey[100];
+    const textColor = isDark ? colors.grey[100] : colors.grey[100];
+    const subText = isDark ? colors.grey[400] : colors.grey[200];
 
     const paperShadow = isDark
         ? '0px 8px 18px rgba(0,0,0,0.55)'
@@ -800,7 +800,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                         style={{
                                             display: 'flex',
                                             justifyContent: 'space-between',
-                                            alignItems: 'flex-start',
+                                            alignItems: 'center',
                                             fontSize: 12,
                                             fontWeight: 'bold',
                                             color: textColor,
@@ -826,6 +826,7 @@ const ProdutosTotaisGerais = ({ data, dark }) => {
                                                 style={{
                                                     fontWeight: 'bold',
                                                     letterSpacing: 0.2,
+                                                    textAlign: 'left',
                                                 }}
                                                 title={p.produto}
                                             >
