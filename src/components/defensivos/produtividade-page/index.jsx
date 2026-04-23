@@ -120,6 +120,9 @@ const ProdutividadePage = ({ useMulti }) => {
 
 	const [selectAllFarm, setSelectAllFarm] = useState(false);
 
+	const [mapColorFilterData, setMapColorFilterData] = useState([]);
+	const [loadingScreenshot, setLoadingScreenshot] = useState(false);
+
 
 	useEffect(() => {
 		if (selectedProject) {
@@ -348,53 +351,68 @@ const ProdutividadePage = ({ useMulti }) => {
 	]);
 
 	useEffect(() => {
-		const filterCult = plantioMapALl.filter((data) => selectedProject.includes(data.fazenda)).map((data) => data.dados.cultura)
-		const uniqueFilterCult = [...new Set(filterCult)].filter((data) => data !== null)
-		setFilterDropCulture(uniqueFilterCult)
+		const mapBase = plantioMapALl.filter((data) =>
+			selectedProject.includes(data.fazenda)
+		);
 
-		const filterVariety = plantioMapALl
-			.filter((data) => selectedProject.includes(data.fazenda))
+		// dropdown de culturas
+		const uniqueFilterCult = [
+			...new Set(mapBase.map((data) => data.dados.cultura))
+		].filter((data) => data !== null);
+		setFilterDropCulture(uniqueFilterCult);
+
+		// dropdown de variedades respeitando cultura selecionada
+		const uniqueFilterVari = [
+			...new Set(
+				mapBase
+					.filter((data) => {
+						if (selectedCultureFilter.length === 0) return true;
+						return selectedCultureFilter.includes(data.dados.cultura);
+					})
+					.map((data) => data.dados.variedade)
+			)
+		].filter((data) => data !== null);
+		setFilterDropVariety(uniqueFilterVari);
+
+		// IMPORTANTE:
+		// mantém TODAS as parcelas desenhadas no mapa
+		setFilteredPlantioMal(mapBase);
+
+		// aqui definimos somente quais parcelas devem continuar COLORIDAS
+		let colorBase = produtividade.filter((data) =>
+			selectedProject.includes(data.talhao__fazenda__nome)
+		);
+
+		if (!showAsPlanned) {
+			colorBase = colorBase.filter(
+				(data) => data.inicializado_plantio === true
+			);
+		}
+
+		colorBase = colorBase
+			.filter((data) => data.variedade__cultura__cultura !== "Milheto")
 			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (selectedCultureFilter.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected cultures
-				return selectedCultureFilter.includes(data.dados.cultura);
+				if (selectedCultureFilter.length === 0) return true;
+				return selectedCultureFilter.includes(
+					data.variedade__cultura__cultura
+				);
 			})
-			.map((data) => data.dados.variedade)
-
-		const uniqueFilterVari = [...new Set(filterVariety)].filter((data) => data !== null)
-		setFilterDropVariety(uniqueFilterVari)
-
-		const filterArr = plantioMapALl
-			.filter((data) => selectedProject.includes(data.fazenda))
 			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (selectedCultureFilter.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected cultures
-				return selectedCultureFilter.includes(data.dados.cultura);
-			})
-			.filter((data) => {
-				// If selectedCultureFilter is empty, return all cultures
-				if (selectedVarietyFilter.length === 0) {
-					return true;
-				}
-				// Otherwise, filter by the selected cultures
-				return selectedVarietyFilter.includes(data.dados.variedade);
+				if (selectedVarietyFilter.length === 0) return true;
+				return selectedVarietyFilter.includes(
+					data.variedade__nome_fantasia
+				);
 			});
 
-		// const filterArr = plantioMapALl.filter(
-		// 	(data) => selectedProject.includes(data.fazenda)
-		// ).filter((data) => {
-		// 	// console.log('data here from map page: ', data)
-		// 	return data.dados.cultura === 'Soja'
-		// }).filter((parcela) => !["A15", "B06", "B09"].includes(parcela.parcela));
-
-		setFilteredPlantioMal(filterArr);
-	}, [selectedProject, plantioMapALl, selectedCultureFilter, selectedVarietyFilter]);
+		setMapColorFilterData(colorBase);
+	}, [
+		selectedProject,
+		plantioMapALl,
+		produtividade,
+		selectedCultureFilter,
+		selectedVarietyFilter,
+		showAsPlanned
+	]);
 
 	const handleChangeSelect = (event) => {
 		const value = event.target.value;
@@ -871,7 +889,9 @@ const ProdutividadePage = ({ useMulti }) => {
 
 	const handleScreenshotPrintable = async () => {
 		const el = printableRef.current;
-		if (!el) return;
+		if (!el || loadingScreenshot) return;
+
+		setLoadingScreenshot(true);
 
 		// garante layout estável antes do clone
 		await new Promise((r) => requestAnimationFrame(r));
@@ -882,45 +902,35 @@ const ProdutividadePage = ({ useMulti }) => {
 		try {
 			const canvas = await html2canvas(el, {
 				backgroundColor: "#ffffff",
-				scale: 2, // bom custo/benefício
+				scale: 2,
 				useCORS: true,
 				allowTaint: true,
 				logging: false,
-
-				// MUITO importante pra evitar “cortes” e offsets
 				width: Math.ceil(rect.width),
 				height: Math.ceil(rect.height),
-
 				scrollX: 0,
 				scrollY: -window.scrollY,
 
 				onclone: (clonedDoc) => {
-					// 1) pega o nó clonado pelo id (mantenha id no seu container)
 					const clonedRoot = clonedDoc.getElementById("printableMapPage");
 					if (!clonedRoot) return;
 
-					// 2) estabiliza layout no clone (evita flex/overflow mudarem)
 					clonedRoot.style.maxHeight = "none";
 					clonedRoot.style.minHeight = "auto";
 					clonedRoot.style.height = `${Math.ceil(rect.height)}px`;
 					clonedRoot.style.width = `${Math.ceil(rect.width)}px`;
 					clonedRoot.style.overflow = "visible";
-					clonedRoot.style.borderRadius = "0px"; // evita recorte estranho
+					clonedRoot.style.borderRadius = "0px";
 
-					// 3) remove blur/backdropFilter APENAS no clone (tabela do mapa)
-					// como seu MapResume está num Box absolute, pegamos pelo estilo/posição:
 					const overlays = clonedRoot.querySelectorAll("*");
 					overlays.forEach((node) => {
 						const style = clonedDoc.defaultView.getComputedStyle(node);
 
-						// remove backdropFilter/blur que o html2canvas não renderiza bem
 						if (style.backdropFilter && style.backdropFilter !== "none") {
 							node.style.backdropFilter = "none";
 							node.style.webkitBackdropFilter = "none";
 						}
 
-						// se for aquele card da tabela semi-transparente, força fundo sólido
-						// (ajusta conforme sua classe real, se tiver)
 						if (
 							style.position === "absolute" &&
 							(style.left === "15px" || style.top === "15px") &&
@@ -930,44 +940,43 @@ const ProdutividadePage = ({ useMulti }) => {
 						}
 					});
 
-					// 4) força o container do GoogleMap a não ter transform/filters
-					// às vezes MUI/Google injeta transform que quebra o canvas
-					const mapDiv = clonedRoot.querySelector('div[aria-roledescription="map"]')
-						|| clonedRoot.querySelector(".gm-style")
-						|| null;
+					const mapDiv =
+						clonedRoot.querySelector('div[aria-roledescription="map"]') ||
+						clonedRoot.querySelector(".gm-style") ||
+						null;
 
 					if (mapDiv) {
 						mapDiv.style.transform = "none";
 						mapDiv.style.filter = "none";
 					}
 
-					// 5) melhora texto/labels (menos “tremido”)
 					clonedRoot.style.webkitFontSmoothing = "antialiased";
 					clonedRoot.style.mozOsxFontSmoothing = "grayscale";
 				},
 			});
 
 			canvas.toBlob((blob) => {
-				if (!blob) return;
+				try {
+					if (!blob) return;
 
-				const url = URL.createObjectURL(blob);
+					const url = URL.createObjectURL(blob);
 
-				// preview (opcional)
-				// window.open(url, "_blank", "noopener,noreferrer");
+					const a = document.createElement("a");
+					a.href = url;
+					a.download = `map_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.png`;
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
 
-				// download
-				const a = document.createElement("a");
-				a.href = url;
-				a.download = `map_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.png`;
-				document.body.appendChild(a);
-				a.click();
-				a.remove();
-
-				setTimeout(() => URL.revokeObjectURL(url), 60_000);
+					setTimeout(() => URL.revokeObjectURL(url), 60_000);
+				} finally {
+					setLoadingScreenshot(false);
+				}
 			}, "image/png");
 		} catch (err) {
 			console.error("[screenshot] failed:", err);
 			alert("Não consegui gerar a imagem desse bloco (o mapa do Google às vezes bloqueia).");
+			setLoadingScreenshot(false);
 		}
 	};
 
@@ -1305,16 +1314,21 @@ const ProdutividadePage = ({ useMulti }) => {
 							color="success"
 							onClick={handleScreenshotPrintable}
 							aria-label="Imprimir"
+							disabled={loadingScreenshot}
 							sx={{
 								position: "absolute",
 								right: 16,
 								bottom: 16,
 								zIndex: 2000,
 								boxShadow: "0 6px 18px rgba(0,0,0,0.35)",
-								"@media print": { display: "none" }, // não aparece no papel
+								"@media print": { display: "none" },
 							}}
 						>
-							<PrintRoundedIcon color="action"/>
+							{loadingScreenshot ? (
+								<CircularProgress size={24} sx={{ color: "#fff" }} />
+							) : (
+								<PrintRoundedIcon color="action" />
+							)}
 						</Fab>
 						<Box
 							className={styles.mapListDiv}
@@ -1348,7 +1362,8 @@ const ProdutividadePage = ({ useMulti }) => {
 								<MapPage
 									printPage={printPage}
 									mapArray={filteredPlantioMal}
-									filtData={mapPlantation}
+									// filtData={mapPlantation}
+									filtData={mapColorFilterData}
 									handleSUm={handleSUm}
 									totalSelected={totalSelected}
 									setTotalSelected={setTotalSelected}
@@ -1359,6 +1374,7 @@ const ProdutividadePage = ({ useMulti }) => {
 									parcelasSelected={parcelasSelected}
 									toggleParcela={toggleParcela}
 									useRealArray={useRealArray}
+									selectedProject={selectedProject}
 								/>
 							</Box>
 							<Collapse orientation="horizontal" in={showTableList}>

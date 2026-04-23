@@ -13,7 +13,7 @@ import rice from "../../../utils/assets/icons/rice.png";
 
 import styles from "./produtividade.module.css";
 
-import { useTheme, Box } from "@mui/material";
+import { useTheme, Box, Typography } from "@mui/material";
 import { tokens } from '../../../theme'
 import MapResumePage from "./map-page-resume";
 
@@ -34,6 +34,23 @@ const containerStyle = {
 	borderRadius: "8px",
 	position: "relative" // Ensures child absolute positioning works
 };
+
+const farmNameStyle = {
+	position: "absolute",
+	bottom: "29px",
+	left: "15px",
+	zIndex: 1000,
+	display: "inline-flex",
+	alignItems: "center",
+	background: "linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.52))",
+	backdropFilter: "blur(10px)",
+	WebkitBackdropFilter: "blur(10px)",
+	border: "1px solid rgba(255,255,255,0.14)",
+	borderRadius: "16px",
+	padding: "10px 16px",
+	boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+	maxWidth: "calc(100% - 30px)",
+}
 
 const tableStyles = {
 	position: "absolute", // Position it over the map
@@ -104,9 +121,12 @@ const MapPage = ({
 	showResumeMap,
 	parcelasSelected,
 	toggleParcela,
-	useRealArray
+	useRealArray,
+	selectedProject
 }) => {
-
+	const formatProjectName = (selectedProject || [])
+		.map((proj) => proj.replace(/^Projeto\s+/i, '').trim())
+		.join(' | ')
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 
@@ -221,75 +241,56 @@ const MapPage = ({
 	// }, [mapArray, parcelasSelected]);
 
 	useEffect(() => {
-		if (mapArray?.length > 0) {
-			// se tiver parcelas selecionadas
-			if (parcelasSelected.length > 0) {
-				let filterSelectedparcelas = filtData.filter((data) =>
-					parcelasSelected.includes(data.id_farmbox)
-				);
-
-				// aplica filtro adicional se showAsPlanned = true
-				if (!showAsPlanned) {
-					filterSelectedparcelas = filterSelectedparcelas.filter(
-						(data) => data.inicializado_plantio === true
-					);
-				}
-
-				const onlyFarmId = filterSelectedparcelas.map((data) => data.id);
-
-				const groupedData = Object.values(
-					mapArray
-						.filter((data) => onlyFarmId.includes(data.dados.plantio_id))
-						.reduce((acc, curr) => {
-							const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
-							if (!acc[key]) {
-								acc[key] = {
-									cultura: curr.dados.cultura,
-									variedade: curr.dados.variedade,
-									total_area_colheita: 0,
-								};
-							}
-							acc[key].total_area_colheita += curr.dados.area_colheita;
-							return acc;
-						}, {})
-				);
-
-				setResumeContainerData(groupedData);
-			} else {
-				// sem seleção de parcelas
-				let baseArray = mapArray;
-
-				// aplica filtro global se showAsPlanned = true
-				if (!showAsPlanned) {
-					const onlyPlantedIds = filtData
-						.filter((data) => data.inicializado_plantio === true)
-						.map((d) => d.id);
-
-					baseArray = mapArray.filter((data) =>
-						onlyPlantedIds.includes(data.dados.plantio_id)
-					);
-				}
-
-				const groupedData = Object.values(
-					baseArray.reduce((acc, curr) => {
-						const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
-						if (!acc[key]) {
-							acc[key] = {
-								cultura: curr.dados.cultura,
-								variedade: curr.dados.variedade,
-								total_area_colheita: 0,
-							};
-						}
-						const areaToGet = !showAsPlanned ? curr.dados.area_colheita : curr.dados.area_planejamento_plantio
-						acc[key].total_area_colheita += areaToGet;
-						return acc;
-					}, {})
-				);
-
-				setResumeContainerData(groupedData);
-			}
+		if (!mapArray?.length) {
+			setResumeContainerData([]);
+			return;
 		}
-	}, [mapArray, parcelasSelected, showAsPlanned, filtData]);
+
+		// filtData agora precisa ser a base "ativa" dos novos filtros
+		// (cultura / variedade / showAsPlanned), e não mais a base total
+		let activeFilterData = Array.isArray(filtData) ? [...filtData] : [];
+
+		// se houver seleção manual de parcelas, restringe ainda mais o resumo
+		if (parcelasSelected.length > 0) {
+			activeFilterData = activeFilterData.filter((item) =>
+				parcelasSelected.includes(item.id_farmbox)
+			);
+		}
+
+		// se estiver mostrando áreas plantadas, mantém só inicializado_plantio === true
+		if (!showAsPlanned) {
+			activeFilterData = activeFilterData.filter(
+				(item) => item.inicializado_plantio === true
+			);
+		}
+
+		const activeIds = new Set(activeFilterData.map((item) => item.id));
+
+		const groupedData = Object.values(
+			mapArray
+				.filter((item) => activeIds.has(item.dados.plantio_id))
+				.reduce((acc, curr) => {
+					const key = `${curr.dados.cultura}-${curr.dados.variedade}`;
+
+					if (!acc[key]) {
+						acc[key] = {
+							cultura: curr.dados.cultura,
+							variedade: curr.dados.variedade,
+							total_area_colheita: 0,
+						};
+					}
+
+					const areaToGet = showAsPlanned
+						? Number(curr.dados.area_planejamento_plantio || 0)
+						: Number(curr.dados.area_colheita || 0);
+
+					acc[key].total_area_colheita += areaToGet;
+					return acc;
+				}, {})
+		);
+
+		setResumeContainerData(groupedData);
+	}, [mapArray, filtData, parcelasSelected, showAsPlanned]);
 
 
 
@@ -327,6 +328,8 @@ const MapPage = ({
 				(data) => data.talhao__id_talhao
 			);
 			setParcelasApp(newArrParcelas);
+		} else {
+			setParcelasApp([]);
 		}
 	}, [filtData]);
 
@@ -356,7 +359,7 @@ const MapPage = ({
 			let latArr = [];
 			let lngArr = [];
 			const onlyPaths = mapArray.map((data, i) => {
-				console.log('data check here', data);
+				// console.log('data check here', data);
 				let latLong = [];
 				if (data.dados.map_geo_points) {
 					latLong = data.dados.map_geo_points.map((data) => {
@@ -395,11 +398,9 @@ const MapPage = ({
 
 	useEffect(() => {
 		const updateColorArray = paths.map((data) => {
+			const isActiveFilter = parcelasApp.includes(data.parcela);
+			const newColor = isActiveFilter ? data.variedadeColor : "white";
 
-			// console.log('pathData', data);
-			const newColor = parcelasApp.includes(data.parcela)
-				? data.variedadeColor
-				: "white";
 			return {
 				data: data,
 				finalizadoPlantio: data.finalizadoPlantio,
@@ -409,11 +410,13 @@ const MapPage = ({
 				path: data.path,
 				color: newColor,
 				variedadeColor: data.variedadeColor,
-				variedadeColorLine: data.variedadeColorLine
+				variedadeColorLine: data.variedadeColorLine,
+				isActiveFilter
 			};
 		});
+
 		setAppArray(updateColorArray);
-	}, [mapArray, filtData, parcelasApp, paths]);
+	}, [parcelasApp, paths]);
 
 	const getColorStroke = (data) => {
 		// console.log('data here:::', data)
@@ -455,6 +458,15 @@ const MapPage = ({
 			return colorInside
 		}
 
+		if (data.isActiveFilter === false) {
+			return {
+				color: "white",
+				stroke: 0.35,
+				lineColor: "white",
+				lineStroke: 1
+			};
+		}
+
 		if (showAsPlanned) {
 			return {
 				color: getColor(data.data.data.variedade, data.variedadeColor),
@@ -465,7 +477,7 @@ const MapPage = ({
 		}
 		if (
 			(data.finalizadoColheita === true &&
-			data.finalizadoPlantio === true) || 
+				data.finalizadoPlantio === true) ||
 			data.data.data.area_planejamento_plantio - data.data.data.area_parcial === 0
 		) {
 			return {
@@ -609,7 +621,7 @@ const MapPage = ({
 						// console.log("dataArray: ", parcelasSelected)
 
 
-						const plantioDoing = inicializado_plantio && !finalizado_plantio 
+						const plantioDoing = inicializado_plantio && !finalizado_plantio
 						const baseColor = colorSelected || getColorStroke(dataF).color;
 
 
@@ -708,9 +720,27 @@ const MapPage = ({
 			</GoogleMap>
 			{/* Table Container */}
 			{showResumeMap &&
-				<Box sx={tableStyles}>
-					<MapResumePage data={resumeContainerData} showAsPlanned={showAsPlanned} />
-				</Box>
+				<>
+					<Box sx={farmNameStyle}>
+						<Typography
+							variant="h4"
+							fontWeight="bold"
+							sx={{
+								color: "#fff",
+								lineHeight: 1.1,
+								textShadow: "0 1px 2px rgba(0,0,0,0.35)",
+								whiteSpace: "nowrap",
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+							}}
+						>
+							{formatProjectName}
+						</Typography>
+					</Box>
+					<Box sx={tableStyles}>
+						<MapResumePage data={resumeContainerData} showAsPlanned={showAsPlanned} />
+					</Box>
+				</>
 			}
 			<div style={{ position: "absolute", bottom: 90, right: 10, display: "flex", flexDirection: "column", gap: 12, zIndex: 100 }}>
 				<button
