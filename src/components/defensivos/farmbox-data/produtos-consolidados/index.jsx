@@ -57,6 +57,7 @@ const ProdutosConsolidados = () => {
     const [isLoadingBtn, setIsLoadingBtn] = useState(false);
 
     const captureRef = useRef(null);
+    const lastAutoTipoApRef = useRef("");
 
 
     // useEffect(() => {
@@ -127,6 +128,47 @@ const ProdutosConsolidados = () => {
             }
         }
     }, [openApp]);
+
+    useEffect(() => {
+        const selectedAps = selectedData?.Ap || [];
+        const apSignature = selectedAps.join("||");
+
+        const tipoOperacao = onlyTypes.find((type) => {
+            const normalized = String(type || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
+
+            return normalized === "operacao";
+        });
+
+        if (!tipoOperacao) return;
+
+        // Se não tem AP selecionada, libera para aplicar novamente na próxima seleção
+        if (selectedAps.length === 0) {
+            lastAutoTipoApRef.current = "";
+            return;
+        }
+
+        // Só aplica automaticamente quando a AP mudar
+        if (lastAutoTipoApRef.current === apSignature) return;
+
+        lastAutoTipoApRef.current = apSignature;
+
+        setSelectedData((prev) => {
+            const currentTipos = Array.isArray(prev?.Tipo) ? prev.Tipo : [];
+
+            if (currentTipos.includes(tipoOperacao)) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                Tipo: [tipoOperacao],
+            };
+        });
+    }, [selectedData?.Ap, onlyTypes]);
 
     const handlerStProtheus = async () => {
         const projetoSelecionado = selectedData?.Projeto?.[0];

@@ -95,10 +95,10 @@ const SelectInputs = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(selectedData).length === 0) {
-            setPersonName([])
-        }
-    }, [selectedData]);
+        const currentValue = selectedData?.[label] || [];
+
+        setPersonName(Array.isArray(currentValue) ? currentValue : []);
+    }, [selectedData, label]);
 
 
     const formatApName = (ap) => {
