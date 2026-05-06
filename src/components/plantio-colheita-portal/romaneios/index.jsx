@@ -26,11 +26,82 @@ import { CSVLink } from "react-csv";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
-import { FormControl, InputLabel, MenuItem, Select, Chip } from "@mui/material";
+import {
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Chip,
+    FormControlLabel,
+    Switch,
+} from "@mui/material";
+
 import JsonFile from '../../../utils/assets/icons/json.png'
 import { transformaDocEmImportRegistro } from "./helper";
 
 
+const compactSelectSx = {
+    minWidth: "150px",
+    "& .MuiInputBase-root": {
+        height: "32px",
+        fontSize: "0.78rem",
+    },
+    "& .MuiSelect-select": {
+        padding: "5px 28px 5px 10px",
+        minHeight: "unset !important",
+        display: "flex",
+        alignItems: "center",
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: "0.78rem",
+        top: "-2px",
+    },
+    "& .MuiInputLabel-shrink": {
+        top: 0,
+    },
+    "& .MuiChip-root": {
+        height: "20px",
+        fontSize: "0.68rem",
+    },
+};
+
+const compactDatePickerSx = {
+    width: "140px",
+    "& .MuiInputBase-root": {
+        height: "32px",
+        fontSize: "0.78rem",
+    },
+    "& .MuiInputBase-input": {
+        padding: "5px 8px",
+        fontSize: "0.78rem",
+    },
+    "& .MuiInputLabel-root": {
+        fontSize: "0.78rem",
+        top: "-2px",
+    },
+    "& .MuiInputLabel-shrink": {
+        top: 0,
+    },
+    "& .MuiSvgIcon-root": {
+        fontSize: "1rem",
+    },
+};
+
+const compactButtonSx = {
+    height: "32px",
+    minWidth: "58px",
+    px: 1.2,
+    py: 0,
+    fontSize: "0.72rem",
+    lineHeight: 1,
+    textTransform: "none",
+};
+
+const compactIconButtonSx = {
+    width: "32px",
+    height: "32px",
+    padding: "4px",
+};
 function transformaListaDocs(listaDocs, options = {}) {
     if (!Array.isArray(listaDocs)) return [];
 
@@ -54,11 +125,30 @@ const RomaneiosPage = () => {
 
     const [filteredFarms, setFilteredFarms] = useState([]);
 
+    const [selectedDestinatario, setSelectedDestinatario] = useState([]);
+    const [filteredDestinatarios, setFilteredDestinatarios] = useState([]);
+
+    const [classificationFilter, setClassificationFilter] = useState("todos");
+
     useEffect(() => {
         if (useData.length > 0) {
             const onlyFarms = useData.map((data) => data.fazendaOrigem)
             const removeDupli = [...new Set(onlyFarms)]
             setFilteredFarms(removeDupli)
+        }
+    }, [useData]);
+
+
+    useEffect(() => {
+        if (useData.length > 0) {
+            const onlyDestinatarios = useData
+                .map((data) => data.fazendaDestino)
+                .filter(Boolean);
+
+            const removeDupli = [...new Set(onlyDestinatarios)]
+                .sort((a, b) => a.localeCompare(b));
+
+            setFilteredDestinatarios(removeDupli);
         }
     }, [useData]);
 
@@ -89,6 +179,9 @@ const RomaneiosPage = () => {
     const [selectedTicket, setSelectedTicket] = useState([]);
     const [filteredTickets, setFilteredTicket] = useState([]);
 
+
+    // opções: "todos" | "com" | "sem"
+
     const handleChange = (event) => {
         setSelected(event.target.value);
     };
@@ -96,10 +189,40 @@ const RomaneiosPage = () => {
         setSelectedTicket(event.target.value);
     };
 
+    const handleChangeDestinatario = (event) => {
+        setSelectedDestinatario(event.target.value);
+    };
+
+    const handleToggleClassification = (event) => {
+        setClassificationFilter(event.target.checked ? "sem" : "todos");
+    };
+
+    const hasClassification = (data) => {
+        const umidade = data?.umidade;
+        const impureza = data?.impureza;
+
+        const hasUmidade =
+            umidade !== undefined &&
+            umidade !== null &&
+            umidade !== "" &&
+            Number(umidade) > 0;
+
+        const hasImpureza =
+            impureza !== undefined &&
+            impureza !== null &&
+            impureza !== "" &&
+            Number(impureza) > 0;
+
+        return hasUmidade || hasImpureza;
+    };
+
+
     const handlerClearProjetosSelected = () => {
-        setSelected([])
-        setSelectedTicket([])
-    }
+        setSelected([]);
+        setSelectedTicket([]);
+        setSelectedDestinatario([]);
+        setClassificationFilter("todos");
+    };
 
     const formatDateIn = (dateInit, dataFinal) => {
         const date = dataFinal?.replaceAll("-", "");
@@ -167,9 +290,31 @@ const RomaneiosPage = () => {
                 filteredData = filteredData.filter((data) => selectedTicket.includes(data.codTicketPro));
             }
 
+            if (selectedDestinatario.length > 0) {
+                filteredData = filteredData.filter((data) =>
+                    selectedDestinatario.includes(data.fazendaDestino)
+                );
+            }
+
+            if (classificationFilter === "com") {
+                filteredData = filteredData.filter((data) => hasClassification(data));
+            }
+
+            if (classificationFilter === "sem") {
+                filteredData = filteredData.filter((data) => !hasClassification(data));
+            }
+
             setfilteredUserData(filteredData);
         }
-    }, [useData, filterDataArr, filterDataArrInit, selected, selectedTicket]);
+    }, [
+        useData,
+        filterDataArr,
+        filterDataArrInit,
+        selected,
+        selectedTicket,
+        selectedDestinatario,
+        classificationFilter,
+    ]);
 
     const handleUpdateCarga = async (event, cargaDetail) => {
         if (
@@ -353,18 +498,24 @@ const RomaneiosPage = () => {
                 {(filterDataArr || filterDataArrInit) && (
                     <IconButton
                         aria-label="delete"
-                        size="sm"
+                        size="small"
                         color="warning"
                         onClick={(e) => handlerClearData()}
-                        style={{ padding: "2px" }}
+                        sx={compactIconButtonSx}
                     >
-                        <CancelIcon fontSize="inherit" />
+                        <CancelIcon fontSize="small" />
                     </IconButton>
                 )}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Data Inicial"
-                        renderInput={(params) => <TextField size="small" {...params} />}
+                        renderInput={(params) => (
+                            <TextField
+                                size="small"
+                                {...params}
+                                sx={compactDatePickerSx}
+                            />
+                        )}
                         onChange={(newValue) =>
                             setFilterDataArrInit(
                                 new Date(newValue).toISOString().slice(0, 10)
@@ -373,20 +524,38 @@ const RomaneiosPage = () => {
                         value={filterDataArrInit}
                     />
                 </LocalizationProvider>
+
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Data Final"
-                        renderInput={(params) => <TextField size="small" {...params} />}
+                        renderInput={(params) => (
+                            <TextField
+                                size="small"
+                                {...params}
+                                sx={compactDatePickerSx}
+                            />
+                        )}
                         onChange={(newValue) =>
                             setFilterDataArr(new Date(newValue).toISOString().slice(0, 10))
                         }
                         value={filterDataArr}
                     />
                 </LocalizationProvider>
-                <Button color="warning" variant="outlined" onClick={handlerYesterday} sx={{ height: '100%' }}>
+                <Button
+                    color="warning"
+                    variant="outlined"
+                    onClick={handlerYesterday}
+                    sx={compactButtonSx}
+                >
                     Ontem
                 </Button>
-                <Button color="success" variant="outlined" onClick={handlerToday} sx={{ height: '100%' }}>
+
+                <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={handlerToday}
+                    sx={compactButtonSx}
+                >
                     Hoje
                 </Button>
                 <Box>
@@ -394,25 +563,30 @@ const RomaneiosPage = () => {
                         <FontAwesomeIcon
                             icon={faFileExcel}
                             color={colors.greenAccent[500]}
-                            size="xl"
+                            size="lg"
                             style={{ paddingLeft: "5px" }}
                         />
                     </CSVLink>
                 </Box>
                 <Box alignSelf="center" sx={{ cursor: 'pointer' }}>
-                    <IconButton onClick={() => exportAsJson(filteredUserData)}>
+                    <IconButton
+                        onClick={() => exportAsJson(filteredUserData)}
+                        sx={compactIconButtonSx}
+                    >
                         <img
                             src={JsonFile}
                             alt="Export JSON"
                             style={{
-                                width: "22px", // Set the width of the icon
-                                height: "22px", // Set the height of the icon
-                                filter: theme.palette.mode === 'dark' ? "brightness(0) invert(1)" : "brightness(0)"
+                                width: "18px",
+                                height: "18px",
+                                filter: theme.palette.mode === "dark"
+                                    ? "brightness(0) invert(1)"
+                                    : "brightness(0)",
                             }}
                         />
                     </IconButton>
                 </Box>
-                <FormControl sx={{ minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
+                <FormControl sx={{ ...compactSelectSx, minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
                     <InputLabel>Filtre por Projeto</InputLabel>
                     <Select
                         multiple
@@ -433,7 +607,17 @@ const RomaneiosPage = () => {
                         ))}
                     </Select>
                 </FormControl>
-                <FormControl sx={{ minWidth: '200px', width: selected.length === 0 ? '200px' : selected.length * 90 + 'px' }} size="small">
+                <FormControl
+                    sx={{
+                        ...compactSelectSx,
+                        minWidth: "200px",
+                        width:
+                            selectedTicket.length === 0
+                                ? "200px"
+                                : Math.max(200, selectedTicket.length * 90) + "px",
+                    }}
+                    size="small"
+                >
                     <InputLabel>Filtre por Ticket</InputLabel>
                     <Select
                         multiple
@@ -454,17 +638,71 @@ const RomaneiosPage = () => {
                         ))}
                     </Select>
                 </FormControl>
-                {(selected.length > 0 || selectedTicket.length > 0) && (
-                    <IconButton
-                        aria-label="delete"
-                        size="sm"
-                        color="warning"
-                        onClick={(e) => handlerClearProjetosSelected()}
-                        style={{ padding: "2px" }}
+                <FormControl
+                    sx={{
+                        ...compactSelectSx,
+                        minWidth: "220px",
+                        width:
+                            selectedDestinatario.length === 0
+                                ? "220px"
+                                : Math.max(220, selectedDestinatario.length * 120) + "px",
+                    }}
+                    size="small"
+                >
+                    <InputLabel>Filtre por Destinatário</InputLabel>
+                    <Select
+                        multiple
+                        value={selectedDestinatario}
+                        onChange={handleChangeDestinatario}
+                        label="Filtre por Destinatário"
+                        renderValue={(selected) => (
+                            <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                                {selected.map((value) => (
+                                    <Chip
+                                        key={value}
+                                        label={value.replace("Projeto ", "")}
+                                    />
+                                ))}
+                            </Box>
+                        )}
                     >
-                        <CancelIcon fontSize="inherit" />
-                    </IconButton>
-                )}
+                        {filteredDestinatarios.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option.replace("Projeto ", "")}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={classificationFilter === "sem"}
+                            onChange={handleToggleClassification}
+                            color="warning"
+                        />
+                    }
+                    label="Sem classificação"
+                    sx={{
+                        color: colors.textColor[100],
+                        whiteSpace: "nowrap",
+                    }}
+                />
+                {(
+                    selected.length > 0 ||
+                    selectedTicket.length > 0 ||
+                    selectedDestinatario.length > 0 ||
+                    classificationFilter !== "todos"
+                ) && (
+                        <IconButton
+                            aria-label="delete"
+                            size="sm"
+                            color="warning"
+                            onClick={(e) => handlerClearProjetosSelected()}
+                            style={{ padding: "2px" }}
+                        >
+                            <CancelIcon fontSize="inherit" />
+                        </IconButton>
+                    )}
             </Box>
             {filteredUserData.length > 0 && (
                 <>
