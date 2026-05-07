@@ -748,7 +748,22 @@ const RomaneiosPage = () => {
             )}
             {listSit.map((situacao, i) => {
                 let newArr;
-                const onlyTickets = filteredUserData.map((roms) => roms.ticket);
+                const normalizeTicket = (value) => {
+                    if (value === null || value === undefined || value === "") return "-";
+                    return String(value).replace(/^0+/, "") || "0";
+                };
+
+                const getTicketDuplicateKey = (carga) => {
+                    const filial = String(carga?.filialPro || "").trim();
+                    const ticket = normalizeTicket(carga?.ticket || carga?.codTicketPro || "-");
+
+                    return `${filial}::${ticket}`;
+                };
+
+                const onlyTickets = filteredUserData
+                    .filter((roms) => roms?.ticket || roms?.codTicketPro)
+                    .map((roms) => getTicketDuplicateKey(roms));
+
                 const duplicates = onlyTickets?.filter(
                     (item, index) => onlyTickets?.indexOf(item) !== index
                 );

@@ -259,6 +259,21 @@ const RomaneiosTable = (props) => {
 		return "-";
 	}
 
+	const normalizeTicket = (value) => {
+		if (value === null || value === undefined || value === "") return "-";
+		return String(value).replace(/^0+/, "") || "0";
+	};
+
+	const getTicketDuplicateKey = (carga) => {
+		const filial = String(carga?.filialPro || "").trim();
+
+		const ticket = normalizeTicket(
+			carga?.ticket || carga?.codTicketPro || "-"
+		);
+
+		return `${filial}::${ticket}`;
+	};
+
 
 
 	if (data.length === 0) {
@@ -389,6 +404,8 @@ const RomaneiosTable = (props) => {
 							dataFilter.map((carga, i) => {
 								const newDate = carga?.pesoBruto > 0 ? carga.entrada.toDate().toLocaleString("pt-BR") : carga.syncDate.toDate().toLocaleString("pt-BR");
 								const getTicket = carga?.ticket ? carga.ticket : '-'
+								const ticketDuplicateKey = getTicketDuplicateKey(carga);
+								const isDuplicatedTicket = duplicates?.includes(ticketDuplicateKey);
 								const getVariedade = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.variedade) : []
 								const filtVariedade = [...new Set(getVariedade)]?.join(' - ')
 								const getParcelas = carga?.parcelasObjFiltered ? carga?.parcelasObjFiltered?.map((data) => data.parcela) : []
@@ -456,9 +473,15 @@ const RomaneiosTable = (props) => {
 														},
 													}}
 												>
-													<td style={{
-														color: duplicates?.includes(getTicket) && 'red', fontWeight: duplicates?.includes(getTicket) && 'bold', cursor: 'help'
-													}}>{getTicket}</td>
+													<td
+														style={{
+															color: isDuplicatedTicket ? "red" : undefined,
+															fontWeight: isDuplicatedTicket ? "bold" : undefined,
+															cursor: "help",
+														}}
+													>
+														{getTicket}
+													</td>
 												</Tooltip>
 										}
 										<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
