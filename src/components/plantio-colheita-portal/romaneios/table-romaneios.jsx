@@ -303,9 +303,10 @@ const RomaneiosTable = (props) => {
 	const handleRefreshTicket = async (e, carga) => {
 		console.log('data id ', carga?.id)
 		setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: true }));
-		toast.success(`ID Reenviado!!: ${carga.relatorioColheita} - ID: ${carga.id}`, {
-			position: 'top-center',
-		})
+		toast.loading(`Reenviando para o Protheus: ${carga.relatorioColheita} - ID: ${carga.id}`, {
+			id: `resend-${carga.id}`,
+			position: "top-center",
+		});
 		try {
 			const response = await nodeServerSrd
 				.post("resend-to-protheus/", {
@@ -318,15 +319,17 @@ const RomaneiosTable = (props) => {
 			console.log('response', response)
 			const { status, data } = response
 			if (status === 200) {
-				toast.success(`Ticket Atualizado com sucesso!!: ${carga.relatorioColheita} - ID: ${data.ticket}`, {
-					position: 'top-center',
-				})
+				toast.success(`Ticket atualizado com sucesso: ${carga.relatorioColheita} - ID: ${data.ticket}`, {
+					id: `resend-${carga.id}`,
+					position: "top-center",
+				});
 			}
 			return response;
 		} catch (error) {
-			toast.error(`Problema ao enviar para o protheus!!: ${carga.relatorioColheita} - ID: ${carga.id}`, {
-				position: 'top-center',
-			})
+			toast.error(`Problema ao enviar para o Protheus: ${carga.relatorioColheita} - ID: ${carga.id}`, {
+				id: `resend-${carga.id}`,
+				position: "top-center",
+			});
 		} finally {
 			setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: false }));
 		}
@@ -434,21 +437,21 @@ const RomaneiosTable = (props) => {
 										<td>{newDate}</td>
 										<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 										{
-											(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ?
-												<td
-												>
-													<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
+											(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ? (
+												<td>
+													<Tooltip
+														title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`}
+														arrow
 														slotProps={{
 															tooltip: {
 																sx: {
-																	fontSize: '1.25rem', // Tamanho de fonte menor
+																	fontSize: '1.25rem',
 																},
 															},
 														}}
 													>
-
 														<IconButton
-															aria-label="delete"
+															aria-label="reenviar para o protheus"
 															size="sm"
 															color={"success"}
 															onClick={(e) => handleRefreshTicket(e, carga)}
@@ -463,26 +466,42 @@ const RomaneiosTable = (props) => {
 														</IconButton>
 													</Tooltip>
 												</td>
-												:
-												<Tooltip title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`} arrow
+											) : (
+												<Tooltip
+													title={
+														carga?.filialPro && carga?.codTicketPro
+															? `${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`
+															: "Ticket"
+													}
+													arrow
 													slotProps={{
 														tooltip: {
 															sx: {
-																fontSize: '1.25rem', // Tamanho de fonte menor
+																fontSize: '1.25rem',
 															},
 														},
 													}}
 												>
 													<td
+														onClick={(e) => {
+															if (carga?.filialPro && carga?.codTicketPro && !isLoadingTicket[carga.id]) {
+																handleRefreshTicket(e, carga);
+															}
+														}}
 														style={{
 															color: isDuplicatedTicket ? "red" : undefined,
 															fontWeight: isDuplicatedTicket ? "bold" : undefined,
-															cursor: "help",
+															cursor: carga?.filialPro && carga?.codTicketPro ? "pointer" : "help",
 														}}
 													>
-														{getTicket}
+														{isLoadingTicket[carga.id] ? (
+															<CircularProgress size={16} color="inherit" />
+														) : (
+															getTicket
+														)}
 													</td>
 												</Tooltip>
+											)
 										}
 										<td>{carga.fazendaOrigem.replace('Projeto ', '')}</td>
 										<td>
