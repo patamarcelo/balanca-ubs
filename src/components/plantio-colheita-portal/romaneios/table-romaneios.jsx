@@ -186,36 +186,37 @@ const RomaneiosTable = (props) => {
 	};
 
 	useEffect(() => {
+		let nextData = [...data];
+
 		if (sortBy === "fazendaOrigem") {
-			// const sortArr = dataFilter.sort((a, b) =>
-			// 	a["fazendaOrigem"].localeCompare(b["fazendaOrigem"])
-			// );
-			const sortArr = dataFilter.sort((a, b) => {
-				const fazendaCompare = a["fazendaOrigem"].localeCompare(b["fazendaOrigem"]);
+			nextData.sort((a, b) => {
+				const fazendaCompare = String(a?.fazendaOrigem || "").localeCompare(
+					String(b?.fazendaOrigem || "")
+				);
+
 				if (fazendaCompare !== 0) {
 					return fazendaCompare;
 				}
-				return Number(a["ticket"]) - Number(b["ticket"]); // ordena por ticket se fazendaOrigem for igual
+
+				return Number(a?.ticket || 0) - Number(b?.ticket || 0);
 			});
-			setdataFilter(sortArr);
 		}
+
 		if (sortBy === "relatorioColheita") {
-			const sortArr = dataFilter.sort((a, b) => {
-				return b.relatorioColheita - a.relatorioColheita;
+			nextData.sort((a, b) => {
+				return Number(b?.relatorioColheita || 0) - Number(a?.relatorioColheita || 0);
 			});
-			setdataFilter(sortArr);
 		}
+
 		if (sortBy === "parcelas") {
-			const sortArr = [...dataFilter].sort((a, b) => {
+			nextData.sort((a, b) => {
 				const parcelaA = a.parcelasObjFiltered?.[0]?.parcela || "";
 				const parcelaB = b.parcelasObjFiltered?.[0]?.parcela || "";
 
-				// If either parcela is missing, push it to the end
 				if (!parcelaA && !parcelaB) return 0;
 				if (!parcelaA) return 1;
 				if (!parcelaB) return -1;
 
-				// Match prefix and number
 				const matchA = parcelaA.match(/^([A-Za-z]+)(\d+)$/);
 				const matchB = parcelaB.match(/^([A-Za-z]+)(\d+)$/);
 
@@ -227,13 +228,13 @@ const RomaneiosTable = (props) => {
 				if (prefixA !== prefixB) {
 					return prefixA.localeCompare(prefixB);
 				}
+
 				return parseInt(numberA) - parseInt(numberB);
 			});
-
-			setdataFilter(sortArr);
 		}
-		setdataFilter(data)
-	}, [sortBy, dataFilter, data]);
+
+		setdataFilter(nextData);
+	}, [sortBy, data]);
 
 
 	useEffect(() => {
@@ -301,40 +302,69 @@ const RomaneiosTable = (props) => {
 	}
 
 	const handleRefreshTicket = async (e, carga) => {
-		console.log('data id ', carga?.id)
-		setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: true }));
+		e?.stopPropagation?.();
+
+		if (!carga?.id) return;
+
+		setIsLoadingTicket((prev) => ({ ...prev, [carga.id]: true }));
+
 		toast.loading(`Reenviando para o Protheus: ${carga.relatorioColheita} - ID: ${carga.id}`, {
 			id: `resend-${carga.id}`,
 			position: "top-center",
 		});
+
 		try {
-			const response = await nodeServerSrd
-				.post("resend-to-protheus/", {
-					id: carga?.id,
-					headers: {
-						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-					},
-				})
-				.catch((err) => console.log(err));
-			console.log('response', response)
-			const { status, data } = response
-			if (status === 200) {
-				toast.success(`Ticket atualizado com sucesso: ${carga.relatorioColheita} - ID: ${data.ticket}`, {
+			const response = await nodeServerSrd.post("resend-to-protheus/", {
+				id: carga.id,
+				headers: {
+					Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+				},
+			});
+
+			const { status, data } = response;
+
+			if ((status === 200 || status === 202) && data?.ok) {
+				setdataFilter((prev) =>
+					prev.map((item) =>
+						item.id === carga.id
+							? {
+								...item,
+								protheusSyncStatus: "processing",
+								protheusLastError: "",
+								protheusLastAttemptAt: new Date(),
+							}
+							: item
+					)
+				);
+
+				toast.success(`Reenvio iniciado: ${carga.relatorioColheita}`, {
 					id: `resend-${carga.id}`,
 					position: "top-center",
 				});
+
+				return response;
 			}
+
+			toast.error(`Resposta inesperada ao reenviar: ${carga.relatorioColheita}`, {
+				id: `resend-${carga.id}`,
+				position: "top-center",
+			});
+
 			return response;
 		} catch (error) {
-			toast.error(`Problema ao enviar para o Protheus: ${carga.relatorioColheita} - ID: ${carga.id}`, {
+			const message =
+				error?.response?.data?.message ||
+				error?.message ||
+				"Problema ao iniciar o reenvio para o Protheus";
+
+			toast.error(`${message}: ${carga.relatorioColheita} - ID: ${carga.id}`, {
 				id: `resend-${carga.id}`,
 				position: "top-center",
 			});
 		} finally {
-			setIsLoadingTicket((prev) => ({ ...prev, [carga?.id]: false }));
+			setIsLoadingTicket((prev) => ({ ...prev, [carga.id]: false }));
 		}
-	}
-
+	};
 
 
 
@@ -428,6 +458,20 @@ const RomaneiosTable = (props) => {
 
 								// 3. O resultado final (para exibição simples)
 								const getCultura = Array.isArray(getCulturaHere) ? getCulturaHere[0] : getCulturaHere;
+
+								const hasTicketInfo = carga?.filialPro && carga?.codTicketPro;
+
+								const isProcessingProtheus =
+									carga?.protheusSyncStatus === "processing" || isLoadingTicket[carga.id];
+
+								const wasAcceptedByProtheus =
+									(carga?.protheusSyncStatus === "success" || !carga?.protheusSyncStatus) &&
+									Number(carga?.protheusReceipt?.codigo) === 200 &&
+									!!carga?.protheusReceipt?.cod_ticket;
+
+								const shouldShowResendIcon =
+									hasTicketInfo && !wasAcceptedByProtheus && !isProcessingProtheus;
+
 								return (
 									<tr
 										key={i}
@@ -437,15 +481,44 @@ const RomaneiosTable = (props) => {
 										<td>{newDate}</td>
 										<td onClick={() => handlerCopyData(carga)} style={{ cursor: 'pointer' }}>{carga.relatorioColheita}</td>
 										{
-											(!carga?.ticket && carga?.filialPro && carga?.codTicketPro) ? (
+											isProcessingProtheus ? (
 												<td>
 													<Tooltip
-														title={`${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`}
+														title="Envio ao Protheus em processamento"
 														arrow
 														slotProps={{
 															tooltip: {
 																sx: {
-																	fontSize: '1.25rem',
+																	fontSize: "1.25rem",
+																},
+															},
+														}}
+													>
+														<Box
+															sx={{
+																display: "flex",
+																justifyContent: "center",
+																alignItems: "center",
+																minHeight: 24,
+															}}
+														>
+															<CircularProgress size={16} color="inherit" />
+														</Box>
+													</Tooltip>
+												</td>
+											) : shouldShowResendIcon ? (
+												<td>
+													<Tooltip
+														title={
+															carga?.protheusLastError
+																? `Erro Protheus: ${carga.protheusLastError}`
+																: "Reenviar para o Protheus"
+														}
+														arrow
+														slotProps={{
+															tooltip: {
+																sx: {
+																	fontSize: "1.25rem",
 																},
 															},
 														}}
@@ -453,52 +526,46 @@ const RomaneiosTable = (props) => {
 														<IconButton
 															aria-label="reenviar para o protheus"
 															size="sm"
-															color={"success"}
+															color="success"
 															onClick={(e) => handleRefreshTicket(e, carga)}
-															style={{ padding: "2px", justifyContent: 'center' }}
+															style={{ padding: "2px", justifyContent: "center" }}
 															disabled={isLoadingTicket[carga.id] || false}
 														>
-															{isLoadingTicket[carga.id] ? (
-																<CircularProgress size={16} color="inherit" />
-															) : (
-																<PublishedWithChanges fontSize="inherit" />
-															)}
+															<PublishedWithChanges fontSize="inherit" />
 														</IconButton>
 													</Tooltip>
 												</td>
 											) : (
 												<Tooltip
 													title={
-														carga?.filialPro && carga?.codTicketPro
-															? `${carga.filialPro} - ${carga?.codTicketPro?.replace(/^0+/, '')}`
-															: "Ticket"
+														wasAcceptedByProtheus
+															? `Enviado ao Protheus | Ticket ${carga.protheusReceipt.cod_ticket}`
+															: hasTicketInfo
+																? "Clique para reenviar"
+																: "Ticket"
 													}
 													arrow
 													slotProps={{
 														tooltip: {
 															sx: {
-																fontSize: '1.25rem',
+																fontSize: "1.25rem",
 															},
 														},
 													}}
 												>
 													<td
 														onClick={(e) => {
-															if (carga?.filialPro && carga?.codTicketPro && !isLoadingTicket[carga.id]) {
+															if (hasTicketInfo && !isProcessingProtheus) {
 																handleRefreshTicket(e, carga);
 															}
 														}}
 														style={{
 															color: isDuplicatedTicket ? "red" : undefined,
 															fontWeight: isDuplicatedTicket ? "bold" : undefined,
-															cursor: carga?.filialPro && carga?.codTicketPro ? "pointer" : "help",
+															cursor: hasTicketInfo ? "pointer" : "help",
 														}}
 													>
-														{isLoadingTicket[carga.id] ? (
-															<CircularProgress size={16} color="inherit" />
-														) : (
-															getTicket
-														)}
+														{getTicket}
 													</td>
 												</Tooltip>
 											)
@@ -611,9 +678,13 @@ const RomaneiosTable = (props) => {
 													color={"success"}
 													onClick={(e) => handleRefreshTicket(e, carga)}
 													style={{ padding: "2px", justifyContent: 'center' }}
-													disabled={isLoadingTicket[carga.id] || false}
+													disabled={isProcessingProtheus || false}
 												>
-													<AgricultureIcon fontSize="small" color="warning" />
+													{isProcessingProtheus ? (
+														<CircularProgress size={16} color="inherit" />
+													) : (
+														<AgricultureIcon fontSize="small" color="warning" />
+													)}
 												</IconButton>
 											)}
 										</td>
