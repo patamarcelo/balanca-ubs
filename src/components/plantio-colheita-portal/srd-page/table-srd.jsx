@@ -17,6 +17,18 @@ import question from '../../../utils/assets/icons/question.png'
 
 import toast from "react-hot-toast";
 
+const EMPTY_DESTINO_LABEL = "Sem Destino";
+
+const getDestinoLabel = (destino) => {
+    const rawDestino = String(destino ?? "").trim();
+
+    if (!rawDestino) {
+        return EMPTY_DESTINO_LABEL;
+    }
+
+    return rawDestino.split("-")[0].trim() || EMPTY_DESTINO_LABEL;
+};
+
 const TableSrd = ({ data, setFilterDataArray }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -174,7 +186,7 @@ const TableSrd = ({ data, setFilterDataArray }) => {
                                     <td style={{ color: (formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' || parcela.UMIDADE_ENTRADA < 19 ? 'red' : undefined), fontWeight: formatDesc(parcela.UMIDADE_ENTRADA) === '0,00' || parcela.UMIDADE_ENTRADA < 19 ? "bold" : undefined }}>{formatDesc(parcela.UMIDADE_ENTRADA)}</td>
                                     <td style={{ color: formatDesc(parcela.IMPUREZA_ENTRADA) === '0,00' && 'red', fontWeight: formatDesc(parcela.IMPUREZA_ENTRADA) === '0,00' && "bold" }}>{formatDesc(parcela.IMPUREZA_ENTRADA)}</td>
                                     <td style={{ color: formatDesc(parcela.SACOS_SECOS) === '0,00' && 'red', fontWeight: formatDesc(parcela.SACOS_SECOS) === '0,00' && "bold" }}>{formatDesc(parcela.SACOS_SECOS)}</td>
-                                    <td>{parcela.DESTINO.split('-')[0]}</td>
+                                    <td>{getDestinoLabel(parcela.DESTINO)}</td>
                                     {hoveredRow === parcela.TICKET && (
                                         <td>
                                             <IconButton onClick={() => handleDeleteRow(parcela.TICKET)} color="error">

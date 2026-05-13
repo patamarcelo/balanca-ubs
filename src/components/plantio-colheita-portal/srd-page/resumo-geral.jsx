@@ -2,6 +2,21 @@ import { Typography, Box, useTheme, Button, Paper } from "@mui/material";
 import { tokens } from "../../../theme";
 import { useEffect, useState } from "react";
 
+
+const EMPTY_DESTINO_LABEL = "Sem Destino";
+
+const getDestinoLabel = (destino) => {
+    const rawDestino = String(destino ?? "").trim();
+
+    if (!rawDestino) {
+        return EMPTY_DESTINO_LABEL;
+    }
+
+    return rawDestino.split("-")[0].trim() || EMPTY_DESTINO_LABEL;
+};
+
+
+
 const ResumoGeral = (props) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -11,22 +26,22 @@ const ResumoGeral = (props) => {
     const [totalQuant, setTotalQuant] = useState(0);
 
     useEffect(() => {
-        if(dest === "Geral"){
+        if (dest === "Geral") {
             const total = data
-            .reduce((acc, curr) => acc + curr.SACOS_SECOS, 0);
+                .reduce((acc, curr) => acc + curr.SACOS_SECOS, 0);
             setpesoTotal(total);
             const totalQUant = data
-            .reduce((acc, curr) => acc + 1, 0);
+                .reduce((acc, curr) => acc + 1, 0);
             setTotalQuant(totalQUant);
-        }else {
+        } else {
 
             const total = data
-            .filter((data) => data.DESTINO.includes(dest))
-            .reduce((acc, curr) => acc + curr.SACOS_SECOS, 0);
+                .filter((data) => getDestinoLabel(data.DESTINO) === dest)
+                .reduce((acc, curr) => acc + curr.SACOS_SECOS, 0);
             setpesoTotal(total);
             const totalQUant = data
-            .filter((data) => data.DESTINO.includes(dest))
-            .reduce((acc, curr) => acc + 1, 0);
+                .filter((data) => getDestinoLabel(data.DESTINO) === dest)
+                .reduce((acc, curr) => acc + 1, 0);
             setTotalQuant(totalQUant);
         }
     }, [data, dest]);
@@ -54,7 +69,7 @@ const ResumoGeral = (props) => {
                 <Typography variant="h3" color={'white'}>
                     <b>
                         {dest}
-                        </b>
+                    </b>
                 </Typography>
             </Box>
             <Box
@@ -66,16 +81,16 @@ const ResumoGeral = (props) => {
                     height: '100%',
                 }}
             >
-                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{fontWeight: '700', borderBottom: `1px solid ${dest === "Geral" ? colors.grey[900] : '#c2c2c2'}`}}>
+                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{ fontWeight: '700', borderBottom: `1px solid ${dest === "Geral" ? colors.grey[900] : '#c2c2c2'}` }}>
                     {pesoTotal.toLocaleString(
-            "pt-br",
-            {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }
-        )} Scs
+                        "pt-br",
+                        {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        }
+                    )} Scs
                 </Typography>
-                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{fontWeight: '700'}}>
+                <Typography variant="h4" color={dest === "Geral" ? colors.grey[900] : '#c2c2c2'} sx={{ fontWeight: '700' }}>
                     {totalQuant} {totalQuant > 1 ? "Cargas" : 'Carga'}
                 </Typography>
             </Box>

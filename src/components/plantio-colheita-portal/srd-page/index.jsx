@@ -30,6 +30,19 @@ import MultiSelectFilter from "./filters";
 import { Switch, FormControlLabel, Tooltip } from "@mui/material";
 
 
+const EMPTY_DESTINO_LABEL = "Sem Destino";
+
+const getDestinoLabel = (destino) => {
+    const rawDestino = String(destino ?? "").trim();
+
+    if (!rawDestino) {
+        return EMPTY_DESTINO_LABEL;
+    }
+
+    return rawDestino.split("-")[0].trim() || EMPTY_DESTINO_LABEL;
+};
+
+
 const SRDPage = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -142,21 +155,28 @@ const SRDPage = () => {
     useEffect(() => {
         if (dataArray?.length > 0) {
             // const onlyTickets = dataArray.sort((a, b) => a.TICKET.localeCompare(b.TICKET)).map((data) => ({projeto: data.PROJETO, ticket: data.TICKET}))
-            const onlyTickets = dataArray
+            const baseTicketsArray = selectedStatus.length > 0
+                ? dataArray.filter((data) => selectedStatus.includes(data.PROJETO))
+                : dataArray;
+
+            const onlyTickets = [...baseTicketsArray]
                 .sort((a, b) => {
-                    // Primeiro compara pelo projeto
                     const projetoCompare = a.PROJETO.localeCompare(b.PROJETO);
                     if (projetoCompare !== 0) return projetoCompare;
 
-                    // Se os projetos forem iguais, compara pelo ticket
                     return a.TICKET.localeCompare(b.TICKET);
                 })
-                .map(data => ({
+                .map((data) => ({
                     projeto: data.PROJETO,
                     ticket: data.TICKET
                 }));
-            console.log('onlyTickets', onlyTickets)
-            setTicketPriorityOptions(onlyTickets)
+
+            setTicketPriorityOptions(onlyTickets);
+
+            setSelectedPriority((prev) => {
+                const availableTickets = onlyTickets.map((item) => item.ticket);
+                return prev.filter((ticket) => availableTickets.includes(ticket));
+            });
 
             const onlyProj = dataArray.sort((a, b) => a.PROJETO.localeCompare(b.PROJETO)).map((data) => data.PROJETO)
             const uniqueOnlyProj = [...new Set(onlyProj)]
@@ -173,7 +193,7 @@ const SRDPage = () => {
             console.log('onlyVar: ', uniqueOnlyCult)
             setCulturaOptions(uniqueOnlyCult)
         }
-    }, [dataArray]);
+    }, [dataArray, selectedStatus]);
 
 
     const handleSearch = async () => {
@@ -231,7 +251,7 @@ const SRDPage = () => {
 
     useEffect(() => {
         const formD = filterDataArray?.map((data) => {
-            const dest = data.DESTINO.trim().split("-")[0];
+            const dest = getDestinoLabel(data.DESTINO);
             return { destino: dest, projeto: data.PROJETO };
         });
         const onlyDest = formD?.map((data) => data?.destino?.trim()).sort();
@@ -663,93 +683,86 @@ const SRDPage = () => {
                                 </Divider>
 
                                 {projArr.map((projeto, i) => {
-                                    const lengthArr = filterDataArray
-                                        .filter((data) => data.DESTINO.includes(destino))
-                                        .filter((data) => data.PROJETO.includes(projeto));
-                                    const totalScs = lengthArr.reduce(
+                                    const dadosDestinoProjeto = filterDataArray
+                                        .filter((data) => getDestinoLabel(data.DESTINO) === destino)
+                                        .filter((data) => data.PROJETO === projeto);
+
+                                    const totalScs = dadosDestinoProjeto.reduce(
                                         (acc, curr) => acc + curr.SACOS_SECOS,
                                         0
                                     );
+
                                     return (
                                         <>
-                                            {filterDataArray
-                                                .filter((data) => data.DESTINO.includes(destino))
-                                                .filter((data) => data.PROJETO.includes(projeto))
-                                                .length > 0 && (
+                                            {dadosDestinoProjeto.length > 0 && (
+                                                <Box
+                                                    key={i}
+                                                    display={"flex"}
+                                                    justifyContent={"center"}
+                                                    flexDirection={"column"}
+                                                >
                                                     <Box
-                                                        key={i}
                                                         display={"flex"}
-                                                        justifyContent={"center"}
-                                                        flexDirection={"column"}
+                                                        justifyContent={"space-between"}
+                                                        alignItems={"end"}
                                                     >
-                                                        <Box
-                                                            display={"flex"}
-                                                            justifyContent={"space-between"}
-                                                            alignItems={"end"}
-                                                        >
-                                                            <Box>
-                                                                <Typography
-                                                                    className={styles.destHeader}
-                                                                    mb={0.4}
-                                                                    variant="h4"
-                                                                    color={colors.textColor[100]}
-                                                                    fontWeight={"bold"}
-                                                                >
-                                                                    {projeto.charAt(0).toUpperCase() +
-                                                                        projeto.slice(1).toLowerCase()}
-                                                                </Typography>
-                                                            </Box>
-                                                        </Box>
-                                                        <TableSrd
-                                                            setFilterDataArray={setDataArray}
-                                                            data={filterDataArray
-                                                                .filter((data) => data.DESTINO.includes(destino))
-                                                                .filter((data) => data.PROJETO.includes(projeto))
-                                                                .sort((a, b) => {
-                                                                    const dateA = new Date(a.DT_PESAGEM_TARA);
-                                                                    const dateB = new Date(b.DT_PESAGEM_TARA);
-
-                                                                    // First, sort by date (newest first)
-                                                                    if (dateB - dateA !== 0) {
-                                                                        return dateB - dateA;
-                                                                    }
-
-                                                                    // If dates are the same, sort by TICKET (descending)
-                                                                    return b.TICKET - a.TICKET
-                                                                })
-                                                            }
-                                                        />
-                                                        <Box
-                                                            style={{ color: colors.textColor[100] }}
-                                                            display={"flex"}
-                                                            flexDirection={"row"}
-                                                            gap={10}
-                                                            borderTop={"1px solid black"}
-                                                            pl={2}
-                                                            ml={2}
-                                                            mb={4}
-                                                        >
+                                                        <Box>
                                                             <Typography
-                                                                variant="h5"
+                                                                className={styles.destHeader}
+                                                                mb={0.4}
+                                                                variant="h4"
                                                                 color={colors.textColor[100]}
+                                                                fontWeight={"bold"}
                                                             >
-                                                                <b>{lengthArr?.length}{lengthArr?.length === 1 ? " Carga" : " Cargas"}</b>
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="h5"
-                                                                color={colors.textColor[100]}
-                                                            >
-                                                                <b>
-                                                                    {totalScs.toLocaleString("pt-br", {
-                                                                        minimumFractionDigits: 0,
-                                                                        maximumFractionDigits: 0
-                                                                    })}{" "}
-                                                                    Scs
-                                                                </b>
+                                                                {projeto.charAt(0).toUpperCase() +
+                                                                    projeto.slice(1).toLowerCase()}
                                                             </Typography>
                                                         </Box>
                                                     </Box>
-                                                )}
+
+                                                    <TableSrd
+                                                        setFilterDataArray={setDataArray}
+                                                        data={dadosDestinoProjeto.sort((a, b) => {
+                                                            const dateA = new Date(a.DT_PESAGEM_TARA);
+                                                            const dateB = new Date(b.DT_PESAGEM_TARA);
+
+                                                            if (dateB - dateA !== 0) {
+                                                                return dateB - dateA;
+                                                            }
+
+                                                            return b.TICKET - a.TICKET;
+                                                        })}
+                                                    />
+
+                                                    <Box
+                                                        style={{ color: colors.textColor[100] }}
+                                                        display={"flex"}
+                                                        flexDirection={"row"}
+                                                        gap={10}
+                                                        borderTop={"1px solid black"}
+                                                        pl={2}
+                                                        ml={2}
+                                                        mb={4}
+                                                    >
+                                                        <Typography variant="h5" color={colors.textColor[100]}>
+                                                            <b>
+                                                                {dadosDestinoProjeto.length}
+                                                                {dadosDestinoProjeto.length === 1 ? " Carga" : " Cargas"}
+                                                            </b>
+                                                        </Typography>
+
+                                                        <Typography variant="h5" color={colors.textColor[100]}>
+                                                            <b>
+                                                                {totalScs.toLocaleString("pt-br", {
+                                                                    minimumFractionDigits: 0,
+                                                                    maximumFractionDigits: 0,
+                                                                })}{" "}
+                                                                Scs
+                                                            </b>
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            )}
                                         </>
                                     );
                                 })}
