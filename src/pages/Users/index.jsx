@@ -13,6 +13,11 @@ import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
+import AgricultureRoundedIcon from "@mui/icons-material/AgricultureRounded";
+
+
 import UsersTable from "../../components/users";
 import UserDrawer from "../../components/users/UserDrawer";
 import CreateUserDialog from "../../components/users/CreateUserDialog";
@@ -28,6 +33,26 @@ import {
 	updateUserPassword,
 	deleteUser,
 } from "../../services/usersApi";
+
+const FARM_TRUCK_LINKS_TEXT = `LINKS APPS:
+
+Farm Truck:
+
+IOS:
+https://testflight.apple.com/join/nvzsTk5K
+
+Android:
+https://play.google.com/store/apps/details?id=com.patamarcelo.farmtruck`;
+
+const FARM_APLICACOES_LINKS_TEXT = `LINKS APPS:
+
+Farm Aplicações:
+
+IOS:
+https://testflight.apple.com/join/5yrl2KYq
+
+Android:
+https://play.google.com/store/apps/details?id=com.patamarcelo.fetchapp`;
 
 const UsersPage = () => {
 	const theme = useTheme();
@@ -316,6 +341,16 @@ const UsersPage = () => {
 		}
 	};
 
+	const handleCopyText = async (text, successMessage) => {
+		try {
+			await navigator.clipboard.writeText(text);
+			showToast(successMessage);
+		} catch (err) {
+			console.error("Erro ao copiar texto", err);
+			showToast("Não foi possível copiar.", "error");
+		}
+	};
+
 	const pageStats = useMemo(() => {
 		const total = usersArr.length;
 		const active = usersArr.filter((user) => {
@@ -367,11 +402,10 @@ const UsersPage = () => {
 			<Box
 				sx={{
 					// borderRadius: 4,
-					border: `1px solid ${
-						theme.palette.mode === "dark"
-							? "rgba(255,255,255,0.08)"
-							: "rgba(20,27,45,0.08)"
-					}`,
+					border: `1px solid ${theme.palette.mode === "dark"
+						? "rgba(255,255,255,0.08)"
+						: "rgba(20,27,45,0.08)"
+						}`,
 					backgroundColor:
 						theme.palette.mode === "dark"
 							? "rgba(8,11,18,0.74)"
@@ -387,11 +421,10 @@ const UsersPage = () => {
 				<Box
 					sx={{
 						p: 3,
-						borderBottom: `1px solid ${
-							theme.palette.mode === "dark"
-								? "rgba(255,255,255,0.08)"
-								: "rgba(20,27,45,0.08)"
-						}`,
+						borderBottom: `1px solid ${theme.palette.mode === "dark"
+							? "rgba(255,255,255,0.08)"
+							: "rgba(20,27,45,0.08)"
+							}`,
 					}}
 				>
 					<Stack
@@ -442,6 +475,58 @@ const UsersPage = () => {
 						</Stack>
 
 						<Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+							<Button
+								variant="outlined"
+								startIcon={<LocalShippingRoundedIcon />}
+								onClick={() =>
+									handleCopyText(FARM_TRUCK_LINKS_TEXT, "Links do Farm Truck copiados.")
+								}
+								sx={{
+									borderRadius: 999,
+									textTransform: "none",
+									fontWeight: 800,
+									px: 2,
+									borderColor:
+										theme.palette.mode === "dark"
+											? "rgba(255,255,255,0.16)"
+											: "rgba(20,27,45,0.16)",
+									color: "inherit",
+									"&:hover": {
+										borderColor: colors.greenAccent[500],
+										backgroundColor: "rgba(76,206,172,0.08)",
+									},
+								}}
+							>
+								Farm Truck
+							</Button>
+
+							<Button
+								variant="outlined"
+								startIcon={<AgricultureRoundedIcon />}
+								onClick={() =>
+									handleCopyText(
+										FARM_APLICACOES_LINKS_TEXT,
+										"Links do Farm Aplicações copiados."
+									)
+								}
+								sx={{
+									borderRadius: 999,
+									textTransform: "none",
+									fontWeight: 800,
+									px: 2,
+									borderColor:
+										theme.palette.mode === "dark"
+											? "rgba(255,255,255,0.16)"
+											: "rgba(20,27,45,0.16)",
+									color: "inherit",
+									"&:hover": {
+										borderColor: colors.greenAccent[500],
+										backgroundColor: "rgba(76,206,172,0.08)",
+									},
+								}}
+							>
+								Farm Aplicações
+							</Button>
 							<Button
 								variant="outlined"
 								startIcon={<RefreshRoundedIcon />}
@@ -555,6 +640,7 @@ const UsersPage = () => {
 				open={createDialogOpen}
 				onClose={() => setCreateDialogOpen(false)}
 				onCreate={handleCreateUser}
+				onCopyFeedback={showToast}
 			/>
 
 			<Snackbar

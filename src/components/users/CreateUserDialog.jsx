@@ -9,10 +9,12 @@ import {
 	Divider,
 	FormControlLabel,
 	IconButton,
+	InputAdornment,
 	MenuItem,
 	Stack,
 	Switch,
 	TextField,
+	Tooltip,
 	Typography,
 	useTheme,
 } from "@mui/material";
@@ -28,6 +30,10 @@ import { tokens } from "../../theme";
 import ProjectMultiSelect from "./ProjectMultiSelect";
 import { sortProjects } from "./projectsCatalog";
 
+
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 
 const UNIDADES = [
@@ -66,13 +72,14 @@ const normalizePhone = (value) => {
 
 
 
-const CreateUserDialog = ({ open, onClose, onCreate }) => {
+const CreateUserDialog = ({ open, onClose, onCreate, onCopyFeedback }) => {
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
 	const isDark = theme.palette.mode === "dark";
 
 	const [form, setForm] = useState(initialForm);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showPassword, setShowPassword] = useState(true);
 
 	const projetos = useMemo(() => {
 		return sortProjects(form.projetosLiberados);
@@ -88,6 +95,31 @@ const CreateUserDialog = ({ open, onClose, onCreate }) => {
 	const resetAndClose = () => {
 		setForm(initialForm);
 		onClose?.();
+	};
+
+	const copyToClipboard = async (text, successMessage = "Copiado.") => {
+		try {
+			await navigator.clipboard.writeText(text);
+			onCopyFeedback?.(successMessage, "success");
+		} catch (err) {
+			console.error("Erro ao copiar", err);
+			onCopyFeedback?.("Não foi possível copiar.", "error");
+		}
+	};
+
+	const handleCopyCredentials = async () => {
+		const email = form.email.trim();
+		const password = form.password;
+
+		if (!email || !password) {
+			onCopyFeedback?.("Informe e-mail e senha antes de copiar.", "warning");
+			return;
+		}
+
+		const text = `Usuário: ${email}
+Senha: ${password}`;
+
+		await copyToClipboard(text, "Usuário e senha copiados.");
 	};
 
 	const handleSubmit = async () => {
@@ -251,15 +283,55 @@ const CreateUserDialog = ({ open, onClose, onCreate }) => {
 
 					<TextField
 						label="Senha inicial"
-						type="password"
+						type={showPassword ? "text" : "password"}
 						size="small"
 						value={form.password}
 						onChange={(e) => handleChange("password", e.target.value)}
 						helperText="Mínimo de 6 caracteres"
 						sx={inputSx}
+						InputProps={{
+							endAdornment: (
+								<InputAdornment position="end">
+									<Tooltip title={showPassword ? "Ocultar senha" : "Mostrar senha"}>
+										<IconButton
+											size="small"
+											onClick={() => setShowPassword((prev) => !prev)}
+											edge="end"
+										>
+											{showPassword ? (
+												<VisibilityOffRoundedIcon fontSize="small" />
+											) : (
+												<VisibilityRoundedIcon fontSize="small" />
+											)}
+										</IconButton>
+									</Tooltip>
+								</InputAdornment>
+							),
+						}}
 					/>
 				</Box>
 
+				<Stack direction="row" justifyContent="flex-end" sx={{ mt: 1.2 }}>
+					<Button
+						variant="outlined"
+						size="small"
+						startIcon={<ContentCopyRoundedIcon />}
+						onClick={handleCopyCredentials}
+						sx={{
+							borderRadius: 999,
+							textTransform: "none",
+							fontWeight: 900,
+							borderColor: isDark ? "rgba(255,255,255,0.16)" : "rgba(20,27,45,0.16)",
+							color: "inherit",
+							"&:hover": {
+								borderColor: colors.greenAccent[500],
+								backgroundColor: "rgba(76,206,172,0.08)",
+							},
+						}}
+					>
+						Copiar usuário e senha
+					</Button>
+				</Stack>
 				<Stack direction="row" spacing={1.5} flexWrap="wrap" useFlexGap sx={{ mt: 1.5 }}>
 					<FormControlLabel
 						control={
