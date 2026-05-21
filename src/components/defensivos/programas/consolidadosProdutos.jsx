@@ -7,7 +7,13 @@ import { saveAs } from "file-saver";
 import styles from "./programas-styles.module.css";
 
 const ConsolidadosProdutos = (props) => {
-	const { filteredOperations, quantidadeTotal, program } = props;
+	const {
+		filteredOperations,
+		quantidadeTotal,
+		quantidadeTotalOriginal,
+		isSimulacaoArea,
+		program,
+	} = props;
 
 	const theme = useTheme();
 	const colors = tokens(theme.palette.mode);
@@ -20,6 +26,8 @@ const ConsolidadosProdutos = (props) => {
 
 			return {
 				Insumo: key,
+				"Dose por ha": Number(value.value || 0),
+				"Área considerada ha": Number(quantidadeTotal || 0),
 				"Quantidade Total": Number(totalProduct.toFixed(0)),
 				Tipo: value.tipo,
 			};
@@ -80,6 +88,31 @@ const ConsolidadosProdutos = (props) => {
 				</Typography>
 				<Typography variant="h6" color={colors.primary[100]}>
 					{program}
+				</Typography>
+				<Typography
+					variant="body2"
+					color={colors.primary[100]}
+					sx={{ marginTop: "4px" }}
+				>
+					Área considerada:{" "}
+					<strong>
+						{Number(quantidadeTotal || 0).toLocaleString("pt-BR", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2,
+						})} ha
+					</strong>
+					{isSimulacaoArea && (
+						<>
+							{" "}
+							| Simulação sobre área original de{" "}
+							<strong>
+								{Number(quantidadeTotalOriginal || 0).toLocaleString("pt-BR", {
+									minimumFractionDigits: 2,
+									maximumFractionDigits: 2,
+								})} ha
+							</strong>
+						</>
+					)}
 				</Typography>
 			</Box>
 

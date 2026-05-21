@@ -10,7 +10,14 @@ import { useEffect, useState } from "react";
 
 import styles from "./programas-styles.module.css";
 
-const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
+const ProdutosComp = ({
+	program,
+	estagio,
+	tipo,
+	calc,
+	classes,
+	quantidadeTotalSimulada = null,
+}) => {
 	const operacoes = useSelector(selectOperacoes);
 	const quantidades = useSelector(selectAreas);
 	const theme = useTheme();
@@ -36,7 +43,15 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 
 	const transformTipo = (tipo, data, calc) => {
 		if (tipo === "dose" && calc === "quantidade") {
-			const total = quantidadeTotal * data;
+			const areaParaCalculo =
+				quantidadeTotalSimulada !== null &&
+					quantidadeTotalSimulada !== undefined &&
+					!Number.isNaN(Number(quantidadeTotalSimulada))
+					? Number(quantidadeTotalSimulada)
+					: quantidadeTotal;
+
+			const total = areaParaCalculo * Number(data || 0);
+
 			return total.toLocaleString("pt-br", {
 				minimumFractionDigits: 0,
 				maximumFractionDigits: 0
@@ -56,14 +71,14 @@ const ProdutosComp = ({ program, estagio, tipo, calc, classes }) => {
 			}
 		}
 		if (tipo === 'valor_aplicacao') {
-			if(data > 0){
+			if (data > 0) {
 
 				return 'R$ ' + data.toLocaleString("pt-br", {
 					minimumFractionDigits: 2,
 					maximumFractionDigits: 2
 				});
 			}
-			return  'R$ 0,00'
+			return 'R$ 0,00'
 		}
 		if (tipo === 'defensivo__tipo') {
 			return capitalizeFirstLetter(data);

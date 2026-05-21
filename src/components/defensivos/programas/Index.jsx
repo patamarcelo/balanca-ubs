@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, TextField, Button } from "@mui/material";
 import { tokens, ColorModeContext } from "../../../theme";
 import { useState, useEffect, useContext, useRef } from "react";
 import LoaderHomeSkeleton from "../home/loader";
@@ -65,6 +65,7 @@ const ProgramasSection = () => {
 
 	const quantidades = useSelector(selectAreas);
 	const [quantidadeTotal, setQuantidadeTotal] = useState(0);
+	const [quantidadeTotalSimulada, setQuantidadeTotalSimulada] = useState("");
 
 	const [selectedTypes, setSelectedTypes] = useState([]);
 	const [selectedTypesInput, setSelectedTypesInput] = useState([]);
@@ -377,6 +378,11 @@ const ProgramasSection = () => {
 		dispatch(setFilteredOperationsAction(newob));
 	}, [selectedTypesInput, dispatch, filteredOpForTYpes]);
 
+	const quantidadeTotalFinal =
+		quantidadeTotalSimulada !== "" && !Number.isNaN(Number(quantidadeTotalSimulada))
+			? Number(quantidadeTotalSimulada)
+			: quantidadeTotal;
+
 	if (isLoading) {
 		return (
 			<Box className={styles["container-loader"]}>
@@ -436,23 +442,157 @@ const ProgramasSection = () => {
 					{programData ? (
 						<>
 
-								<Box
-									sx={{ justifyContent: "start", width: "100%" }}
+							<Box
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									gap: 2,
+									width: "100%",
+									marginBottom: "16px",
+									flexWrap: "wrap",
+									padding: "12px 14px",
+									borderRadius: "10px",
+									backgroundColor: "#FFFFFF",
+									border: "1px solid rgba(15, 23, 42, 0.08)",
+									boxShadow: "rgba(15, 23, 42, 0.08) 0px 4px 14px",
+								}}
+							>
+								<TextField
+									size="small"
+									label="Versão"
+									value={version}
+									placeholder="Versão para impressão"
+									onChange={(e) => setVersion(e.target.value)}
+									sx={{
+										width: 180,
+										"& .MuiOutlinedInput-root": {
+											backgroundColor: "#F8FAFC",
+											borderRadius: "8px",
+										},
+										"& .MuiInputLabel-root": {
+											color: "#64748B",
+										},
+										"& .MuiOutlinedInput-input": {
+											color: "#0F172A",
+										},
+									}}
+								/>
+
+								<TextField
+									size="small"
+									type="number"
+									label="Área simulada ha"
+									value={quantidadeTotalSimulada}
+									placeholder={`${quantidadeTotal || 0}`}
+									onChange={(e) => setQuantidadeTotalSimulada(e.target.value)}
+									inputProps={{
+										min: 0,
+										step: "0.01",
+									}}
+									sx={{
+										width: 190,
+										"& .MuiOutlinedInput-root": {
+											backgroundColor: "#F8FAFC",
+											borderRadius: "8px",
+										},
+										"& .MuiInputLabel-root": {
+											color: "#64748B",
+										},
+										"& .MuiOutlinedInput-input": {
+											color: "#0F172A",
+										},
+									}}
+								/>
+
+								<Button
+									variant={quantidadeTotalSimulada !== "" ? "contained" : "outlined"}
+									size="small"
+									onClick={() => setQuantidadeTotalSimulada("")}
+									disabled={quantidadeTotalSimulada === ""}
+									sx={{
+										borderRadius: "8px",
+										textTransform: "none",
+										fontWeight: 700,
+										minHeight: 40,
+										boxShadow: "none",
+									}}
 								>
-									<label style={{ color: "black" }}>
-										Versão
-										<input
-											type="text"
-											value={version}
-											style={{ marginLeft: "5px" }}
-											placeholder="Versão para impressão"
-											onChange={(e) =>
-												setVersion(e.target.value)
-											}
-										/>
-									</label>
+									Usar área original
+								</Button>
+
+								<Box
+									sx={{
+										marginLeft: "auto",
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "flex-end",
+										gap: "2px",
+										color: "#0F172A",
+									}}
+								>
+									<Typography
+										variant="caption"
+										sx={{
+											color: "#64748B",
+											fontWeight: 600,
+											lineHeight: 1,
+										}}
+									>
+										Área usada no cálculo
+									</Typography>
+
+									<Typography
+										variant="body2"
+										sx={{
+											fontWeight: 800,
+											lineHeight: 1.2,
+											color: "#0F172A",
+										}}
+									>
+										{quantidadeTotalFinal.toLocaleString("pt-BR", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										})}{" "}
+										ha
+
+										{quantidadeTotalSimulada !== "" && (
+											<Box
+												component="span"
+												sx={{
+													marginLeft: "8px",
+													padding: "2px 7px",
+													borderRadius: "999px",
+													fontSize: "0.68rem",
+													fontWeight: 800,
+													letterSpacing: "0.02em",
+													color: "#15803D",
+													backgroundColor: "#DCFCE7",
+												}}
+											>
+												SIMULADA
+											</Box>
+										)}
+									</Typography>
+
+									{quantidadeTotalSimulada !== "" && (
+										<Typography
+											variant="caption"
+											sx={{
+												color: "#64748B",
+												lineHeight: 1,
+											}}
+										>
+											Original:{" "}
+											{Number(quantidadeTotal || 0).toLocaleString("pt-BR", {
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2,
+											})}{" "}
+											ha
+										</Typography>
+									)}
 								</Box>
-								<Box ref={printRef}
+							</Box>
+							<Box ref={printRef}
 								padding={"20px"}
 							>
 								<Box sx={{ alignSelf: "end" }}>
@@ -466,7 +606,7 @@ const ProgramasSection = () => {
 										/>
 									) : (
 										<Box
-										justifySelf={"end"}
+											justifySelf={"end"}
 										>
 											<IconButton onClick={generatePDF}>
 												<FontAwesomeIcon
@@ -491,10 +631,14 @@ const ProgramasSection = () => {
 										</div>
 									)}
 									<div id="headerComp">
-										<HeaderComp data={programData} quantidadeTotal={quantidadeTotal} />
+										<HeaderComp data={programData} quantidadeTotal={quantidadeTotalFinal} />
 									</div>
 									<div id="estagiosComp">
-										<EstagiosComp data={filteredEstagios} program={selectedPrograma} />
+										<EstagiosComp
+											data={filteredEstagios}
+											program={selectedPrograma}
+											quantidadeTotal={quantidadeTotalFinal}
+										/>
 									</div>
 									{version && (
 										<div id="printVersionBottom">
@@ -507,7 +651,9 @@ const ProgramasSection = () => {
 							{filteredOperations && (
 								<ConsolidadosProdutos
 									filteredOperations={filteredOperations}
-									quantidadeTotal={quantidadeTotal}
+									quantidadeTotal={quantidadeTotalFinal}
+									quantidadeTotalOriginal={quantidadeTotal}
+									isSimulacaoArea={quantidadeTotalSimulada !== ""}
 									program={selectedPrograma}
 								/>
 							)}

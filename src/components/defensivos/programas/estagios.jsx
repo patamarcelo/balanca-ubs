@@ -4,7 +4,7 @@ import ProdutosComp from "./produtos";
 import { useSelector } from "react-redux";
 import { selectOperacoes } from "../../../store/programas/programas.selector";
 
-const EstagiosComp = ({ data, program }) => {
+const EstagiosComp = ({ data, program, quantidadeTotal = 0 }) => {
 	const operacoes = useSelector(selectOperacoes);
 	const headerData = [
 		{ title: "Estágio" },
@@ -19,7 +19,7 @@ const EstagiosComp = ({ data, program }) => {
 		// console.log('input', input)
 		// console.log('program', program)
 		// console.log(program === input)
-		if(program === input)return input
+		if (program === input) return input
 		// Exemplo: "P24/25 - 3  Arroz Medio"
 
 		// Atualiza o trecho da safra: P24/25 -> P25/26
@@ -138,6 +138,7 @@ const EstagiosComp = ({ data, program }) => {
 								calc={"quantidade"}
 								tipo={"dose"}
 								classes={"quantidadeTotal"}
+								quantidadeTotalSimulada={quantidadeTotal}
 							/>
 							<ProdutosComp
 								program={program}
