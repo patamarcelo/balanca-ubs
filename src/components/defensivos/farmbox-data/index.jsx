@@ -1,7 +1,21 @@
 import classes from "./farmbox.module.css";
 import djangoApi, { nodeServer } from "../../../utils/axios/axios.utils";
 import { useEffect, useState, useCallback, useContext, useMemo } from "react";
-import { Box, Button, CircularProgress, Typography, useTheme, Paper } from "@mui/material";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Typography,
+	useTheme,
+	Paper,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	TextField,
+	Alert,
+} from "@mui/material";
+
 import { tokens, ColorModeContext } from "../../../theme";
 
 import {
@@ -81,7 +95,7 @@ import { useRef, } from "react";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import AplicacoesDailyPage from "./aplicacoes-daily/AplicacoesDailyPage";
 import ResumoProdutosConsolidados from "./resumo-produtos-consolidados";
-
+import FarmboxPlantioSyncModalContent from "./farmbox-plantio-sync-modal-content";
 
 
 
@@ -429,6 +443,16 @@ const FarmBoxPage = () => {
 
 	const handleFutureAp = () => {
 		setShowFutureApps(!showFutureApps);
+	};
+
+	const [openFarmboxPlantioSync, setOpenFarmboxPlantioSync] = useState(false);
+
+	const handleOpenFarmboxPlantioSync = () => {
+		setOpenFarmboxPlantioSync(true);
+	};
+
+	const handleCloseFarmboxPlantioSync = () => {
+		setOpenFarmboxPlantioSync(false);
 	};
 
 	const handleAllFarms = () => {
@@ -993,7 +1017,76 @@ const FarmBoxPage = () => {
 					<Button onClick={() => handleUpdateFarmDb()} color="success" disabled={IsloadingDbFarm || loadingData}>
 						Atualizar DB
 					</Button>
+
+					<Button
+						onClick={handleOpenFarmboxPlantioSync}
+						color="success"
+						disabled={IsloadingDbFarm || loadingData}
+					>
+						Sync Plantio
+					</Button>
 					<ModalDataFarmbox open={open} handleClose={handleClose} />
+					<Dialog
+						open={openFarmboxPlantioSync}
+						onClose={handleCloseFarmboxPlantioSync}
+						fullWidth
+						maxWidth="md"
+						PaperProps={{
+							sx: {
+								borderRadius: "18px",
+								backgroundColor: isDark ? colors.blueOrigin[800] : "#FFFFFF",
+								border: isDark
+									? "1px solid rgba(255,255,255,0.12)"
+									: "1px solid rgba(15,23,42,0.08)",
+								boxShadow: "0 24px 80px rgba(0,0,0,0.32)",
+							},
+						}}
+					>
+						<DialogTitle
+							sx={{
+								fontWeight: 900,
+								color: isDark ? colors.grey[100] : colors.grey[900],
+								borderBottom: isDark
+									? "1px solid rgba(255,255,255,0.10)"
+									: "1px solid rgba(15,23,42,0.08)",
+							}}
+						>
+							Sincronizar Plantio Farmbox
+						</DialogTitle>
+
+						<DialogContent sx={{ pt: 3 }}>
+							<FarmboxPlantioSyncModalContent
+								colors={colors}
+								isDark={isDark}
+								user={user}
+								onSuccess={() => {
+									refreshData();
+								}}
+							/>
+						</DialogContent>
+
+						<DialogActions
+							sx={{
+								px: 3,
+								py: 2,
+								borderTop: isDark
+									? "1px solid rgba(255,255,255,0.10)"
+									: "1px solid rgba(15,23,42,0.08)",
+							}}
+						>
+							<Button
+								onClick={handleCloseFarmboxPlantioSync}
+								color="inherit"
+								sx={{
+									textTransform: "none",
+									fontWeight: 800,
+									borderRadius: "10px",
+								}}
+							>
+								Fechar
+							</Button>
+						</DialogActions>
+					</Dialog>
 				</Box>
 			)}
 			{(loadingData || IsloadingDbFarm) && (
