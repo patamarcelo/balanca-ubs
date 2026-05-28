@@ -26,6 +26,9 @@ import html2canvas from "html2canvas";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
 
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { storage } from "../../../../utils/firebase/firebase";
+
 
 
 
@@ -73,9 +76,39 @@ const ProdutosConsolidados = () => {
         setFilteredData([])
     }
 
-    const handleCapture = async (stNumberFromParam) => {
+    const savePreStImageToFirebase = async ({ dataUrl, stNumber }) => {
+        const safeStNumber = stNumber?.toString().trim() || "gerada";
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+
+        const fileName = `pre_st_${safeStNumber}_${timestamp}.png`;
+
+        const storageRef = ref(storage, `pre_st/${fileName}`);
+
+        await uploadString(storageRef, dataUrl, "data_url", {
+            contentType: "image/png",
+            customMetadata: {
+                stNumber: safeStNumber,
+                createdFrom: "handlerStProtheus",
+            },
+        });
+
+        const downloadUrl = await getDownloadURL(storageRef);
+
+        console.log("Imagem Pré ST salva no Firebase:", downloadUrl);
+
+        return {
+            fileName,
+            path: `pre_st/${fileName}`,
+            downloadUrl,
+        };
+    };
+    
+
+    const handleCapture = async (stNumberFromParam, options = {}) => {
         const element = captureRef.current;
         if (!element) return;
+
+        const { saveToFirebase = true } = options;
 
         // Usa o número vindo por parâmetro se existir; se não, cai pro estado
         const stNumber = stNumberFromParam ?? stOpened;
@@ -88,9 +121,10 @@ const ProdutosConsolidados = () => {
 
             const dataUrl = canvas.toDataURL("image/png");
 
+            // 1. Mantém o download exatamente como hoje
             const link = document.createElement("a");
             link.href = dataUrl;
-            link.download = `pre_st_${stNumber?.toString().trim() || 'gerada'}.png`;
+            link.download = `pre_st_${stNumber?.toString().trim() || "gerada"}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -98,7 +132,22 @@ const ProdutosConsolidados = () => {
             toast.success(`Captura de tela gerada`, {
                 position: "top-center",
                 duration: 5000,
-            });
+            })
+            // 2. Salva no Firebase "por trás dos panos"
+            // Não usa await aqui para não travar o fluxo visual do usuário
+            if (saveToFirebase) {
+                savePreStImageToFirebase({
+                    dataUrl,
+                    stNumber,
+                }).catch((err) => {
+                    console.error("Erro ao salvar imagem Pré ST no Firebase:", err);
+
+                    toast.error("Imagem baixada, mas não foi salva no Firebase.", {
+                        position: "top-center",
+                        duration: 5000,
+                    });
+                });
+            }
         } catch (err) {
             console.error("Erro ao gerar imagem:", err);
             alert("Não foi possível gerar a imagem.");
@@ -285,7 +334,9 @@ const ProdutosConsolidados = () => {
                         // 🚀 espera 2s pra garantir que o número já foi renderizado
                         setTimeout(async () => {
                             try {
-                                await handleCapture(st_number); // <-- passa o número novo
+                                await handleCapture(st_number, {
+                                    saveToFirebase: true,
+                                });
                             } catch (e) {
                                 console.error("Erro ao capturar a tela após abrir ST:", e);
                             }
