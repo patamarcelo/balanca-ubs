@@ -77,12 +77,16 @@ const ProdutosConsolidados = () => {
     }
 
     const savePreStImageToFirebase = async ({ dataUrl, stNumber }) => {
-        const safeStNumber = stNumber?.toString().trim() || "gerada";
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const safeStNumber = stNumber?.toString().trim();
 
-        const fileName = `pre_st_${safeStNumber}_${timestamp}.png`;
+        if (!safeStNumber) {
+            throw new Error("Número da Pré ST não informado para salvar imagem.");
+        }
 
-        const storageRef = ref(storage, `pre_st/${fileName}`);
+        const fileName = `pre_st_${safeStNumber}.png`;
+        const path = `pre_st/${safeStNumber}/${fileName}`;
+
+        const storageRef = ref(storage, path);
 
         await uploadString(storageRef, dataUrl, "data_url", {
             contentType: "image/png",
@@ -94,15 +98,20 @@ const ProdutosConsolidados = () => {
 
         const downloadUrl = await getDownloadURL(storageRef);
 
-        console.log("Imagem Pré ST salva no Firebase:", downloadUrl);
+        console.log("✅ Imagem Pré ST salva no Firebase:", {
+            stNumber: safeStNumber,
+            fileName,
+            path,
+            downloadUrl,
+        });
 
         return {
+            stNumber: safeStNumber,
             fileName,
-            path: `pre_st/${fileName}`,
+            path,
             downloadUrl,
         };
     };
-    
 
     const handleCapture = async (stNumberFromParam, options = {}) => {
         const element = captureRef.current;
