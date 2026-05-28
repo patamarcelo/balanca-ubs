@@ -115,7 +115,15 @@ const FarmBoxPage = () => {
 	// const onlyFarms = useSelector(onlyFarm);
 	const onlyFarms = useSelector(onlyFarmSelector);
 	const [filtFarm, setFiltFarm] = useState([]);
-	const [filteredApps, setFilteredApps] = useState([]);
+
+	const filteredApps = useMemo(() => {
+		if (!Array.isArray(dictSelect) || !Array.isArray(filtFarm)) return [];
+
+		return dictSelect.filter((data) =>
+			filtFarm.includes(data.fazenda)
+		);
+	}, [dictSelect, filtFarm]);
+
 	const [allFarmsSet, setAllFarmsSet] = useState(false);
 	const [openAppOnly, setOpenAppOnly] = useState(false);
 	const [showFutureApps, setShowFutureApps] = useState(false);
@@ -146,7 +154,7 @@ const FarmBoxPage = () => {
 	const [totalCountSelectedArea, setTotalCountSelectedArea] = useState(0);
 	const [totalCountSelectedAplicado, setTotalCountSelectedAplicado] = useState(0);
 	const [totalCountSelectedAberto, setTotalCountSelectedAberto] = useState(0);
-	const [filteredOperations, setFilteredOperations] = useState([]);
+
 
 	const [operationFilter, setOperationFilter] = useState([]);
 	const [cultureFilter, setCultureFilter] = useState([]); // << NOVO
@@ -165,6 +173,16 @@ const FarmBoxPage = () => {
 	const [dapApDestaque, setDapApDestaque] = useState(50);
 
 	const [insumoFilter, setInsumoFilter] = useState([]);
+
+	const filteredOperations = useMemo(() => {
+		if (!Array.isArray(dictSelect)) return [];
+
+		const onlyOperations = dictSelect
+			.map((data) => data.operacao)
+			.filter(Boolean);
+
+		return [...new Set(onlyOperations)];
+	}, [dictSelect]);
 
 	const handleOnlyEndedUntilToday = () => {
 		setOnlyEndedUntilToday((prev) => !prev);
@@ -187,8 +205,10 @@ const FarmBoxPage = () => {
 	};
 
 
-	const makeApOptionKey = (fazenda, appCode) =>
-		`${(fazenda ?? "").toString().trim()}___${(appCode ?? "").toString().trim()}`;
+	const makeApOptionKey = useCallback((fazenda, appCode) =>
+		`${(fazenda ?? "").toString().trim()}___${(appCode ?? "").toString().trim()}`,
+		[]
+	);
 
 	const parseApOptionKey = (key) => {
 		const [fazenda = "", app = ""] = String(key).split("___");
@@ -218,38 +238,35 @@ const FarmBoxPage = () => {
 	};
 
 
-	const normalizeTxt = (v) =>
+	const normalizeTxt = useCallback((v) =>
 		(v ?? "")
 			.toString()
 			.normalize("NFD")
 			.replace(/\p{Diacritic}/gu, "")
 			.toLowerCase()
-			.trim();
+			.trim(),
+		[]
+	);
 
-	const isTipoOperacao = (tipo) => normalizeTxt(tipo) === "operacao";
+	const isTipoOperacao = useCallback((tipo) => {
+		return normalizeTxt(tipo) === "operacao";
+	}, [normalizeTxt]);
 
-	const getTipoAplicacao = (app) => {
+	const getTipoAplicacao = useCallback((app) => {
 		const insumos = Array.isArray(app?.insumos) ? app.insumos : [];
 
-		// 1 único insumo => Operacao
 		if (insumos.length === 1) return "Operacao";
 
-		// 2+ insumos:
-		// filtra tipo !== "Operação"
 		const nonOp = insumos.filter((i) => !isTipoOperacao(i?.tipo));
 
-		// se depois de tirar Operação ficar só 1 => Sólido
 		if (nonOp.length === 1) return "Solido";
 
-		// se ficar mais de 1 => Líquido
 		if (nonOp.length > 1) return "Liquido";
 
-		// fallback (caso estranho: todos eram Operação)
 		return "Operacao";
-	};
+	}, [isTipoOperacao]);
 
-
-	const getInsumoLabel = (insumo) => {
+	const getInsumoLabel = useCallback((insumo) => {
 		if (!insumo) return "";
 
 		const candidate =
@@ -262,14 +279,19 @@ const FarmBoxPage = () => {
 			"";
 
 		return String(candidate).trim();
-	};
+	}, []);
 
-	const getAppInsumosLabels = (app) => {
+	const getAppInsumosLabels = useCallback((app) => {
 		const insumos = Array.isArray(app?.insumos) ? app.insumos : [];
 
 		return insumos
 			.map((item) => getInsumoLabel(item))
 			.filter(Boolean);
+	}, [getInsumoLabel]);
+
+	const isSameArray = (a = [], b = []) => {
+		if (a.length !== b.length) return false;
+		return a.every((item, index) => item === b[index]);
 	};
 
 
@@ -347,7 +369,8 @@ const FarmBoxPage = () => {
 		getTipoAplicacao,
 		apCodeFilter,
 		insumoFilter,
-		getAppInsumosLabels
+		getAppInsumosLabels,
+		makeApOptionKey
 	]);
 
 
@@ -472,20 +495,6 @@ const FarmBoxPage = () => {
 		setFiltFarm(typeof value === "string" ? value.split(",") : value);
 	};
 
-	useEffect(() => {
-		const filterFarm = dictSelect.filter((data) =>
-			filtFarm.includes(data.fazenda)
-		);
-		setFilteredApps(filterFarm);
-	}, [filtFarm, dictSelect, openApp]);
-
-	useEffect(() => {
-		if (dictSelect) {
-			const onlyOperations = dictSelect.map((data) => data.operacao)
-			const removedDupliOperations = [...new Set(onlyOperations)]
-			setFilteredOperations(removedDupliOperations)
-		}
-	}, [dictSelect]);
 
 	const getTrueApi = async () => {
 		try {
@@ -714,7 +723,7 @@ const FarmBoxPage = () => {
 
 			return a.code.localeCompare(b.code, "pt-BR");
 		});
-	}, [filteredApps, operationFilter, cultureFilter, filtFarm]);
+	}, [filteredApps, operationFilter, cultureFilter, filtFarm, makeApOptionKey]);
 
 
 	const insumoOptions = useMemo(() => {
@@ -734,7 +743,7 @@ const FarmBoxPage = () => {
 			.flatMap((app) => getAppInsumosLabels(app));
 
 		return [...new Set(rows)].sort((a, b) => a.localeCompare(b, "pt-BR"));
-	}, [filteredApps, operationFilter, cultureFilter, apCodeFilter, getAppInsumosLabels]);
+	}, [filteredApps, operationFilter, cultureFilter, apCodeFilter, makeApOptionKey, getAppInsumosLabels]);
 
 
 	const isAllApCodesSelected =
@@ -755,7 +764,16 @@ const FarmBoxPage = () => {
 
 	useEffect(() => {
 		const validKeys = apCodeOptions.map((item) => item.key);
-		setApCodeFilter((prev) => prev.filter((key) => validKeys.includes(key)));
+
+		setApCodeFilter((prev) => {
+			const next = prev.filter((key) => validKeys.includes(key));
+
+			if (isSameArray(prev, next)) {
+				return prev;
+			}
+
+			return next;
+		});
 	}, [apCodeOptions]);
 
 	const isAllSelected =
@@ -972,7 +990,15 @@ const FarmBoxPage = () => {
 	};
 
 	useEffect(() => {
-		setInsumoFilter((prev) => prev.filter((item) => insumoOptions.includes(item)));
+		setInsumoFilter((prev) => {
+			const next = prev.filter((item) => insumoOptions.includes(item));
+
+			if (isSameArray(prev, next)) {
+				return prev;
+			}
+
+			return next;
+		});
 	}, [insumoOptions]);
 
 
