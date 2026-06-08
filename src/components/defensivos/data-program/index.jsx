@@ -670,26 +670,49 @@ const DataProgramPage = (props) => {
 													borderRadius: "8px",
 													marginBottom: "2px",
 													minHeight: "34px",
-													transition: "all 0.15s ease",
+													transition: "background-color 0.12s ease, color 0.12s ease",
+													cursor: "pointer",
 												},
+
+												// Mouse hover
 												"& .MuiAutocomplete-option:hover": {
 													backgroundColor:
 														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.14)"
-															: "rgba(25,118,210,0.12)",
+															? "rgba(255,255,255,0.18)"
+															: "#d7dce2",
 												},
-												"& .MuiAutocomplete-option[aria-selected='true']": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.16)"
-															: "#dde2e7",
-													fontWeight: 700,
-												},
+
+												// Focus via teclado/setas
 												"& .MuiAutocomplete-option.Mui-focused": {
 													backgroundColor:
 														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.12)"
-															: "#e3e7eb",
+															? "rgba(255,255,255,0.20)"
+															: "#d1d6dc",
+												},
+
+												// Algumas versões do MUI usam data-focus
+												"& .MuiAutocomplete-option[data-focus='true']": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.20)"
+															: "#d1d6dc",
+												},
+
+												// Item selecionado
+												"& .MuiAutocomplete-option[aria-selected='true']": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.24)"
+															: "#c8ced6",
+													fontWeight: 700,
+												},
+
+												// Selecionado + hover/focus
+												"& .MuiAutocomplete-option[aria-selected='true'].Mui-focused, & .MuiAutocomplete-option[aria-selected='true']:hover": {
+													backgroundColor:
+														theme.palette.mode === "dark"
+															? "rgba(255,255,255,0.28)"
+															: "#bcc3cc",
 												},
 											},
 										},
