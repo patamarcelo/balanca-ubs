@@ -663,57 +663,74 @@ const DataProgramPage = (props) => {
 												borderRadius: 2,
 												boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
 												fontSize: "0.86rem",
-												"& .MuiAutocomplete-listbox": {
-													padding: "4px",
-												},
-												"& .MuiAutocomplete-option": {
-													borderRadius: "8px",
-													marginBottom: "2px",
-													minHeight: "34px",
-													transition: "background-color 0.12s ease, color 0.12s ease",
-													cursor: "pointer",
-												},
+												overflow: "hidden",
+											},
+										},
+									}}
+									ListboxProps={{
+										sx: {
+											padding: "4px",
 
-												// Mouse hover
-												"& .MuiAutocomplete-option:hover": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.18)"
-															: "#d7dce2",
-												},
+											"& .MuiAutocomplete-option": {
+												borderRadius: "8px",
+												marginBottom: "2px",
+												minHeight: "34px",
+												cursor: "pointer",
+												transition: "background-color 0.12s ease, color 0.12s ease",
+											},
 
-												// Focus via teclado/setas
-												"& .MuiAutocomplete-option.Mui-focused": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.20)"
-															: "#d1d6dc",
-												},
+											// estado padrão
+											"& .MuiAutocomplete-option:not(.Mui-focused):not(:hover):not([aria-selected='true'])": {
+												backgroundColor: "transparent",
+											},
 
-												// Algumas versões do MUI usam data-focus
-												"& .MuiAutocomplete-option[data-focus='true']": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.20)"
-															: "#d1d6dc",
-												},
+											// hover com mouse
+											"& .MuiAutocomplete-option:hover": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.18) !important"
+														: "#d7dce2 !important",
+											},
 
-												// Item selecionado
-												"& .MuiAutocomplete-option[aria-selected='true']": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.24)"
-															: "#c8ced6",
-													fontWeight: 700,
-												},
+											// focus por teclado / setas
+											"& .MuiAutocomplete-option.Mui-focused": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.22) !important"
+														: "#d1d6dc !important",
+											},
 
-												// Selecionado + hover/focus
-												"& .MuiAutocomplete-option[aria-selected='true'].Mui-focused, & .MuiAutocomplete-option[aria-selected='true']:hover": {
-													backgroundColor:
-														theme.palette.mode === "dark"
-															? "rgba(255,255,255,0.28)"
-															: "#bcc3cc",
-												},
+											// fallback para algumas versões do MUI
+											"& .MuiAutocomplete-option[data-focus='true']": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.22) !important"
+														: "#d1d6dc !important",
+											},
+
+											// item selecionado
+											"& .MuiAutocomplete-option[aria-selected='true']": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.26) !important"
+														: "#c8ced6 !important",
+												fontWeight: 700,
+											},
+
+											// selecionado + hover
+											"& .MuiAutocomplete-option[aria-selected='true']:hover": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.30) !important"
+														: "#bcc3cc !important",
+											},
+
+											// selecionado + foco via teclado
+											"& .MuiAutocomplete-option[aria-selected='true'].Mui-focused": {
+												backgroundColor:
+													theme.palette.mode === "dark"
+														? "rgba(255,255,255,0.32) !important"
+														: "#b8c0ca !important",
 											},
 										},
 									}}
