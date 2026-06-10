@@ -54,34 +54,54 @@ const ModalFormFields = (props) => {
 	const [newParelas, setNewParcelas] = useState([]);
 
 	useEffect(() => {
-		if (truckValues?.fazendaOrigem) {
-			const parcelasArray =
-				dataParcelas?.dados[truckValues?.fazendaOrigem] || []
-			const newArray = Object.entries(parcelasArray).map(([parcela, details]) => ({
-				...details,
-				parcela
-			}));
+		const fazendaOrigem = truckValues?.fazendaOrigem;
+		const parcelasSelecionadas = truckValues?.parcelasNovas || [];
+
+		const dadosParcelas = dataParcelas?.dados || {};
+		const parcelasDaFazenda = fazendaOrigem
+			? dadosParcelas?.[fazendaOrigem] || {}
+			: {};
+
+		if (fazendaOrigem) {
+			const newArray = Object.entries(parcelasDaFazenda).map(
+				([parcela, details]) => ({
+					...(details || {}),
+					parcela
+				})
+			);
+
 			setNewParcelas(newArray);
+		} else {
+			setNewParcelas([]);
 		}
 
 		if (
-			truckValues?.fazendaOrigem?.length > 0 &&
-			truckValues?.parcelasNovas?.length > 0 &&
-			truckValues?.mercadoria?.length === 0 &&
-			truckValues?.cultura?.length === 0
+			fazendaOrigem?.length > 0 &&
+			parcelasSelecionadas?.length > 0 &&
+			!truckValues?.mercadoria &&
+			!truckValues?.cultura
 		) {
-			const culturaSelected =
-				dataParcelas["dados"][truckValues.fazendaOrigem][
-					truckValues.parcelasNovas[0]
-				]?.cultura;
-			const variedadeSelected =
-				dataParcelas["dados"][truckValues.fazendaOrigem][
-					truckValues.parcelasNovas[0]
-				]?.variedade;
-			truckValues.mercadoria = variedadeSelected;
-			truckValues.cultura = culturaSelected;
+			const primeiraParcela = parcelasSelecionadas[0];
+
+			const parcelaDetails =
+				dadosParcelas?.[fazendaOrigem]?.[primeiraParcela];
+
+			if (!parcelaDetails) return;
+
+			setTruckValues((prev) => ({
+				...prev,
+				mercadoria: parcelaDetails?.variedade || "",
+				cultura: parcelaDetails?.cultura || ""
+			}));
 		}
-	}, [truckValues]);
+	}, [
+		dataParcelas,
+		truckValues?.fazendaOrigem,
+		truckValues?.parcelasNovas,
+		truckValues?.mercadoria,
+		truckValues?.cultura,
+		setTruckValues
+	]);
 
 	useEffect(() => {
 		if (isVendasUser) {
@@ -335,7 +355,7 @@ const ModalFormFields = (props) => {
 						labelId="fazendaOrigem-select-small"
 						id="fazendaOrigem"
 						name="fazendaOrigem"
-						value={truckValues["fazendaOrigem"]}
+						value={truckValues["fazendaOrigem"] || ""}
 						label="Mercadoria"
 						onChange={handleChangeTruck}
 					>
@@ -361,7 +381,7 @@ const ModalFormFields = (props) => {
 						labelId="fazendaDestino-select-small"
 						id="fazendaDestino"
 						name="fazendaDestino"
-						value={truckValues["fazendaDestino"]}
+						value={truckValues["fazendaDestino"] || ""}
 						label="Mercadoria"
 						onChange={handleChangeTruck}
 					>
@@ -416,7 +436,7 @@ const ModalFormFields = (props) => {
 							// onBlur={formik.handleBlur}
 							onChange={handleChangeTruck}
 							name={input.name}
-							value={truckValues[input.name]}
+							value={truckValues[input.name] ?? ""}
 							placeholder={input.placeholder}
 							helperText={input.helperText}
 							inputProps={{
