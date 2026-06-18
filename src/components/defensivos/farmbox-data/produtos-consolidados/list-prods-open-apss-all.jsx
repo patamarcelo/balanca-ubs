@@ -16,7 +16,7 @@ const OpenApsAllprodsPage = ({ data, selectedData, setFilteredData, filteredData
     const colors = tokens(theme.palette.mode);
 
     const [dataHandled, setDataHandleed] = useState([]);
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedProjects, setSelectedProjects] = useState([]);
 
 
     const [filteredDataTotalValue, setFilteredDataTotalValue] = useState(0);
@@ -74,51 +74,113 @@ const OpenApsAllprodsPage = ({ data, selectedData, setFilteredData, filteredData
     }
 
     useEffect(() => {
-        if (data?.length > 0) {
-            const newData = getInsumosListOpenApps(data)
-            setDataHandleed(newData)
+        if (Array.isArray(data) && data.length > 0) {
+            const newData = getInsumosListOpenApps(data);
+            setDataHandleed(newData);
+        } else {
+            setDataHandleed([]);
         }
-    }, []);
-    useEffect(() => {
-        if (selectedData?.Projeto) {
-            const projectSelected = selectedData?.Projeto[0]
-            const mainFarmSelected = farmDictProject.find((data) => data.projeto === projectSelected)
-            if (mainFarmSelected) {
-                const mainFarm = mainFarmSelected?.mainFarm
-                setSelectedProject(mainFarm)
-            } else {
-                setSelectedProject(null)
-            }
-        }
-    }, [selectedData]);
+    }, [data]);
 
     useEffect(() => {
-        // console.log('selectedProject', selectedProject)
-        const filteredDataHandled = dataHandled.filter((data) => data.mainFarm === selectedProject && data.inputType !== 'Operação')
+        const projectsSelected = Array.isArray(selectedData?.Projeto)
+            ? selectedData.Projeto
+            : [];
+
+        const mainFarmsSelected = projectsSelected
+            .map((projectSelected) => {
+                const projectConfig = farmDictProject.find(
+                    (item) => item.projeto === projectSelected
+                );
+
+                return projectConfig?.mainFarm;
+            })
+            .filter(Boolean);
+
+        setSelectedProjects([...new Set(mainFarmsSelected)]);
+    }, [selectedData?.Projeto]);
+
+    const normalizeText = (value) =>
+        String(value ?? "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .toLowerCase();
+
+    useEffect(() => {
+        const normalizedProjects = new Set(
+            selectedProjects.map(normalizeText)
+        );
+
+        const filteredDataHandled = dataHandled.filter((item) => {
+            const belongsToSelectedProject =
+                normalizedProjects.size === 0 ||
+                normalizedProjects.has(
+                    normalizeText(item?.mainFarm)
+                );
+
+            const isNotOperation =
+                normalizeText(item?.inputType) !== "operacao";
+
+            return belongsToSelectedProject && isNotOperation;
+        });
+
         const grouped = Object.values(
             filteredDataHandled.reduce((acc, item) => {
-                if (!acc[item.inputId]) {
-                    acc[item.inputId] = {
-                        inputId: item.inputId,
-                        inputName: item.inputName,
-                        inputType: item.inputType,
-                        totalQuantityOpen: 0
+                const inputId = Number(item?.inputId);
+                const quantityOpen = Number(item?.quantityOpen);
+
+                if (!Number.isFinite(inputId)) {
+                    console.warn(
+                        "Produto sem inputId válido:",
+                        item
+                    );
+                    return acc;
+                }
+
+                if (!Number.isFinite(quantityOpen)) {
+                    console.warn(
+                        "Produto com quantityOpen inválido:",
+                        item
+                    );
+                    return acc;
+                }
+
+                if (!acc[inputId]) {
+                    acc[inputId] = {
+                        inputId,
+                        inputName: item?.inputName || "",
+                        inputType: item?.inputType || "",
+                        totalQuantityOpen: 0,
                     };
                 }
-                acc[item.inputId].totalQuantityOpen += item.quantityOpen;
+
+                acc[inputId].totalQuantityOpen += quantityOpen;
+
                 return acc;
             }, {})
         );
-        if (grouped.length > 0) {
-            setFilteredData(grouped)
-            const totalValue = grouped.reduce((acc, curr) => acc += curr.totalQuantityOpen, 0)
-            setFilteredDataTotalValue(totalValue)
-        } else {
-            setFilteredData(null)
-            setFilteredDataTotalValue(0)
-        }
 
-    }, [selectedProject, dataHandled]);
+        setFilteredData(grouped);
+
+        const totalValue = grouped.reduce(
+            (total, item) =>
+                total + Number(item.totalQuantityOpen || 0),
+            0
+        );
+
+        setFilteredDataTotalValue(totalValue);
+
+        console.log("Projetos selecionados:", selectedProjects);
+        console.log(
+            "Produtos consolidados dos projetos selecionados:",
+            grouped
+        );
+    }, [
+        selectedProjects,
+        dataHandled,
+        setFilteredData,
+    ]);
 
     if (!filteredData && !filteredData?.length > 0) {
         return <Typography>sem produtos relacionados</Typography>
@@ -139,7 +201,7 @@ const OpenApsAllprodsPage = ({ data, selectedData, setFilteredData, filteredData
                             onClick={exportToExcel}
                             size="small"
                             sx={{
-                                minWidth: '40px !important', 
+                                minWidth: '40px !important',
                                 borderRadius: '12px',
                                 display: 'flex',
                                 alignItems: 'center',
