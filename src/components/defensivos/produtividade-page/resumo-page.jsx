@@ -3,6 +3,7 @@ import styles from "./produtividade.module.css";
 import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
+import corn from "../../../utils/assets/icons/corn.png";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 
@@ -13,7 +14,8 @@ const ResumoPage = (props) => {
 	const iconDict = [
 		{ cultura: "Feijão", icon: beans, alt: "feijao" },
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
-		{ cultura: "Soja", icon: soy, alt: "soja" }
+		{ cultura: "Soja", icon: soy, alt: "soja" },
+		{ cultura: "Milho", icon: corn, alt: "milho" }
 	];
 
 	const filteredAlt = (data) => {

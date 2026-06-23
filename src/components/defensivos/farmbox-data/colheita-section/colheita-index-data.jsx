@@ -30,6 +30,7 @@ import beans from "../../../../utils/assets/icons/beans2.png";
 import soy from "../../../../utils/assets/icons/soy.png";
 import rice from "../../../../utils/assets/icons/rice.png";
 import cotton from '../../../../utils/assets/icons/cotton.png'
+import corn from '../../../../utils/assets/icons/corn.png'
 
 import djangoApi from "../../../../utils/axios/axios.utils";
 
@@ -65,6 +66,7 @@ const ColheitaPage = () => {
         { cultura: "Arroz", icon: rice, alt: "arroz" },
         { cultura: "Soja", icon: soy, alt: "soja" },
         { cultura: "Algodão", icon: cotton, alt: "algodao" },
+        { cultura: "Milho", icon: corn, alt: "milho" }
     ];
 
     const filteredIcon = (data) => {

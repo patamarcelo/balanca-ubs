@@ -5,6 +5,7 @@ import beans from "../../../utils/assets/icons/beans2.png";
 import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 import question from "../../../utils/assets/icons/question.png";
+import corn from "../../../utils/assets/icons/corn.png";
 
 const rgbaFromRgb = (rgb, alpha = 0.28) => {
 	const s = String(rgb || "").trim();
@@ -111,6 +112,7 @@ const ResumoFazendasPage = (props) => {
 			{ cultura: "Feijão", icon: beans, alt: "feijao", color: "rgb(238,165,56)" },
 			{ cultura: "Arroz", icon: rice, alt: "arroz", color: "rgb(76,180,211)" },
 			{ cultura: "SemCultura", icon: question, alt: "?", color: "rgb(166,166,166)" },
+			{ cultura: "Milho", icon: corn, alt: "milho", color: "#E1C459" }
 		],
 		[]
 	);

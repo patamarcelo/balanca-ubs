@@ -10,6 +10,7 @@ import soy from "../../../utils/assets/icons/soy.png";
 import rice from "../../../utils/assets/icons/rice.png";
 import cotton from "../../../utils/assets/icons/cotton.png";
 import question from "../../../utils/assets/icons/question.png";
+import corn from "../../../utils/assets/icons/corn.png";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Tooltip } from "@mui/material";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
@@ -32,6 +33,7 @@ const TableColheita = forwardRef(({ data, idsPending }, ref) => {
 		{ cultura: "Arroz", icon: rice, alt: "arroz" },
 		{ cultura: "Soja", icon: soy, alt: "soja" },
 		{ cultura: "Algodão", icon: cotton, alt: "algodao" },
+		{ cultura: "Milho", icon: corn, alt: "milho" }
 	];
 
 	const filteredIcon = (val) => iconDict.find((d) => d.cultura === val)?.icon || question;
