@@ -308,73 +308,119 @@ const ProdutosConsolidados = () => {
         }
         // console.log('dados Selecionados: ', dataToSend,)
         const params = JSON.stringify(dataToSend)
-
+        console.log('data to send protheus: ', params)
         try {
-            setIsLoadingBtn(true)
-            await djangoApi
-                .post("opensts/open_st_by_protheus/", { dados_st: params }, {
-                    headers: {
-                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`
-                    }
-                })
-                .then((res) => {
-                    console.log(res);
-                    if (res.status === 201) {
-                        const { st_number, sent_by_email } = res.data
-                        if (sent_by_email === 'Não') {
-                            console.log('Problema em abrir a ST', st_number)
-                            setStOpened(st_number)
-                            Swal.fire({
-                                title: "Problema!!",
-                                html: `<b>Problema em Abrir a ST, e-mail não enviado!!`,
-                                icon: "error"
-                            });
-                        } else {
-                            console.log('tudo certo', st_number)
+            setIsLoadingBtn(true);
 
-                            setStOpened(st_number)
-                            Swal.fire({
-                                title: "Feito!!",
-                                html: `<b>ST Aberta com Suscesso: ${st_number}</b> <br> Enviada por E-mail: ${sent_by_email}`,
-                                icon: "success"
-                            });
-                        }
-
-                        // 🚀 espera 2s pra garantir que o número já foi renderizado
-                        setTimeout(async () => {
-                            try {
-                                await handleCapture(st_number, {
-                                    saveToFirebase: true,
-                                });
-                            } catch (e) {
-                                console.error("Erro ao capturar a tela após abrir ST:", e);
-                            }
-                        }, 1000);
-
-                    } else if (res.status === 208) {
-                        const { msg, error } = res.data
-                        Swal.fire({
-                            title: `${msg}`,
-                            text: `${error}!!`,
-                            icon: "error",
-                            showCloseButton: true,
-                        });
-                    }
-                });
-        } catch (err) {
-            console.log("Erro ao enviar os dados", err);
-
-            toast.error(
-                `Erro ao Enviar os dados - ${err}`,
+            const res = await djangoApi.post(
+                "opensts/open_st_by_protheus/",
+                { dados_st: params },
                 {
-                    position: "top-center",
-                    duration: 5000
+                    headers: {
+                        Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+                    },
                 }
-            )
-            setIsLoadingBtn(false)
+            );
+
+            console.log("Resposta ao abrir ST:", res);
+
+            if (res.status === 201) {
+                const { st_number, sent_by_email } = res.data;
+
+                setStOpened(st_number);
+
+                if (sent_by_email === "Não") {
+                    console.warn("ST aberta, mas o e-mail não foi enviado:", st_number);
+
+                    await Swal.fire({
+                        title: "Atenção!",
+                        html: `
+                    <b>Pré-ST aberta com sucesso: ${st_number}</b>
+                    <br />
+                    O e-mail não foi enviado.
+                `,
+                        icon: "warning",
+                        showCloseButton: true,
+                    });
+                } else {
+                    console.log("ST aberta com sucesso:", st_number);
+
+                    await Swal.fire({
+                        title: "Feito!",
+                        html: `
+                    <b>Pré-ST aberta com sucesso: ${st_number}</b>
+                    <br />
+                    Enviada por e-mail: ${sent_by_email}
+                `,
+                        icon: "success",
+                    });
+                }
+
+                // Aguarda a renderização do número da Pré-ST antes da captura.
+                setTimeout(() => {
+                    handleCapture(st_number, {
+                        saveToFirebase: true,
+                    }).catch((captureError) => {
+                        console.error(
+                            "Erro ao capturar a tela após abrir ST:",
+                            captureError
+                        );
+                    });
+                }, 1000);
+
+                return;
+            }
+
+            Swal.fire({
+                title: "Resposta inesperada",
+                text: `O servidor respondeu com o status ${res.status}.`,
+                icon: "warning",
+                showCloseButton: true,
+            });
+        } catch (err) {
+            const status = err?.response?.status;
+            const responseData = err?.response?.data;
+
+            console.error("Erro completo ao abrir ST:", err);
+            console.error("Resposta do servidor:", {
+                status,
+                data: responseData,
+                headers: err?.response?.headers,
+            });
+
+            if (!err?.response) {
+                console.error("Requisição sem resposta do servidor:", err?.request);
+            }
+
+            const errorTitle =
+                responseData?.msg ||
+                (status === 504
+                    ? "Timeout ao abrir a ST"
+                    : status === 502
+                        ? "Erro de comunicação com o Protheus"
+                        : "Erro ao abrir a ST");
+
+            const errorMessage =
+                responseData?.error ||
+                responseData?.detail ||
+                (status
+                    ? `O servidor respondeu com o status ${status}.`
+                    : "O servidor não respondeu. Verifique a conexão ou os logs do Railway.");
+
+            await Swal.fire({
+                title: errorTitle,
+                text: errorMessage,
+                icon: "error",
+                showCloseButton: true,
+            });
+
+            toast.error(errorMessage, {
+                position: "top-center",
+                duration: 8000,
+            });
         } finally {
-            console.log('finally alterar')
-            setIsLoadingBtn(false)
+            console.log("Finalizando abertura da ST");
+            setIsLoadingBtn(false);
         }
     }
 
