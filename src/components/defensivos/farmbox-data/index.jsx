@@ -157,7 +157,9 @@ const FarmBoxPage = () => {
 
 
 	const [operationFilter, setOperationFilter] = useState([]);
-	const [cultureFilter, setCultureFilter] = useState([]); // << NOVO
+	const [cultureFilter, setCultureFilter] = useState([]);
+	const [variedadeFilter, setVariedadeFilter] = useState([]);
+
 
 	// novo filtro: mostrar somente aplicações com endDate <= hoje
 	const [onlyEndedUntilToday, setOnlyEndedUntilToday] = useState(false);
@@ -289,6 +291,14 @@ const FarmBoxPage = () => {
 			.filter(Boolean);
 	}, [getInsumoLabel]);
 
+	const getAppVariedadesLabels = useCallback((app) => {
+		const parcelas = Array.isArray(app?.parcelas) ? app.parcelas : [];
+
+		return parcelas
+			.map((parcela) => (parcela?.variedade ?? "").toString().trim())
+			.filter(Boolean);
+	}, []);
+
 	const isSameArray = (a = [], b = []) => {
 		if (a.length !== b.length) return false;
 		return a.every((item, index) => item === b[index]);
@@ -321,6 +331,14 @@ const FarmBoxPage = () => {
 			.filter((app) => {
 				const cultura = (app?.cultura ?? "").toString().trim();
 				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+			})
+
+			// variedade (MultiSelect)
+			.filter((app) => {
+				if (variedadeFilter.length === 0) return true;
+
+				const appVariedades = getAppVariedadesLabels(app);
+				return variedadeFilter.some((variedade) => appVariedades.includes(variedade));
 			})
 
 			// apCode (MultiSelect)
@@ -370,7 +388,9 @@ const FarmBoxPage = () => {
 		apCodeFilter,
 		insumoFilter,
 		getAppInsumosLabels,
-		makeApOptionKey
+		getAppVariedadesLabels,
+		makeApOptionKey,
+		variedadeFilter
 	]);
 
 
@@ -677,6 +697,24 @@ const FarmBoxPage = () => {
 		[dictSelect]
 	);
 
+	const variedadeOptions = useMemo(
+		() => {
+			const rows = (filteredApps ?? [])
+				.filter((app) => {
+					const op = (app?.operacao ?? "").toString().trim();
+					return operationFilter.length === 0 ? true : operationFilter.includes(op);
+				})
+				.filter((app) => {
+					const cultura = (app?.cultura ?? "").toString().trim();
+					return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+				})
+				.flatMap((app) => getAppVariedadesLabels(app));
+
+			return [...new Set(rows)].sort((a, b) => a.localeCompare(b, "pt-BR"));
+		},
+		[filteredApps, operationFilter, cultureFilter, getAppVariedadesLabels]
+	);
+
 	const apCodeOptions = useMemo(() => {
 		const hasManyFarmsSelected = filtFarm.length > 1;
 
@@ -688,6 +726,12 @@ const FarmBoxPage = () => {
 			.filter((app) => {
 				const cultura = (app?.cultura ?? "").toString().trim();
 				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+			})
+			.filter((app) => {
+				if (variedadeFilter.length === 0) return true;
+
+				const appVariedades = getAppVariedadesLabels(app);
+				return variedadeFilter.some((variedade) => appVariedades.includes(variedade));
 			})
 			.map((app) => {
 				const fazenda = (app?.fazenda ?? "").toString().trim();
@@ -723,7 +767,15 @@ const FarmBoxPage = () => {
 
 			return a.code.localeCompare(b.code, "pt-BR");
 		});
-	}, [filteredApps, operationFilter, cultureFilter, filtFarm, makeApOptionKey]);
+	}, [
+		filteredApps,
+		operationFilter,
+		cultureFilter,
+		variedadeFilter,
+		filtFarm,
+		makeApOptionKey,
+		getAppVariedadesLabels
+	]);
 
 
 	const insumoOptions = useMemo(() => {
@@ -737,13 +789,28 @@ const FarmBoxPage = () => {
 				return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
 			})
 			.filter((app) => {
+				if (variedadeFilter.length === 0) return true;
+
+				const appVariedades = getAppVariedadesLabels(app);
+				return variedadeFilter.some((variedade) => appVariedades.includes(variedade));
+			})
+			.filter((app) => {
 				const key = makeApOptionKey(app?.fazenda, app?.app);
 				return apCodeFilter.length === 0 ? true : apCodeFilter.includes(key);
 			})
 			.flatMap((app) => getAppInsumosLabels(app));
 
 		return [...new Set(rows)].sort((a, b) => a.localeCompare(b, "pt-BR"));
-	}, [filteredApps, operationFilter, cultureFilter, apCodeFilter, makeApOptionKey, getAppInsumosLabels]);
+	}, [
+		filteredApps,
+		operationFilter,
+		cultureFilter,
+		variedadeFilter,
+		apCodeFilter,
+		makeApOptionKey,
+		getAppInsumosLabels,
+		getAppVariedadesLabels
+	]);
 
 
 	const isAllApCodesSelected =
@@ -782,6 +849,9 @@ const FarmBoxPage = () => {
 	const isAllCulturesSelected =
 		cultureOptions.length > 0 && cultureFilter.length === cultureOptions.length;
 
+	const isAllVariedadesSelected =
+		variedadeOptions.length > 0 && variedadeFilter.length === variedadeOptions.length;
+
 	const handleChangeOpFilt = (event) => {
 		const value = event.target.value; // array
 		setOperationFilter(typeof value === "string" ? value.split(",") : value);
@@ -798,6 +868,17 @@ const FarmBoxPage = () => {
 		const value = event.target.value;
 		setCultureFilter(typeof value === "string" ? value.split(",") : value);
 	};
+
+	const handleChangeVariedadeFilt = (event) => {
+		const value = event.target.value;
+		setVariedadeFilter(typeof value === "string" ? value.split(",") : value);
+	};
+
+	const handleToggleAllVariedades = () => {
+		setVariedadeFilter(isAllVariedadesSelected ? [] : variedadeOptions);
+	};
+
+	const handleClearVariedades = () => setVariedadeFilter([]);
 
 	const handleToggleAllCultures = () => {
 		setCultureFilter(isAllCulturesSelected ? [] : cultureOptions);
@@ -984,6 +1065,7 @@ const FarmBoxPage = () => {
 		setApCodeFilter([]);
 		setOperationFilter([]);
 		setCultureFilter([]);
+		setVariedadeFilter([]);
 		setTipoAplicacaoFilter(TIPOS_APLICACAO);
 		setDapApDestaque(50);
 		setInsumoFilter([]);
@@ -1000,6 +1082,18 @@ const FarmBoxPage = () => {
 			return next;
 		});
 	}, [insumoOptions]);
+
+	useEffect(() => {
+		setVariedadeFilter((prev) => {
+			const next = prev.filter((item) => variedadeOptions.includes(item));
+
+			if (isSameArray(prev, next)) {
+				return prev;
+			}
+
+			return next;
+		});
+	}, [variedadeOptions]);
 
 
 	return (
@@ -1493,6 +1587,44 @@ const FarmBoxPage = () => {
 									</Select>
 								</FormControl>
 							)}
+							{variedadeOptions.length > 0 && (
+								<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 220 }}>
+									<InputLabel id="variedade-filter-label">Variedade</InputLabel>
+									<Select
+										labelId="variedade-filter-label"
+										multiple
+										value={variedadeFilter}
+										onChange={handleChangeVariedadeFilt}
+										input={<OutlinedInput label="Variedade" />}
+										MenuProps={MenuProps}
+										renderValue={(selected) => getCompactSelectLabel(selected, variedadeOptions)}
+									>
+										<MenuItem onClick={handleToggleAllVariedades}>
+											<Checkbox
+												checked={isAllVariedadesSelected}
+												indeterminate={!isAllVariedadesSelected && variedadeFilter.length > 0}
+											/>
+											<ListItemText
+												primary={isAllVariedadesSelected ? "Desmarcar todas" : "Selecionar todas"}
+											/>
+										</MenuItem>
+
+										<MenuItem onClick={handleClearVariedades}>
+											<Checkbox checked={variedadeFilter.length === 0} />
+											<ListItemText primary="Limpar seleção" />
+										</MenuItem>
+
+										<Divider />
+
+										{variedadeOptions.map((name) => (
+											<MenuItem key={name} value={name}>
+												<Checkbox checked={variedadeFilter.includes(name)} />
+												<ListItemText primary={name} />
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							)}
 							{insumoOptions.length > 0 && (
 								<FormControl size="small" sx={{ ...compactFilterSx, minWidth: 240 }}>
 									<InputLabel id="insumo-filter-label">Insumos</InputLabel>
@@ -1711,6 +1843,13 @@ const FarmBoxPage = () => {
 								.filter((app) => {
 									const cultura = (app?.cultura ?? "").toString().trim();
 									return cultureFilter.length === 0 ? true : cultureFilter.includes(cultura);
+								})
+								// variedade (MultiSelect)
+								.filter((app) => {
+									if (variedadeFilter.length === 0) return true;
+
+									const appVariedades = getAppVariedadesLabels(app);
+									return variedadeFilter.some((variedade) => appVariedades.includes(variedade));
 								})
 								.filter((app) =>
 									!showFutureApps

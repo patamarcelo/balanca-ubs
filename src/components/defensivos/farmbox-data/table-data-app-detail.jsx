@@ -226,23 +226,55 @@ const DetailAppData = (props) => {
 									>
 										<Box
 											sx={{
-												width: data.aplicado ? `${getPercent}%` : '100%',
-												padding: "3px 10px",
+												width: data.aplicado ? `${getPercent}%` : "100%",
+												padding: "4px 10px",
 												borderRadius: notFinished ? "" : "6px",
 												borderTopLeftRadius: notFinished && "6px",
 												borderBottomLeftRadius: notFinished && "6px",
 												fontWeight: "bold",
-												whiteSpace: "nowrap",
-												backgroundColor: notFinished ? 'rgba(248,198,0,0.6)' : data.aplicado
-													? "rgba(0,250,0, 0.6)"
-													: "rgba(238,75,43, 0.5)",
+												backgroundColor: notFinished
+													? "rgba(248,198,0,0.6)"
+													: data.aplicado
+														? "rgba(0,250,0, 0.6)"
+														: "rgba(238,75,43, 0.5)",
+												overflow: "hidden",
 											}}
 										>
-											{data.parcela} -{" "}
-											{data.area
-												.toFixed(2)
-												.toString()
-												.replace(".", ",")}
+											<Typography
+												component="div"
+												sx={{
+													fontSize: "0.82rem",
+													fontWeight: 900,
+													lineHeight: 1.1,
+													whiteSpace: "nowrap",
+													overflow: "hidden",
+													textOverflow: "ellipsis",
+												}}
+											>
+												{data.parcela} -{" "}
+												{data.area
+													.toFixed(2)
+													.toString()
+													.replace(".", ",")}
+											</Typography>
+
+											{data?.variedade && (
+												<Typography
+													component="div"
+													sx={{
+														fontSize: "0.62rem",
+														fontWeight: 700,
+														lineHeight: 1.05,
+														mt: 0.25,
+														opacity: 0.9,
+														whiteSpace: "nowrap",
+														overflow: "hidden",
+														textOverflow: "ellipsis",
+													}}
+												>
+													{data.variedade}
+												</Typography>
+											)}
 										</Box>
 									</Box>
 								</Tooltip>
