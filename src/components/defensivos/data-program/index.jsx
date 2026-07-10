@@ -148,7 +148,7 @@ const DataProgramPage = (props) => {
 
 	const [hidenAppsArr, setHidenAppsArr] = useState([]);
 
-	const [appIsLoading, setAppIsLoading] = useState(null);
+	const [appsLoading, setAppsLoading] = useState([]);
 	const [appsOpened, setAppsOpened] = useState([]);         // novos apps já abertos
 
 
@@ -195,6 +195,21 @@ const DataProgramPage = (props) => {
 	// evita salvar enquanto está carregando pela primeira vez
 	const skipFirstSaveRef = useRef(true);
 	const caldaInputRef = useRef(null);
+
+
+	const isAppLoading = (appKey) => appsLoading.includes(appKey);
+
+	const startAppLoading = (appKey) => {
+		setAppsLoading((prev) =>
+			prev.includes(appKey) ? prev : [...prev, appKey]
+		);
+	};
+
+	const finishAppLoading = (appKey) => {
+		setAppsLoading((prev) =>
+			prev.filter((key) => key !== appKey)
+		);
+	};
 
 
 
@@ -2040,137 +2055,285 @@ const DataProgramPage = (props) => {
 	// 		console.log('finally alterar')
 	// 	}
 	// }
-	const handleOpenApp = async (data, cronograma, estagio, programaLoading, hiddenAppName) => {
-		// chave única por FAZENDA + APP
-		const openedKey = hiddenAppName; // = dat.data.estagio + farmSelected (já inclui a fazenda)
+	const handleOpenApp = async (
+		data,
+		cronograma,
+		estagio,
+		programaLoading,
+		hiddenAppName
+	) => {
+		const openedKey = hiddenAppName;
 
-		// se já tem algo carregando, ou essa app já foi aberta (nessa fazenda), não faz nada
-		if (appIsLoading || appsOpened.includes(openedKey)) return;
+		// Bloqueia somente esta AP:
+		// - se ela já estiver abrindo;
+		// - ou se já tiver sido aberta.
+		if (
+			isAppLoading(openedKey) ||
+			appsOpened.includes(openedKey)
+		) {
+			return;
+		}
 
 		console.log("data to send to Farmbox", data);
+
 		let newData = data;
 
 		const to3 = (v) => Number(v ?? 0).toFixed(3);
 
-		const shouldUseAvulsa = !!useCaldaAvulsaByApp?.[hiddenAppName];
+		const shouldUseAvulsa =
+			!!useCaldaAvulsaByApp?.[hiddenAppName];
 
 		if (shouldUseAvulsa) {
 			if (!caldaAvulsa || caldaAvulsa.length === 0) {
-				Swal.fire({
-					title: "Calda Avulsa vazia",
-					text: "Monte a Calda Avulsa antes de usar.",
-					icon: "warning",
-				});
+				toast.error(
+					"Monte a Calda Avulsa antes de usar.",
+					{
+						position: "top-left",
+						duration: 4000,
+					}
+				);
+
 				return;
 			}
 
-			// ✅ mantém SOMENTE os insumos de operação da calda original
-			const originalInputs = Array.isArray(newData.inputs) ? newData.inputs : [];
+			const originalInputs = Array.isArray(newData.inputs)
+				? newData.inputs
+				: [];
 
-			// regra: operação = un_ha
 			const operacaoInputs = originalInputs.filter(
-				(x) => String(x?.dosage_unity || "").toLowerCase() === "un_ha"
+				(x) =>
+					String(
+						x?.dosage_unity || ""
+					).toLowerCase() === "un_ha"
 			);
 
-			// calda avulsa (normalizada)
-			const avulsaInputs = caldaAvulsa.map(({ input_id, dosage_unity, dosage_value }) => ({
-				input_id,
-				dosage_unity,
-				dosage_value: Number(to3(dosage_value)),
-			}));
+			const avulsaInputs = caldaAvulsa.map(
+				({
+					input_id,
+					dosage_unity,
+					dosage_value,
+				}) => ({
+					input_id,
+					dosage_unity,
+					dosage_value: Number(
+						to3(dosage_value)
+					),
+				})
+			);
 
-			// ✅ dedupe: se algum input_id já existe na operação, não duplica
-			const operacaoIds = new Set(operacaoInputs.map((x) => x.input_id));
-			const avulsaSemDuplicarOperacao = avulsaInputs.filter((x) => !operacaoIds.has(x.input_id));
+			const operacaoIds = new Set(
+				operacaoInputs.map((x) => x.input_id)
+			);
+
+			const avulsaSemDuplicarOperacao =
+				avulsaInputs.filter(
+					(x) => !operacaoIds.has(x.input_id)
+				);
 
 			newData = {
 				...newData,
-				inputs: [...operacaoInputs, ...avulsaSemDuplicarOperacao],
+				inputs: [
+					...operacaoInputs,
+					...avulsaSemDuplicarOperacao,
+				],
 			};
-
-
 		} else {
-			const isThereAnyProdToRemove = prodsToRemove.filter((x) => x.appName === hiddenAppName);
+			const isThereAnyProdToRemove =
+				prodsToRemove.filter(
+					(x) =>
+						x.appName === hiddenAppName
+				);
 
-			if (isThereAnyProdToRemove?.length > 0) {
-				const onlyIdToRemove = isThereAnyProdToRemove.map((x) => ({
-					id: x.prodToRemove.id_farmbox,
-					dose: to3(x.prodToRemove.dose),
-				}));
+			if (isThereAnyProdToRemove.length > 0) {
+				const onlyIdToRemove =
+					isThereAnyProdToRemove.map((x) => ({
+						id: x.prodToRemove.id_farmbox,
+						dose: to3(
+							x.prodToRemove.dose
+						),
+					}));
 
-				const removeKeys = new Set(onlyIdToRemove.map((item) => `${item.id}|${item.dose}`));
+				const removeKeys = new Set(
+					onlyIdToRemove.map(
+						(item) =>
+							`${item.id}|${item.dose}`
+					)
+				);
 
 				newData = {
 					...newData,
-					inputs: (newData.inputs || []).filter(
-						(prods) => !removeKeys.has(`${prods.input_id}|${to3(prods.dosage_value)}`)
+					inputs: (
+						newData.inputs || []
+					).filter(
+						(prod) =>
+							!removeKeys.has(
+								`${prod.input_id}|${to3(
+									prod.dosage_value
+								)}`
+							)
 					),
 				};
 			}
 
-			const isThereAnyProdToAdd = prodsToAdd.filter((x) => x.appName === hiddenAppName);
+			const isThereAnyProdToAdd =
+				prodsToAdd.filter(
+					(x) =>
+						x.appName === hiddenAppName
+				);
+
 			if (isThereAnyProdToAdd.length > 0) {
-				const onlyObjTOFarm = isThereAnyProdToAdd.map((x) => x.objToSendtoFarm);
+				const onlyObjToFarm =
+					isThereAnyProdToAdd.map(
+						(x) => x.objToSendtoFarm
+					);
+
 				newData = {
 					...newData,
-					inputs: [...(newData.inputs || []), ...onlyObjTOFarm],
+					inputs: [
+						...(newData.inputs || []),
+						...onlyObjToFarm,
+					],
 				};
 			}
 		}
 
-		const isThereAnyPlantationToRemove = updateApp.filter((x) => x.appName === hiddenAppName);
+		const isThereAnyPlantationToRemove =
+			updateApp.filter(
+				(x) => x.appName === hiddenAppName
+			);
 
-		let parcelasToUp = (cronograma || []).map((crono) => ({
-			id: crono.plantioId,
-			estagio: estagio,
-		}));
+		let parcelasToUp = (cronograma || []).map(
+			(crono) => ({
+				id: crono.plantioId,
+				estagio,
+			})
+		);
 
 		if (isThereAnyPlantationToRemove.length > 0) {
-			const onlyIdPlantations = isThereAnyPlantationToRemove.map((p) => p.plantioIdFarmbox);
+			const onlyIdPlantations =
+				isThereAnyPlantationToRemove.map(
+					(parcela) =>
+						parcela.plantioIdFarmbox
+				);
 
 			newData = {
 				...newData,
-				plantations: (newData.plantations || []).filter(
-					(p) => !onlyIdPlantations.includes(p.plantation_id)
+				plantations: (
+					newData.plantations || []
+				).filter(
+					(plantation) =>
+						!onlyIdPlantations.includes(
+							plantation.plantation_id
+						)
 				),
 			};
 
-			const onlyPlantioId = isThereAnyPlantationToRemove.map((p) => p.id);
-			parcelasToUp = parcelasToUp.filter((p) => !onlyPlantioId.includes(p.id));
+			const onlyPlantioId =
+				isThereAnyPlantationToRemove.map(
+					(parcela) => parcela.id
+				);
+
+			parcelasToUp = parcelasToUp.filter(
+				(parcela) =>
+					!onlyPlantioId.includes(
+						parcela.id
+					)
+			);
 		}
 
-		const params = JSON.stringify({ data: newData });
+		const params = JSON.stringify({
+			data: newData,
+		});
 
 		try {
-			setAppIsLoading(programaLoading);
+			// Marca somente esta AP como carregando.
+			startAppLoading(openedKey);
 
-			const res = await djangoApi.put("plantio/open_app_farmbox/", params, {
-				headers: { Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}` },
-			});
+			const res = await djangoApi.put(
+				"plantio/open_app_farmbox/",
+				params,
+				{
+					headers: {
+						Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
+					},
+				}
+			);
 
-			if (res.data.status === 200 || res.data.status === 201) {
-				const dataFromServer = JSON.parse(res.data.result);
-				const { code } = dataFromServer;
+			if (
+				res.data.status === 200 ||
+				res.data.status === 201
+			) {
+				let dataFromServer = res.data.result;
 
-				Swal.fire({
-					title: "Feito!!",
-					html: `AP Aberta com Sucesso: <b>${code}</b> `,
-					icon: "success",
+				if (typeof dataFromServer === "string") {
+					dataFromServer =
+						JSON.parse(dataFromServer);
+				}
+
+				const code =
+					dataFromServer?.code || "Sem número";
+
+				toast.success(
+					`AP ${code} aberta com sucesso.`,
+					{
+						position: "top-left",
+						duration: 4000,
+						id: `open-app-success-${openedKey}`,
+					}
+				);
+
+				parcelasToUp.forEach((parcela) => {
+					handleSetApp(
+						parcela.id,
+						parcela.estagio
+					);
 				});
 
-				parcelasToUp.forEach((p) => handleSetApp(p.id, p.estagio));
-
-				// ✅ marca como aberta só nessa fazenda/app
-				setAppsOpened((prev) => (prev.includes(openedKey) ? prev : [...prev, openedKey]));
+				setAppsOpened((prev) =>
+					prev.includes(openedKey)
+						? prev
+						: [...prev, openedKey]
+				);
 			}
 		} catch (err) {
+			console.error(
+				"Erro ao abrir aplicação:",
+				err
+			);
+
+			let apiResult =
+				err.response?.data?.result || "";
+
+			if (typeof apiResult === "string") {
+				try {
+					apiResult = JSON.parse(apiResult);
+				} catch {
+					// Mantém a mensagem original.
+				}
+			}
+
+			const resultMessage =
+				typeof apiResult === "object"
+					? JSON.stringify(apiResult)
+					: apiResult;
+
 			toast.error(
-				`Erro ao Abrir a Aplicação - ${err.response?.data?.msg} - ${err.response?.data?.result && JSON.parse(err.response.data.result)
+				`Erro ao abrir a aplicação${err.response?.data?.msg
+					? `: ${err.response.data.msg}`
+					: ""
+				}${resultMessage
+					? ` — ${resultMessage}`
+					: ""
 				}`,
-				{ position: "top-center", duration: 5000 }
+				{
+					position: "top-left",
+					duration: 5000,
+					id: `open-app-error-${openedKey}`,
+				}
 			);
 		} finally {
-			setAppIsLoading(null);
+			// Libera somente esta AP.
+			finishAppLoading(openedKey);
 		}
 	};
 
@@ -2490,6 +2653,9 @@ const DataProgramPage = (props) => {
 							const hiddenAppName =
 								dat.data.estagio + farmSelected;
 
+							const appLoading = isAppLoading(hiddenAppName);
+							const appAlreadyOpened = appsOpened.includes(hiddenAppName);
+
 
 							const totalToMult = Number(data.total.replace(/\./g, '').replace(',', '.'));
 							const totaisFiltrados = dat.totais
@@ -2575,17 +2741,20 @@ const DataProgramPage = (props) => {
 												{estagio}
 											</Typography>
 										</IconButton>
-										{
-											isAdminUser && !hidenAppsArr?.includes(hiddenAppName) && (
-												appIsLoading === data.estagio ? (
+										{isAdminUser &&
+											!hidenAppsArr?.includes(hiddenAppName) &&
+											(
+												appLoading ? (
 													<CircularProgress
 														size={25}
 														sx={{
 															margin: "0px 10px",
 															color: (theme) =>
 																colors.greenAccent[
-																theme.palette.mode === "dark" ? 200 : 800
-																]
+																theme.palette.mode === "dark"
+																	? 200
+																	: 800
+																],
 														}}
 													/>
 												) : (
@@ -2599,30 +2768,34 @@ const DataProgramPage = (props) => {
 																hiddenAppName
 															)
 														}
-														disabled={!!appIsLoading || appsOpened.includes(hiddenAppName)}
+														disabled={appAlreadyOpened}
 														sx={{
-															cursor: "pointer",
+															cursor: appAlreadyOpened
+																? "not-allowed"
+																: "pointer",
 															width: "50px",
 															height: "50px",
 
-															// estilo quando estiver disabled
 															"&.Mui-disabled": {
-																backgroundColor: "rgba(0,0,0,0.12)",   // cinza claro MUI
+																backgroundColor:
+																	"rgba(0,0,0,0.12)",
 																opacity: 0.6,
 																cursor: "not-allowed",
 
-																// deixa o ícone também mais claro
 																"& img": {
-																	filter: "grayscale(100%)",
+																	filter:
+																		"grayscale(100%)",
 																	opacity: 0.4,
-																}
+																},
 															},
 														}}
 													>
 														<img
 															src={FarmIcon}
-															alt="img-icon"
-															style={{ marginTop: "15px" }}
+															alt="Abrir aplicação"
+															style={{
+																marginTop: "15px",
+															}}
 														/>
 													</Button>
 												)
@@ -2630,13 +2803,16 @@ const DataProgramPage = (props) => {
 										}
 
 									</Box >
-									{
-										appIsLoading === data.estagio &&
-										<Box sx={{ width: "100%", padding: '0px 10px' }}>
+									{appLoading && (
+										<Box
+											sx={{
+												width: "100%",
+												padding: "0px 10px",
+											}}
+										>
 											<LinearProgress color="success" />
 										</Box>
-									}
-									<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+									)}									<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 										<Tooltip title={usandoAvulsa ? "Desativar Calda Avulsa" : "Usar Calda Avulsa neste card"}>
 											<IconButton
 												size="small"
