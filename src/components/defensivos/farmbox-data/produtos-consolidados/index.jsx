@@ -329,34 +329,8 @@ const ProdutosConsolidados = () => {
 
                 setStOpened(st_number);
 
-                if (sent_by_email === "Não") {
-                    console.warn("ST aberta, mas o e-mail não foi enviado:", st_number);
-
-                    await Swal.fire({
-                        title: "Atenção!",
-                        html: `
-                    <b>Pré-ST aberta com sucesso: ${st_number}</b>
-                    <br />
-                    O e-mail não foi enviado.
-                `,
-                        icon: "warning",
-                        showCloseButton: true,
-                    });
-                } else {
-                    console.log("ST aberta com sucesso:", st_number);
-
-                    await Swal.fire({
-                        title: "Feito!",
-                        html: `
-                    <b>Pré-ST aberta com sucesso: ${st_number}</b>
-                    <br />
-                    Enviada por e-mail: ${sent_by_email}
-                `,
-                        icon: "success",
-                    });
-                }
-
-                // Aguarda a renderização do número da Pré-ST antes da captura.
+                // Aguarda apenas a renderização do número da Pré-ST.
+                // Não depende mais da confirmação do Swal.
                 setTimeout(() => {
                     handleCapture(st_number, {
                         saveToFirebase: true,
@@ -368,6 +342,33 @@ const ProdutosConsolidados = () => {
                     });
                 }, 1000);
 
+                if (sent_by_email === "Não") {
+                    console.warn("ST aberta, mas o e-mail não foi enviado:", st_number);
+
+                    Swal.fire({
+                        title: "Atenção!",
+                        html: `
+            <b>Pré-ST aberta com sucesso: ${st_number}</b>
+            <br />
+            O e-mail não foi enviado.
+        `,
+                        icon: "warning",
+                        showCloseButton: true,
+                    });
+                } else {
+                    console.log("ST aberta com sucesso:", st_number);
+
+                    Swal.fire({
+                        title: "Feito!",
+                        html: `
+            <b>Pré-ST aberta com sucesso: ${st_number}</b>
+            <br />
+            Enviada por e-mail: ${sent_by_email}
+        `,
+                        icon: "success",
+                    });
+                }
+                
                 return;
             }
 
