@@ -557,7 +557,8 @@ export const createDictFarmBox = (state) => {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2
 					}),
-				dose: data.sought_dosage_value.toFixed(3)
+				dose: data.sought_dosage_value.toFixed(3),
+				consumed: data.consumed
 			};
 		});
 

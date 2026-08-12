@@ -56,6 +56,7 @@ const FarmBoxDataTable = (props) => {
 		{ headerName: "Area", field: "area" },
 		{ headerName: "Quantidade Solicitada", field: "quantidadeSolicitada" },
 		{ headerName: "Quantidade Aplicada", field: "quantidade" },
+		{ headerName: "Quantidade Consumida", field: "consumed" },
 		{ headerName: "Saldo Aplicar", field: "saldoAplicar" },
 		{ headerName: "Data Inicial", field: "date" },
 		{ headerName: "Data Final", field: "endDate" },
