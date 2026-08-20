@@ -1,4 +1,4 @@
-import { Alert, Box, Typography, useTheme, Paper } from "@mui/material";
+import { Box, Typography, useTheme, Paper } from "@mui/material";
 import {
 	Grid,
 	Card,
@@ -13,7 +13,7 @@ import { tokens } from "../../../theme";
 import HeaderFarm from "./header-farm";
 import TableColheita from "./table";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownAZ, faFileExcel } from "@fortawesome/free-solid-svg-icons";
@@ -28,12 +28,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 import LinearProgressWithLabel from './progress-bar'
-import { useSelector } from "react-redux";
-import { selectColheitaPortalData } from "../../../store/plantio/plantio.selector";
 import { exportPlantiosToExcel } from "./export-excel-helper";
 
-import { useRef } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
 import html2canvas from "html2canvas";
@@ -121,6 +118,8 @@ const ColheitaAtual = (props) => {
 	const [newDayNow, setNewDayNow] = useState("");
 
 	const [checkedColheita, setCheckedColheita] = useState(true);
+	const [checkedColheitaFinalizada, setCheckedColheitaFinalizada] = useState(false);
+	const [checkedAlgumaAreaColhida, setCheckedAlgumaAreaColhida] = useState(false);
 	const [chekedAreasAvaiable, setChekedAreasAvaiable] = useState(false);
 	const [romaneiosPendente, setRomaneiosPendente] = useState(false);
 
@@ -130,7 +129,6 @@ const ColheitaAtual = (props) => {
 
 	const [varSelectedArr, setVarSelectedArr] = useState([]);
 
-	const colheitaPortalData = useSelector(selectColheitaPortalData)
 
 	const [fAreaParcialGt0SemRomaneios, setFAreaParcialGt0SemRomaneios] = useState(false);
 	const [fAreaParcialEq0ComRomaneios, setFAreaParcialEq0ComRomaneios] = useState(false);
@@ -149,57 +147,158 @@ const ColheitaAtual = (props) => {
 			minimumFractionDigits: 2
 		});
 	};
+	const getPendingCount = (id) => Number(idsPending?.[id] || 0);
+	const getComputedCount = (carga) => Number(carga?.romaneios || 0);
+
+	const filteredData = useMemo(() => {
+		return selectedFilteredData
+			.filter((data) =>
+				varieSelect?.length > 0
+					? varieSelect.includes(data.variedade__nome_fantasia)
+					: data.variedade__nome_fantasia !== null
+			)
+			.filter((data) =>
+				chekedAreasAvaiable
+					? Number(data.area_colheita || 0) - Number(data.area_parcial || 0) !== 0
+					: data.area_colheita !== null
+			)
+			.filter((data) => {
+				const areaTotal = Number(data.area_colheita || 0);
+				const areaColhida = Number(data.area_parcial || 0);
+
+				const finalizadaPorFlag =
+					data.finalizado_colheita === true ||
+					data.finalizado_colheita === 1 ||
+					data.finalizado_colheita === "true";
+
+				const finalizadaPorArea =
+					areaTotal > 0 &&
+					areaColhida >= areaTotal;
+
+				const finalizada =
+					finalizadaPorFlag || finalizadaPorArea;
+
+				const emAndamento = !finalizada;
+				const algumaAreaColhida = Number(data.area_parcial || 0) > 0;
+
+				// Colheita Andamento: somente registros ainda não finalizados.
+				if (checkedColheita) {
+					return emAndamento;
+				}
+
+				// Colheita Finalizada: somente finalizados.
+				// Se "Alguma área colhida" também estiver ativo,
+				// inclui os finalizados OU qualquer parcela que já tenha colheita parcial.
+				if (checkedColheitaFinalizada) {
+					return checkedAlgumaAreaColhida
+						? finalizada || algumaAreaColhida
+						: finalizada;
+				}
+
+				// Usado sozinho, "Alguma área colhida" mostra tudo que já iniciou colheita.
+				if (checkedAlgumaAreaColhida) {
+					return algumaAreaColhida;
+				}
+
+				return data.finalizado_colheita !== null;
+			})
+			.filter((data) =>
+				romaneiosPendente
+					? getPendingCount(data.id) > 0
+					: true
+			)
+			.filter((data) => {
+				if (!fAreaParcialGt0SemRomaneios) return true;
+
+				const areaParcial = Number(data.area_parcial || 0);
+				const computed = getComputedCount(data);
+				const pending = getPendingCount(data.id);
+
+				return areaParcial > 0 && computed === 0 && pending === 0;
+			})
+			.filter((data) => {
+				if (!fAreaParcialEq0ComRomaneios) return true;
+
+				const areaParcial = Number(data.area_parcial || 0);
+				const computed = getComputedCount(data);
+				const pending = getPendingCount(data.id);
+
+				return areaParcial === 0 && (computed > 0 || pending > 0);
+			});
+	}, [
+		selectedFilteredData,
+		varieSelect,
+		chekedAreasAvaiable,
+		checkedColheita,
+		checkedColheitaFinalizada,
+		checkedAlgumaAreaColhida,
+		romaneiosPendente,
+		fAreaParcialGt0SemRomaneios,
+		fAreaParcialEq0ComRomaneios,
+		idsPending,
+	]);
+
+	const sortedFilteredData = useMemo(() => {
+		return [...filteredData].sort((b, a) =>
+			dateSort
+				? String(b.talhao__id_talhao || "").localeCompare(String(a.talhao__id_talhao || ""))
+				: Number(a.dap || 0) - Number(b.dap || 0)
+		);
+	}, [filteredData, dateSort]);
+
 	useEffect(() => {
 		let areaTotalSoma = 0;
 		let parcelasTotalCount = 0;
-		let areaColhida = 0;
-		let areaRealColhida = 0
-		let pesoTotal = 0
-		const filteredCargas = selectedFilteredData
-			.filter((data) =>
-				varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-					data.variedade__nome_fantasia !== null
-			)
+		let areaColhidaSoma = 0;
+		let areaRealColhida = 0;
+		let pesoTotal = 0;
 
-		filteredCargas.filter((data) =>
-			chekedAreasAvaiable
-				? data.area_colheita - data.area_parcial !== 0
-				: data.area_colheita !== null
-		)
-			.forEach((data) => {
-				// console.log('data to check', data)
-				areaTotalSoma += data.area_colheita;
-				parcelasTotalCount += 1;
-				areaColhida += data.area_parcial;
-				pesoTotal += data.peso
-				if (data.peso > 0) {
-					areaRealColhida += data.area_parcial;
-				}
-			});
-		const areaDisponivel = areaTotalSoma - areaColhida;
-		const areaTotalColhida = areaColhida;
-		const areaRealTotalColhida = areaRealColhida
+		filteredData.forEach((data) => {
+			const areaTotalItem = Number(data.area_colheita || 0);
+			const areaParcialItem = Number(data.area_parcial || 0);
+			const pesoItem = Number(data.peso || 0);
 
-		const produtividade = (pesoTotal > 0 && areaTotalColhida > 0) ? ((pesoTotal / 60) / areaTotalColhida) : 0
-		const produtividadeReal = (pesoTotal > 0 && areaRealTotalColhida > 0) ? ((pesoTotal / 60) / areaRealTotalColhida) : 0
+			areaTotalSoma += areaTotalItem;
+			parcelasTotalCount += 1;
+			areaColhidaSoma += areaParcialItem;
+			pesoTotal += pesoItem;
 
-		setTotalProdutividadeReal(produtividadeReal)
-		setTotalProdutividade(produtividade)
-		setTotalPesoCarregado(pesoTotal)
+			if (pesoItem > 0) {
+				areaRealColhida += areaParcialItem;
+			}
+		});
+
+		const areaDisponivelCalculada = areaTotalSoma - areaColhidaSoma;
+		const produtividade =
+			pesoTotal > 0 && areaColhidaSoma > 0
+				? (pesoTotal / 60) / areaColhidaSoma
+				: 0;
+
+		const produtividadeReal =
+			pesoTotal > 0 && areaRealColhida > 0
+				? (pesoTotal / 60) / areaRealColhida
+				: 0;
+
+		const sumRomaneios = filteredData
+			.map((obj) => getPendingCount(obj.id))
+			.reduce((acc, value) => acc + value, 0);
+
+		const progressBar =
+			areaTotalSoma > 0
+				? (areaColhidaSoma / areaTotalSoma) * 100
+				: 0;
+
+		setTotalProdutividadeReal(produtividadeReal);
+		setTotalProdutividade(produtividade);
+		setTotalPesoCarregado(pesoTotal);
 		setAreaTotal(formatArea(areaTotalSoma));
 		setparcelasTotal(parcelasTotalCount);
-		setAreaColhidaParcial(formatArea(areaColhida));
-		setAreaColhida(formatArea(areaTotalColhida));
-		setAreaDisponivel(formatArea(areaDisponivel));
-		const sumRomaneios = filteredCargas
-			.map(obj => idsPending[obj.id] || 0) // Check if the id exists in the `ids` object; if not, return 0
-			.reduce((acc, value) => acc + value, 0); // Sum all matched values
-		setTotalRomaneios(sumRomaneios)
-
-		const progressBar = (areaTotalColhida / areaTotalSoma) * 100
-		setAreaTotalProgress(progressBar)
-
-	}, [selectedFilteredData, chekedAreasAvaiable, varieSelect, idsPending]);
+		setAreaColhidaParcial(formatArea(areaColhidaSoma));
+		setAreaColhida(formatArea(areaColhidaSoma));
+		setAreaDisponivel(formatArea(areaDisponivelCalculada));
+		setTotalRomaneios(sumRomaneios);
+		setAreaTotalProgress(progressBar);
+	}, [filteredData]);
 
 	useEffect(() => {
 		setNewDayNow(new Date().toLocaleDateString());
@@ -210,11 +309,35 @@ const ColheitaAtual = (props) => {
 	};
 
 	const handleExportData = () => {
-		exportPlantiosToExcel(colheitaPortalData)
+		exportPlantiosToExcel(sortedFilteredData);
 	}
 
 	const handleChangeCheck = (event) => {
-		setCheckedColheita(event.target.checked);
+		const checked = event.target.checked;
+		setCheckedColheita(checked);
+
+		if (checked) {
+			setCheckedColheitaFinalizada(false);
+			setCheckedAlgumaAreaColhida(false);
+		}
+	};
+
+	const handleChangeColheitaFinalizada = (event) => {
+		const checked = event.target.checked;
+		setCheckedColheitaFinalizada(checked);
+
+		if (checked) {
+			setCheckedColheita(false);
+		}
+	};
+
+	const handleChangeAlgumaAreaColhida = (event) => {
+		const checked = event.target.checked;
+		setCheckedAlgumaAreaColhida(checked);
+
+		if (checked) {
+			setCheckedColheita(false);
+		}
 	};
 	const handleChangeAreasCheck = (event) => {
 		setChekedAreasAvaiable(event.target.checked);
@@ -266,9 +389,6 @@ const ColheitaAtual = (props) => {
 		setVarieSelect([])
 	}, [selectedFarm]);
 
-
-	const getPendingCount = (id) => Number(idsPending?.[id] || 0);
-	const getComputedCount = (carga) => Number(carga?.romaneios || 0);
 
 	const handleChangeFAreaParcialGt0SemRomaneios = (event) => {
 		const checked = event.target.checked;
@@ -538,6 +658,28 @@ const ColheitaAtual = (props) => {
 							control={
 								<Switch
 									color="secondary"
+									checked={checkedColheitaFinalizada}
+									onChange={handleChangeColheitaFinalizada}
+								/>
+							}
+							label="Colheita Finalizada"
+							sx={{ color: colors.textColor[100] }}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
+									checked={checkedAlgumaAreaColhida}
+									onChange={handleChangeAlgumaAreaColhida}
+								/>
+							}
+							label="Alguma área colhida"
+							sx={{ color: colors.textColor[100] }}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									color="secondary"
 									checked={chekedAreasAvaiable}
 									onChange={handleChangeAreasCheck}
 								/>
@@ -632,56 +774,14 @@ const ColheitaAtual = (props) => {
 					</Typography>
 				</Box>
 				<LinearProgressWithLabel progress={areaTotalProgress} />
-				{selectedFilteredData.length > 0 && (
+				{sortedFilteredData.length > 0 && (
 					<TableColheita
 						theme={theme}
 						colors={colors}
 						idsPending={idsPending}
 						setVarSelectedArr={setVarSelectedArr}
 						setVarieSelect={setVarieSelect}
-						data={selectedFilteredData
-							.filter((data) =>
-								varieSelect?.length > 0 ? varieSelect.includes(data.variedade__nome_fantasia) :
-									data.variedade__nome_fantasia !== null
-							)
-							.filter((data) =>
-								chekedAreasAvaiable
-									? data.area_colheita - data.area_parcial !== 0
-									: data.area_colheita !== null
-							)
-							.filter((data) =>
-								checkedColheita
-									? data.finalizado_colheita === false
-									: data.finalizado_colheita !== null
-							)
-							.filter((data) =>
-								romaneiosPendente
-									? idsPending[data.id] > 0
-									: true
-							)
-							.filter((data) => {
-								if (!fAreaParcialGt0SemRomaneios) return true;
-
-								const areaParcial = Number(data.area_parcial || 0);
-								const computed = getComputedCount(data);
-								const pending = getPendingCount(data.id);
-
-								return areaParcial > 0 && computed === 0 && pending === 0;
-							})
-							.filter((data) => {
-								if (!fAreaParcialEq0ComRomaneios) return true;
-
-								const areaParcial = Number(data.area_parcial || 0);
-								const computed = getComputedCount(data);
-								const pending = getPendingCount(data.id);
-
-								return areaParcial === 0 && (computed > 0 || pending > 0);
-							})
-							.sort((b, a) =>
-								dateSort
-									? b.talhao__id_talhao.localeCompare(a.talhao__id_talhao)
-									: a.dap - b.dap
-							)}
+						data={sortedFilteredData}
 					/>
 				)}
 			</Box>
