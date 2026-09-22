@@ -312,32 +312,76 @@ const ProdutividadePage = ({ useMulti }) => {
 		const totalResumo = {};
 		const totalResumoVariedades = {};
 
+		const isEmptyValue = (value) =>
+			value === null ||
+			value === undefined ||
+			String(value).trim() === "" ||
+			String(value).trim().toLowerCase() === "none" ||
+			String(value).trim().toLowerCase() === "null";
+
+		const toFiniteNumber = (value) => {
+			const parsed = Number(value);
+			return Number.isFinite(parsed) ? parsed : null;
+		};
+
+
 		filtered.forEach((data) => {
-			const areaToget = showAsPlanned ? data.area_planejamento_plantio : data.area_colheita
-
-			const areaSum = data.finalizado_colheita ? areaToget : data.area_parcial;
-			const getArea = areaSum || 0;
-			const pesoSum = data?.peso_kg || 0;
-
 			const cultura = data.variedade__cultura__cultura;
 			const variedade = data.variedade__nome_fantasia;
+
+			const semPlanejamento =
+				isEmptyValue(cultura) &&
+				isEmptyValue(variedade);
+
+			const areaPlanejada = toFiniteNumber(
+				data.area_planejamento_plantio
+			);
+
+			const areaFisica = toFiniteNumber(
+				data.area_colheita
+			) ?? 0;
+
+			const areaToGet = showAsPlanned
+				? semPlanejamento
+					? areaFisica
+					: (areaPlanejada ?? 0)
+				: areaFisica;
+
+			/*
+			 * Para parcelas sem planejamento, a referência é sempre a
+			 * área física. Para as demais, preserva a regra anterior.
+			 */
+			const areaSum = semPlanejamento
+				? areaFisica
+				: data.finalizado_colheita
+					? areaToGet
+					: (toFiniteNumber(data.area_parcial) ?? 0);
+
+			const getArea = areaSum;
+			const pesoSum = data?.peso_kg || 0;
+
 			const nameOfArea = `${cultura}|${variedade}`;
 
-			// por cultura
 			if (totalResumo[cultura]) {
 				totalResumo[cultura].peso += pesoSum;
 				totalResumo[cultura].area += getArea;
 			} else {
-				totalResumo[cultura] = { area: getArea, peso: pesoSum };
+				totalResumo[cultura] = {
+					area: getArea,
+					peso: pesoSum
+				};
 			}
 
-			// por variedade (usa area_planejamento_plantio como no teu original)
 			if (totalResumoVariedades[nameOfArea]) {
-				totalResumoVariedades[nameOfArea].area += areaToget || 0;
+				totalResumoVariedades[nameOfArea].area += areaToGet;
 			} else {
-				totalResumoVariedades[nameOfArea] = { area: areaToget || 0 };
+				totalResumoVariedades[nameOfArea] = {
+					area: areaToGet
+				};
 			}
 		});
+
+
 
 		setResumoByVar(totalResumoVariedades);
 		setFiltCult(totalResumo);
@@ -349,6 +393,8 @@ const ProdutividadePage = ({ useMulti }) => {
 		parcelasSelected,
 		showAsPlanned, // <<< importante!
 	]);
+
+
 
 	useEffect(() => {
 		const mapBase = plantioMapALl.filter((data) =>

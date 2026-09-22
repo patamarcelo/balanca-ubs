@@ -282,9 +282,23 @@ const MapPage = ({
 						};
 					}
 
+					const semPlanejamento =
+						curr.dados.cultura === null &&
+						curr.dados.variedade === null;
+
+					const areaPlanejada = Number(
+						curr.dados.area_planejamento_plantio
+					);
+
+					const areaFisica = Number(
+						curr.dados.area_colheita
+					);
+
 					const areaToGet = showAsPlanned
-						? Number(curr.dados.area_planejamento_plantio || 0)
-						: Number(curr.dados.area_colheita || 0);
+						? semPlanejamento
+							? (Number.isFinite(areaFisica) ? areaFisica : 0)
+							: (Number.isFinite(areaPlanejada) ? areaPlanejada : 0)
+						: (Number.isFinite(areaFisica) ? areaFisica : 0);
 
 					acc[key].total_area_colheita += areaToGet;
 					return acc;
