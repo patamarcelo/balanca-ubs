@@ -60,6 +60,7 @@ const defaultForm = {
 	category: "admin",
 	projetosLiberados: [],
 	newPassword: "",
+	canClassify: false,
 };
 
 const normalizePhone = (value) => {
@@ -121,6 +122,7 @@ const UserDrawer = ({
 					: []
 			),
 			newPassword: "",
+			canClassify: !!claims.canClassify,
 		});
 	}, [user]);
 
@@ -160,6 +162,7 @@ const UserDrawer = ({
 			unidadeOp: form.unidadeOp,
 			category: form.category,
 			projetosLiberados: selectedProjects,
+			canClassify: form.canClassify,
 		};
 
 		try {
@@ -478,6 +481,14 @@ const UserDrawer = ({
 							description="Libera acesso ao módulo Balança."
 							checked={form.isBalanca}
 							onChange={(value) => handleChange("isBalanca", value)}
+							colors={colors}
+						/>
+
+						<SwitchCard
+							label="Classificação de cargas"
+							description="Libera a tela e o registro de classificação."
+							checked={form.canClassify}
+							onChange={(value) => handleChange("canClassify", value)}
 							colors={colors}
 						/>
 

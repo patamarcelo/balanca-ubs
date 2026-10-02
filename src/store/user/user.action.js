@@ -99,3 +99,17 @@ export const setIsAuthUser = (boolean) => {
 export const logOffUser = () => {
 	return createAction(USER_ACTIONS_TYPES.LOG_OFF_USER);
 };
+
+export const setCanClassifyUserReducer = (user) => {
+	let boolean = false;
+
+	if (user?.reloadUserInfo?.customAttributes) {
+		const claims = JSON.parse(
+			user.reloadUserInfo.customAttributes
+		);
+
+		boolean = claims.canClassify === true;
+	}
+
+	return boolean;
+};

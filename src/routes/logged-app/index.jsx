@@ -14,17 +14,24 @@ import DefensivoPage from "../../pages/Defensivo";
 import VisitasPage from "../../pages/Visitas";
 import VisitaIDPage from "../../pages/VisitaId";
 
+import ClassificacaoCargasPage from "../../pages/ClassificacaoCargas";
+
+
 import { useLocation } from "react-router-dom";
 
 import { Routes, Route } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useSelector } from "react-redux";
+
 import {
 	selectUnidadeOpUser,
 	selectIsDefensivosUser,
-	selectIsAdminUser
+	selectIsAdminUser,
+	selectCanClassifyUser,
 } from "../../store/user/user.selector";
+
+
 import PlantioColheitaPage from "../../pages/PlantioColheita";
 import PageNotFound from "../../pages/NotFound";
 
@@ -44,6 +51,10 @@ const AuthApp = () => {
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
 	const isDefensivosUser = useSelector(selectIsDefensivosUser);
 	const isAdminUser = useSelector(selectIsAdminUser);
+	const canClassifyUser = useSelector(selectCanClassifyUser);
+
+	const isClassificationPage =
+		location.pathname === "/classificacao-cargas";
 
 	const toggleDrawer = (event) => {
 		if (
@@ -59,7 +70,9 @@ const AuthApp = () => {
 		<Box
 			className="logged-app"
 			sx={{
-				backgroundColor: colors.blueOrigin[900]
+				backgroundColor: isClassificationPage
+					? "#ffffff"
+					: colors.blueOrigin[900],
 			}}
 		>
 			{
@@ -120,7 +133,9 @@ const AuthApp = () => {
 								? "lightgrey !important"
 								: location.pathname.includes("visitas/")
 									? "whitesmoke"
-									: ""
+									: isClassificationPage
+										? "#ffffff"
+										: "",
 					}}
 				>
 					<Routes>
@@ -156,6 +171,12 @@ const AuthApp = () => {
 						)}
 						{isAdminUser && (
 							<Route path="/users" element={<UsersPage />} />
+						)}
+						{canClassifyUser && (
+							<Route
+								path="/classificacao-cargas"
+								element={<ClassificacaoCargasPage />}
+							/>
 						)}
 						<Route path="*" element={<PageNotFound />} />
 					</Routes>

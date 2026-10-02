@@ -1,8 +1,25 @@
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { query, orderBy, getDocs, limit } from "firebase/firestore";
+import {
+	query,
+	orderBy,
+	getDocs,
+	limit,
+	where,
+	serverTimestamp,
+} from "firebase/firestore";
+
 import { TABLES_FIREBASE } from "./firebase.typestables";
 import { doc, onSnapshot, updateDoc, deleteDoc } from "firebase/firestore";
+
+import { storage } from "./firebase";
+import {
+	getDownloadURL,
+	ref,
+	uploadBytes,
+} from "firebase/storage";
+
+
 
 // import { query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 // import { collection, addDoc, Timestamp } from "firebase/firestore";
@@ -15,7 +32,7 @@ export const handleUpdateRomaneioCheck = async (e, id, data) => {
 	e.preventDefault();
 	const taskDocRef = doc(db, TABLES_FIREBASE.truckmove, id);
 	let updatedDoc;
-	const updatedData = { ...data};
+	const updatedData = { ...data };
 	try {
 		updatedDoc = await updateDoc(taskDocRef, {
 			...updatedData
@@ -195,6 +212,103 @@ export const getTruckMoves = async () => {
 		};
 	});
 };
+
+
+export const getClassifiableTruckMoves = async () => {
+	const startDate = new Date();
+
+	// Inclui hoje e os seis dias anteriores.
+	startDate.setHours(0, 0, 0, 0);
+	startDate.setDate(startDate.getDate() - 6);
+
+	const loadsQuery = query(
+		collection(db, TABLES_FIREBASE.truckmove),
+		where("createdAt", ">=", startDate),
+		orderBy("createdAt", "desc"),
+		limit(500)
+	);
+
+	const querySnapshot = await getDocs(loadsQuery);
+
+	return querySnapshot.docs
+		.map((docSnapshot) => ({
+			...docSnapshot.data(),
+			id: docSnapshot.id,
+		}))
+		.filter(
+			(load) =>
+				load.idApp !== undefined &&
+				load.idApp !== null &&
+				load.idApp !== ""
+		);
+};
+
+export const saveTruckClassification = async (
+	loadId,
+	classification
+) => {
+	const loadRef = doc(
+		db,
+		TABLES_FIREBASE.truckmove,
+		loadId
+	);
+
+	const payload = {
+		...classification,
+		updatedAt: serverTimestamp(),
+	};
+
+	if (!classification.createdAt) {
+		payload.createdAt = serverTimestamp();
+	}
+
+	await updateDoc(loadRef, {
+		classificacao: payload,
+	});
+};
+
+
+
+export const uploadTruckClassificationImage = async (
+	loadId,
+	file
+) => {
+	if (!file?.type?.startsWith("image/")) {
+		throw new Error("Selecione uma imagem válida.");
+	}
+
+	if (file.size > 10 * 1024 * 1024) {
+		throw new Error("A foto deve ter no máximo 10 MB.");
+	}
+
+	const extension =
+		file.name.split(".").pop()?.toLowerCase() || "jpg";
+
+	const fileName =
+		`${Date.now()}-${Math.random()
+			.toString(36)
+			.slice(2, 10)}.${extension}`;
+
+	const imageRef = ref(
+		storage,
+		`classificacoes-cargas/${loadId}/${fileName}`
+	);
+
+	const snapshot = await uploadBytes(
+		imageRef,
+		file,
+		{ contentType: file.type }
+	);
+
+	return {
+		url: await getDownloadURL(snapshot.ref),
+		storagePath: snapshot.ref.fullPath,
+		fileName,
+		contentType: file.type,
+		size: file.size,
+	};
+};
+
 
 // TRANSACTIONS DB POST
 export const addTransaction = async (

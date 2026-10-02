@@ -27,7 +27,8 @@ import { useSelector } from "react-redux";
 import {
 	selectUnidadeOpUser,
 	selectIsDefensivosUser,
-	selectIsAdminUser
+	selectIsAdminUser,
+	selectCanClassifyUser,
 } from "../../store/user/user.selector";
 
 import { useEffect, useState } from "react";
@@ -43,6 +44,7 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 	};
 
 	const unidadeOpUser = useSelector(selectUnidadeOpUser);
+	const canClassifyUser = useSelector(selectCanClassifyUser);
 	const [filteredArr, setFilteredArr] = useState([]);
 
 	const NAVIGATION = [
@@ -101,12 +103,26 @@ export default function TempDrawer({ toggleDrawer, isdrawerOpen }) {
 			to: "/users",
 			unidade: "ubs",
 			permission: isAdminUser
-		}
+		},
+		{
+			title: "Classificação",
+			icon: faClipboard,
+			to: "/classificacao-cargas",
+			unidade: "all",
+			permission: canClassifyUser,
+		},
 	];
+
+
 	useEffect(() => {
 		const newArr = NAVIGATION.filter((data) => data.permission === true);
 		setFilteredArr(newArr);
-	}, []);
+	}, [
+		unidadeOpUser,
+		isDefensivosUser,
+		isAdminUser,
+		canClassifyUser,
+	]);
 
 	const list = (anchor) => (
 		<Box

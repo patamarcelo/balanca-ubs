@@ -5,7 +5,8 @@ import {
 	setUnidadeOpUser,
 	setToken,
 	setIsVendasUserReducer,
-	setIsDefensivosUserReducer
+	setIsDefensivosUserReducer,
+	setCanClassifyUserReducer,
 } from "./user.action";
 
 export const INITIAL_STATE = {
@@ -16,7 +17,8 @@ export const INITIAL_STATE = {
 	unidadeOp: "",
 	token: "",
 	isVendas: false,
-	isDefensivos: false
+	isDefensivos: false,
+	canClassify: false,
 };
 
 export const userReducer = (state = INITIAL_STATE, action = {}) => {
@@ -31,6 +33,7 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 			const token = setToken(payload);
 			const isVendas = setIsVendasUserReducer(payload);
 			const isDefensivos = setIsDefensivosUserReducer(payload);
+			const canClassify = setCanClassifyUserReducer(payload);
 			return {
 				...state,
 				currentUser: payload,
@@ -39,7 +42,8 @@ export const userReducer = (state = INITIAL_STATE, action = {}) => {
 				unidadeOp: unidadeOp,
 				token: token,
 				isVendas: isVendas,
-				isDefensivos: isDefensivos
+				isDefensivos: isDefensivos,
+				canClassify,
 			};
 		case USER_ACTIONS_TYPES.SET_AUTH_USER:
 			return {
