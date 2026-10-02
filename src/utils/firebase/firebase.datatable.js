@@ -245,7 +245,8 @@ export const getClassifiableTruckMoves = async () => {
 
 export const saveTruckClassification = async (
 	loadId,
-	classification
+	classification,
+	legacySampleData = null
 ) => {
 	const loadRef = doc(
 		db,
@@ -264,6 +265,7 @@ export const saveTruckClassification = async (
 
 	await updateDoc(loadRef, {
 		classificacao: payload,
+		...(legacySampleData || {}),
 	});
 };
 

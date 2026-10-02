@@ -28,12 +28,25 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import ImageRoundedIcon from "@mui/icons-material/ImageRounded";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import PendingActionsRoundedIcon from "@mui/icons-material/PendingActionsRounded";
 import PhotoCameraRoundedIcon from "@mui/icons-material/PhotoCameraRounded";
+import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import TrendingDownRoundedIcon from "@mui/icons-material/TrendingDownRounded";
+import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import Table from "react-bootstrap/Table";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -141,8 +154,13 @@ const plate = (value) => {
 };
 const weight = (value) =>
   Number(value) > 0 ? Number(value).toLocaleString("pt-BR") : "-";
+const hasNumericValue = (value) =>
+  value !== "" &&
+  value !== null &&
+  value !== undefined &&
+  Number.isFinite(Number(value));
 const metric = (value, unit = "") =>
-  Number.isFinite(Number(value))
+  hasNumericValue(value)
     ? `${Number(value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}${unit}`
     : "-";
 const photoUrl = (photo) =>
@@ -155,6 +173,40 @@ const iconForCulture = (culture) => {
   if (value.includes("milho")) return corn;
   return question;
 };
+const cultureMeta = (culture) => {
+  const value = normalized(culture);
+  if (value.includes("soja"))
+    return {
+      label: "Soja",
+      icon: soy,
+      main: "#5e9360",
+      soft: "#eaf4e7",
+      text: "#315b37"
+    };
+  if (value.includes("arroz"))
+    return {
+      label: "Arroz",
+      icon: rice,
+      main: "#5b93b6",
+      soft: "#e8f3f9",
+      text: "#285b7d"
+    };
+  if (value.includes("milho"))
+    return {
+      label: "Milho",
+      icon: corn,
+      main: "#bd8a2d",
+      soft: "#fbf1dc",
+      text: "#76500a"
+    };
+  return {
+    label: "Feijão",
+    icon: beans,
+    main: "#9b6a43",
+    soft: "#f6ece2",
+    text: "#704422"
+  };
+};
 const numberToDigits = (value, places = DECIMALS) => {
   if (value === "" || value === null || value === undefined) return "";
   const number = Number(String(value).replace(",", "."));
@@ -163,7 +215,7 @@ const numberToDigits = (value, places = DECIMALS) => {
     : "";
 };
 const digitsToNumber = (value, places = DECIMALS) => {
-  const digits = String(value || "").replace(/\D/g, "");
+  const digits = String(value ?? "").replace(/\D/g, "");
   return digits ? Number(digits) / 10 ** places : null;
 };
 const empty = (fields) =>
@@ -182,6 +234,7 @@ const createForm = (record) => {
     pesoAmostraGramas: numberToDigits(data.pesoAmostraGramas),
     umidadePercentual: numberToDigits(data.umidadePercentual),
     impurezasPercentual: numberToDigits(data.impurezasPercentual),
+    bandinhaPercentual: numberToDigits(data.bandinhaPercentual),
     peneiras: { ...empty(PENEIRAS), ...asDigits(PENEIRAS, data.peneiras) },
     defeitos: { ...empty(DEFEITOS), ...asDigits(DEFEITOS, data.defeitos) },
     classificacaoFinal: data.classificacaoFinal || "",
@@ -189,7 +242,32 @@ const createForm = (record) => {
   };
 };
 
-const ShiftField = ({ value, onChange, places = DECIMALS, ...props }) => {
+const filledFieldSx = (value) => {
+  const filled = String(value ?? "").trim() !== "";
+  if (!filled) return {};
+  return {
+    "& .MuiOutlinedInput-root": { backgroundColor: "#edf9f0" },
+    "& .MuiOutlinedInput-root.Mui-disabled": { backgroundColor: "#edf9f0" },
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#4f9d69",
+      borderWidth: 2
+    },
+    "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#347d4d"
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#347d4d"
+    },
+    "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#4f9d69",
+      borderWidth: 2
+    },
+    "& .MuiInputLabel-root": { color: "#347d4d" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#347d4d" }
+  };
+};
+
+const ShiftField = ({ value, onChange, places = DECIMALS, sx, ...props }) => {
   const digits = String(value || "").replace(/\D/g, "");
   const padded = digits.padStart(places + 1, "0");
   const display = digits
@@ -198,14 +276,16 @@ const ShiftField = ({ value, onChange, places = DECIMALS, ...props }) => {
   return (
     <TextField
       {...props}
+      sx={{ ...filledFieldSx(digits), ...sx }}
       type="text"
       inputMode="numeric"
+      placeholder="-"
       value={display}
       onChange={(event) => {
         const next = event.target.value
           .replace(/\D/g, "")
           .replace(/^0+(?=\d)/, "");
-        onChange(/^0*$/.test(next) ? "" : next);
+        onChange(next);
       }}
       inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
     />
@@ -228,6 +308,79 @@ const Info = ({ label, value }) => (
     </Typography>
   </Box>
 );
+const CompactInfo = ({ label, value }) => (
+  <Box sx={{ minWidth: 0, px: 1, py: 0.45, borderLeft: "1px solid #e2e8f0" }}>
+    <Typography
+      variant="caption"
+      sx={{
+        display: "block",
+        color: "#64748b",
+        fontSize: "0.62rem",
+        fontWeight: 800,
+        letterSpacing: 0.2,
+        lineHeight: 1.15
+      }}
+    >
+      {label.toUpperCase()}
+    </Typography>
+    <Typography
+      variant="body2"
+      noWrap
+      fontWeight={800}
+      sx={{ color: "#172033", fontSize: "0.74rem" }}
+    >
+      {value}
+    </Typography>
+  </Box>
+);
+const actorLabel = (actor) =>
+  actor?.nome ||
+  actor?.displayName ||
+  actor?.email ||
+  actor?.uid ||
+  "Usuário não identificado";
+const RecordInfo = ({ record }) => {
+  if (!record) return null;
+  const wasEdited =
+    record?.updatedBy?.uid && record.updatedBy.uid !== record?.createdBy?.uid;
+  return (
+    <Box
+      sx={{
+        mb: 2,
+        p: 1.25,
+        border: "1px solid #d9e0e6",
+        borderRadius: 1.5,
+        backgroundColor: "#f8fafc"
+      }}
+    >
+      <Typography variant="caption" sx={{ display: "block", color: "#64748b" }}>
+        Salva por
+      </Typography>
+      <Typography variant="body2" fontWeight={800} sx={{ color: "#172033" }}>
+        {actorLabel(record.createdBy)}
+        {record.createdAt ? ` — ${dateLabel(record.createdAt, true)}` : ""}
+      </Typography>
+      {wasEdited && (
+        <>
+          <Typography
+            variant="caption"
+            sx={{ display: "block", color: "#64748b", mt: 0.75 }}
+          >
+            Última edição
+          </Typography>
+          <Typography
+            variant="body2"
+            fontWeight={800}
+            sx={{ color: "#172033" }}
+          >
+            {actorLabel(record.updatedBy)}
+            {record.updatedAt ? ` — ${dateLabel(record.updatedAt, true)}` : ""}
+          </Typography>
+        </>
+      )}
+    </Box>
+  );
+};
 const Photo = ({ photo, label }) => {
   const url = photoUrl(photo);
   if (!url) return null;
@@ -256,6 +409,7 @@ const Photo = ({ photo, label }) => {
           component="img"
           src={url}
           alt={label}
+          crossOrigin="anonymous"
           sx={{
             display: "block",
             width: "100%",
@@ -265,6 +419,40 @@ const Photo = ({ photo, label }) => {
           }}
         />
       </Box>
+    </Box>
+  );
+};
+const ComparePhoto = ({ photo, label }) => {
+  const url = photoUrl(photo);
+  if (!url) return "-";
+  return (
+    <Box
+      component="a"
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      sx={{
+        display: "inline-flex",
+        overflow: "hidden",
+        maxWidth: "100%",
+        border: "1px solid #d9e0e6",
+        borderRadius: 1.25,
+        backgroundColor: "#fff"
+      }}
+    >
+      <Box
+        component="img"
+        src={url}
+        alt={label}
+        crossOrigin="anonymous"
+        sx={{
+          display: "block",
+          width: "100%",
+          maxWidth: 210,
+          height: 128,
+          objectFit: "cover"
+        }}
+      />
     </Box>
   );
 };
@@ -337,6 +525,7 @@ const ClassificationForm = ({
           </Typography>
         </Box>
       )}
+      <RecordInfo record={record} />
       <Paper variant="outlined" sx={{ p: 2, borderColor: "#d9e0e6" }}>
         <Typography
           variant="h5"
@@ -348,7 +537,7 @@ const ClassificationForm = ({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+            gridTemplateColumns: { xs: "1fr", md: "repeat(4, 1fr)" },
             gap: 1.25
           }}
         >
@@ -383,6 +572,18 @@ const ClassificationForm = ({
               }))
             }
           />
+          <ShiftField
+            size="small"
+            disabled={locked}
+            label="Bandinha (%)"
+            value={form.bandinhaPercentual}
+            onChange={(value) =>
+              setForm((previous) => ({
+                ...previous,
+                bandinhaPercentual: value
+              }))
+            }
+          />
         </Box>
       </Paper>
       <Fields
@@ -400,17 +601,21 @@ const ClassificationForm = ({
         change={(key, value) => update("defeitos", key, value)}
       />
       <Paper variant="outlined" sx={{ mt: 2.25, p: 2, borderColor: "#d9e0e6" }}>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 2fr" },
-            gap: 1.25
-          }}
+        <Typography
+          variant="h5"
+          fontWeight={900}
+          sx={{ color: "#0e5e91", mb: 1.5 }}
         >
+          Conclusão da amostra
+        </Typography>
+        <Box sx={{ display: "grid", gap: 1.25 }}>
           <TextField
+            fullWidth
             size="small"
             disabled={locked}
-            label="Classificado"
+            sx={filledFieldSx(form.classificacaoFinal)}
+            label="Classificação final"
+            helperText="Ex.: Tipo 1, Tipo 2 ou fora de tipo."
             value={form.classificacaoFinal}
             onChange={(event) =>
               setForm((previous) => ({
@@ -420,11 +625,13 @@ const ClassificationForm = ({
             }
           />
           <TextField
+            fullWidth
             size="small"
             disabled={locked}
+            sx={filledFieldSx(form.observacoes)}
             label="Observações"
             multiline
-            minRows={2}
+            minRows={3}
             value={form.observacoes}
             onChange={(event) =>
               setForm((previous) => ({
@@ -439,7 +646,23 @@ const ClassificationForm = ({
             component="label"
             variant="outlined"
             startIcon={<PhotoCameraRoundedIcon />}
-            sx={{ mt: 1.5, textTransform: "none" }}
+            sx={{
+              mt: 1.5,
+              textTransform: "none",
+              ...(imageFile || record?.foto
+                ? {
+                    borderColor: "#4f9d69",
+                    borderWidth: 2,
+                    color: "#347d4d",
+                    backgroundColor: "#f0faf3",
+                    "&:hover": {
+                      borderColor: "#347d4d",
+                      borderWidth: 2,
+                      backgroundColor: "#e3f5e8"
+                    }
+                  }
+                : {})
+            }}
           >
             {imageFile
               ? imageFile.name
@@ -471,6 +694,7 @@ const Compare = ({ original, counterproof }) => {
     ["Peso da amostra", "pesoAmostraGramas", null, " g"],
     ["Umidade", "umidadePercentual", null, " %"],
     ["Impureza", "impurezasPercentual", null, " %"],
+    ["Bandinha", "bandinhaPercentual", null, " %"],
     ...PENEIRAS.map((item) => [
       `${item.label} (g)`,
       item.key,
@@ -479,31 +703,92 @@ const Compare = ({ original, counterproof }) => {
     ]),
     ...DEFEITOS.map((item) => [`${item.label} (g)`, item.key, "defeitos", " g"])
   ];
-  const row = (label, a, b) => (
+  const variation = (originalValue, counterproofValue) => {
+    const first = Number(originalValue);
+    const second = Number(counterproofValue);
+    if (
+      !hasNumericValue(originalValue) ||
+      !hasNumericValue(counterproofValue) ||
+      first === 0
+    )
+      return "-";
+    const percentage = ((second - first) / first) * 100;
+    if (percentage === 0)
+      return (
+        <Typography variant="body2" sx={{ color: "#64748b" }}>
+          Sem variação
+        </Typography>
+      );
+    const isUp = percentage > 0;
+    const color = isUp ? "#23864a" : "#c0392b";
+    const Icon = isUp ? TrendingUpRoundedIcon : TrendingDownRoundedIcon;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 0.35,
+          color,
+          fontWeight: 900
+        }}
+      >
+        <Icon fontSize="small" />
+        {isUp ? "+" : ""}
+        {percentage.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}
+        %
+      </Box>
+    );
+  };
+  const row = (label, a, b, change = "-") => (
     <Box
       key={label}
       sx={{
         display: "grid",
         gridTemplateColumns:
-          "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr)",
+          "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(130px, 0.7fr)",
         borderBottom: "1px solid #e2e8f0"
       }}
     >
       <Typography sx={{ p: 1, fontWeight: 700, color: "#334155" }}>
         {label}
       </Typography>
-      <Typography sx={{ p: 1, borderLeft: "1px solid #e2e8f0" }}>
-        {a}
-      </Typography>
-      <Typography
+      <Box
         sx={{
           p: 1,
           borderLeft: "1px solid #e2e8f0",
-          backgroundColor: "#f0fdf4"
+          backgroundColor:
+            a !== "-" && a !== null && a !== undefined
+              ? "rgba(79, 157, 105, 0.12)"
+              : "#fff"
+        }}
+      >
+        {a}
+      </Box>
+      <Box
+        sx={{
+          p: 1,
+          borderLeft: "1px solid #e2e8f0",
+          backgroundColor:
+            b !== "-" && b !== null && b !== undefined
+              ? "rgba(79, 157, 105, 0.12)"
+              : "#fff"
         }}
       >
         {b}
-      </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          p: 1,
+          borderLeft: "1px solid #e2e8f0"
+        }}
+      >
+        {change}
+      </Box>
     </Box>
   );
   return (
@@ -521,7 +806,7 @@ const Compare = ({ original, counterproof }) => {
         </Typography>
         <Box
           sx={{
-            minWidth: 520,
+            minWidth: 650,
             border: "1px solid #e2e8f0",
             borderRadius: 1.5,
             overflow: "hidden"
@@ -531,7 +816,7 @@ const Compare = ({ original, counterproof }) => {
             sx={{
               display: "grid",
               gridTemplateColumns:
-                "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr)",
+                "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(130px, 0.7fr)",
               backgroundColor: "#0e5e91",
               color: "#fff"
             }}
@@ -541,14 +826,18 @@ const Compare = ({ original, counterproof }) => {
               Classificação
             </Typography>
             <Typography sx={{ p: 1, fontWeight: 800 }}>Contraprova</Typography>
+            <Typography sx={{ p: 1, fontWeight: 800 }}>Variação</Typography>
           </Box>
-          {rows.map(([label, key, group, unit]) =>
-            row(
+          {rows.map(([label, key, group, unit]) => {
+            const originalValue = valueFor(originalData, key, group);
+            const counterproofValue = valueFor(counterData, key, group);
+            return row(
               label,
-              metric(valueFor(originalData, key, group), unit),
-              metric(valueFor(counterData, key, group), unit)
-            )
-          )}
+              metric(originalValue, unit),
+              metric(counterproofValue, unit),
+              variation(originalValue, counterproofValue)
+            );
+          })}
           {row(
             "Classificado",
             originalData.classificacaoFinal || "-",
@@ -559,21 +848,239 @@ const Compare = ({ original, counterproof }) => {
             originalData.observacoes || "-",
             counterData.observacoes || "-"
           )}
+          {row(
+            "Foto",
+            <ComparePhoto
+              photo={original?.foto}
+              label="Foto da classificação"
+            />,
+            <ComparePhoto
+              photo={counterproof?.foto}
+              label="Foto da contraprova"
+            />
+          )}
         </Box>
       </Paper>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: 2
-        }}
-      >
-        <Photo photo={original?.foto} label="Foto da classificação" />
-        <Photo photo={counterproof?.foto} label="Foto da contraprova" />
-      </Box>
     </Box>
   );
 };
+
+const ReportValue = ({ label, value, accent = false }) => (
+  <Box
+    sx={{
+      p: 1,
+      border: `1px solid ${accent ? "#4f9d69" : "#d9e0e6"}`,
+      borderRadius: 1.25,
+      backgroundColor: accent ? "rgba(79, 157, 105, 0.12)" : "#f8fafc"
+    }}
+  >
+    <Typography
+      variant="caption"
+      sx={{
+        display: "block",
+        color: "#64748b",
+        fontWeight: 800,
+        fontSize: "0.62rem",
+        letterSpacing: 0.2
+      }}
+    >
+      {label.toUpperCase()}
+    </Typography>
+    <Typography variant="body2" fontWeight={900} sx={{ color: "#172033" }}>
+      {value}
+    </Typography>
+  </Box>
+);
+const ReportMeasurements = ({ title, fields, values = {} }) => (
+  <Box sx={{ mt: 2 }}>
+    <Typography fontWeight={900} sx={{ color: "#0e5e91", mb: 0.75 }}>
+      {title}
+    </Typography>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        gap: 0.75
+      }}
+    >
+      {fields.map((field) => (
+        <ReportValue
+          key={field.key}
+          label={field.label}
+          value={metric(values[field.key], " g")}
+          accent={hasNumericValue(values[field.key])}
+        />
+      ))}
+    </Box>
+  </Box>
+);
+const ExportRecord = ({ record, title }) => {
+  const data = record?.dados || {};
+  return (
+    <Box>
+      <Typography
+        variant="h6"
+        fontWeight={900}
+        sx={{ color: "#0e5e91", mb: 1 }}
+      >
+        {title}
+      </Typography>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: 0.75
+        }}
+      >
+        <ReportValue
+          label="Peso da amostra"
+          value={metric(data.pesoAmostraGramas, " g")}
+          accent={hasNumericValue(data.pesoAmostraGramas)}
+        />
+        <ReportValue
+          label="Umidade"
+          value={metric(data.umidadePercentual, " %")}
+          accent={hasNumericValue(data.umidadePercentual)}
+        />
+        <ReportValue
+          label="Impureza"
+          value={metric(data.impurezasPercentual, " %")}
+          accent={hasNumericValue(data.impurezasPercentual)}
+        />
+        <ReportValue
+          label="Bandinha"
+          value={metric(data.bandinhaPercentual, " %")}
+          accent={hasNumericValue(data.bandinhaPercentual)}
+        />
+      </Box>
+      <ReportMeasurements
+        title="Peneiras"
+        fields={PENEIRAS}
+        values={data.peneiras}
+      />
+      <ReportMeasurements
+        title="Defeitos"
+        fields={DEFEITOS}
+        values={data.defeitos}
+      />
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr 2fr",
+          gap: 0.75,
+          mt: 2
+        }}
+      >
+        <ReportValue
+          label="Classificação final"
+          value={data.classificacaoFinal || "-"}
+          accent={Boolean(data.classificacaoFinal)}
+        />
+        <ReportValue
+          label="Observações"
+          value={data.observacoes || "-"}
+          accent={Boolean(data.observacoes)}
+        />
+      </Box>
+      {photoUrl(record?.foto) && (
+        <Box sx={{ mt: 2 }}>
+          <Typography fontWeight={900} sx={{ color: "#0e5e91", mb: 0.75 }}>
+            Foto da amostra
+          </Typography>
+          <ComparePhoto photo={record.foto} label="Foto da amostra" />
+        </Box>
+      )}
+    </Box>
+  );
+};
+const ExportReport = ({
+  load,
+  culture,
+  variety,
+  tab,
+  original,
+  counterproof
+}) => (
+  <Box sx={{ width: 1050, p: 3, backgroundColor: "#fff", color: "#172033" }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 2,
+        pb: 1.25,
+        borderBottom: `3px solid ${culture.main}`
+      }}
+    >
+      <Box>
+        <Typography
+          sx={{
+            color: culture.text,
+            fontSize: "0.72rem",
+            fontWeight: 900,
+            letterSpacing: 0.5
+          }}
+        >
+          CLASSIFICAÇÃO DA CARGA
+        </Typography>
+        <Typography variant="h4" fontWeight={900} sx={{ color: culture.text }}>
+          {culture.label}
+          {variety ? ` — ${variety}` : ""}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          width: 48,
+          height: 48,
+          display: "grid",
+          placeItems: "center",
+          borderRadius: 2,
+          backgroundColor: culture.soft
+        }}
+      >
+        <Box
+          component="img"
+          src={culture.icon}
+          alt={culture.label}
+          sx={{ width: 31, height: 31, objectFit: "contain" }}
+        />
+      </Box>
+    </Box>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr 1fr 1.5fr 1fr 4fr",
+        mt: 1.5,
+        mb: 2,
+        border: "1px solid #e2e8f0",
+        borderLeft: 0,
+        borderRadius: 1.25,
+        overflow: "hidden",
+        backgroundColor: "#f8fafc"
+      }}
+    >
+      <CompactInfo label="Data" value={dateLabel(loadDate(load))} />
+      <CompactInfo label="Ticket" value={ticket(load)} />
+      <CompactInfo label="Romaneio" value={romaneio(load)} />
+      <CompactInfo
+        label="Projeto"
+        value={project(load).replace("Projeto ", "")}
+      />
+      <CompactInfo label="Placa" value={plate(load.placa)} />
+      <CompactInfo label="Motorista" value={load.motorista || "-"} />
+    </Box>
+    {tab === "compare" ? (
+      <Compare original={original} counterproof={counterproof} />
+    ) : (
+      <ExportRecord
+        record={tab === "counterproof" ? counterproof : original}
+        title={
+          tab === "counterproof" ? "Contraprova" : "Classificação principal"
+        }
+      />
+    )}
+  </Box>
+);
 
 const ClassificationDialog = ({ load, onClose, onSaved }) => {
   const user = useSelector(selectCurrentUser);
@@ -590,6 +1097,7 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
   const [originalImage, setOriginalImage] = useState(null);
   const [counterImage, setCounterImage] = useState(null);
   const [saving, setSaving] = useState(false);
+  const reportRef = useRef(null);
   const classification = load?.classificacao || null;
   const original =
     classification?.status === "concluida" ? classification : null;
@@ -605,6 +1113,13 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
   const setImage = isCounterproof ? setCounterImage : setOriginalImage;
   const label = isCounterproof ? "Contraprova" : "Classificação";
   const locked = Boolean(record && !editing);
+  const culture = cultureMeta(load.cultura);
+  const variety = load?.variedade || load?.mercadoria || "";
+  const canExport = Boolean(
+    (tab === "original" && original) ||
+    (tab === "counterproof" && counterproof) ||
+    (tab === "compare" && original && counterproof)
+  );
   useEffect(() => setEditing(false), [tab]);
 
   const saveRecord = async () => {
@@ -635,6 +1150,7 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
         pesoAmostraGramas: sampleWeight,
         umidadePercentual: digitsToNumber(form.umidadePercentual),
         impurezasPercentual: digitsToNumber(form.impurezasPercentual),
+        bandinhaPercentual: digitsToNumber(form.bandinhaPercentual),
         peneiras: asNumbers(form.peneiras),
         defeitos: asNumbers(form.defeitos),
         classificacaoFinal: form.classificacaoFinal.trim(),
@@ -659,7 +1175,15 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
             schemaVersion: 2,
             contraprova: classification?.contraprova || null
           };
-      await saveTruckClassification(load.id, next);
+      // Mantém o contrato legado na raiz da carga. A contraprova nunca altera esses campos.
+      const legacySampleData = isCounterproof
+        ? null
+        : {
+            umidade: String(digitsToNumber(form.umidadePercentual) ?? ""),
+            impureza: String(digitsToNumber(form.impurezasPercentual) ?? ""),
+            bandinha: String(digitsToNumber(form.bandinhaPercentual) ?? "")
+          };
+      await saveTruckClassification(load.id, next, legacySampleData);
       toast.success(`${label} salva e bloqueada com sucesso.`);
       onSaved(next);
       onClose();
@@ -698,18 +1222,124 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
       setSaving(false);
     }
   };
+  const handleExport = async (format) => {
+    if (!reportRef.current) return;
+    setSaving(true);
+    try {
+      const canvas = await html2canvas(reportRef.current, {
+        backgroundColor: "#ffffff",
+        scale: format === "pdf" ? 1.35 : 2,
+        useCORS: true
+      });
+      const fileBase = `classificacao-${String(ticket(load)).replace(/[^a-zA-Z0-9_-]/g, "-") || load.id}-${tab === "compare" ? "comparacao" : "amostra"}`;
+      if (format === "image") {
+        const link = document.createElement("a");
+        link.download = `${fileBase}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } else {
+        const image = canvas.toDataURL("image/jpeg", 0.72);
+        const landscape = canvas.width > canvas.height;
+        const pdf = new jsPDF({
+          orientation: landscape ? "landscape" : "portrait",
+          unit: "mm",
+          format: "a4"
+        });
+        const pageWidth = landscape ? 277 : 190;
+        const pageHeight = landscape ? 190 : 277;
+        const ratio = Math.min(
+          pageWidth / canvas.width,
+          pageHeight / canvas.height
+        );
+        const width = canvas.width * ratio;
+        const height = canvas.height * ratio;
+        pdf.addImage(
+          image,
+          "JPEG",
+          (pageWidth - width) / 2,
+          10,
+          width,
+          height,
+          undefined,
+          "FAST"
+        );
+        pdf.save(`${fileBase}.pdf`);
+      }
+    } catch (error) {
+      console.error("Erro ao exportar classificação", error);
+      toast.error("Não foi possível exportar o cartão.");
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <Dialog
       open
       onClose={saving ? undefined : onClose}
       fullWidth
       maxWidth="lg"
-      PaperProps={{ sx: { borderRadius: 2, backgroundColor: "#fff" } }}
+      PaperProps={{
+        sx: { borderRadius: 2, overflow: "hidden", backgroundColor: "#fff" }
+      }}
     >
       <DialogTitle
-        sx={{ color: "#fff", backgroundColor: "#0e5e91", fontWeight: 900 }}
+        sx={{
+          p: 0,
+          color: culture.text,
+          background: `linear-gradient(118deg, ${culture.soft} 0%, #ffffff 72%)`
+        }}
       >
-        Classificação — Feijão
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 2,
+            px: { xs: 2, sm: 2.25 },
+            py: 1.15
+          }}
+        >
+          <Box>
+            <Typography
+              variant="caption"
+              sx={{
+                display: "block",
+                color: culture.text,
+                opacity: 0.78,
+                fontWeight: 800,
+                letterSpacing: 0.35
+              }}
+            >
+              CLASSIFICAÇÃO DA CARGA
+            </Typography>
+            <Typography
+              variant="h5"
+              fontWeight={900}
+              sx={{ color: culture.text, lineHeight: 1.2 }}
+            >
+              {culture.label}
+              {variety ? ` — ${variety}` : ""}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              width: 42,
+              height: 42,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: 2,
+              border: `1px solid ${culture.main}35`,
+              backgroundColor: "#ffffffc9"
+            }}
+          >
+            <Box
+              component="img"
+              src={culture.icon}
+              alt={culture.label}
+              sx={{ width: 27, height: 27, objectFit: "contain" }}
+            />
+          </Box>
+        </Box>
       </DialogTitle>
       <DialogContent
         dividers
@@ -718,33 +1348,77 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
-            gap: 1,
-            mb: 2
+            gridTemplateColumns: {
+              xs: "repeat(2, minmax(0, 1fr))",
+              sm: "repeat(3, minmax(0, 1fr))",
+              md: "2fr 1fr 1fr 1.5fr 1fr 4fr"
+            },
+            mb: 1.25,
+            border: "1px solid #e2e8f0",
+            borderLeft: 0,
+            borderRadius: 1.25,
+            overflow: "hidden",
+            backgroundColor: "#fff"
           }}
         >
-          <Info label="Data" value={dateLabel(loadDate(load), true)} />
-          <Info label="Ticket" value={ticket(load)} />
-          <Info label="Projeto" value={project(load)} />
-          <Info label="Placa" value={plate(load.placa)} />
-          <Info label="Motorista" value={load.motorista || "-"} />
-          <Info label="Romaneio" value={romaneio(load)} />
+          <CompactInfo label="Data" value={dateLabel(loadDate(load))} />
+          <CompactInfo label="Ticket" value={ticket(load)} />
+          <CompactInfo label="Romaneio" value={romaneio(load)} />
+          <CompactInfo
+            label="Projeto"
+            value={project(load).replace("Projeto ", "")}
+          />
+          <CompactInfo label="Placa" value={plate(load.placa)} />
+          <CompactInfo label="Motorista" value={load.motorista || "-"} />
         </Box>
-        <Paper variant="outlined" sx={{ mb: 2, borderColor: "#d9e0e6" }}>
+        <Paper
+          variant="outlined"
+          sx={{ mb: 2, borderColor: "#d9e0e6", backgroundColor: "#fff" }}
+        >
           <Tabs
             value={tab}
             onChange={(_, value) => setTab(value)}
             variant="scrollable"
             scrollButtons="auto"
-            sx={{ px: 1, borderBottom: "1px solid #d9e0e6" }}
+            sx={{
+              px: 1.15,
+              pt: 0.25,
+              backgroundColor: "#ffffffa8",
+              borderTop: `1px solid ${culture.main}24`,
+              "& .MuiTabs-indicator": { display: "none" },
+              "& .MuiTab-root": {
+                minHeight: 42,
+                px: 1.5,
+                mr: 0.6,
+                mb: 0.75,
+                borderRadius: 1.5,
+                color: culture.text,
+                fontSize: "0.78rem",
+                fontWeight: 800,
+                textTransform: "none"
+              },
+              "& .MuiTab-root:hover:not(.Mui-disabled)": {
+                backgroundColor: culture.soft
+              },
+              "& .MuiTab-root.Mui-selected": {
+                color: "#fff",
+                backgroundColor: culture.main,
+                boxShadow: `0 3px 8px ${culture.main}4d`
+              },
+              "& .MuiTab-root.Mui-disabled": { color: "#94a3b8" }
+            }}
           >
             <Tab
               value="original"
-              label={original ? "Classificação" : "Nova classificação"}
+              icon={<AssignmentRoundedIcon fontSize="small" />}
+              iconPosition="start"
+              label={original ? "Amostra principal" : "Nova amostra"}
             />
             <Tab
               value="counterproof"
               disabled={!original}
+              icon={<CheckCircleRoundedIcon fontSize="small" />}
+              iconPosition="start"
               label={counterproof ? "Contraprova" : "Nova contraprova"}
             />
             <Tab
@@ -755,15 +1429,22 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
               label="Comparar"
             />
           </Tabs>
-          {!original && (
-            <Typography
-              variant="caption"
-              sx={{ display: "block", p: 1.25, color: "#64748b" }}
-            >
+        </Paper>
+        {!original && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 1.25,
+              borderRadius: 1.5,
+              color: culture.text,
+              backgroundColor: culture.soft
+            }}
+          >
+            <Typography variant="caption">
               A contraprova é liberada após salvar a classificação original.
             </Typography>
-          )}
-        </Paper>
+          </Box>
+        )}
         {tab === "compare" ? (
           <Compare original={original} counterproof={counterproof} />
         ) : (
@@ -778,6 +1459,26 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
           />
         )}
       </DialogContent>
+      <Box
+        ref={reportRef}
+        aria-hidden="true"
+        sx={{
+          position: "fixed",
+          left: "-12000px",
+          top: 0,
+          width: 1050,
+          pointerEvents: "none"
+        }}
+      >
+        <ExportReport
+          load={load}
+          culture={culture}
+          variety={variety}
+          tab={tab}
+          original={original}
+          counterproof={counterproof}
+        />
+      </Box>
       <DialogActions
         sx={{
           p: 1.75,
@@ -799,9 +1500,37 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
           )}
         </Box>
         <Box sx={{ display: "flex", gap: 1 }}>
-          <Button color="inherit" onClick={onClose} disabled={saving}>
+          <Button
+            color="error"
+            variant="outlined"
+            onClick={onClose}
+            disabled={saving}
+            sx={{ textTransform: "none" }}
+          >
             Fechar
           </Button>
+          {canExport && (
+            <Button
+              variant="outlined"
+              disabled={saving}
+              startIcon={<ImageRoundedIcon />}
+              onClick={() => handleExport("image")}
+              sx={{ textTransform: "none" }}
+            >
+              Imagem
+            </Button>
+          )}
+          {canExport && (
+            <Button
+              variant="outlined"
+              disabled={saving}
+              startIcon={<PictureAsPdfRoundedIcon />}
+              onClick={() => handleExport("pdf")}
+              sx={{ textTransform: "none" }}
+            >
+              PDF
+            </Button>
+          )}
           {isSuperUser && record && locked && tab !== "compare" && (
             <Button
               variant="outlined"
@@ -1082,7 +1811,9 @@ const ClassificacaoCargasPage = () => {
       </Box>
       <Box
         sx={{
-          overflowX: "auto",
+          "--classification-table-header": colors.blueOrigin[400],
+          maxHeight: "calc(100vh - 255px)",
+          overflow: "auto",
           border: "1px solid #d5dce5",
           borderRadius: "4px"
         }}
@@ -1259,6 +1990,11 @@ const ClassificacaoCargasPage = () => {
                   </tr>
                 );
               })}
+            {!loading && filtered.length > 0 && (
+              <tr className={styles.tableEndSpacer}>
+                <td colSpan={16} />
+              </tr>
+            )}
           </tbody>
         </Table>
       </Box>

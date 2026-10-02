@@ -16,6 +16,14 @@
   height: 30px;
 }
 
+.classificationTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background-color: var(--classification-table-header) !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.2);
+}
+
 .classificationTable tbody tr {
   font-size: 0.8rem;
 }
@@ -38,4 +46,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.tableEndSpacer td {
+  height: 16px;
+  padding: 0 !important;
+  border: 0 !important;
+  background-color: #ffffff !important;
 }
