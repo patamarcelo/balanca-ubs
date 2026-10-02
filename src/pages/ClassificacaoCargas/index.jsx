@@ -15,6 +15,8 @@ import {
   Paper,
   Select,
   Switch,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -23,17 +25,24 @@ import {
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import PendingActionsRoundedIcon from "@mui/icons-material/PendingActionsRounded";
 import PhotoCameraRoundedIcon from "@mui/icons-material/PhotoCameraRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import Table from "react-bootstrap/Table";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 import { ColorModeContext, tokens } from "../../theme";
-import { selectCurrentUser } from "../../store/user/user.selector";
+import {
+  selectCurrentUser,
+  selectIsAdminUser
+} from "../../store/user/user.selector";
 import {
   getClassifiableTruckMoves,
   saveTruckClassification,
@@ -46,8 +55,7 @@ import corn from "../../utils/assets/icons/corn.png";
 import question from "../../utils/assets/icons/question.png";
 import styles from "./classificacao-cargas.module.css";
 
-const CLASSIFICATION_DECIMAL_PLACES = 2;
-
+const DECIMALS = 2;
 const PENEIRAS = [
   { key: "pn_400", label: "PN 4,00" },
   { key: "pn_375", label: "PN 3,75" },
@@ -56,7 +64,6 @@ const PENEIRAS = [
   { key: "pn_250", label: "PN 2,50" },
   { key: "pn_225_saida", label: "PN 2,25 / saída" }
 ];
-
 const DEFEITOS = [
   { key: "impurezas", label: "Impurezas" },
   { key: "partidos", label: "Partidos" },
@@ -75,8 +82,7 @@ const DEFEITOS = [
   { key: "fermentados", label: "Fermentados" },
   { key: "fedegoso", label: "Fedegoso" }
 ];
-
-const compactSelectSx = {
+const selectSx = {
   minWidth: 180,
   "& .MuiInputBase-root": { height: 34, fontSize: "0.78rem" },
   "& .MuiSelect-select": {
@@ -89,182 +95,122 @@ const compactSelectSx = {
   "& .MuiChip-root": { height: 21, fontSize: "0.68rem" }
 };
 
-const emptyMeasurements = (fields) =>
-  fields.reduce((accumulator, field) => {
-    accumulator[field.key] = "";
-    return accumulator;
-  }, {});
-
-const normalizeText = (value) =>
+const normalized = (value) =>
   String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
-
-const toDate = (value) => {
+const dateFrom = (value) => {
   if (!value) return null;
   if (typeof value.toDate === "function") return value.toDate();
   if (value.seconds) return new Date(value.seconds * 1000);
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
 };
-
-const getLoadDate = (load) =>
-  toDate(load?.appDate) || toDate(load?.createdAt) || toDate(load?.entrada);
-
-const formatDate = (value) => {
-  const date = toDate(value);
-  return date ? date.toLocaleString("pt-BR") : "-";
-};
-
-const formatTableDate = (value) => {
-  const date = toDate(value);
-  if (!date) return "-";
-  return `${date.toLocaleDateString("pt-BR")} ${date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
-};
-
-const toDateKey = (value) => {
-  const date = toDate(value);
+const loadDate = (load) =>
+  dateFrom(load?.appDate) ||
+  dateFrom(load?.createdAt) ||
+  dateFrom(load?.entrada);
+const dateKey = (value) => {
+  const date = dateFrom(value);
   if (!date) return "";
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 };
-
-const todayKey = () => toDateKey(new Date());
-
-const daysAgoKey = (days) => {
+const today = () => dateKey(new Date());
+const daysAgo = (days) => {
   const date = new Date();
   date.setDate(date.getDate() - days);
-  return toDateKey(date);
+  return dateKey(date);
 };
-
-const getTicket = (load) => load?.ticket || load?.codTicketPro || "-";
-const getProject = (load) => load?.projeto || load?.fazendaOrigem || "-";
-const getDestination = (load) => load?.fazendaDestino || load?.destino || "-";
-const isFeijao = (load) => normalizeText(load?.cultura).includes("feijao");
-
-const formatWeight = (value) => {
-  const number = Number(value);
-  return Number.isFinite(number) && number > 0
-    ? number.toLocaleString("pt-BR")
+const dateLabel = (value, full = false) => {
+  const date = dateFrom(value);
+  if (!date) return "-";
+  return full
+    ? date.toLocaleString("pt-BR")
+    : `${date.toLocaleDateString("pt-BR")} ${date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+};
+const ticket = (load) => load?.ticket || load?.codTicketPro || "-";
+const project = (load) => load?.projeto || load?.fazendaOrigem || "-";
+const destination = (load) => load?.fazendaDestino || load?.destino || "-";
+const romaneio = (load) => load?.relatorioColheita || load?.romaneio || "-";
+const feijao = (load) => normalized(load?.cultura).includes("feijao");
+const plate = (value) => {
+  const text = String(value || "").toUpperCase();
+  return text.length > 3 ? `${text.slice(0, 3)}-${text.slice(3)}` : text || "-";
+};
+const weight = (value) =>
+  Number(value) > 0 ? Number(value).toLocaleString("pt-BR") : "-";
+const metric = (value, unit = "") =>
+  Number.isFinite(Number(value))
+    ? `${Number(value).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}${unit}`
     : "-";
-};
-
-const formatPercent = (value) => {
-  const number = Number(String(value ?? "").replace(",", "."));
-  return Number.isFinite(number) && number > 0
-    ? `${number.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })} %`
-    : "-";
-};
-
-const formatPlate = (plate) => {
-  const value = String(plate || "").toUpperCase();
-  return value.length > 3
-    ? `${value.slice(0, 3)}-${value.slice(3)}`
-    : value || "-";
-};
-
-const getClassificationPhotoUrl = (photo) => {
-  if (typeof photo === "string") return photo;
-  return photo?.url || photo?.downloadURL || "";
-};
-
-const cultureIcon = (culture) => {
-  const normalized = normalizeText(culture);
-  if (normalized.includes("feijao")) return beans;
-  if (normalized.includes("soja")) return soy;
-  if (normalized.includes("arroz")) return rice;
-  if (normalized.includes("milho")) return corn;
+const photoUrl = (photo) =>
+  typeof photo === "string" ? photo : photo?.url || photo?.downloadURL || "";
+const iconForCulture = (culture) => {
+  const value = normalized(culture);
+  if (value.includes("feijao")) return beans;
+  if (value.includes("soja")) return soy;
+  if (value.includes("arroz")) return rice;
+  if (value.includes("milho")) return corn;
   return question;
 };
-
-const numberToDigits = (
-  value,
-  decimalPlaces = CLASSIFICATION_DECIMAL_PLACES
-) => {
+const numberToDigits = (value, places = DECIMALS) => {
   if (value === "" || value === null || value === undefined) return "";
   const number = Number(String(value).replace(",", "."));
-  if (!Number.isFinite(number)) return "";
-  return String(Math.round(number * 10 ** decimalPlaces));
+  return Number.isFinite(number)
+    ? String(Math.round(number * 10 ** places))
+    : "";
 };
-
-const digitsToNumber = (
-  value,
-  decimalPlaces = CLASSIFICATION_DECIMAL_PLACES
-) => {
-  if (value === "" || value === null || value === undefined) return null;
-  const digits = String(value).replace(/\D/g, "");
-  return digits ? Number(digits) / 10 ** decimalPlaces : null;
+const digitsToNumber = (value, places = DECIMALS) => {
+  const digits = String(value || "").replace(/\D/g, "");
+  return digits ? Number(digits) / 10 ** places : null;
 };
-
-const numericMap = (values) =>
-  Object.entries(values).reduce((accumulator, [key, value]) => {
-    accumulator[key] = digitsToNumber(value);
-    return accumulator;
-  }, {});
-
-const mapToDigits = (fields, values = {}) =>
-  fields.reduce((accumulator, field) => {
-    accumulator[field.key] = numberToDigits(values[field.key]);
-    return accumulator;
-  }, {});
-
-const createForm = (load) => {
-  const saved = load?.classificacao?.dados || {};
+const empty = (fields) =>
+  Object.fromEntries(fields.map(({ key }) => [key, ""]));
+const asDigits = (fields, values = {}) =>
+  Object.fromEntries(
+    fields.map(({ key }) => [key, numberToDigits(values[key])])
+  );
+const asNumbers = (values) =>
+  Object.fromEntries(
+    Object.entries(values).map(([key, value]) => [key, digitsToNumber(value)])
+  );
+const createForm = (record) => {
+  const data = record?.dados || {};
   return {
-    pesoAmostraGramas: numberToDigits(saved.pesoAmostraGramas),
-    umidadePercentual: numberToDigits(saved.umidadePercentual),
-    impurezasPercentual: numberToDigits(saved.impurezasPercentual),
-    peneiras: {
-      ...emptyMeasurements(PENEIRAS),
-      ...mapToDigits(PENEIRAS, saved.peneiras)
-    },
-    defeitos: {
-      ...emptyMeasurements(DEFEITOS),
-      ...mapToDigits(DEFEITOS, saved.defeitos)
-    },
-    classificacaoFinal: saved.classificacaoFinal || "",
-    observacoes: saved.observacoes || ""
+    pesoAmostraGramas: numberToDigits(data.pesoAmostraGramas),
+    umidadePercentual: numberToDigits(data.umidadePercentual),
+    impurezasPercentual: numberToDigits(data.impurezasPercentual),
+    peneiras: { ...empty(PENEIRAS), ...asDigits(PENEIRAS, data.peneiras) },
+    defeitos: { ...empty(DEFEITOS), ...asDigits(DEFEITOS, data.defeitos) },
+    classificacaoFinal: data.classificacaoFinal || "",
+    observacoes: data.observacoes || ""
   };
 };
 
-const DecimalShiftField = ({
-  label,
-  value,
-  onChange,
-  decimalPlaces = CLASSIFICATION_DECIMAL_PLACES,
-  ...props
-}) => {
+const ShiftField = ({ value, onChange, places = DECIMALS, ...props }) => {
   const digits = String(value || "").replace(/\D/g, "");
-  const padded = digits.padStart(decimalPlaces + 1, "0");
-  const displayValue = digits
-    ? `${Number(padded.slice(0, -decimalPlaces))},${padded.slice(-decimalPlaces)}`
+  const padded = digits.padStart(places + 1, "0");
+  const display = digits
+    ? `${Number(padded.slice(0, -places))},${padded.slice(-places)}`
     : "";
-
   return (
     <TextField
       {...props}
-      label={label}
       type="text"
       inputMode="numeric"
-      value={displayValue}
+      value={display}
       onChange={(event) => {
-        const nextDigits = event.target.value
+        const next = event.target.value
           .replace(/\D/g, "")
           .replace(/^0+(?=\d)/, "");
-        onChange(/^0*$/.test(nextDigits) ? "" : nextDigits);
+        onChange(/^0*$/.test(next) ? "" : next);
       }}
       inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
     />
   );
 };
-
 const Info = ({ label, value }) => (
   <Box
     sx={{
@@ -282,12 +228,48 @@ const Info = ({ label, value }) => (
     </Typography>
   </Box>
 );
-
-const FormSection = ({ title, fields, values, onChange }) => (
-  <Paper
-    variant="outlined"
-    sx={{ mt: 2.25, p: 2, borderColor: "#d9e0e6", backgroundColor: "#fff" }}
-  >
+const Photo = ({ photo, label }) => {
+  const url = photoUrl(photo);
+  if (!url) return null;
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography
+        variant="subtitle2"
+        fontWeight={800}
+        sx={{ color: "#0e5e91", mb: 0.75 }}
+      >
+        {label}
+      </Typography>
+      <Box
+        component="a"
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        sx={{
+          display: "inline-flex",
+          overflow: "hidden",
+          border: "1px solid #d9e0e6",
+          borderRadius: 1.5
+        }}
+      >
+        <Box
+          component="img"
+          src={url}
+          alt={label}
+          sx={{
+            display: "block",
+            width: "100%",
+            maxWidth: 420,
+            maxHeight: 280,
+            objectFit: "contain"
+          }}
+        />
+      </Box>
+    </Box>
+  );
+};
+const Fields = ({ title, fields, values, change, disabled }) => (
+  <Paper variant="outlined" sx={{ mt: 2.25, p: 2, borderColor: "#d9e0e6" }}>
     <Typography
       variant="h5"
       fontWeight={900}
@@ -307,77 +289,379 @@ const FormSection = ({ title, fields, values, onChange }) => (
       }}
     >
       {fields.map((field) => (
-        <DecimalShiftField
+        <ShiftField
           key={field.key}
           size="small"
+          disabled={disabled}
           label={`${field.label} (g)`}
           value={values[field.key]}
-          onChange={(value) => onChange(field.key, value)}
+          onChange={(value) => change(field.key, value)}
         />
       ))}
     </Box>
   </Paper>
 );
 
-const ClassificationDialog = ({ load, onClose, onSaved }) => {
-  const user = useSelector(selectCurrentUser);
-  const [form, setForm] = useState(() => createForm(load));
-  const [imageFile, setImageFile] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const existingClassification = load?.classificacao;
-  const existingPhotoUrl = getClassificationPhotoUrl(
-    existingClassification?.foto
-  );
-
-  const updateMeasurement = (group, key, value) => {
+const ClassificationForm = ({
+  record,
+  form,
+  setForm,
+  imageFile,
+  setImageFile,
+  locked,
+  label
+}) => {
+  const update = (group, key, value) =>
     setForm((previous) => ({
       ...previous,
       [group]: { ...previous[group], [key]: value }
     }));
+  return (
+    <Box>
+      {locked && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            p: 1.25,
+            mb: 2,
+            borderRadius: 1.5,
+            backgroundColor: "#fef3c7",
+            color: "#854d0e"
+          }}
+        >
+          <LockRoundedIcon fontSize="small" />
+          <Typography variant="body2" fontWeight={700}>
+            {label} concluída e bloqueada.
+          </Typography>
+        </Box>
+      )}
+      <Paper variant="outlined" sx={{ p: 2, borderColor: "#d9e0e6" }}>
+        <Typography
+          variant="h5"
+          fontWeight={900}
+          sx={{ color: "#0e5e91", mb: 1.5 }}
+        >
+          Dados da amostra
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+            gap: 1.25
+          }}
+        >
+          <ShiftField
+            required
+            size="small"
+            disabled={locked}
+            label="Peso da amostra (g)"
+            value={form.pesoAmostraGramas}
+            onChange={(value) =>
+              setForm((previous) => ({ ...previous, pesoAmostraGramas: value }))
+            }
+          />
+          <ShiftField
+            size="small"
+            disabled={locked}
+            label="Umidade (%)"
+            value={form.umidadePercentual}
+            onChange={(value) =>
+              setForm((previous) => ({ ...previous, umidadePercentual: value }))
+            }
+          />
+          <ShiftField
+            size="small"
+            disabled={locked}
+            label="Impureza (%)"
+            value={form.impurezasPercentual}
+            onChange={(value) =>
+              setForm((previous) => ({
+                ...previous,
+                impurezasPercentual: value
+              }))
+            }
+          />
+        </Box>
+      </Paper>
+      <Fields
+        title="Peneiras"
+        fields={PENEIRAS}
+        values={form.peneiras}
+        disabled={locked}
+        change={(key, value) => update("peneiras", key, value)}
+      />
+      <Fields
+        title="Defeitos"
+        fields={DEFEITOS}
+        values={form.defeitos}
+        disabled={locked}
+        change={(key, value) => update("defeitos", key, value)}
+      />
+      <Paper variant="outlined" sx={{ mt: 2.25, p: 2, borderColor: "#d9e0e6" }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 2fr" },
+            gap: 1.25
+          }}
+        >
+          <TextField
+            size="small"
+            disabled={locked}
+            label="Classificado"
+            value={form.classificacaoFinal}
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
+                classificacaoFinal: event.target.value
+              }))
+            }
+          />
+          <TextField
+            size="small"
+            disabled={locked}
+            label="Observações"
+            multiline
+            minRows={2}
+            value={form.observacoes}
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
+                observacoes: event.target.value
+              }))
+            }
+          />
+        </Box>
+        {!locked && (
+          <Button
+            component="label"
+            variant="outlined"
+            startIcon={<PhotoCameraRoundedIcon />}
+            sx={{ mt: 1.5, textTransform: "none" }}
+          >
+            {imageFile
+              ? imageFile.name
+              : record?.foto
+                ? "Substituir foto"
+                : "Adicionar foto"}
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                setImageFile(event.target.files?.[0] || null)
+              }
+            />
+          </Button>
+        )}
+        <Photo photo={record?.foto} label={`Foto da ${label.toLowerCase()}`} />
+      </Paper>
+    </Box>
+  );
+};
+
+const Compare = ({ original, counterproof }) => {
+  const originalData = original?.dados || {};
+  const counterData = counterproof?.dados || {};
+  const valueFor = (data, key, group) =>
+    group ? data[group]?.[key] : data[key];
+  const rows = [
+    ["Peso da amostra", "pesoAmostraGramas", null, " g"],
+    ["Umidade", "umidadePercentual", null, " %"],
+    ["Impureza", "impurezasPercentual", null, " %"],
+    ...PENEIRAS.map((item) => [
+      `${item.label} (g)`,
+      item.key,
+      "peneiras",
+      " g"
+    ]),
+    ...DEFEITOS.map((item) => [`${item.label} (g)`, item.key, "defeitos", " g"])
+  ];
+  const row = (label, a, b) => (
+    <Box
+      key={label}
+      sx={{
+        display: "grid",
+        gridTemplateColumns:
+          "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr)",
+        borderBottom: "1px solid #e2e8f0"
+      }}
+    >
+      <Typography sx={{ p: 1, fontWeight: 700, color: "#334155" }}>
+        {label}
+      </Typography>
+      <Typography sx={{ p: 1, borderLeft: "1px solid #e2e8f0" }}>
+        {a}
+      </Typography>
+      <Typography
+        sx={{
+          p: 1,
+          borderLeft: "1px solid #e2e8f0",
+          backgroundColor: "#f0fdf4"
+        }}
+      >
+        {b}
+      </Typography>
+    </Box>
+  );
+  return (
+    <Box>
+      <Paper
+        variant="outlined"
+        sx={{ p: 2, borderColor: "#d9e0e6", overflowX: "auto" }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={900}
+          sx={{ color: "#0e5e91", mb: 1.5 }}
+        >
+          Comparação da classificação
+        </Typography>
+        <Box
+          sx={{
+            minWidth: 520,
+            border: "1px solid #e2e8f0",
+            borderRadius: 1.5,
+            overflow: "hidden"
+          }}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns:
+                "minmax(150px, 1fr) minmax(170px, 1fr) minmax(170px, 1fr)",
+              backgroundColor: "#0e5e91",
+              color: "#fff"
+            }}
+          >
+            <Typography sx={{ p: 1, fontWeight: 800 }}>Campo</Typography>
+            <Typography sx={{ p: 1, fontWeight: 800 }}>
+              Classificação
+            </Typography>
+            <Typography sx={{ p: 1, fontWeight: 800 }}>Contraprova</Typography>
+          </Box>
+          {rows.map(([label, key, group, unit]) =>
+            row(
+              label,
+              metric(valueFor(originalData, key, group), unit),
+              metric(valueFor(counterData, key, group), unit)
+            )
+          )}
+          {row(
+            "Classificado",
+            originalData.classificacaoFinal || "-",
+            counterData.classificacaoFinal || "-"
+          )}
+          {row(
+            "Observações",
+            originalData.observacoes || "-",
+            counterData.observacoes || "-"
+          )}
+        </Box>
+      </Paper>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gap: 2
+        }}
+      >
+        <Photo photo={original?.foto} label="Foto da classificação" />
+        <Photo photo={counterproof?.foto} label="Foto da contraprova" />
+      </Box>
+    </Box>
+  );
+};
+
+const ClassificationDialog = ({ load, onClose, onSaved }) => {
+  const user = useSelector(selectCurrentUser);
+  // Neste projeto, selectIsAdminUser é a permissão do superUser operacional.
+  const isSuperUser = useSelector(selectIsAdminUser);
+  const [tab, setTab] = useState("original");
+  const [editing, setEditing] = useState(false);
+  const [originalForm, setOriginalForm] = useState(() =>
+    createForm(load?.classificacao)
+  );
+  const [counterForm, setCounterForm] = useState(() =>
+    createForm(load?.classificacao?.contraprova)
+  );
+  const [originalImage, setOriginalImage] = useState(null);
+  const [counterImage, setCounterImage] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const classification = load?.classificacao || null;
+  const original =
+    classification?.status === "concluida" ? classification : null;
+  const counterproof =
+    classification?.contraprova?.status === "concluida"
+      ? classification.contraprova
+      : null;
+  const isCounterproof = tab === "counterproof";
+  const record = isCounterproof ? counterproof : original;
+  const form = isCounterproof ? counterForm : originalForm;
+  const setForm = isCounterproof ? setCounterForm : setOriginalForm;
+  const image = isCounterproof ? counterImage : originalImage;
+  const setImage = isCounterproof ? setCounterImage : setOriginalImage;
+  const label = isCounterproof ? "Contraprova" : "Classificação";
+  const locked = Boolean(record && !editing);
+  useEffect(() => setEditing(false), [tab]);
+
+  const saveRecord = async () => {
+    const sampleWeight = digitsToNumber(form.pesoAmostraGramas);
+    if (!sampleWeight || sampleWeight <= 0)
+      throw new Error("Informe o peso da amostra para salvar a classificação.");
+    let foto = record?.foto || null;
+    if (image)
+      foto = await uploadTruckClassificationImage(
+        load.id,
+        image,
+        isCounterproof ? "contraprova" : "classificacao"
+      );
+    return {
+      schemaVersion: 1,
+      status: "concluida",
+      bloqueada: true,
+      cultura: "feijao",
+      createdAt: record?.createdAt || new Date(),
+      createdBy: record?.createdBy || {
+        uid: user?.uid || "",
+        email: user?.email || ""
+      },
+      updatedAt: new Date(),
+      updatedBy: { uid: user?.uid || "", email: user?.email || "" },
+      foto,
+      dados: {
+        pesoAmostraGramas: sampleWeight,
+        umidadePercentual: digitsToNumber(form.umidadePercentual),
+        impurezasPercentual: digitsToNumber(form.impurezasPercentual),
+        peneiras: asNumbers(form.peneiras),
+        defeitos: asNumbers(form.defeitos),
+        classificacaoFinal: form.classificacaoFinal.trim(),
+        observacoes: form.observacoes.trim()
+      }
+    };
   };
-
   const handleSave = async () => {
-    const pesoAmostraGramas = digitsToNumber(form.pesoAmostraGramas);
-    if (!pesoAmostraGramas || pesoAmostraGramas <= 0) {
-      toast.error("Informe o peso da amostra para salvar a classificação.");
-      return;
-    }
-
     setSaving(true);
     try {
-      let foto = existingClassification?.foto || null;
-      if (imageFile)
-        foto = await uploadTruckClassificationImage(load.id, imageFile);
-
-      const classification = {
-        schemaVersion: 1,
-        status: "concluida",
-        cultura: "feijao",
-        createdAt: existingClassification?.createdAt,
-        createdBy: existingClassification?.createdBy || {
-          uid: user?.uid || "",
-          email: user?.email || ""
-        },
-        updatedBy: { uid: user?.uid || "", email: user?.email || "" },
-        foto,
-        dados: {
-          pesoAmostraGramas,
-          umidadePercentual: digitsToNumber(form.umidadePercentual),
-          impurezasPercentual: digitsToNumber(form.impurezasPercentual),
-          peneiras: numericMap(form.peneiras),
-          defeitos: numericMap(form.defeitos),
-          classificacaoFinal: form.classificacaoFinal.trim(),
-          observacoes: form.observacoes.trim()
-        }
-      };
-
-      await saveTruckClassification(load.id, classification);
-      toast.success("Classificação salva com sucesso.");
-      onSaved({
-        ...classification,
-        createdAt: existingClassification?.createdAt || new Date(),
-        updatedAt: new Date()
-      });
+      const saved = await saveRecord();
+      const next = isCounterproof
+        ? {
+            ...classification,
+            schemaVersion: 2,
+            status: "concluida",
+            bloqueada: true,
+            contraprova: saved
+          }
+        : {
+            ...saved,
+            schemaVersion: 2,
+            contraprova: classification?.contraprova || null
+          };
+      await saveTruckClassification(load.id, next);
+      toast.success(`${label} salva e bloqueada com sucesso.`);
+      onSaved(next);
       onClose();
     } catch (error) {
       console.error("Erro ao salvar classificação", error);
@@ -386,7 +670,34 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
       setSaving(false);
     }
   };
-
+  const handleDelete = async () => {
+    const target = isCounterproof
+      ? "a contraprova"
+      : "a classificação e sua contraprova";
+    if (!window.confirm(`Excluir ${target}? Esta ação não pode ser desfeita.`))
+      return;
+    setSaving(true);
+    try {
+      if (isCounterproof) {
+        const { contraprova, ...next } = classification;
+        await saveTruckClassification(load.id, next);
+        onSaved(next);
+      } else {
+        // updateDoc deve receber { classificacao: null }; os campos legados da carga não são tocados.
+        await saveTruckClassification(load.id, null);
+        onSaved(null);
+      }
+      toast.success(`${label} excluída com sucesso.`);
+      onClose();
+    } catch (error) {
+      console.error("Erro ao excluir classificação", error);
+      toast.error(
+        error?.message || "Não foi possível excluir a classificação."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <Dialog
       open
@@ -412,194 +723,118 @@ const ClassificationDialog = ({ load, onClose, onSaved }) => {
             mb: 2
           }}
         >
-          <Info label="Data" value={formatDate(getLoadDate(load))} />
-          <Info label="Ticket" value={getTicket(load)} />
-          <Info label="Projeto" value={getProject(load)} />
-          <Info label="Placa" value={formatPlate(load.placa)} />
+          <Info label="Data" value={dateLabel(loadDate(load), true)} />
+          <Info label="Ticket" value={ticket(load)} />
+          <Info label="Projeto" value={project(load)} />
+          <Info label="Placa" value={plate(load.placa)} />
           <Info label="Motorista" value={load.motorista || "-"} />
-          <Info label="Romaneio" value={load.relatorioColheita || "-"} />
+          <Info label="Romaneio" value={romaneio(load)} />
         </Box>
-        <Paper variant="outlined" sx={{ p: 2, borderColor: "#d9e0e6" }}>
-          <Typography
-            variant="h5"
-            fontWeight={900}
-            sx={{ color: "#0e5e91", mb: 1.5 }}
+        <Paper variant="outlined" sx={{ mb: 2, borderColor: "#d9e0e6" }}>
+          <Tabs
+            value={tab}
+            onChange={(_, value) => setTab(value)}
+            variant="scrollable"
+            scrollButtons="auto"
+            sx={{ px: 1, borderBottom: "1px solid #d9e0e6" }}
           >
-            Dados da amostra
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
-              gap: 1.25
-            }}
-          >
-            <DecimalShiftField
-              required
-              size="small"
-              label="Peso da amostra (g)"
-              value={form.pesoAmostraGramas}
-              onChange={(value) =>
-                setForm((previous) => ({
-                  ...previous,
-                  pesoAmostraGramas: value
-                }))
-              }
+            <Tab
+              value="original"
+              label={original ? "Classificação" : "Nova classificação"}
             />
-            <DecimalShiftField
-              size="small"
-              label="Umidade (%)"
-              value={form.umidadePercentual}
-              onChange={(value) =>
-                setForm((previous) => ({
-                  ...previous,
-                  umidadePercentual: value
-                }))
-              }
+            <Tab
+              value="counterproof"
+              disabled={!original}
+              label={counterproof ? "Contraprova" : "Nova contraprova"}
             />
-            <DecimalShiftField
-              size="small"
-              label="Impureza (%)"
-              value={form.impurezasPercentual}
-              onChange={(value) =>
-                setForm((previous) => ({
-                  ...previous,
-                  impurezasPercentual: value
-                }))
-              }
+            <Tab
+              value="compare"
+              disabled={!original || !counterproof}
+              icon={<CompareArrowsRoundedIcon fontSize="small" />}
+              iconPosition="start"
+              label="Comparar"
             />
-          </Box>
-        </Paper>
-        <FormSection
-          title="Peneiras"
-          fields={PENEIRAS}
-          values={form.peneiras}
-          onChange={(key, value) => updateMeasurement("peneiras", key, value)}
-        />
-        <FormSection
-          title="Defeitos"
-          fields={DEFEITOS}
-          values={form.defeitos}
-          onChange={(key, value) => updateMeasurement("defeitos", key, value)}
-        />
-        <Paper
-          variant="outlined"
-          sx={{ mt: 2.25, p: 2, borderColor: "#d9e0e6" }}
-        >
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "1fr 2fr" },
-              gap: 1.25
-            }}
-          >
-            <TextField
-              size="small"
-              label="Classificado"
-              value={form.classificacaoFinal}
-              onChange={(event) =>
-                setForm((previous) => ({
-                  ...previous,
-                  classificacaoFinal: event.target.value
-                }))
-              }
-            />
-            <TextField
-              size="small"
-              label="Observações"
-              value={form.observacoes}
-              onChange={(event) =>
-                setForm((previous) => ({
-                  ...previous,
-                  observacoes: event.target.value
-                }))
-              }
-              multiline
-              minRows={2}
-            />
-          </Box>
-          <Button
-            component="label"
-            variant="outlined"
-            startIcon={<PhotoCameraRoundedIcon />}
-            sx={{ mt: 1.5, textTransform: "none" }}
-          >
-            {imageFile
-              ? imageFile.name
-              : existingClassification?.foto
-                ? "Substituir foto da classificação"
-                : "Adicionar foto da classificação"}
-            <input
-              hidden
-              type="file"
-              accept="image/*"
-              onChange={(event) =>
-                setImageFile(event.target.files?.[0] || null)
-              }
-            />
-          </Button>
-          {existingPhotoUrl && (
-            <Box sx={{ mt: 2 }}>
-              <Typography
-                variant="subtitle2"
-                fontWeight={800}
-                sx={{ color: "#0e5e91", mb: 0.75 }}
-              >
-                Foto da classificação atual
-              </Typography>
-              <Box
-                component="a"
-                href={existingPhotoUrl}
-                target="_blank"
-                rel="noreferrer"
-                sx={{
-                  display: "inline-flex",
-                  border: "1px solid #d9e0e6",
-                  borderRadius: 1.5,
-                  overflow: "hidden",
-                  backgroundColor: "#f8fafc"
-                }}
-              >
-                <Box
-                  component="img"
-                  src={existingPhotoUrl}
-                  alt="Foto da classificação"
-                  sx={{
-                    display: "block",
-                    width: "100%",
-                    maxWidth: 420,
-                    maxHeight: 280,
-                    objectFit: "contain"
-                  }}
-                />
-              </Box>
-            </Box>
+          </Tabs>
+          {!original && (
+            <Typography
+              variant="caption"
+              sx={{ display: "block", p: 1.25, color: "#64748b" }}
+            >
+              A contraprova é liberada após salvar a classificação original.
+            </Typography>
           )}
         </Paper>
+        {tab === "compare" ? (
+          <Compare original={original} counterproof={counterproof} />
+        ) : (
+          <ClassificationForm
+            record={record}
+            form={form}
+            setForm={setForm}
+            imageFile={image}
+            setImageFile={setImage}
+            locked={locked}
+            label={label}
+          />
+        )}
       </DialogContent>
-      <DialogActions sx={{ p: 1.75, backgroundColor: "#fff" }}>
-        <Button color="inherit" onClick={onClose} disabled={saving}>
-          Cancelar
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          disabled={saving}
-          startIcon={
-            saving ? (
-              <CircularProgress size={16} color="inherit" />
-            ) : (
-              <CheckCircleRoundedIcon />
-            )
-          }
-          sx={{
-            backgroundColor: "#3da58a",
-            textTransform: "none",
-            fontWeight: 800
-          }}
-        >
-          Salvar classificação
-        </Button>
+      <DialogActions
+        sx={{
+          p: 1.75,
+          backgroundColor: "#fff",
+          justifyContent: "space-between"
+        }}
+      >
+        <Box>
+          {isSuperUser && record && tab !== "compare" && (
+            <Button
+              color="error"
+              disabled={saving}
+              startIcon={<DeleteOutlineRoundedIcon />}
+              onClick={handleDelete}
+              sx={{ textTransform: "none" }}
+            >
+              Excluir {label.toLowerCase()}
+            </Button>
+          )}
+        </Box>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button color="inherit" onClick={onClose} disabled={saving}>
+            Fechar
+          </Button>
+          {isSuperUser && record && locked && tab !== "compare" && (
+            <Button
+              variant="outlined"
+              disabled={saving}
+              startIcon={<EditRoundedIcon />}
+              onClick={() => setEditing(true)}
+              sx={{ textTransform: "none" }}
+            >
+              Editar {label.toLowerCase()}
+            </Button>
+          )}
+          {!locked && tab !== "compare" && (
+            <Button
+              variant="contained"
+              disabled={saving}
+              startIcon={
+                saving ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <CheckCircleRoundedIcon />
+                )
+              }
+              onClick={handleSave}
+              sx={{
+                backgroundColor: "#3da58a",
+                textTransform: "none",
+                fontWeight: 800
+              }}
+            >
+              Salvar {label.toLowerCase()}
+            </Button>
+          )}
+        </Box>
       </DialogActions>
     </Dialog>
   );
@@ -612,19 +847,17 @@ const ClassificacaoCargasPage = () => {
   const [loads, setLoads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState(daysAgoKey(6));
-  const [endDate, setEndDate] = useState(todayKey());
-  const [selectedProjects, setSelectedProjects] = useState([]);
-  const [selectedTickets, setSelectedTickets] = useState([]);
-  const [selectedDestinations, setSelectedDestinations] = useState([]);
-  const [classificationFilter, setClassificationFilter] = useState("todos");
+  const [startDate, setStartDate] = useState(daysAgo(6));
+  const [endDate, setEndDate] = useState(today());
+  const [projectsFilter, setProjectsFilter] = useState([]);
+  const [ticketsFilter, setTicketsFilter] = useState([]);
+  const [destinationsFilter, setDestinationsFilter] = useState([]);
+  const [onlyUnclassified, setOnlyUnclassified] = useState(false);
   const [selectedLoad, setSelectedLoad] = useState(null);
-
   useEffect(() => {
     colorMode.setColorMode("light");
   }, [colorMode]);
-
-  const loadData = useCallback(async () => {
+  const reload = useCallback(async () => {
     try {
       setLoading(true);
       setLoads(await getClassifiableTruckMoves());
@@ -635,104 +868,96 @@ const ClassificacaoCargasPage = () => {
       setLoading(false);
     }
   }, []);
-
   useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const projects = useMemo(
-    () =>
-      [...new Set(loads.map(getProject).filter((item) => item !== "-"))].sort(
-        (a, b) => a.localeCompare(b, "pt-BR")
-      ),
-    [loads]
-  );
-  const tickets = useMemo(
-    () =>
-      [...new Set(loads.map(getTicket).filter((item) => item !== "-"))].sort(
-        (a, b) => String(a).localeCompare(String(b), "pt-BR", { numeric: true })
-      ),
-    [loads]
-  );
-  const destinations = useMemo(
-    () =>
-      [
-        ...new Set(loads.map(getDestination).filter((item) => item !== "-"))
-      ].sort((a, b) => a.localeCompare(b, "pt-BR")),
-    [loads]
-  );
-
-  const filteredLoads = useMemo(() => {
-    const normalizedSearch = normalizeText(search);
+    reload();
+  }, [reload]);
+  const options = (getter, numeric = false) =>
+    [...new Set(loads.map(getter).filter((value) => value !== "-"))].sort(
+      (a, b) => String(a).localeCompare(String(b), "pt-BR", { numeric })
+    );
+  const projects = useMemo(() => options(project), [loads]);
+  const tickets = useMemo(() => options(ticket, true), [loads]);
+  const destinations = useMemo(() => options(destination), [loads]);
+  const filtered = useMemo(() => {
+    const term = normalized(search);
     return loads.filter((load) => {
-      const loadDate = toDateKey(getLoadDate(load));
-      const matchesDate =
-        (!startDate || loadDate >= startDate) &&
-        (!endDate || loadDate <= endDate);
-      const matchesProject =
-        !selectedProjects.length || selectedProjects.includes(getProject(load));
-      const matchesTicket =
-        !selectedTickets.length || selectedTickets.includes(getTicket(load));
-      const matchesDestination =
-        !selectedDestinations.length ||
-        selectedDestinations.includes(getDestination(load));
-      const matchesClassification =
-        classificationFilter !== "sem" || !load?.classificacao?.status;
-      const searchable = [
-        load.placa,
-        load.motorista,
-        getTicket(load),
-        getProject(load)
-      ]
-        .map(normalizeText)
+      const key = dateKey(loadDate(load));
+      const matches =
+        (!startDate || key >= startDate) &&
+        (!endDate || key <= endDate) &&
+        (!projectsFilter.length || projectsFilter.includes(project(load))) &&
+        (!ticketsFilter.length || ticketsFilter.includes(ticket(load))) &&
+        (!destinationsFilter.length ||
+          destinationsFilter.includes(destination(load))) &&
+        (!onlyUnclassified || !load?.classificacao?.status);
+      const haystack = [load.placa, load.motorista, ticket(load), project(load)]
+        .map(normalized)
         .join(" ");
-      return (
-        matchesDate &&
-        matchesProject &&
-        matchesTicket &&
-        matchesDestination &&
-        matchesClassification &&
-        (!normalizedSearch || searchable.includes(normalizedSearch))
-      );
+      return matches && (!term || haystack.includes(term));
     });
   }, [
     loads,
     search,
     startDate,
     endDate,
-    selectedProjects,
-    selectedTickets,
-    selectedDestinations,
-    classificationFilter
+    projectsFilter,
+    ticketsFilter,
+    destinationsFilter,
+    onlyUnclassified
   ]);
-
-  const clearFilters = () => {
+  const clear = () => {
     setSearch("");
-    setStartDate(daysAgoKey(6));
-    setEndDate(todayKey());
-    setSelectedProjects([]);
-    setSelectedTickets([]);
-    setSelectedDestinations([]);
-    setClassificationFilter("todos");
+    setStartDate(daysAgo(6));
+    setEndDate(today());
+    setProjectsFilter([]);
+    setTicketsFilter([]);
+    setDestinationsFilter([]);
+    setOnlyUnclassified(false);
   };
-
-  const filtersActive =
+  const activeFilters =
     search ||
-    selectedProjects.length ||
-    selectedTickets.length ||
-    selectedDestinations.length ||
-    classificationFilter !== "todos" ||
-    startDate !== daysAgoKey(6) ||
-    endDate !== todayKey();
-
-  const handleSaved = (classificacao) => {
-    setLoads((previous) =>
-      previous.map((load) =>
+    projectsFilter.length ||
+    ticketsFilter.length ||
+    destinationsFilter.length ||
+    onlyUnclassified ||
+    startDate !== daysAgo(6) ||
+    endDate !== today();
+  const handleSaved = (classificacao) =>
+    setLoads((current) =>
+      current.map((load) =>
         load.id === selectedLoad?.id ? { ...load, classificacao } : load
       )
     );
-  };
-
+  const multiSelect = (
+    label,
+    value,
+    setValue,
+    values,
+    format = (item) => item
+  ) => (
+    <FormControl size="small" sx={{ ...selectSx, minWidth: 200 }}>
+      <InputLabel>{label}</InputLabel>
+      <Select
+        multiple
+        label={label}
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        renderValue={(selected) => (
+          <Box sx={{ display: "flex", gap: 0.5, overflow: "hidden" }}>
+            {selected.map((item) => (
+              <Chip key={item} label={format(item)} />
+            ))}
+          </Box>
+        )}
+      >
+        {values.map((item) => (
+          <MenuItem key={item} value={item}>
+            {format(item)}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
   return (
     <Box
       width="100%"
@@ -759,7 +984,6 @@ const ClassificacaoCargasPage = () => {
       >
         Somente cargas criadas pelo Farm Truck nos últimos sete dias.
       </Typography>
-
       <Box display="flex" flexWrap="wrap" alignItems="center" gap={1} mb={2}>
         <TextField
           size="small"
@@ -794,8 +1018,8 @@ const ClassificacaoCargasPage = () => {
           variant="outlined"
           size="small"
           onClick={() => {
-            setStartDate(daysAgoKey(1));
-            setEndDate(daysAgoKey(1));
+            setStartDate(daysAgo(1));
+            setEndDate(daysAgo(1));
           }}
         >
           Ontem
@@ -805,108 +1029,57 @@ const ClassificacaoCargasPage = () => {
           variant="outlined"
           size="small"
           onClick={() => {
-            setStartDate(todayKey());
-            setEndDate(todayKey());
+            setStartDate(today());
+            setEndDate(today());
           }}
         >
           Hoje
         </Button>
-        <FormControl size="small" sx={{ ...compactSelectSx, minWidth: 200 }}>
-          <InputLabel>Filtre por Projeto</InputLabel>
-          <Select
-            multiple
-            label="Filtre por Projeto"
-            value={selectedProjects}
-            onChange={(event) => setSelectedProjects(event.target.value)}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", gap: 0.5, overflow: "hidden" }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value.replace("Projeto ", "")} />
-                ))}
-              </Box>
-            )}
-          >
-            {projects.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option.replace("Projeto ", "")}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ ...compactSelectSx, minWidth: 180 }}>
-          <InputLabel>Filtre por Ticket</InputLabel>
-          <Select
-            multiple
-            label="Filtre por Ticket"
-            value={selectedTickets}
-            onChange={(event) => setSelectedTickets(event.target.value)}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", gap: 0.5, overflow: "hidden" }}>
-                {selected.map((value) => (
-                  <Chip
-                    key={value}
-                    label={String(value).replace(/^0+/, "") || "0"}
-                  />
-                ))}
-              </Box>
-            )}
-          >
-            {tickets.map((option) => (
-              <MenuItem key={option} value={option}>
-                {String(option).replace(/^0+/, "") || "0"}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ ...compactSelectSx, minWidth: 210 }}>
-          <InputLabel>Filtre por Destinatário</InputLabel>
-          <Select
-            multiple
-            label="Filtre por Destinatário"
-            value={selectedDestinations}
-            onChange={(event) => setSelectedDestinations(event.target.value)}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", gap: 0.5, overflow: "hidden" }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value.replace("Projeto ", "")} />
-                ))}
-              </Box>
-            )}
-          >
-            {destinations.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option.replace("Projeto ", "")}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {multiSelect(
+          "Filtre por Projeto",
+          projectsFilter,
+          setProjectsFilter,
+          projects,
+          (value) => value.replace("Projeto ", "")
+        )}
+        {multiSelect(
+          "Filtre por Ticket",
+          ticketsFilter,
+          setTicketsFilter,
+          tickets,
+          (value) => String(value).replace(/^0+/, "") || "0"
+        )}
+        {multiSelect(
+          "Filtre por Destinatário",
+          destinationsFilter,
+          setDestinationsFilter,
+          destinations,
+          (value) => value.replace("Projeto ", "")
+        )}
         <FormControlLabel
           control={
             <Switch
-              checked={classificationFilter === "sem"}
-              onChange={(event) =>
-                setClassificationFilter(event.target.checked ? "sem" : "todos")
-              }
+              checked={onlyUnclassified}
+              onChange={(event) => setOnlyUnclassified(event.target.checked)}
               color="warning"
             />
           }
           label="Sem classificação"
           sx={{ whiteSpace: "nowrap", mr: 0 }}
         />
-        {filtersActive && (
-          <IconButton color="warning" onClick={clearFilters}>
+        {activeFilters && (
+          <IconButton color="warning" onClick={clear}>
             <CancelIcon />
           </IconButton>
         )}
         <Tooltip title="Atualizar cargas">
           <span>
-            <IconButton color="primary" onClick={loadData} disabled={loading}>
+            <IconButton color="primary" onClick={reload} disabled={loading}>
               <RefreshRoundedIcon />
             </IconButton>
           </span>
         </Tooltip>
       </Box>
-
       <Box
         sx={{
           overflowX: "auto",
@@ -922,22 +1095,26 @@ const ClassificacaoCargasPage = () => {
           style={{ color: "#172033", marginBottom: 0 }}
         >
           <colgroup>
-            <col style={{ width: "8.5%" }} />
-            <col style={{ width: "5.5%" }} />
-            <col style={{ width: "5%" }} />
-            <col style={{ width: "9%" }} />
-            <col style={{ width: "7%" }} />
-            <col style={{ width: "4%" }} />
-            <col style={{ width: "8%" }} />
-            <col style={{ width: "3%" }} />
-            <col style={{ width: "6%" }} />
-            <col style={{ width: "8%" }} />
-            <col style={{ width: "8%" }} />
-            <col style={{ width: "5%" }} />
-            <col style={{ width: "4.5%" }} />
-            <col style={{ width: "5%" }} />
-            <col style={{ width: "8.5%" }} />
-            <col style={{ width: "4.5%" }} />
+            {[
+              "8.5%",
+              "5.5%",
+              "5%",
+              "9%",
+              "7%",
+              "4%",
+              "8%",
+              "3%",
+              "6%",
+              "8%",
+              "8%",
+              "5%",
+              "4.5%",
+              "5%",
+              "8.5%",
+              "4.5%"
+            ].map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
           </colgroup>
           <thead
             style={{ backgroundColor: colors.blueOrigin[400], color: "#fff" }}
@@ -969,7 +1146,7 @@ const ClassificacaoCargasPage = () => {
                 </td>
               </tr>
             )}
-            {!loading && filteredLoads.length === 0 && (
+            {!loading && !filtered.length && (
               <tr>
                 <td colSpan={16} style={{ textAlign: "center", padding: 18 }}>
                   Nenhuma carga encontrada no período selecionado.
@@ -977,29 +1154,36 @@ const ClassificacaoCargasPage = () => {
               </tr>
             )}
             {!loading &&
-              filteredLoads.map((load, index) => {
+              filtered.map((load, index) => {
                 const completed = load?.classificacao?.status === "concluida";
-                const supported = isFeijao(load);
+                const counterproof =
+                  load?.classificacao?.contraprova?.status === "concluida";
                 const parcels = Array.isArray(load.parcelasNovas)
                   ? load.parcelasNovas.join(", ")
                   : load.parcela || "-";
+                const supported = feijao(load);
+                const status = counterproof
+                  ? "Com contraprova"
+                  : completed
+                    ? "Classificada"
+                    : "Pendente";
                 return (
                   <tr
                     key={load.id}
-                    className={`${index % 2 ? styles.oddRow : styles.evenRowLight}`}
+                    className={index % 2 ? styles.oddRow : styles.evenRowLight}
                   >
-                    <td title={formatDate(getLoadDate(load))}>
-                      {formatTableDate(getLoadDate(load))}
+                    <td title={dateLabel(loadDate(load), true)}>
+                      {dateLabel(loadDate(load))}
                     </td>
-                    <td>{load.relatorioColheita || "-"}</td>
-                    <td>{String(getTicket(load)).replace(/^0+/, "") || "0"}</td>
-                    <td title={getProject(load)}>
-                      {getProject(load).replace("Projeto ", "")}
+                    <td>{romaneio(load)}</td>
+                    <td>{String(ticket(load)).replace(/^0+/, "") || "0"}</td>
+                    <td title={project(load)}>
+                      {project(load).replace("Projeto ", "")}
                     </td>
                     <td title={parcels}>{parcels}</td>
                     <td>
                       <img
-                        src={cultureIcon(load.cultura)}
+                        src={iconForCulture(load.cultura)}
                         alt={load.cultura || "cultura"}
                         style={{
                           width: 18,
@@ -1023,16 +1207,16 @@ const ClassificacaoCargasPage = () => {
                         ""
                       )}
                     </td>
-                    <td>{formatPlate(load.placa)}</td>
+                    <td>{plate(load.placa)}</td>
                     <td title={load.motorista || "-"}>
                       {load.motorista || "-"}
                     </td>
-                    <td title={getDestination(load)}>
-                      {getDestination(load).replace("Projeto ", "")}
+                    <td title={destination(load)}>
+                      {destination(load).replace("Projeto ", "")}
                     </td>
-                    <td>{formatWeight(load.pesoBruto)}</td>
-                    <td>{formatWeight(load.tara)}</td>
-                    <td>{formatWeight(load.liquido)}</td>
+                    <td>{weight(load.pesoBruto)}</td>
+                    <td>{weight(load.tara)}</td>
+                    <td>{weight(load.liquido)}</td>
                     <td>
                       {!supported ? (
                         <Chip size="small" label="Em preparo" />
@@ -1047,7 +1231,7 @@ const ClassificacaoCargasPage = () => {
                               <PendingActionsRoundedIcon />
                             )
                           }
-                          label={completed ? "Classificada" : "Pendente"}
+                          label={status}
                         />
                       )}
                     </td>
@@ -1056,7 +1240,7 @@ const ClassificacaoCargasPage = () => {
                         title={
                           supported
                             ? completed
-                              ? "Editar classificação"
+                              ? "Ver classificação e contraprova"
                               : "Classificar carga"
                             : "Formulário disponível inicialmente apenas para feijão"
                         }
