@@ -92,6 +92,7 @@ export const getInsumosList = (data) => {
             const inputType = input.input.input_type_name
             const inputName = input.input.name
             const quantity = input.sought_quantity
+            const dosage = input.sought_dosage_value
             const inputId = input.input.id
             const inputLastUpdated = input.updated_at
             return ({
@@ -102,6 +103,7 @@ export const getInsumosList = (data) => {
                 inputType,
                 inputName,
                 quantity,
+                dosage,
                 inputId,
                 inputLastUpdated
             })

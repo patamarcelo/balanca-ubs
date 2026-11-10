@@ -5,11 +5,13 @@ import DateTimeSelector from './date-time-select';
 
 import { tokens } from '../../../../theme';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectApp } from '../../../../store/plantio/plantio.selector';
 
 import { generalDataArr, generalProjecs, generalTypesProds, generalProds, generalAppsGeneral, getInsumosList, farmDictCOde, armazemDictCode } from './helper';
+
+import { applyComplementAreas, getComplementError } from "./partial-area";
 
 import ListProducts from './list-products';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
@@ -49,9 +51,20 @@ const ProdutosConsolidados = () => {
 
     const [selectedData, setSelectedData] = useState({});
     const [observations, setObservations] = useState("");
+    const [complementAreas, setComplementAreas] = useState({});
+    const selectedComplementAreas = useMemo(() => Object.fromEntries(
+        (selectedData.Ap || []).filter((ap) => complementAreas[ap] !== undefined && complementAreas[ap] !== "")
+            .map((ap) => [ap, complementAreas[ap]])
+    ), [selectedData.Ap, complementAreas]);
+    const hasComplement = Object.keys(selectedComplementAreas).length > 0;
+
 
     const [productsArr, setProductsArr] = useState([]);
     const [prodcutsToProtheus, setprodcutsToProtheus] = useState([]);
+    const complementError = getComplementError(selectedComplementAreas, productsArr);
+
+    const complementProducts = useMemo(() => applyComplementAreas(productsArr, selectedComplementAreas),
+        [productsArr, selectedComplementAreas]);
 
     const [stOpened, setStOpened] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
@@ -70,6 +83,7 @@ const ProdutosConsolidados = () => {
 
     const handleClear = () => {
         console.log('clear')
+        setComplementAreas({})
         setSelectedData({})
         setStOpened(null)
         setObservations("")
@@ -229,6 +243,10 @@ const ProdutosConsolidados = () => {
     }, [selectedData?.Ap, onlyTypes]);
 
     const handlerStProtheus = async () => {
+        if (complementError) {
+            toast.error(complementError);
+            return;
+        }
         const projetoSelecionado = selectedData?.Projeto?.[0];
         const dataSelecionada = selectedData?.Data?.[0];
         const apSelecionada = selectedData?.Ap?.[0];
@@ -290,10 +308,8 @@ const ProdutosConsolidados = () => {
         const observacaoFinal = [
             observations?.trim(),
             observacaoCulturas,
+            hasComplement ? "Complemento de produto" : "",
         ].filter(Boolean).join("\n");
-
-        setObservations(observacaoFinal);
-
 
         const getCode = farmDictCOde.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const getArmazenCode = armazemDictCode.find((data) => data.projeto === selectedData.Projeto[0]).code;
@@ -474,7 +490,7 @@ const ProdutosConsolidados = () => {
                                 variant="contained"
                                 color="success"
                                 onClick={handlerStProtheus}
-                                disabled={stOpened && stOpened !== 0}
+                                disabled={Boolean((stOpened && stOpened !== 0) || complementError)}
                                 loading={isLoadingBtn}
                             >Gerar St</LoadingButton>
                         </Box>
@@ -536,7 +552,7 @@ const ProdutosConsolidados = () => {
 
                             }
                         </Box>
-                        <ListProducts selectedData={selectedData} productsArr={productsArr} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
+                        <ListProducts selectedData={selectedData} productsArr={complementProducts} complementAreas={complementAreas} setComplementAreas={setComplementAreas} complementError={complementError} hasComplement={hasComplement} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                     </Box>
                     {
                         selectedData &&

@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, TextField } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../../../theme';
 
@@ -17,7 +17,7 @@ const ListProducts = (props) => {
 
     const [addObs, setAddObs] = useState(false);
 
-    const { selectedData, productsArr, setprodcutsToProtheus, setObservations, observations } = props;
+    const { selectedData, productsArr, setprodcutsToProtheus, setObservations, observations, complementAreas, setComplementAreas, complementError, hasComplement } = props;
     const { Data, Projeto, Ap, Tipo, Insumo } = selectedData;
 
     const formatNumber = (number) => {
@@ -163,7 +163,7 @@ const ListProducts = (props) => {
                 </Typography>
                 {Ap &&
                     Ap.length > 0 &&
-                    Ap.sort((a, b) => {
+                    [...Ap].sort((a, b) => {
                         const [nameA] = a.split(' - ');
                         const [nameB] = b.split(' - ');
 
@@ -185,7 +185,22 @@ const ListProducts = (props) => {
                                 }}
                             >
                                 <span>{formatApName(aps)}</span>
-                                <span>{getAreaAp(aps)}</span>
+                                <Box sx={{ textAlign: 'right' }}>
+                                    <span>{getAreaAp(aps)}</span>
+                                    <TextField
+                                        label="Área de complemento (ha)"
+                                        size="small"
+                                        value={complementAreas[aps] ?? ''}
+                                        onChange={(event) => {
+                                            const value = event.target.value;
+                                            setComplementAreas((prev) => ({ ...prev, [aps]: value }));
+                                        }}
+                                        inputProps={{ inputMode: 'decimal', 'aria-label': `Área de complemento (ha) - ${formatApName(aps)}` }}
+                                        error={Boolean(complementAreas[aps] && complementError)}
+                                        helperText="Vazio: quantidade original"
+                                        sx={{ width: 180, mt: 1, mb: 1 }}
+                                    />
+                                </Box>
                             </Box>
                         );
                     })}
@@ -275,6 +290,8 @@ const ListProducts = (props) => {
                     minWidth: addObs ? 320 : 'auto',
                 }}
             >
+                {hasComplement && <Typography sx={{ fontWeight: 'bold' }}>Complemento de produto</Typography>}
+                {complementError && <Typography color="error">{complementError}</Typography>}
                 {addObs && (
                     <>
                         <Typography sx={{ textAlign: 'left', fontWeight: 'bold' }}>
