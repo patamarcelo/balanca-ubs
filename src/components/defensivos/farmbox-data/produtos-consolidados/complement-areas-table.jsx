@@ -1,5 +1,7 @@
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 
+import { parseArea } from './partial-area';
+
 const ComplementAreasTable = ({ aps, areas, setAreas, error }) => {
     if (!aps.length) return null;
 
@@ -20,7 +22,11 @@ const ComplementAreasTable = ({ aps, areas, setAreas, error }) => {
                     <TableBody>
                         {aps.map((ap) => (
                             <TableRow key={ap}>
-                                <TableCell>{ap.split(' | ')[0].match(/AP\d+/i)?.[0] || ap.split(' | ')[0]}</TableCell>
+                                <TableCell>
+                                    {ap.split(' | ')[0].match(/AP\d+/i)?.[0] || ap.split(' | ')[0]}
+                                    {Number.isFinite(parseArea(areas[ap])) && parseArea(areas[ap]) > 0 &&
+                                        ` | ${parseArea(areas[ap]).toLocaleString('pt-BR', { maximumFractionDigits: 20 })} Há`}
+                                </TableCell>
                                 <TableCell>
                                     <TextField
                                         size="small"

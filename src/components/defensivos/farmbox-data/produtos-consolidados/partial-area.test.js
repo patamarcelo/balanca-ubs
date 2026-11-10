@@ -46,10 +46,12 @@ test('display and Protheus product list use recalculated quantities respecting e
     expect(setProducts.mock.calls.at(-1)[0]).toEqual([expect.objectContaining({ inputId: 1, quantidade: 40 })]);
     expect(within(screen.getByTestId('capture-region')).queryByLabelText('Área de complemento (ha) - Teste - AP100')).not.toBeInTheDocument();
     const table = screen.getByRole('table', { name: 'Áreas de complemento por AP' });
-    expect(within(table).getByRole('cell', { name: 'AP100' })).toBeInTheDocument();
+    expect(within(table).getByRole('cell', { name: 'AP100 | 20 Há' })).toBeInTheDocument();
     expect(within(table).queryByText(ap)).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText('Área de complemento (ha) - Teste - AP100'), { target: { value: '30' } });
     expect(setAreas).toHaveBeenCalled();
+    view.rerender(renderList({ [ap]: '1500' }));
+    expect(within(table).getByRole('cell', { name: 'AP100 | 1.500 Há' })).toBeInTheDocument();
     view.rerender(renderList({}));
     expect(screen.getAllByText('200,00')).toHaveLength(2);
     expect(screen.getByRole('textbox', { name: 'Observações' })).toHaveValue('Observação manual');
