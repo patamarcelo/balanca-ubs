@@ -42,6 +42,8 @@ test('display and Protheus product list use recalculated quantities respecting e
     const view = render(renderList({ [ap]: '20' }));
     expect(screen.getAllByText('40,00')).toHaveLength(2);
     expect(screen.queryByText('Produto B')).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: 'Observações' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'add' }));
     expect(screen.getByRole('textbox', { name: 'Observações' })).toHaveValue('Observação manual\nComplemento de produto');
     expect(setProducts.mock.calls.at(-1)[0]).toEqual([expect.objectContaining({ inputId: 1, quantidade: 40 })]);
     expect(within(screen.getByTestId('capture-region')).queryByLabelText('Área de complemento (ha) - Teste - AP100')).not.toBeInTheDocument();
@@ -65,6 +67,9 @@ test('display and Protheus product list use recalculated quantities respecting e
     expect(screen.getAllByText('200,00')).toHaveLength(2);
     expect(screen.getByRole('textbox', { name: 'Observações' })).toHaveValue('Observação manual');
     expect(setProducts.mock.calls.at(-1)[0][0].quantidade).toBe(200);
+    fireEvent.click(screen.getByRole('button', { name: 'delete' }));
+    view.rerender(renderList({ [ap]: '20' }));
+    expect(screen.queryByRole('textbox', { name: 'Observações' })).not.toBeInTheDocument();
 });
 
 test('complement observation preserves manual text without duplicating the marker', () => {

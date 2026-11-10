@@ -272,10 +272,10 @@ const ListProducts = (props) => {
                 sx={{
                     width: '100%',
                     // Quando Observações estiver aberta, garante uma largura mínima decente
-                    minWidth: (addObs || observations) ? 320 : 'auto',
+                    minWidth: addObs ? 320 : 'auto',
                 }}
             >
-                {(addObs || Boolean(observations)) && (
+                {addObs && (
                     <>
                         <Typography sx={{ textAlign: 'left', fontWeight: 'bold' }}>
                             Observações
