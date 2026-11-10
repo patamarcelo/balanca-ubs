@@ -20,7 +20,7 @@ const ComplementAreasTable = ({ aps, areas, setAreas, error }) => {
                     <TableBody>
                         {aps.map((ap) => (
                             <TableRow key={ap}>
-                                <TableCell>{ap}</TableCell>
+                                <TableCell>{ap.split(' | ')[0].match(/AP\d+/i)?.[0] || ap.split(' | ')[0]}</TableCell>
                                 <TableCell>
                                     <TextField
                                         size="small"

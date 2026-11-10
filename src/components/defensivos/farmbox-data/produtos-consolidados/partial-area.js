@@ -1,5 +1,16 @@
 export const parseArea = (value) => Number(String(value).trim().replace(',', '.'));
 
+export const syncComplementObservation = (observation, hasComplement) => {
+    const marker = 'Complemento de produto';
+    const lines = observation.split('\n');
+    if (hasComplement) {
+        return lines.some((line) => line.trim() === marker)
+            ? observation
+            : [observation, marker].filter(Boolean).join('\n');
+    }
+    return lines.filter((line) => line.trim() !== marker).join('\n');
+};
+
 export const getComplementError = (areas, products = []) => {
     if (Object.values(areas).some((value) => !Number.isFinite(parseArea(value)) || parseArea(value) <= 0)) {
         return 'Informe uma área de complemento maior que zero.';

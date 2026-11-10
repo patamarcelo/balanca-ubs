@@ -17,7 +17,7 @@ const ListProducts = (props) => {
 
     const [addObs, setAddObs] = useState(false);
 
-    const { selectedData, productsArr, setprodcutsToProtheus, setObservations, observations, hasComplement } = props;
+    const { selectedData, productsArr, setprodcutsToProtheus, setObservations, observations } = props;
     const { Data, Projeto, Ap, Tipo, Insumo } = selectedData;
 
     const formatNumber = (number) => {
@@ -272,17 +272,17 @@ const ListProducts = (props) => {
                 sx={{
                     width: '100%',
                     // Quando Observações estiver aberta, garante uma largura mínima decente
-                    minWidth: addObs ? 320 : 'auto',
+                    minWidth: (addObs || observations) ? 320 : 'auto',
                 }}
             >
-                {hasComplement && <Typography sx={{ fontWeight: 'bold' }}>Complemento de produto</Typography>}
-                {addObs && (
+                {(addObs || Boolean(observations)) && (
                     <>
                         <Typography sx={{ textAlign: 'left', fontWeight: 'bold' }}>
                             Observações
                         </Typography>
                         <textarea
                             name="obsprduct"
+                            aria-label="Observações"
                             rows={15}
                             style={{
                                 padding: '10px',

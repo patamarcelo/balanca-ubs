@@ -11,7 +11,7 @@ import { selectApp } from '../../../../store/plantio/plantio.selector';
 
 import { generalDataArr, generalProjecs, generalTypesProds, generalProds, generalAppsGeneral, getInsumosList, farmDictCOde, armazemDictCode } from './helper';
 
-import { applyComplementAreas, getComplementError } from "./partial-area";
+import { applyComplementAreas, getComplementError, syncComplementObservation } from "./partial-area";
 
 import ComplementAreasTable from "./complement-areas-table";
 import ListProducts from './list-products';
@@ -58,6 +58,10 @@ const ProdutosConsolidados = () => {
             .map((ap) => [ap, complementAreas[ap]])
     ), [selectedData.Ap, complementAreas]);
     const hasComplement = Object.keys(selectedComplementAreas).length > 0;
+
+    useEffect(() => {
+        setObservations((current) => syncComplementObservation(current, hasComplement));
+    }, [hasComplement]);
 
 
     const [productsArr, setProductsArr] = useState([]);
@@ -309,8 +313,9 @@ const ProdutosConsolidados = () => {
         const observacaoFinal = [
             observations?.trim(),
             observacaoCulturas,
-            hasComplement ? "Complemento de produto" : "",
         ].filter(Boolean).join("\n");
+
+        setObservations(observacaoFinal);
 
         const getCode = farmDictCOde.find((data) => data.projeto === selectedData.Projeto[0]).code;
         const getArmazenCode = armazemDictCode.find((data) => data.projeto === selectedData.Projeto[0]).code;
@@ -553,7 +558,7 @@ const ProdutosConsolidados = () => {
 
                             }
                         </Box>
-                        <ListProducts selectedData={selectedData} productsArr={complementProducts} hasComplement={hasComplement} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
+                        <ListProducts selectedData={selectedData} productsArr={complementProducts} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                     </Box>
                     <ComplementAreasTable
                         aps={selectedData.Ap || []}
