@@ -13,6 +13,7 @@ import { generalDataArr, generalProjecs, generalTypesProds, generalProds, genera
 
 import { applyComplementAreas, getComplementError } from "./partial-area";
 
+import ComplementAreasTable from "./complement-areas-table";
 import ListProducts from './list-products';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 
@@ -552,8 +553,14 @@ const ProdutosConsolidados = () => {
 
                             }
                         </Box>
-                        <ListProducts selectedData={selectedData} productsArr={complementProducts} complementAreas={complementAreas} setComplementAreas={setComplementAreas} complementError={complementError} hasComplement={hasComplement} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
+                        <ListProducts selectedData={selectedData} productsArr={complementProducts} hasComplement={hasComplement} setprodcutsToProtheus={setprodcutsToProtheus} setObservations={setObservations} observations={observations} />
                     </Box>
+                    <ComplementAreasTable
+                        aps={selectedData.Ap || []}
+                        areas={complementAreas}
+                        setAreas={setComplementAreas}
+                        error={complementError}
+                    />
                     {
                         selectedData &&
                         <>

@@ -1,6 +1,7 @@
 import { applyComplementAreas, getComplementError } from './partial-area';
 import ListProducts from './list-products';
-import { render, screen, fireEvent } from '@testing-library/react';
+import ComplementAreasTable from './complement-areas-table';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const ap = 'Teste - AP100 | 2026-11-10';
@@ -32,15 +33,20 @@ test('display and Protheus product list use recalculated quantities respecting e
     const selectedData = { Projeto: ['Fazenda Teste'], Data: ['2026-11-10'], Ap: [ap], Tipo: ['Operação'], Insumo: ['Produto B'] };
     const setAreas = jest.fn();
     const renderList = (areas) => <ThemeProvider theme={createTheme()}>
+        <div data-testid="capture-region">
         <ListProducts selectedData={selectedData} productsArr={applyComplementAreas(products, areas)}
-            complementAreas={areas} setComplementAreas={setAreas} hasComplement={Boolean(areas[ap])}
+            hasComplement={Boolean(areas[ap])}
             setprodcutsToProtheus={setProducts} observations="Observação manual" setObservations={jest.fn()} />
+        </div>
+        <ComplementAreasTable aps={selectedData.Ap} areas={areas} setAreas={setAreas} />
     </ThemeProvider>;
     const view = render(renderList({ [ap]: '20' }));
     expect(screen.getAllByText('40,00')).toHaveLength(2);
     expect(screen.queryByText('Produto B')).not.toBeInTheDocument();
     expect(screen.getByText('Complemento de produto')).toBeInTheDocument();
     expect(setProducts.mock.calls.at(-1)[0]).toEqual([expect.objectContaining({ inputId: 1, quantidade: 40 })]);
+    expect(within(screen.getByTestId('capture-region')).queryByRole('textbox')).not.toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Áreas de complemento por AP' })).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText('Área de complemento (ha) - Teste - AP100'), { target: { value: '30' } });
     expect(setAreas).toHaveBeenCalled();
     view.rerender(renderList({}));
