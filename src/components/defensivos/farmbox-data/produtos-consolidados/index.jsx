@@ -6,7 +6,6 @@ import DateTimeSelector from './date-time-select';
 import { tokens } from '../../../../theme';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { flushSync } from 'react-dom';
 import { useSelector } from 'react-redux';
 import { selectApp } from '../../../../store/plantio/plantio.selector';
 
@@ -73,8 +72,6 @@ const ProdutosConsolidados = () => {
         [productsArr, selectedComplementAreas]);
 
     const [stOpened, setStOpened] = useState(null);
-    const [stId, setStId] = useState(null);
-    const [isCapturing, setIsCapturing] = useState(false);
     const [filteredData, setFilteredData] = useState([]);
 
 
@@ -94,7 +91,6 @@ const ProdutosConsolidados = () => {
         setComplementAreas({})
         setSelectedData({})
         setStOpened(null)
-        setStId(null)
         setObservations("")
         setFilteredData([])
     }
@@ -121,6 +117,13 @@ const ProdutosConsolidados = () => {
 
         const downloadUrl = await getDownloadURL(storageRef);
 
+        console.log("✅ Imagem Pré ST salva no Firebase:", {
+            stNumber: safeStNumber,
+            fileName,
+            path,
+            downloadUrl,
+        });
+
         return {
             stNumber: safeStNumber,
             fileName,
@@ -129,22 +132,24 @@ const ProdutosConsolidados = () => {
         };
     };
 
-    const handleCapture = async (stNumber = stOpened, integrationId = stId) => {
-        setIsCapturing(true);
-        let failureMessage = stNumber
-            ? `Pré-ST ${stNumber} aberta, mas não foi possível gerar a imagem.`
-            : "Não foi possível gerar a imagem.";
+    const handleCapture = async (stNumberFromParam, options = {}) => {
+        const element = captureRef.current;
+        if (!element) return;
+
+        const { saveToFirebase = true } = options;
+
+        // Usa o número vindo por parâmetro se existir; se não, cai pro estado
+        const stNumber = stNumberFromParam ?? stOpened;
 
         try {
-            const element = captureRef.current;
-            if (!element) throw new Error("Área de captura indisponível.");
-
             const canvas = await html2canvas(element, {
                 useCORS: true,
                 scale: 2,
             });
+
             const dataUrl = canvas.toDataURL("image/png");
 
+            // 1. Mantém o download exatamente como hoje
             const link = document.createElement("a");
             link.href = dataUrl;
             link.download = `pre_st_${stNumber?.toString().trim() || "gerada"}.png`;
@@ -152,38 +157,31 @@ const ProdutosConsolidados = () => {
             link.click();
             document.body.removeChild(link);
 
-            if (stNumber) {
-                failureMessage = `Pré-ST ${stNumber} aberta, mas o registro no Django está indisponível para vincular a imagem.`;
-                if (!integrationId) throw new Error("ID da integração indisponível.");
-
-                failureMessage = `Pré-ST ${stNumber} aberta, mas a imagem não foi salva no Firebase.`;
-                const { downloadUrl } = await savePreStImageToFirebase({ dataUrl, stNumber });
-
-                failureMessage = `Pré-ST ${stNumber} aberta e imagem enviada, mas o vínculo no Django falhou.`;
-                await djangoApi.patch(
-                    `opensts/${integrationId}/pre-st-image/`,
-                    { pre_st_image_url: downloadUrl },
-                    {
-                        headers: {
-                            Authorization: `Token ${process.env.REACT_APP_DJANGO_TOKEN}`,
-                        },
-                    }
-                );
-            }
-
-            toast.success("Captura de tela gerada", {
+            toast.success(`Captura de tela gerada`, {
                 position: "top-center",
                 duration: 5000,
-            });
-            return null;
+            })
+            // 2. Salva no Firebase "por trás dos panos"
+            // Não usa await aqui para não travar o fluxo visual do usuário
+            if (saveToFirebase) {
+                savePreStImageToFirebase({
+                    dataUrl,
+                    stNumber,
+                }).catch((err) => {
+                    console.error("Erro ao salvar imagem Pré ST no Firebase:", err);
+
+                    toast.error("Imagem baixada, mas não foi salva no Firebase.", {
+                        position: "top-center",
+                        duration: 5000,
+                    });
+                });
+            }
         } catch (err) {
-            console.error("Erro ao processar a imagem da Pré-ST:", err);
-            toast.error(failureMessage, { position: "top-center", duration: 8000 });
-            return failureMessage;
-        } finally {
-            setIsCapturing(false);
+            console.error("Erro ao gerar imagem:", err);
+            alert("Não foi possível gerar a imagem.");
         }
     };
+
 
     useEffect(() => {
         if (openApp.length > 0) {
@@ -349,26 +347,50 @@ const ProdutosConsolidados = () => {
             console.log("Resposta ao abrir ST:", res);
 
             if (res.status === 201) {
-                const { st_number, st_id, sent_by_email } = res.data;
+                const { st_number, sent_by_email } = res.data;
 
-                flushSync(() => {
-                    setStOpened(st_number);
-                    setStId(st_id);
-                });
+                setStOpened(st_number);
 
-                const imageError = await handleCapture(st_number, st_id);
-                const emailMessage = sent_by_email === "Não"
-                    ? "O e-mail não foi enviado."
-                    : `Enviada por e-mail: ${sent_by_email}`;
-                const hasWarning = Boolean(imageError || sent_by_email === "Não");
+                // Aguarda apenas a renderização do número da Pré-ST.
+                // Não depende mais da confirmação do Swal.
+                setTimeout(() => {
+                    handleCapture(st_number, {
+                        saveToFirebase: true,
+                    }).catch((captureError) => {
+                        console.error(
+                            "Erro ao capturar a tela após abrir ST:",
+                            captureError
+                        );
+                    });
+                }, 1000);
 
-                Swal.fire({
-                    title: `Pré-ST ${st_number} aberta`,
-                    text: [emailMessage, imageError].filter(Boolean).join(" "),
-                    icon: hasWarning ? "warning" : "success",
-                    showCloseButton: hasWarning,
-                });
+                if (sent_by_email === "Não") {
+                    console.warn("ST aberta, mas o e-mail não foi enviado:", st_number);
 
+                    Swal.fire({
+                        title: "Atenção!",
+                        html: `
+            <b>Pré-ST aberta com sucesso: ${st_number}</b>
+            <br />
+            O e-mail não foi enviado.
+        `,
+                        icon: "warning",
+                        showCloseButton: true,
+                    });
+                } else {
+                    console.log("ST aberta com sucesso:", st_number);
+
+                    Swal.fire({
+                        title: "Feito!",
+                        html: `
+            <b>Pré-ST aberta com sucesso: ${st_number}</b>
+            <br />
+            Enviada por e-mail: ${sent_by_email}
+        `,
+                        icon: "success",
+                    });
+                }
+                
                 return;
             }
 
@@ -474,14 +496,13 @@ const ProdutosConsolidados = () => {
                                 variant="contained"
                                 color="success"
                                 onClick={handlerStProtheus}
-                                disabled={Boolean(stOpened || complementError || isCapturing)}
+                                disabled={Boolean((stOpened && stOpened !== 0) || complementError)}
                                 loading={isLoadingBtn}
                             >Gerar St</LoadingButton>
                         </Box>
                         <Fab
                             color="success"
-                            onClick={() => handleCapture()}
-                            disabled={isLoadingBtn || isCapturing}
+                            onClick={() => handleCapture()} // usa o stOpened atual
                             aria-label="Capturar imagem"
                             sx={{
                                 position: "fixed",
@@ -497,7 +518,7 @@ const ProdutosConsolidados = () => {
                                 justifySelf: 'center',
                             }}
                         >
-                            <IconButton aria-label="delete" onClick={handleClear} disabled={isLoadingBtn || isCapturing} color="error">
+                            <IconButton aria-label="delete" onClick={handleClear} color="error">
                                 <CancelPresentationIcon />
                             </IconButton>
                         </Box>
